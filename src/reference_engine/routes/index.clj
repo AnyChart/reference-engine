@@ -4,8 +4,8 @@
             [clostache.parser :refer [render-resource]]))
 
 (defn show-landing [request]
-  (render-resource "templates/landing.mustache" {:version "7"
-                                                 :debug true}))
+  (render-resource "templates/app.mustache" {:version "7"
+                                             :debug true}))
  
 (defroutes index-routes
   (GET "/" [] show-landing)
