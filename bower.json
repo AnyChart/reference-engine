@@ -1,0 +1,20 @@
+{
+  "name": "reference-engine",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "react": "~0.11.1",
+    "closure-compiler": "~0.2.6",
+    "closurelibrary": "*",
+    "bootstrap-sass-official": "3.2.0",
+    "react-externs": "https://github.com/steida/react-externs.git"
+  },
+  "exportsOverride": {
+    "react": {
+	"js": ["react.js", "react.min.js"]
+    },
+    "closure-compiler": { "js": [] },
+    "closurelibrary": { "goog": "closure/goog"},
+    "bootstrap-sass-official": { "fonts": "assets/fonts/bootstrap" }
+  }
+}
