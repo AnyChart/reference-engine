@@ -1,0 +1,10 @@
+/* line 1, ../../../../src-scss/content-header.scss */
+#main .header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 62px;
+  background-color: #929292;
+  border-top: 10px solid #fff;
+}

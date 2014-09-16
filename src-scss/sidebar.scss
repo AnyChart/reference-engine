@@ -1,3 +1,5 @@
+@import "sidebar-tree";
+
 #sidebar {
     width: 300px;
     position: absolute;
@@ -91,8 +93,34 @@
     }
 
     .tree {
+	position: absolute;
+	left: 20px;
+	right: 0;
+	top: 150px;
+	bottom: 69px;
+	overflow-y: scroll;
     }
 
     .footer {
+	position: absolute;
+	height: 60px;
+	bottom: 0;
+	left: 20px;
+	right: 20px;
+	text-shadow: -1px 1px 0 rgba(0, 0, 0, 0.3);
+	border-top: 1px solid #929292;
+	padding-top: 8px;
+	color: #929292;
+
+	a, a:visited, a:hover {
+	    font-size: 24px;
+	    color: #929292;
+	}
+
+	p {
+	    font-size: 12px;
+	    line-height: 12px;
+	    padding-top: 2px;
+	}
     }
 }

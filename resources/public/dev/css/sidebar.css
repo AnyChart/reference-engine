@@ -1,4 +1,37 @@
-/* line 1, ../../../../src-scss/sidebar.scss */
+/* line 1, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree {
+  list-style: none;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+  font-size: 14px;
+}
+/* line 6, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree ul {
+  margin-top: 5px;
+  margin-right: 0px;
+  margin-bottom: 10px;
+  margin-left: 30px;
+}
+/* line 12, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree ul li {
+  line-height: 20px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+/* line 19, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree a {
+  color: #D4D4D4;
+  font-weight: bold;
+}
+/* line 23, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree a i {
+  margin-right: 8px;
+}
+/* line 27, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree a:hover {
+  color: white;
+}
+
+/* line 3, ../../../../src-scss/sidebar.scss */
 #sidebar {
   width: 300px;
   position: absolute;
@@ -8,23 +41,23 @@
   background-color: #474747;
   font-family: "Trebuchet MS",Helvetica,Arial,sans-serif;
 }
-/* line 11, ../../../../src-scss/sidebar.scss */
+/* line 13, ../../../../src-scss/sidebar.scss */
 #sidebar .header {
   margin-left: 20px;
   margin-top: 20px;
 }
-/* line 15, ../../../../src-scss/sidebar.scss */
+/* line 17, ../../../../src-scss/sidebar.scss */
 #sidebar .header img {
   width: 60px;
   display: inline-block;
 }
-/* line 20, ../../../../src-scss/sidebar.scss */
+/* line 22, ../../../../src-scss/sidebar.scss */
 #sidebar .header div {
   position: absolute;
   left: 20px;
   top: 10px;
 }
-/* line 25, ../../../../src-scss/sidebar.scss */
+/* line 27, ../../../../src-scss/sidebar.scss */
 #sidebar .header div h1 {
   font-weight: normal;
   line-height: 26px;
@@ -34,7 +67,7 @@
   margin: 0 0 0 10px;
   color: white;
 }
-/* line 35, ../../../../src-scss/sidebar.scss */
+/* line 37, ../../../../src-scss/sidebar.scss */
 #sidebar .header div h6 {
   font-weight: normal;
   line-height: 20px;
@@ -43,7 +76,7 @@
   margin: 0 0 0 10px;
   color: #B8B8B8;
 }
-/* line 46, ../../../../src-scss/sidebar.scss */
+/* line 48, ../../../../src-scss/sidebar.scss */
 #sidebar .search {
   margin-top: 20px;
   margin-left: 20px;
@@ -52,20 +85,20 @@
   position: relative;
   height: 30px;
 }
-/* line 54, ../../../../src-scss/sidebar.scss */
+/* line 56, ../../../../src-scss/sidebar.scss */
 #sidebar .search i {
   color: #fff;
   font-size: 14px;
   margin-top: 8px;
 }
-/* line 60, ../../../../src-scss/sidebar.scss */
+/* line 62, ../../../../src-scss/sidebar.scss */
 #sidebar .search div {
   position: absolute;
   right: 40px;
   left: 23px;
   top: 0;
 }
-/* line 67, ../../../../src-scss/sidebar.scss */
+/* line 69, ../../../../src-scss/sidebar.scss */
 #sidebar .search input {
   padding-left: 14px;
   padding-right: 14px;
@@ -80,9 +113,41 @@
   line-height: 20px;
   color: #555;
 }
-/* line 86, ../../../../src-scss/sidebar.scss */
+/* line 88, ../../../../src-scss/sidebar.scss */
 #sidebar .search input:focus {
   border-color: rgba(82, 168, 236, 0.8);
   outline: 0;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+/* line 95, ../../../../src-scss/sidebar.scss */
+#sidebar .tree {
+  position: absolute;
+  left: 20px;
+  right: 0;
+  top: 150px;
+  bottom: 69px;
+  overflow-y: scroll;
+}
+/* line 104, ../../../../src-scss/sidebar.scss */
+#sidebar .footer {
+  position: absolute;
+  height: 60px;
+  bottom: 0;
+  left: 20px;
+  right: 20px;
+  text-shadow: -1px 1px 0 rgba(0, 0, 0, 0.3);
+  border-top: 1px solid #929292;
+  padding-top: 8px;
+  color: #929292;
+}
+/* line 115, ../../../../src-scss/sidebar.scss */
+#sidebar .footer a, #sidebar .footer a:visited, #sidebar .footer a:hover {
+  font-size: 24px;
+  color: #929292;
+}
+/* line 120, ../../../../src-scss/sidebar.scss */
+#sidebar .footer p {
+  font-size: 12px;
+  line-height: 12px;
+  padding-top: 2px;
 }

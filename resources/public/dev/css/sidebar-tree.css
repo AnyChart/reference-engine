@@ -1,0 +1,32 @@
+/* line 1, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree {
+  list-style: none;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+  font-size: 14px;
+}
+/* line 6, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree ul {
+  margin-top: 5px;
+  margin-right: 0px;
+  margin-bottom: 10px;
+  margin-left: 30px;
+}
+/* line 12, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree ul li {
+  line-height: 20px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+/* line 19, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree a {
+  color: #D4D4D4;
+  font-weight: bold;
+}
+/* line 23, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree a i {
+  margin-right: 8px;
+}
+/* line 27, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree a:hover {
+  color: white;
+}
