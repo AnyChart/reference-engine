@@ -220,9 +220,86 @@ a {
   top: 0;
   left: 0;
   right: 0;
-  height: 62px;
+  height: 52px;
   background-color: #929292;
   border-top: 10px solid #fff;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+}
+/* line 12, ../../../../src-scss/content-header.scss */
+#main .header ul {
+  padding-top: 18px;
+  margin-left: 15px;
+}
+/* line 17, ../../../../src-scss/content-header.scss */
+#main .header ul li {
+  display: inline;
+  color: #fff;
+}
+/* line 21, ../../../../src-scss/content-header.scss */
+#main .header ul li a, #main .header ul li a:hover, #main .header ul li a:visited {
+  color: #fff;
+}
+/* line 25, ../../../../src-scss/content-header.scss */
+#main .header ul li span {
+  color: #ccc;
+  padding-left: 5px;
+}
+/* line 31, ../../../../src-scss/content-header.scss */
+#main .header ul :last-child {
+  color: #ccc;
+}
+/* line 36, ../../../../src-scss/content-header.scss */
+#main .header .right {
+  position: absolute;
+  width: 318px;
+  height: 30px;
+  right: 0px;
+  top: 10px;
+}
+/* line 43, ../../../../src-scss/content-header.scss */
+#main .header .right .version {
+  line-height: 28px;
+  display: inline-block;
+  border: 1px solid #A7A7A7;
+  color: #474747;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-radius: 4px;
+  background-color: white;
+}
+/* line 54, ../../../../src-scss/content-header.scss */
+#main .header .right .support-icon {
+  display: inline-block;
+  font-size: 20px;
+  color: #fff;
+  border: 1px solid #393939;
+  background: #474747;
+  padding: 4px 12px;
+  border-radius: 4px;
+  text-align: center;
+  vertical-align: middle;
+  margin-left: 11px;
+  position: relative;
+  top: -1px;
+}
+/* line 69, ../../../../src-scss/content-header.scss */
+#main .header .right .meta {
+  display: inline-block;
+  font-size: 12px;
+  color: #ccc;
+  height: 20px;
+  position: absolute;
+  right: 15px;
+  top: 2px;
+}
+/* line 78, ../../../../src-scss/content-header.scss */
+#main .header .right .meta p {
+  padding-bottom: 4px;
+}
+/* line 82, ../../../../src-scss/content-header.scss */
+#main .header .right .meta a, #main .header .right .meta a:hover, #main .header .right .meta a:visited {
+  color: #fff;
 }
 
 /* line 3, ../../../../src-scss/content.scss */
@@ -242,5 +319,24 @@ a {
   bottom: 0;
   top: 60px;
   overflow-y: scroll;
-  background-color: red;
+  padding-left: 37px;
+  padding-right: 10px;
+  padding-top: 10px;
+  overflow: auto;
+  color: #474747;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+}
+/* line 28, ../../../../src-scss/content.scss */
+#content h1 {
+  color: #474747;
+  font-weight: normal;
+  line-height: 30px;
+  font-size: 28px;
+  margin: 20px 0;
+}
+/* line 36, ../../../../src-scss/content.scss */
+#content p {
+  margin-bottom: 10px;
 }
