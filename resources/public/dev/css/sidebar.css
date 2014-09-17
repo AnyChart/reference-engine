@@ -151,3 +151,12 @@
   line-height: 12px;
   padding-top: 2px;
 }
+/* line 127, ../../../../src-scss/sidebar.scss */
+#sidebar #resizer {
+  position: absolute;
+  right: 0px;
+  width: 5px;
+  top: 0;
+  bottom: 0;
+  cursor: col-resize;
+}

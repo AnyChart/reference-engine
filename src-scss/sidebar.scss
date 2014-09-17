@@ -123,4 +123,13 @@
 	    padding-top: 2px;
 	}
     }
+
+    #resizer {
+	position: absolute;
+	right: 0px;
+	width: 5px;
+	top: 0;
+	bottom: 0;
+	cursor: col-resize;
+    }
 }

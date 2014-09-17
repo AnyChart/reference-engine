@@ -98,6 +98,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-closure-tools');
 
+    grunt.registerTask('deps', ['closureDepsWriter:dev']);
+    
     grunt.registerTask('default', ['bower:install',
 				   'compass:dev',
 				   'react:build',

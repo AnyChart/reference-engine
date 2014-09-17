@@ -213,6 +213,15 @@ a {
   line-height: 12px;
   padding-top: 2px;
 }
+/* line 127, ../../../../src-scss/sidebar.scss */
+#sidebar #resizer {
+  position: absolute;
+  right: 0px;
+  width: 5px;
+  top: 0;
+  bottom: 0;
+  cursor: col-resize;
+}
 
 /* line 1, ../../../../src-scss/content-header.scss */
 #main .header {
@@ -339,4 +348,24 @@ a {
 /* line 36, ../../../../src-scss/content.scss */
 #content p {
   margin-bottom: 10px;
+}
+
+/* line 5, ../../../../src-scss/styles.scss */
+body {
+  min-width: 800px;
+}
+
+/* line 9, ../../../../src-scss/styles.scss */
+#main {
+  min-width: 500px;
+}
+
+/* line 13, ../../../../src-scss/styles.scss */
+#locker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: transparent;
 }

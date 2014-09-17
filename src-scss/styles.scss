@@ -1,3 +1,20 @@
 @import "reset";
 @import "sidebar";
 @import "content";
+
+body {
+    min-width: 800px;
+}
+
+#main {
+    min-width: 500px;
+}
+
+#locker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: transparent;
+}
