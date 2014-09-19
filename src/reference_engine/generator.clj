@@ -1,102 +1,15 @@
 (ns reference-engine.generator
   (:require [clojure.java.shell :refer [sh with-sh-dir]]
             [cheshire.core :refer [parse-string]]
-            [reference-engine.parser :reref [parse]]))
+            [reference-engine.parser :reref [parse-jsdoc]]
+            [reference-engine.db :refer [wcar*]]
+            [taoensso.carmine :as car]))
 
 (defn get-jsdoc-info [path]
   (parse-string
    ((sh "/usr/local/bin/node" "./node_modules/jsdoc/jsdoc.js" "-r" "-X" path) :out)
    true))
 
-(defn filter-jsdoc-info [info]
-  (filter (fn [info] (not (= (:access info) "private")))
-          info))
+(defn cleanup [project version])
 
-(defn ignore-doc? [raw]
-  (some #(= (:originalTitle %) "ignoreDoc") (:tags raw)))
-
-(defn inherit-doc? [raw]
-  (some #(= (:originalTitle %) "inheritDoc") (:tags raw)))
-
-(defn filter-raw [raw]
-  (filter (fn [info] (not (or (= (:access info) "private")
-                              (= (:access info) "protected")
-                              (= (:scope info) "inner")
-                              (ignore-doc? info)))) raw))
-
-(defn ignore-circular [obj]
-  (if (= obj "<CircularRef>")
-    nil
-    obj))
-
-(defn parse-general-member [member]
-  {:name (:name member)
-   :static? (= (:scope member) "static")
-   :access (:access member)
-   :inherit-doc? (inherit-doc? member)
-   :examples (:examples member)
-   :illustrations (map :text (filter #(= (:originalTitle %) "illustration")
-                                     (:tags member)))})
-
-(defn parse-typed-member [member]
-  (assoc (parse-general-member member)
-    :type (get-in member [:type :names])))
-
-(defn parse-param [param]
-  {:description (:description param)
-   :optional? (:optional param)
-   :name (:name param)
-   :type (get-in info [:type :names])})
-
-(defn parse-return [return]
-  (let [info (first return)]
-    {:description (:description info)
-     :type (get-in info [:type :names])}))
-
-(defn parse-function-member [member]
-  (assoc (parse-general-member member)
-    :returns (parse-return (:returns member))
-    :params (map parse-param (:params member))))
-
-(defn group-members [members]
-  (let [names (set (map :name members))]
-    (map
-     (fn [name]
-       {:name name
-        :members (filter (fn [member] (= (:name member) name)) members)})
-     names)))
-
-(defn parse-member [member]
-  (case (:kind member)
-    "function" (parse-function-member member)
-    "member" (parse-typed-member member)
-    (parse-general-member member)))
-
-(defn get-members [data class]
-  (sort-by
-   :name
-   (group-members
-    (map parse-member
-         (filter #(= (:memberof %) (:full-name class))
-                 data)))))
-
-(defn get-classes [data]
-  (map (fn [meta] (assoc (parse-general-member meta)
-                    :full-name (:longname meta)
-                    :package (:memberof meta)
-                    :extends (:augments meta)))
-       (filter #(= (:kind %) "class") data)))
-
-(defn parse [raw]
-  (let [data (filter-raw raw)]
-    (map (fn [class]
-           (assoc class
-             :members (get-members data class)))
-         (get-classes data))))
-
-;(def info (get-jsdoc-info "data/acdvf/repo/src/cartesian/Chart.js"))
-
-(println "==============")
-(println "parse results:")
-(use 'clojure.pprint)
-(binding [*print-right-margin* 60] (pprint (parse info)))
+(defn generate [project version])

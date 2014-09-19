@@ -18,3 +18,4 @@ bower_components
 node_modules
 bower_deps
 data
+test.json
