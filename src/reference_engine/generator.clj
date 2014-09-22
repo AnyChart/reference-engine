@@ -1,9 +1,13 @@
 (ns reference-engine.generator
   (:require [clojure.java.shell :refer [sh with-sh-dir]]
-            [cheshire.core :refer [parse-string]]
-            [reference-engine.parser :reref [parse-jsdoc]]
+            [cheshire.core :refer [parse-string generate-string]]
+            [reference-engine.parser :as docs-parser]
             [reference-engine.db :refer [wcar*]]
-            [taoensso.carmine :as car]))
+            [reference-engine.exports :refer [filter-exports]]
+            [taoensso.carmine :as car]
+            [clojure.java.io :refer [file]]))
+
+(def local (atom {}))
 
 (defn get-jsdoc-info [path]
   (parse-string
@@ -13,3 +17,14 @@
 (defn cleanup [project version])
 
 (defn generate [project version])
+
+(defn generate-local [path]
+  (let [filtered-data (filter-exports (get-jsdoc-info path) path)
+        data (docs-parser/parse-jsdoc filtered-data)]
+    (println (count filtered-data))
+    (swap! local (fn [d] data))))
+
+(println "start generation")
+(time (generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/elements/Axis.js"))
+
+(println "hi!")
