@@ -234,31 +234,32 @@ a {
   border-top: 10px solid #fff;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 14px;
+  z-index: 999;
 }
-/* line 12, ../../../../src-scss/content-header.scss */
+/* line 13, ../../../../src-scss/content-header.scss */
 #main .header ul {
   padding-top: 18px;
   margin-left: 15px;
 }
-/* line 17, ../../../../src-scss/content-header.scss */
+/* line 18, ../../../../src-scss/content-header.scss */
 #main .header ul li {
   display: inline;
   color: #fff;
 }
-/* line 21, ../../../../src-scss/content-header.scss */
+/* line 22, ../../../../src-scss/content-header.scss */
 #main .header ul li a, #main .header ul li a:hover, #main .header ul li a:visited {
   color: #fff;
 }
-/* line 25, ../../../../src-scss/content-header.scss */
+/* line 26, ../../../../src-scss/content-header.scss */
 #main .header ul li span {
   color: #ccc;
   padding-left: 5px;
 }
-/* line 31, ../../../../src-scss/content-header.scss */
+/* line 32, ../../../../src-scss/content-header.scss */
 #main .header ul :last-child {
   color: #ccc;
 }
-/* line 36, ../../../../src-scss/content-header.scss */
+/* line 37, ../../../../src-scss/content-header.scss */
 #main .header .right {
   position: absolute;
   width: 318px;
@@ -266,7 +267,7 @@ a {
   right: 0px;
   top: 10px;
 }
-/* line 43, ../../../../src-scss/content-header.scss */
+/* line 44, ../../../../src-scss/content-header.scss */
 #main .header .right .version {
   line-height: 28px;
   display: inline-block;
@@ -277,7 +278,7 @@ a {
   border-radius: 4px;
   background-color: white;
 }
-/* line 54, ../../../../src-scss/content-header.scss */
+/* line 55, ../../../../src-scss/content-header.scss */
 #main .header .right .support-icon {
   display: inline-block;
   font-size: 20px;
@@ -292,7 +293,7 @@ a {
   position: relative;
   top: -1px;
 }
-/* line 69, ../../../../src-scss/content-header.scss */
+/* line 70, ../../../../src-scss/content-header.scss */
 #main .header .right .meta {
   display: inline-block;
   font-size: 12px;
@@ -302,11 +303,11 @@ a {
   right: 15px;
   top: 2px;
 }
-/* line 78, ../../../../src-scss/content-header.scss */
+/* line 79, ../../../../src-scss/content-header.scss */
 #main .header .right .meta p {
   padding-bottom: 4px;
 }
-/* line 82, ../../../../src-scss/content-header.scss */
+/* line 83, ../../../../src-scss/content-header.scss */
 #main .header .right .meta a, #main .header .right .meta a:hover, #main .header .right .meta a:visited {
   color: #fff;
 }
@@ -324,12 +325,12 @@ a {
 #content {
   position: absolute;
   left: 0;
-  right: 0;
+  right: 0px;
   bottom: 0;
   top: 60px;
   overflow-y: scroll;
   padding-left: 37px;
-  padding-right: 10px;
+  padding-right: 30px;
   padding-top: 10px;
   overflow: auto;
   color: #474747;
@@ -348,6 +349,68 @@ a {
 /* line 36, ../../../../src-scss/content.scss */
 #content p {
   margin-bottom: 10px;
+}
+/* line 40, ../../../../src-scss/content.scss */
+#content h2 {
+  font-weight: normal;
+  color: #929292;
+  font-size: 22px;
+  line-height: 26px;
+  margin: 10px 0;
+}
+/* line 48, ../../../../src-scss/content.scss */
+#content label.checkbox {
+  padding-top: 5px;
+  margin-bottom: 0;
+  min-height: 20px;
+  padding-right: 10px;
+}
+/* line 55, ../../../../src-scss/content.scss */
+#content > div {
+  margin: 0 0 20px 0;
+  padding: 0 0 20px 0;
+}
+/* line 60, ../../../../src-scss/content.scss */
+#content .line-bottom {
+  border-bottom: 1px solid #d1d1d1;
+}
+/* line 64, ../../../../src-scss/content.scss */
+#content h3 {
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: normal;
+}
+/* line 71, ../../../../src-scss/content.scss */
+#content .method .description {
+  margin: 10px 0 0 40px;
+  font-size: 14px;
+  background: #F1F1F1;
+  padding: 10px 10px 20px 10px;
+  border: 1px solid #E8E8E8;
+}
+/* line 79, ../../../../src-scss/content.scss */
+#content .method .params {
+  padding-left: 10px;
+}
+/* line 83, ../../../../src-scss/content.scss */
+#content .method i.types i:before {
+  content: ' | {';
+}
+/* line 87, ../../../../src-scss/content.scss */
+#content .method i.types i:first-child:before {
+  content: '{';
+}
+/* line 91, ../../../../src-scss/content.scss */
+#content .method i.types i:after {
+  content: '}';
+}
+/* line 95, ../../../../src-scss/content.scss */
+#content .method .return {
+  padding-left: 10px;
+}
+/* line 100, ../../../../src-scss/content.scss */
+#content h4 {
+  font-weight: bold;
 }
 
 /* line 5, ../../../../src-scss/styles.scss */

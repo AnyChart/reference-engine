@@ -9,31 +9,32 @@
   border-top: 10px solid #fff;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 14px;
+  z-index: 999;
 }
-/* line 12, ../../../../src-scss/content-header.scss */
+/* line 13, ../../../../src-scss/content-header.scss */
 #main .header ul {
   padding-top: 18px;
   margin-left: 15px;
 }
-/* line 17, ../../../../src-scss/content-header.scss */
+/* line 18, ../../../../src-scss/content-header.scss */
 #main .header ul li {
   display: inline;
   color: #fff;
 }
-/* line 21, ../../../../src-scss/content-header.scss */
+/* line 22, ../../../../src-scss/content-header.scss */
 #main .header ul li a, #main .header ul li a:hover, #main .header ul li a:visited {
   color: #fff;
 }
-/* line 25, ../../../../src-scss/content-header.scss */
+/* line 26, ../../../../src-scss/content-header.scss */
 #main .header ul li span {
   color: #ccc;
   padding-left: 5px;
 }
-/* line 31, ../../../../src-scss/content-header.scss */
+/* line 32, ../../../../src-scss/content-header.scss */
 #main .header ul :last-child {
   color: #ccc;
 }
-/* line 36, ../../../../src-scss/content-header.scss */
+/* line 37, ../../../../src-scss/content-header.scss */
 #main .header .right {
   position: absolute;
   width: 318px;
@@ -41,7 +42,7 @@
   right: 0px;
   top: 10px;
 }
-/* line 43, ../../../../src-scss/content-header.scss */
+/* line 44, ../../../../src-scss/content-header.scss */
 #main .header .right .version {
   line-height: 28px;
   display: inline-block;
@@ -52,7 +53,7 @@
   border-radius: 4px;
   background-color: white;
 }
-/* line 54, ../../../../src-scss/content-header.scss */
+/* line 55, ../../../../src-scss/content-header.scss */
 #main .header .right .support-icon {
   display: inline-block;
   font-size: 20px;
@@ -67,7 +68,7 @@
   position: relative;
   top: -1px;
 }
-/* line 69, ../../../../src-scss/content-header.scss */
+/* line 70, ../../../../src-scss/content-header.scss */
 #main .header .right .meta {
   display: inline-block;
   font-size: 12px;
@@ -77,11 +78,11 @@
   right: 15px;
   top: 2px;
 }
-/* line 78, ../../../../src-scss/content-header.scss */
+/* line 79, ../../../../src-scss/content-header.scss */
 #main .header .right .meta p {
   padding-bottom: 4px;
 }
-/* line 82, ../../../../src-scss/content-header.scss */
+/* line 83, ../../../../src-scss/content-header.scss */
 #main .header .right .meta a, #main .header .right .meta a:hover, #main .header .right .meta a:visited {
   color: #fff;
 }

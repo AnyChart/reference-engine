@@ -27,6 +27,7 @@
    :access (:access member)
    :inherit-doc? (inherit-doc? member)
    :examples (:examples member)
+   :kind (:kind member)
    :illustrations (map :text (filter #(= (:originalTitle %) "illustration")
                                      (:tags member)))})
 
@@ -64,7 +65,6 @@
     "member" (parse-typed-member member)
     (parse-general-member member)))
 
-
 (defn get-members [data class]
   (sort-by
    :name
@@ -72,6 +72,18 @@
     (map parse-member
          (filter #(= (:memberof %) (:full-name class))
                  data)))))
+
+(defn get-methods [data class]
+  (filter
+   (fn [member]
+     (= (:kind (first (:members member))) "function"))
+   (get-members data class)))
+
+(defn get-props [data class]
+  (filter
+   (fn [member]
+     (= (:kind (first (:members member))) "member"))
+   (get-members data class)))
 
 (defn get-classes [data]
   (map (fn [meta] (assoc (parse-general-member meta)
@@ -84,5 +96,6 @@
   (let [data (filter-raw raw)]
     (map (fn [class]
            (assoc class
-             :members (get-members data class)))
+             :methods (get-methods data class)
+             :properties (get-props data class)))
          (get-classes data))))

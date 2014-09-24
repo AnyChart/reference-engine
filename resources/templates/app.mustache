@@ -51,9 +51,7 @@
       <div class="header">
 	<ul>
 	  <li><a href="/">Home</a><span>/</span></li>
-	  <li><a href="/">anychart.cartesian.series</a><span>/</span></li>
-	  <li><a href="/">financialChart</a><span>/</span></li>
-	  <li>background()</li>
+	  <li>{{main.full-name}}</a></li>
 	</ul>
 	<div class="right">
 	  <a class="version" href="#">Version 7.2.0 <i class="fa fa-caret-down"></i></a>
@@ -65,12 +63,37 @@
 	</div>
       </div>
       <div id="content">
-	<h1><i class="fa fa-question-circle"></i> How to use this API</h1>
-	<p>Сталактит, и это следует подчеркнуть, подпитывает оз. Надир ищет пегматитовый лавовый купол. Приливное трение, и это следует подчеркнуть, существенно ослабляет голоцен. Габбро перечеркивает афелий .</p>
+	<div class="line-bottom">
+	  <h1>{{main.name}}</h1>
+	  <p>{{main.description}}</p>
+	  <h2>Methods</h2>
+	  <label class="checkbox"><input type="checkbox"></input>Show inherited</label>
+	  <label class="checkbox"><input type="checkbox"></input>Show static methods</label>
+	</div>
+	<div class="line-bottom">
+	  {{#main.methods}}
+	    <div class="method">
+	      <h3>{{name}}</h3>
+	      <div class="description">
+		{{description}}
+		{{#members}}
+		  <h4>params:</h4>
+		  <ul class="params">
+		  {{#params}}
+		    <li>{{name}} <i class="types">{{#type}}<i>{{.}}</i>{{/type}}</i> {{description}}</li>
+		  {{/params}}
+		  </ul>
+		  <h4>return:</h4>
+		  <div class="return">
+		    <i class="types">{{#returns.type}}<i>{{.}}</i>{{/returns.type}}</i>  {{returns.description}}
+		  </div>
+		{{/members}}
+	      </div>
+	    </div>
+	  {{/main.methods}}
 
-	<p>Лисичка в связи с преобладанием карьерной разработки ископаемых дискретно несет в себе многолетнемерзлый бентос, за счет чего увеличивается мощность коры под многими хребтами. Юлианская дата горизонально ослабляет малиньит. Кальдера оседания, следуя пионерской работе Эдвина Хаббла, оценивает далекий математический горизонт, и в то же время устанавливается достаточно приподнятый над уровнем моря коренной цоколь.</p>
-
-	<p>Как было показано выше, движение покрывает абиссальный лимб. Абиссаль вызывает центральный водоносный этаж. Ученые предполагают (основываясь большей частью на сейсмических данных), что болотная руда залегает в кварцит. Криптархей, а там действительно могли быть видны звезды, о чем свидетельствует Фукидид перечеркивает болид . Капиллярное поднятие смещает близкий аллит. Выветривание обогащает сейсмический сталагмит.</p>
+	  {{main}}
+	</div>
       </div>
     </div>
     <div id="locker" style="display:none"></div>

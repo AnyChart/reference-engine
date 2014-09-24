@@ -25,14 +25,10 @@
           nil)))))
 
 (defn get-exports [f]
-  (let [content (slurp f)
-        exports (split
-                 (str (last (re-find #"(?s)//exports[\s]*(.*)$" content)))
-                 #"\n")]
-    (filter #(not (= % nil)) (map parse-export exports))))
+  (str (last (re-find #"(?s)//exports[\s]*(.*)$" (slurp f)))))
 
 (defn generate-exports [path]
-  (apply concat (filter #(not (= % nil)) (map get-exports (get-files path)))))
+  (reduce str (map get-exports (get-files path))))
 
 (defn substring? [sub st]
  (not= (.indexOf st sub) -1))
@@ -41,11 +37,11 @@
   (clojure.string/replace (str name) #"['\"]" ""))
 
 (defn filter-exports [data path]
-  (let [exports (vec (generate-exports path))
-        exports-string (clojure.string/join " " exports)]
+  (let [exports (generate-exports path)]
     (filter (fn [meta]
-              (case (:kind meta)
-                "class" (substring? (str longname ".prototype.") exports-string)
-                "namespace" (substring? (str longname ".") exports-string)
-                true))
+              (let [longname (cleanup-name (:longname meta))]
+                (case (:kind meta)
+                  "class" (substring? (str longname ".prototype.") exports)
+                  "namespace" (substring? (str longname ".") exports)
+                  true)))
             data)))

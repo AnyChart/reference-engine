@@ -24,7 +24,10 @@
     (println (count filtered-data))
     (swap! local (fn [d] data))))
 
+(defn get-local [name]
+  (first (filter #(= (:full-name %) name) @local)))
+
 (println "start generation")
-(time (generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/elements/Axis.js"))
+(time (generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/Chart.js"))
 
 (println "hi!")
