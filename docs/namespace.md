@@ -184,6 +184,251 @@ Parsing result:
     }
 ```
 
+# Typedefs
+```
+/**
+ * Description
+ * @typedef {base-type} name
+ * @property {type} name description
+ * ...
+ *//**
+ @ignoreDoc
+ @typedef {{
+   field_name: type
+ }}
+ */
+namespace.name;
+```
+Sample:
+```
+/**
+ Text segment.
+ @includeDoc
+ @typedef {Object} acgraph.vector.TextSegmentStyle
+ @property {(string|undefined)} fontStyle Font style. More at {@link acgraph.vector.Text.FontStyle}.
+ @property {(string|undefined)} fontVariant Font variant. More at {@link acgraph.vector.Text.FontVariant}.
+ @property {(string|undefined)} fontFamily Font family. {@link http://www.w3schools.com/cssref/pr_font_font-family.asp}.
+ @property {(string|number|undefined)} fontSize Font size.
+ @property {(number|string|undefined)} fontWeight Font weight. {@link http://www.w3schools.com/cssref/pr_font_weight.asp}.
+ @property {(string|undefined)} letterSpacing Letter spacing.
+ @property {(string|undefined)} decoration Decoration. More at {@link acgraph.vector.Text.Decoration}.
+ @property {(string|goog.color.names|undefined)} color Color. {@link http://www.w3schools.com/html/html_colors.asp}.
+ @property {(number|undefined)} opacity Color opacity (0 to 1).
+ *//**
+ @ignoreDoc
+ @typedef {{
+    fontStyle: (string|undefined),
+    fontVariant: (string|undefined),
+    fontFamily: (string|undefined),
+    fontSize: (string|number|undefined),
+    fontWeight: (number|string|undefined),
+    color: (string|goog.color.names|undefined),
+    letterSpacing: (string|undefined),
+    decoration: (string|undefined),
+    opacity: (number|undefined)
+ }}
+ */
+acgraph.vector.TextSegmentStyle;
+```
+Parsing result:
+```
+    {
+        "comment": "/**\n Text segment.\n @includeDoc\n @typedef {Object} acgraph.vector.TextSegmentStyle\n @property {(string|undefined)} fontStyle Font style. More at {@link acgraph.vector.Text.FontStyle}.\n @property {(string|undefined)} fontVariant Font variant. More at {@link acgraph.vector.Text.FontVariant}.\n @property {(string|undefined)} fontFamily Font family. {@link http://www.w3schools.com/cssref/pr_font_font-family.asp}.\n @property {(string|number|undefined)} fontSize Font size.\n @property {(number|string|undefined)} fontWeight Font weight. {@link http://www.w3schools.com/cssref/pr_font_weight.asp}.\n @property {(string|undefined)} letterSpacing Letter spacing.\n @property {(string|undefined)} decoration Decoration. More at {@link acgraph.vector.Text.Decoration}.\n @property {(string|goog.color.names|undefined)} color Color. {@link http://www.w3schools.com/html/html_colors.asp}.\n @property {(number|undefined)} opacity Color opacity (0 to 1).\n @also\n @ignoreDoc\n @typedef {{\n    fontStyle: (string|undefined),\n    fontVariant: (string|undefined),\n    fontFamily: (string|undefined),\n    fontSize: (string|number|undefined),\n    fontWeight: (number|string|undefined),\n    color: (string|goog.color.names|undefined),\n    letterSpacing: (string|undefined),\n    decoration: (string|undefined),\n    opacity: (number|undefined)\n }}\n */",
+        "description": "Text segment.",
+        "tags": [
+            {
+                "originalTitle": "includeDoc",
+                "title": "includedoc",
+                "text": ""
+            },
+            {
+                "originalTitle": "ignoreDoc",
+                "title": "ignoredoc",
+                "text": ""
+            }
+        ],
+        "kind": "typedef",
+        "name": "TextSegmentStyle",
+        "type": {
+            "names": [
+                "Object"
+            ]
+        },
+        "optional": null,
+        "nullable": null,
+        "variable": null,
+        "defaultvalue": null,
+        "properties": [
+            {
+                "type": {
+                    "names": [
+                        "string",
+                        "undefined"
+                    ]
+                },
+                "optional": null,
+                "nullable": null,
+                "variable": null,
+                "defaultvalue": null,
+                "description": "Font style. More at {@link acgraph.vector.Text.FontStyle}.",
+                "name": "fontStyle"
+            },
+            {
+                "type": {
+                    "names": [
+                        "string",
+                        "undefined"
+                    ]
+                },
+                "optional": null,
+                "nullable": null,
+                "variable": null,
+                "defaultvalue": null,
+                "description": "Font variant. More at {@link acgraph.vector.Text.FontVariant}.",
+                "name": "fontVariant"
+            },
+            {
+                "type": {
+                    "names": [
+                        "string",
+                        "undefined"
+                    ]
+                },
+                "optional": null,
+                "nullable": null,
+                "variable": null,
+                "defaultvalue": null,
+                "description": "Font family. {@link http://www.w3schools.com/cssref/pr_font_font-family.asp}.",
+                "name": "fontFamily"
+            },
+            {
+                "type": {
+                    "names": [
+                        "string",
+                        "number",
+                        "undefined"
+                    ]
+                },
+                "optional": null,
+                "nullable": null,
+                "variable": null,
+                "defaultvalue": null,
+                "description": "Font size.",
+                "name": "fontSize"
+            },
+            {
+                "type": {
+                    "names": [
+                        "number",
+                        "string",
+                        "undefined"
+                    ]
+                },
+                "optional": null,
+                "nullable": null,
+                "variable": null,
+                "defaultvalue": null,
+                "description": "Font weight. {@link http://www.w3schools.com/cssref/pr_font_weight.asp}.",
+                "name": "fontWeight"
+            },
+            {
+                "type": {
+                    "names": [
+                        "string",
+                        "undefined"
+                    ]
+                },
+                "optional": null,
+                "nullable": null,
+                "variable": null,
+                "defaultvalue": null,
+                "description": "Letter spacing.",
+                "name": "letterSpacing"
+            },
+            {
+                "type": {
+                    "names": [
+                        "string",
+                        "undefined"
+                    ]
+                },
+                "optional": null,
+                "nullable": null,
+                "variable": null,
+                "defaultvalue": null,
+                "description": "Decoration. More at {@link acgraph.vector.Text.Decoration}.",
+                "name": "decoration"
+            },
+            {
+                "type": {
+                    "names": [
+                        "string",
+                        "goog.color.names",
+                        "undefined"
+                    ]
+                },
+                "optional": null,
+                "nullable": null,
+                "variable": null,
+                "defaultvalue": null,
+                "description": "Color. {@link http://www.w3schools.com/html/html_colors.asp}.",
+                "name": "color"
+            },
+            {
+                "type": {
+                    "names": [
+                        "number",
+                        "undefined"
+                    ]
+                },
+                "optional": null,
+                "nullable": null,
+                "variable": null,
+                "defaultvalue": null,
+                "description": "Color opacity (0 to 1).",
+                "name": "opacity"
+            }
+        ],
+        "memberof": "acgraph.vector",
+        "longname": "acgraph.vector.TextSegmentStyle",
+        "scope": "static"
+    },
+    {
+        "comment": "",
+        "undocumented": true,
+        "name": "TextSegmentStyle",
+        "longname": "acgraph.vector.TextSegmentStyle",
+        "kind": "member",
+        "memberof": "acgraph.vector",
+        "scope": "static"
+    },
+    {
+        "comment": "\n @ignoreDoc\n @typedef {{\n    fontStyle: (string|undefined),\n    fontVariant: (string|undefined),\n    fontFamily: (string|undefined),\n    fontSize: (string|number|undefined),\n    fontWeight: (number|string|undefined),\n    color: (string|goog.color.names|undefined),\n    letterSpacing: (string|undefined),\n    decoration: (string|undefined),\n    opacity: (number|undefined)\n }}\n */",
+        "tags": [
+            {
+                "originalTitle": "ignoreDoc",
+                "title": "ignoredoc",
+                "text": ""
+            }
+        ],
+        "kind": "typedef",
+        "type": {
+            "names": [
+                "Object"
+            ]
+        },
+        "optional": null,
+        "nullable": null,
+        "variable": null,
+        "defaultvalue": null,
+        "name": "TextSegmentStyle",
+        "longname": "acgraph.vector.TextSegmentStyle",
+        "memberof": "acgraph.vector",
+        "scope": "static"
+    }
+```
+Надо игнорировать 2 последних записи при парсинге.
+
 # Exports (at the bottom)
 ```
 	goog.exportSymbol('name', link);
