@@ -428,6 +428,11 @@ Parsing result:
     }
 ```
 Надо игнорировать 2 последних записи при парсинге.
+Так же может быть простой typedef:
+```
+/** @typedef {(string|number)} */
+goog.NumberLike;
+```
 
 # Exports (at the bottom)
 ```
