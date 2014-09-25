@@ -26,8 +26,13 @@
   {:params-signature
    (str "(" (clojure.string/join ", " (get-in raw [:meta :code :paramnames])) ")")})
 
+(defn parse-meta [raw]
+  (if (utils/inherit-doc? raw)
+    {:inherit-doc true}))
+
 (defn parse-function [raw]
   (merge (utils/parse-general-doclet raw)
          (parse-params-signature raw)
          (parse-params raw)
-         (parse-returns raw)))
+         (parse-returns raw)
+         (parse-meta raw)))

@@ -10,15 +10,16 @@
                 (= (:access raw) "inner")))))
 
 (defn filter-raw-data [raw exports]
-  (filter
-   (fn [meta]
-     (if (utils/force-include? meta)
-       true
-       (if (utils/ignore? meta)
-         false
-         (or (exports/exported? meta exports)
-              (is-normal-doclet meta)))))
-   raw))
+  (filter #(exports/check-exports % raw exports)
+          (pmap #(assoc % :longname (utils/cleanup-name (:longname %)))
+               (filter
+                (fn [meta]
+                  (if (utils/force-include? meta)
+                    true
+                    (if (utils/ignore? meta)
+                      false
+                      (is-normal-doclet meta))))
+                raw))))
 
 (defn parse [raw exports]
   (ns-parser/get-namespaces (filter-raw-data raw exports)))

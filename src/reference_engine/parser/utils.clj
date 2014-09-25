@@ -37,5 +37,16 @@
                 (criteria %))
           raw-data))
 
+(defn group-members [members]
+  (let [names (set (map :name members))]
+    (map
+     (fn [name]
+       {:name name
+        :members (filter (fn [member] (= (:name member) name)) members)})
+     names)))
+
 (defn parse-members-with-filter [member raw-data filter-criteria parser]
   (pmap parser (filter-members member raw-data filter-criteria)))
+
+(defn parse-grouped-members [member raw-data filter-criteria parser]
+  (group-members (parse-members-with-filter member raw-data filter-criteria parser)))
