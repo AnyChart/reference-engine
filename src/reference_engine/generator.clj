@@ -30,6 +30,7 @@
 (println "start generation")
 (inh/reset-cache)
 (exports/cleanup-cache)
+
 (time (generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"))
 ;;(time (generate-local "/Users/alex/Work/anychart/graphics/src/vector/vector.js"))
 (println "done!")

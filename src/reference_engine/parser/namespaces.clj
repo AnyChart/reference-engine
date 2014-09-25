@@ -39,4 +39,4 @@
 (defn get-namespaces [raw-data]
   (println "data to parse:")
   (println (count raw-data))
-  (pmap #(parse % raw-data) (filter #(= (:kind %) "namespace") raw-data)))
+  (map #(parse % raw-data) (filter #(= (:kind %) "namespace") raw-data)))
