@@ -1,0 +1,41 @@
+(ns reference-engine.parser.utils
+  (:require [clojure.string :refer [trim]]
+            [clojure.tools.logging :as log]))
+
+(defn contains-tag? [raw tag]
+  (some #(= (:originalTitle %) tag) (:tags raw)))
+
+(defn force-include? [raw]
+  (contains-tag? raw "includeDoc"))
+
+(defn ignore? [raw]
+  (contains-tag? raw "ignoreDoc"))
+
+(defn inherit-doc? [raw]
+  (contains-tag? raw "inheritDoc"))
+
+(defn get-tag [raw tag]
+  (map :value (filter #(= (:originalTitle %) tag) (:tags raw))))
+
+(defn cleanup-name [name]
+  (if name
+    (clojure.string/replace (str name) #"['\"]" "")
+    nil))
+
+(defn static? [raw]
+  (= (:scope raw) "static"))
+
+(defn parse-general-doclet [member]
+  {:name (:name member)
+   :description (:description member)
+   :full-name (cleanup-name (:longname member))
+   :examples (:examples member)
+   :illustrations (get-tag member "illustration")})
+
+(defn filter-members [member raw-data criteria]
+  (filter #(and (= (:memberof %) (:full-name member))
+                (criteria %))
+          raw-data))
+
+(defn parse-members-with-filter [member raw-data filter-criteria parser]
+  (pmap parser (filter-members member raw-data filter-criteria)))

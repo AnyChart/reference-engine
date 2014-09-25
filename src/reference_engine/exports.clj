@@ -1,6 +1,7 @@
 (ns reference-engine.exports
   (:require [clojure.java.io :refer [file]]
-            [clojure.string :refer [split] :as str]))
+            [clojure.string :refer [split] :as str]
+            [reference-engine.parser.utils :as utils]))
 
 (defn get-extension [f]
   (last (split (.getName f) #"\.")))
@@ -33,15 +34,10 @@
 (defn substring? [sub st]
  (not= (.indexOf st sub) -1))
 
-(defn cleanup-name [name]
-  (clojure.string/replace (str name) #"['\"]" ""))
-
-(defn filter-exports [data path]
-  (let [exports (generate-exports path)]
-    (filter (fn [meta]
-              (let [longname (cleanup-name (:longname meta))]
-                (case (:kind meta)
-                  "class" (substring? (str longname ".prototype.") exports)
-                  "namespace" (substring? (str longname ".") exports)
-                  true)))
-            data)))
+(defn exported? [meta exports]
+  (let [longname (utils/cleanup-name (:longname meta))
+        name (utils/cleanup-name (:name meta))
+        memberof (utils/cleanup-name (:memberof meta))]
+    (or (substring? longname exports)
+        (substring? (str memberof "['" name "']") exports)
+        (substring? (str memberof "." name) exports))))

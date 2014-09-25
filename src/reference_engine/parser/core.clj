@@ -1,0 +1,24 @@
+(ns reference-engine.parser.core
+  (:require [reference-engine.parser.utils :as utils]
+            [reference-engine.parser.namespaces :as ns-parser]
+            [reference-engine.exports :as exports]))
+
+(defn is-normal-doclet [raw]
+  (and (:name raw)
+       (not (or (= (:access raw) "private")
+                (= (:access raw) "protected")
+                (= (:access raw) "inner")))))
+
+(defn filter-raw-data [raw exports]
+  (filter
+   (fn [meta]
+     (if (utils/force-include? meta)
+       true
+       (if (utils/ignore? meta)
+         false
+         (or (exports/exported? meta exports)
+              (is-normal-doclet meta)))))
+   raw))
+
+(defn parse [raw exports]
+  (ns-parser/get-namespaces (filter-raw-data raw exports)))

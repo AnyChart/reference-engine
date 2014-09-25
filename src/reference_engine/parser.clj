@@ -4,22 +4,20 @@
   (filter (fn [info] (not (= (:access info) "private")))
           info))
 
+(defn contains-tag? [tag]
+  true)
+
 (defn ignore-doc? [raw]
-  (some #(= (:originalTitle %) "ignoreDoc") (:tags raw)))
+  (contains-tag? "ignoreDoc"))
 
 (defn inherit-doc? [raw]
-  (some #(= (:originalTitle %) "inheritDoc") (:tags raw)))
+  (contains-tag? "inheritDoc"))
 
 (defn filter-raw [raw]
   (filter (fn [info] (not (or (= (:access info) "private")
                               (= (:access info) "protected")
                               (= (:scope info) "inner")
                               (ignore-doc? info)))) raw))
-
-(defn ignore-circular [obj]
-  (if (= obj "<CircularRef>")
-    nil
-    obj))
 
 (defn parse-general-member [member]
   {:name (:name member)
@@ -30,6 +28,9 @@
    :kind (:kind member)
    :illustrations (map :text (filter #(= (:originalTitle %) "illustration")
                                      (:tags member)))})
+
+(defn parse-namespace [member]
+  (parse-general-member member))
 
 (defn parse-typed-member [member]
   (assoc (parse-general-member member)
@@ -92,10 +93,12 @@
                     :extends (:augments meta)))
        (filter #(= (:kind %) "class") data)))
 
+(defn get-namespaces [data]
+  (map parse-namespace (filter #(= (:kind %) "namespace") data)))
+
 (defn parse-jsdoc [raw]
   (let [data (filter-raw raw)]
-    (map (fn [class]
-           (assoc class
-             :methods (get-methods data class)
-             :properties (get-props data class)))
-         (get-classes data))))
+    (map (fn [ns]
+           (assoc ns
+             :constants nil))
+         (get-namespaces data))))

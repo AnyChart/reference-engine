@@ -945,3 +945,11 @@ Parse results:
         "scope": "instance"
     },
 ```
+
+# Method
+Sample:
+```
+```
+
+# Exports
+Все проверяется в exports!
