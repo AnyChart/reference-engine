@@ -33,10 +33,12 @@
                                    parse-field))
 
 (defn parse-class [raw raw-data]
-  (let [cdef (utils/parse-general-doclet raw)]
-    (assoc cdef
-      :constructor (parse-function raw)
-      :inherits-names (:augments raw)
-      :methods (parse-methods cdef raw-data)
-      :consts (parse-consts cdef raw-data)
-      :fields (parse-fields cdef raw-data))))
+  (let [cdef (utils/parse-general-doclet raw)
+        res (assoc cdef
+              :kind "class"
+              :constructor (parse-function raw)
+              :inherits-names (:augments raw)
+              :methods (parse-methods cdef raw-data)
+              :consts (parse-consts cdef raw-data)
+              :fields (parse-fields cdef raw-data))]
+    (utils/cache-entry res)))

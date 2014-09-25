@@ -16,6 +16,9 @@
   {:type (get-in raw [:type :names])})
 
 (defn parse-typedef [raw]
-  (merge (utils/parse-general-doclet raw)
-         (parse-typedef-base-types raw)
-         (parse-typedef-properties raw)))
+  (let [res 
+        (merge (utils/parse-general-doclet raw)
+               (parse-typedef-base-types raw)
+               (parse-typedef-properties raw)
+               {:kind "typedef"})]
+    (utils/cache-entry res)))

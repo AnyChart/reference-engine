@@ -3,7 +3,7 @@
 (def cache (atom {}))
 (def name-cache (atom {}))
 
-(defn reset-cache []
+(defn cleanup-cache []
   (reset! cache {})
   (reset! name-cache {}))
 

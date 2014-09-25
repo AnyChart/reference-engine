@@ -1,7 +1,13 @@
 (ns reference-engine.parser.core
   (:require [reference-engine.parser.utils :as utils]
             [reference-engine.parser.namespaces :as ns-parser]
+            [reference-engine.parser.inheritance :as inheritance]
             [reference-engine.exports :as exports]))
+
+(defn cleanup []
+  (utils/cleanup-cache)
+  (inheritance/cleanup-cache)
+  (exports/cleanup-cache))
 
 (defn is-normal-doclet [raw]
   (and (:name raw)

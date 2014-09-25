@@ -2,15 +2,13 @@
   (:require [clojure.java.shell :refer [sh with-sh-dir]]
             [cheshire.core :refer [parse-string generate-string]]
             [reference-engine.parser.core :as jsdoc-parser]
-            [reference-engine.parser.utils :refer [counter]]
-            [reference-engine.db :refer [wcar*]]
+            [reference-engine.parser.utils :as utils]
             [reference-engine.exports :refer [generate-exports] :as exports]
-            [taoensso.carmine :as car]
             [clojure.java.io :refer [file]]
             [reference-engine.parser.inheritance :as inh]
             [clojure.tools.logging :as log]))
 
-(def local (atom {}))
+(def namespaces (atom {}))
 
 (defn get-jsdoc-recursive [path]
   (parse-string
@@ -41,15 +39,14 @@
 (defn generate-local [path]
   (let [data (jsdoc-parser/parse (get-jsdoc-info path)
                                  (generate-exports path))]
-    (println (count data))
-    (swap! local (fn [d] data))))
+    (println "result:" (count data))
+    (reset! namespaces data)))
 
 (defn get-local [name]
-  (first (filter #(= (:full-name %) name) @local)))
+  (utils/cached-entry name))
 
 (println "start generation")
-(inh/reset-cache)
-(exports/cleanup-cache)
+(jsdoc-parser/cleanup)
 
 (time (generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"))
 ;;(time (generate-local "/Users/alex/Work/anychart/graphics/src/vector/vector.js"))

@@ -23,13 +23,15 @@
 
 (defn do-parse-enum [raw]
   {:type (get-in raw [:type :names])
-   :fields (map parse-enum-field (:properties raw))})
+   :fields (map parse-enum-field (:properties raw))
+   :kind "enum"})
 
 (defn parse-enum [enum raw-data]
-  (merge
-   (if (and (is-link-to-another? enum)
-            (utils/inherit-doc? enum)
-            (enum-by-name (linked-enum-name enum)))
-    (do-parse-enum (enum-by-name (linked-enum-name enum)))
-    (do-parse-enum enum))
-   (utils/parse-general-doclet enum)))
+  (let [res (merge
+             (if (and (is-link-to-another? enum)
+                      (utils/inherit-doc? enum)
+                      (enum-by-name (linked-enum-name enum)))
+               (do-parse-enum (enum-by-name (linked-enum-name enum)))
+               (do-parse-enum enum))
+             (utils/parse-general-doclet enum))]
+    (utils/cache-entry res)))

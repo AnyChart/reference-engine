@@ -2,7 +2,17 @@
   (:require [clojure.string :refer [trim]]
             [clojure.tools.logging :as log]))
 
-(def counter (atom 0))
+(def top-level-entries (atom {}))
+
+(defn cache-entry [entry]
+  (swap! top-level-entries assoc (:full-name entry) entry)
+  entry)
+
+(defn cached-entry [name]
+  (get @top-level-entries name))
+
+(defn cleanup-cache []
+  (reset! top-level-entries {}))
 
 (defn contains-tag? [raw tag]
   (some #(= (:originalTitle %) tag) (:tags raw)))

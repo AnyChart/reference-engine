@@ -18,4 +18,5 @@
 (defn parse-constant [raw]
   (merge (parse-general-doclet raw)
          (parse-constant-tag (first (get-tag raw "define")))
-         {:value (get-constant-value raw)}))
+         {:value (get-constant-value raw)
+          :kind "constant"}))
