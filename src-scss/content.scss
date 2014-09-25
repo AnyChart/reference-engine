@@ -57,22 +57,38 @@
 	padding: 0 0 20px 0;
     }
 
+    div.head {
+	margin: 0;
+	padding: 0;
+    }
+
     .line-bottom {
 	border-bottom: 1px solid #d1d1d1;
     }
 
+    h2 {
+	border-bottom: 1px solid #d1d1d1;
+	padding-bottom: 5px;
+    }
+
     h3 {
-	font-size: 20px;
+	font-size: 18px;
 	line-height: 20px;
 	font-weight: normal;
     }
 
-    .method {
+    strong {
+	font-weight: bold;
+    }
+
+    .reg {
+	margin-bottom: 10px;
+	
 	.description {
 	    margin: 10px 0 0 40px;
 	    font-size: 14px;
 	    background: #F1F1F1;
-	    padding: 10px 10px 20px 10px;
+	    padding: 10px 10px 10px 10px;
 	    border: 1px solid #E8E8E8;
 	}
 

@@ -60,30 +60,55 @@
 	</div>
       </div>
       <div id="content">
-	<div class="line-bottom">
+	<div class="head">
 	  <h1>{{main.full-name}}</h1>
 	  <p>{{main.description}}</p>
-	  <h2>Methods</h2>
-	  <label class="checkbox"><input type="checkbox"></input>Show inherited</label>
-	  <label class="checkbox"><input type="checkbox"></input>Show static methods</label>
 	</div>
 	<div class="line-bottom">
+	  {{?main.constants}}
+	  <h2>Constants</h2>
+	  {{/main.constants}}
+	  {{#main.constants}}
+	  <div class="reg">
+	    <h3>{{name}}</h3>
+	    <div class="description">
+	      {{description}}
+	    </div>
+	  </div>
+	  {{/main.constants}}
+	  {{?main.functions}}
+	  <h2>Methods</h2>
+	  {{/main.functions}}
+	  {{#main.functions}}
+	    <div class="reg">
+	      <h3>{{name}}</h3>
+	      <div class="description">
+		{{#members}}
+		<strong>{{name}}{{params-signature}}</strong><br />
+		{{description}}
+		<h4>params:</h4>
+		<ul class="params">
+		  {{#params}}
+		  <li>{{name}}<i class="types">{{#type}}<i>{{.}}</i>{{/type}}</i> {{description}}</li>
+		  {{/params}}
+		</ul>
+		<h4>return:</h4>
+		<div class="return">
+		  <i class="types">{{#returns.type}}<i>{{.}}</i>{{/returns.type}}</i>  {{returns.description}}
+		</div>
+		{{/#members}}
+	      </div>
+	      
+	    </div>
+	  {{/main.functions}}
+	  
 	  {{#main.methods}}
 	    <div class="method">
 	      <h3>{{name}}</h3>
 	      <div class="description">
 		{{description}}
 		{{#members}}
-		  <h4>params:</h4>
-		  <ul class="params">
-		  {{#params}}
-		    <li>{{name}} <i class="types">{{#type}}<i>{{.}}</i>{{/type}}</i> {{description}}</li>
-		  {{/params}}
-		  </ul>
-		  <h4>return:</h4>
-		  <div class="return">
-		    <i class="types">{{#returns.type}}<i>{{.}}</i>{{/returns.type}}</i>  {{returns.description}}
-		  </div>
+		  
 		{{/members}}
 	      </div>
 	    </div>

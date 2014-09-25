@@ -371,44 +371,62 @@ a {
   padding: 0 0 20px 0;
 }
 /* line 60, ../../../../src-scss/content.scss */
+#content div.head {
+  margin: 0;
+  padding: 0;
+}
+/* line 65, ../../../../src-scss/content.scss */
 #content .line-bottom {
   border-bottom: 1px solid #d1d1d1;
 }
-/* line 64, ../../../../src-scss/content.scss */
+/* line 69, ../../../../src-scss/content.scss */
+#content h2 {
+  border-bottom: 1px solid #d1d1d1;
+  padding-bottom: 5px;
+}
+/* line 74, ../../../../src-scss/content.scss */
 #content h3 {
-  font-size: 20px;
+  font-size: 18px;
   line-height: 20px;
   font-weight: normal;
 }
-/* line 71, ../../../../src-scss/content.scss */
-#content .method .description {
+/* line 80, ../../../../src-scss/content.scss */
+#content strong {
+  font-weight: bold;
+}
+/* line 84, ../../../../src-scss/content.scss */
+#content .reg {
+  margin-bottom: 10px;
+}
+/* line 87, ../../../../src-scss/content.scss */
+#content .reg .description {
   margin: 10px 0 0 40px;
   font-size: 14px;
   background: #F1F1F1;
-  padding: 10px 10px 20px 10px;
+  padding: 10px 10px 10px 10px;
   border: 1px solid #E8E8E8;
 }
-/* line 79, ../../../../src-scss/content.scss */
-#content .method .params {
+/* line 95, ../../../../src-scss/content.scss */
+#content .reg .params {
   padding-left: 10px;
 }
-/* line 83, ../../../../src-scss/content.scss */
-#content .method i.types i:before {
+/* line 99, ../../../../src-scss/content.scss */
+#content .reg i.types i:before {
   content: ' | {';
 }
-/* line 87, ../../../../src-scss/content.scss */
-#content .method i.types i:first-child:before {
+/* line 103, ../../../../src-scss/content.scss */
+#content .reg i.types i:first-child:before {
   content: '{';
 }
-/* line 91, ../../../../src-scss/content.scss */
-#content .method i.types i:after {
+/* line 107, ../../../../src-scss/content.scss */
+#content .reg i.types i:after {
   content: '}';
 }
-/* line 95, ../../../../src-scss/content.scss */
-#content .method .return {
+/* line 111, ../../../../src-scss/content.scss */
+#content .reg .return {
   padding-left: 10px;
 }
-/* line 100, ../../../../src-scss/content.scss */
+/* line 116, ../../../../src-scss/content.scss */
 #content h4 {
   font-weight: bold;
 }
