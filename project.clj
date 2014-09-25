@@ -9,4 +9,5 @@
                  [ring/ring-json "0.3.1"]
                  [ring/ring-core "1.3.1"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
-             :uberjar {:jvm-opts []}})
+             :uberjar {:jvm-opts []}}
+  :main reference-engine.handler)

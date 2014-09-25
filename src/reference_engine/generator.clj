@@ -17,19 +17,15 @@
          true)))
 
 (defn generate-local [path]
-  (doall 
-   (let [data (jsdoc-parser/parse (get-jsdoc-info path)
-                                  (generate-exports path))]
-     (println (count data))
-     (swap! local (fn [d] data)))))
+  (let [data (jsdoc-parser/parse (get-jsdoc-info path)
+                                 (generate-exports path))]
+    (println (count data))
+    (swap! local (fn [d] data))))
 
 (defn get-local [name]
   (first (filter #(= (:full-name %) name) @local)))
 
 (println "start generation")
 (time (generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"))
-
 ;;(time (generate-local "/Users/alex/Work/anychart/graphics/src/vector/vector.js"))
-
-
-(println "hi!")
+(println "done!")

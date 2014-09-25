@@ -37,4 +37,4 @@
                                                 #(parse-class % raw-data)))))
 
 (defn get-namespaces [raw-data]
-  (map #(parse % raw-data) (filter #(= (:kind %) "namespace") raw-data)))
+  (pmap #(parse % raw-data) (filter #(= (:kind %) "namespace") raw-data)))

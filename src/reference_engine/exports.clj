@@ -8,9 +8,9 @@
   (last (split (.getName f) #"\.")))
 
 (defn get-files [path]
-  (pmap #(.getAbsolutePath %)
-        (filter #(= (get-extension %) "js")
-                (file-seq (file path)))))
+  (map #(.getAbsolutePath %)
+       (filter #(= (get-extension %) "js")
+               (file-seq (file path)))))
 
 (defn get-exports [f]
   (str (last (re-find #"(?s)//exports[\s]*(.*)$" (slurp f)))))
@@ -27,7 +27,7 @@
       (substring? (str memberof "['" name "']") exports)
       (substring? (str memberof "." name) exports)))
 
-(def exported-by-name? (memoize exported-by-name?))
+;(def exported-by-name? (memoize exported-by-name?))
 
 (defn exported? [meta exports]
      (let [longname (:longname meta)

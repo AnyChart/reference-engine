@@ -12,14 +12,14 @@
 (defn filter-raw-data [raw exports]
   (filter #(exports/check-exports % raw exports)
           (pmap #(assoc % :longname (utils/cleanup-name (:longname %)))
-               (filter
-                (fn [meta]
-                  (if (utils/force-include? meta)
-                    true
-                    (if (utils/ignore? meta)
-                      false
-                      (is-normal-doclet meta))))
-                raw))))
+                (filter
+                 (fn [meta]
+                   (if (utils/force-include? meta)
+                     true
+                     (if (utils/ignore? meta)
+                       false
+                       (is-normal-doclet meta))))
+                 raw))))
 
 (defn parse [raw exports]
   (ns-parser/get-namespaces (filter-raw-data raw exports)))

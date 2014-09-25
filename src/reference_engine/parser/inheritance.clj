@@ -3,7 +3,7 @@
 (defn get-obj-by-longname [name raw-data]
   (first (filter #(= (:longname %) name) raw-data)))
 
-(defn get-all-parents [raw-obj raw-data]
+(defn get-all-parents-inner [raw-obj raw-data]
   (if (= (:kind raw-obj) "class")
     (apply concat
            (map
@@ -12,7 +12,7 @@
                 (concat [parent-obj] (get-all-parents parent-obj raw-data))))
             (:augments raw-obj)))))
 
-(def get-all-parents (memoize get-all-parents))
+(def get-all-parents (memoize get-all-parents-inner))
 
 (defn get-class [raw-obj raw-data]
   (if (= (:kind raw-obj) "class")
