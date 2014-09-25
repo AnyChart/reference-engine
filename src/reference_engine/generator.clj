@@ -45,6 +45,9 @@
 (defn get-local [name]
   (utils/cached-entry name))
 
+(defn get-namespaces []
+  @namespaces)
+
 (println "start generation")
 (jsdoc-parser/cleanup)
 

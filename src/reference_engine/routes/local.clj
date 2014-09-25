@@ -6,11 +6,13 @@
 
 (defn show-page [request]
   (let [path (get-in request [:params :page])
+        namespaces (map :full-name (docs-gen/get-namespaces))
         info (docs-gen/get-local path)]
     (if info
       (render-resource "templates/app.mustache" {:version "7"
                                                  :debug true
-                                                 :main info})
+                                                 :main info
+                                                 :namespaces namespaces})
       (route/not-found "Source file not found"))))
  
 (defroutes local-routes

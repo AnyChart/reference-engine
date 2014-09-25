@@ -73,11 +73,11 @@ a {
   margin-bottom: 10px;
   margin-left: 30px;
 }
-/* line 12, ../../../../src-scss/sidebar-tree.scss */
-#sidebar .tree ul li {
+/* line 13, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree li {
   line-height: 20px;
   margin-top: 3px;
-  margin-bottom: 3px;
+  margin-bottom: px;
 }
 /* line 19, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a {

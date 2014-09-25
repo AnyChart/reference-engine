@@ -33,12 +33,9 @@
 	</div>
       </div>
       <ul class="tree">
-	<li><a href="#"><i class="fa fa-chevron-down"></i>anychart</a>
-	  <ul>
-	    <li><a href="#"><i class="fa fa-chevron-right"></i>Base</a></li>
-	    <li><a href="#"><i class="fa fa-chevron-right"></i>Chart</a></li>
-	  </ul>
-	</li>
+	{{#namespaces}}
+	  <li><a href="/d/{{.}}"><i class="fa fa-chevron-right"></i>{{.}}</a></li>
+	{{/namespaces}}
       </ul>
       <div class="footer">
 	<a href="https://twitter.com/anychart" target="_blank"><i class="fa fa-twitter-square"></i></a>
@@ -64,7 +61,7 @@
       </div>
       <div id="content">
 	<div class="line-bottom">
-	  <h1>{{main.name}}</h1>
+	  <h1>{{main.full-name}}</h1>
 	  <p>{{main.description}}</p>
 	  <h2>Methods</h2>
 	  <label class="checkbox"><input type="checkbox"></input>Show inherited</label>
