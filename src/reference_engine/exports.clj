@@ -12,6 +12,18 @@
        (filter #(= (get-extension %) "js")
                (file-seq (file path)))))
 
+(def cache (atom {}))
+
+(defn cleanup-cache []
+  (reset! cache {}))
+
+(defn cache-info [longname res]
+  (swap! cache assoc longname res)
+  res)
+
+(defn cached-info [longname]
+  (get @cache longname))
+
 (defn get-exports [f]
   (str (last (re-find #"(?s)//exports[\s]*(.*)$" (slurp f)))))
 
@@ -23,17 +35,19 @@
  (not= (.indexOf st sub) -1))
 
 (defn exported-by-name? [longname name memberof exports]
-  (or (substring? longname exports)
-      (substring? (str memberof "['" name "']") exports)
-      (substring? (str memberof "." name) exports)))
+  (if (contains? @cache longname)
+    (cached-info longname)
+    (cache-info longname
+              (or (substring? longname exports)
+                  (substring? (str memberof "['" name "']") exports)
+                  (substring? (str memberof "." name) exports)))))
 
 ;(def exported-by-name? (memoize exported-by-name?))
 
 (defn exported? [meta exports]
-     (let [longname (:longname meta)
-           name (:name meta)
-           memberof (:memberof meta)]
-       (exported-by-name? longname name memberof exports)))
+  (exported-by-name? (:longname meta)
+                     (:name meta)
+                     (:memberof meta) exports))
 
 (defn check-exports [obj raw-data exports]
   (if (exported? obj exports)

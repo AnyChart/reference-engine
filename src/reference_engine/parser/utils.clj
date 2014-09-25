@@ -2,6 +2,8 @@
   (:require [clojure.string :refer [trim]]
             [clojure.tools.logging :as log]))
 
+(def counter (atom 0))
+
 (defn contains-tag? [raw tag]
   (some #(= (:originalTitle %) tag) (:tags raw)))
 
@@ -26,6 +28,7 @@
   (= (:scope raw) "static"))
 
 (defn parse-general-doclet [member]
+  (swap! counter inc)
   {:name (:name member)
    :description (:description member)
    :full-name (cleanup-name (:longname member))

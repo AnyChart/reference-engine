@@ -2,10 +2,12 @@
   (:require [clojure.java.shell :refer [sh with-sh-dir]]
             [cheshire.core :refer [parse-string generate-string]]
             [reference-engine.parser.core :as jsdoc-parser]
+            [reference-engine.parser.utils :refer [counter]]
             [reference-engine.db :refer [wcar*]]
-            [reference-engine.exports :refer [generate-exports]]
+            [reference-engine.exports :refer [generate-exports] :as exports]
             [taoensso.carmine :as car]
             [clojure.java.io :refer [file]]
+            [reference-engine.parser.inheritance :as inh]
             [clojure.tools.logging :as log]))
 
 (def local (atom {}))
@@ -26,6 +28,8 @@
   (first (filter #(= (:full-name %) name) @local)))
 
 (println "start generation")
+(inh/reset-cache)
+(exports/cleanup-cache)
 (time (generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"))
 ;;(time (generate-local "/Users/alex/Work/anychart/graphics/src/vector/vector.js"))
 (println "done!")
