@@ -15,30 +15,34 @@
     {:inherits-names (:augments raw)}))
 
 (defn parse-methods [cdef raw-data]
-  (utils/parse-grouped-members cdef
-                               raw-data
-                               function?
-                               parse-function))
+  (utils/parse-grouped-members-to-obj cdef
+                                      raw-data
+                                      function?
+                                      parse-function
+                                      :methods))
 
 (defn parse-consts [cdef raw-data]
-  (utils/parse-members-with-filter cdef
-                                   raw-data
-                                   constant?
-                                   parse-constant))
+  (utils/parse-members-with-filter-to-obj cdef
+                                          raw-data
+                                          constant?
+                                          parse-constant
+                                          :consts))
 
 (defn parse-fields [cdef raw-data]
-  (utils/parse-members-with-filter cdef
-                                   raw-data
-                                   field?
-                                   parse-field))
+  (utils/parse-members-with-filter-to-obj cdef
+                                          raw-data
+                                          field?
+                                          parse-field
+                                          :fields))
 
 (defn parse-class [raw raw-data]
   (let [cdef (utils/parse-general-doclet raw)
-        res (assoc cdef
-              :kind "class"
-              :constructor (parse-function raw)
-              :inherits-names (:augments raw)
-              :methods (parse-methods cdef raw-data)
-              :consts (parse-consts cdef raw-data)
-              :fields (parse-fields cdef raw-data))]
+        res (merge (assoc cdef
+                     :kind "class"
+                     :constructor (parse-function raw)
+                     :inherits-names (:augments raw)
+                     :has-inherits-names (> (count (:augments raw)) 0))
+                   (parse-methods cdef raw-data)
+                   (parse-consts cdef raw-data)
+                   (parse-fields cdef raw-data))]
     (utils/cache-entry res)))

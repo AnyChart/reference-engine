@@ -38,12 +38,14 @@
   (= (:scope raw) "static"))
 
 (defn parse-general-doclet [member]
-  (swap! counter inc)
   {:name (:name member)
    :description (:description member)
    :full-name (cleanup-name (:longname member))
    :examples (:examples member)
-   :illustrations (get-tag member "illustration")})
+   :illustrations (get-tag member "illustration")
+   :file (str (get-in member [:meta :path])
+              "/"
+              (get-in member [:meta :filename]))})
 
 (defn filter-members [member raw-data criteria]
   (filter #(and (= (:memberof %) (:full-name member))
@@ -54,12 +56,26 @@
   (let [names (set (map :name members))]
     (map
      (fn [name]
-       {:name name
-        :members (filter (fn [member] (= (:name member) name)) members)})
+       (let [actual (filter (fn [member] (= (:name member) name)) members)]
+         {:name name
+          :params-signature (:params-signature (first actual))
+          :members actual}))
      names)))
 
 (defn parse-members-with-filter [member raw-data filter-criteria parser]
   (map parser (filter-members member raw-data filter-criteria)))
 
+(defn parse-members-with-filter-to-obj [member raw-data filter-criteria parser fname]
+  (let [res (parse-members-with-filter member raw-data filter-criteria parser)
+        has-flag-name (keyword (str "has-" (name fname)))]
+    {fname res
+     has-flag-name (> (count res) 0)}))
+
 (defn parse-grouped-members [member raw-data filter-criteria parser]
   (group-members (parse-members-with-filter member raw-data filter-criteria parser)))
+
+(defn parse-grouped-members-to-obj [member raw-data filter-criteria parser fname]
+  (let [res (parse-grouped-members member raw-data filter-criteria parser)
+        has-flag-name (keyword (str "has-" (name fname)))]
+    {fname res
+     has-flag-name (> (count res) 0)}))

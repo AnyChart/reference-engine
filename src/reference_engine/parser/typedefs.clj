@@ -10,7 +10,9 @@
    :type (get-in raw [:type :names])})
 
 (defn parse-typedef-properties [raw]
-  {:properties (map parse-typedef-property (:properties raw))})
+  (let [props (map parse-typedef-property (:properties raw))]
+    {:properties props
+     :has-properties (> (count props) 0)}))
 
 (defn parse-typedef-base-types [raw]
   {:type (get-in raw [:type :names])})

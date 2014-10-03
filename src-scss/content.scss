@@ -33,6 +33,16 @@
 	margin: 20px 0;
     }
 
+    a span {
+	cursor: pointer;
+	color: #428bca;
+	font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+    }
+
+    a:hover span {
+	text-decoration: underline;
+    }
+
     p {
 	margin-bottom: 10px;
     }
@@ -60,6 +70,16 @@
     div.head {
 	margin: 0;
 	padding: 0;
+
+	h3 {
+	    margin-bottom: 5px;
+	}
+
+	ul {
+	    margin-bottom: 20px;
+	    margin-left: 20px;
+	    list-style-type: disc;
+	}
     }
 
     .line-bottom {

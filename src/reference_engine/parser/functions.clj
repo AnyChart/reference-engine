@@ -15,12 +15,14 @@
     :name (:name raw-param)))
 
 (defn parse-params [raw]
-  (if (:params raw)
-    {:params (map parse-param (:params raw))}))
+  (let [res (map parse-param (:params raw))]
+    {:params res
+     :has-params (> (count res) 0)}))
 
 (defn parse-returns [raw]
-  (if (:returns raw)
-    {:returns (map parse-return (:returns raw))}))
+  (let [res (map parse-return (:returns raw))]
+    {:returns res
+     :has-returns (> (count res) 0)}))
 
 (defn parse-params-signature [raw]
   {:params-signature

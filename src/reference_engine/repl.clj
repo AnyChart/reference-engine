@@ -1,6 +1,7 @@
 (ns reference-engine.repl
   (:require [org.httpkit.server :as server]
-            [reference-engine.handler :refer [app]]))
+            [reference-engine.handler :refer [app]]
+            [clojure.repl :refer [doc]]))
 
 (defonce server (atom nil))
 

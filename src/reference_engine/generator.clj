@@ -51,6 +51,7 @@
 (println "start generation")
 (jsdoc-parser/cleanup)
 
-(time (generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"))
+;;(time (generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"))
+(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src")
 ;;(time (generate-local "/Users/alex/Work/anychart/graphics/src/vector/vector.js"))
 (println "done!")

@@ -22,9 +22,11 @@
    :value (:defaultvalue raw)})
 
 (defn do-parse-enum [raw]
-  {:type (get-in raw [:type :names])
-   :fields (map parse-enum-field (:properties raw))
-   :kind "enum"})
+  (let [fields (map parse-enum-field (:properties raw))]
+    {:type (get-in raw [:type :names])
+     :fields fields
+     :has-fields (> (count fields) 0)
+     :kind "enum"}))
 
 (defn parse-enum [enum raw-data]
   (let [res (merge

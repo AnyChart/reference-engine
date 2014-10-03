@@ -7,35 +7,58 @@
             [reference-engine.parser.classes :refer [js-class? parse-class]]
             [reference-engine.parser.fields :refer [field? parse-field]]))
 
+(defn get-constants [ns-def raw-data]
+  (utils/parse-members-with-filter-to-obj ns-def
+                                          raw-data
+                                          constant?
+                                          parse-constant
+                                          :constants))
+
+(defn get-fields [ns-def raw-data]
+  (utils/parse-members-with-filter-to-obj ns-def
+                                          raw-data
+                                          field?
+                                          parse-field
+                                          :fields))
+
+(defn get-typedefs [ns-def raw-data]
+  (utils/parse-members-with-filter-to-obj ns-def
+                                          raw-data
+                                          typedef?
+                                          parse-typedef
+                                          :typedefs))
+
+(defn get-functions [ns-def raw-data]
+  (utils/parse-grouped-members-to-obj ns-def
+                                      raw-data
+                                      #(and (function? %)
+                                            (utils/static? %))
+                                      parse-function
+                                      :functions))
+
+(defn get-enums [ns-def raw-data]
+  (utils/parse-members-with-filter-to-obj ns-def
+                                          raw-data
+                                          enum?
+                                          #(parse-enum % raw-data)
+                                          :enums))
+
+(defn get-classes [ns-def raw-data]
+  (utils/parse-members-with-filter-to-obj ns-def
+                                          raw-data
+                                          js-class?
+                                          #(parse-class % raw-data)
+                                          :classes))
+
 (defn parse [raw raw-data]
   (let [ns-def (utils/parse-general-doclet raw)
-        full-ns-def (assoc ns-def
-                      :kind "namespace"
-                      :constants (utils/parse-members-with-filter ns-def
-                                                                  raw-data
-                                                                  constant?
-                                                                  parse-constant)
-                      :fields (utils/parse-members-with-filter ns-def
-                                                               raw-data
-                                                               field?
-                                                               parse-field)
-                      :typedefs (utils/parse-members-with-filter ns-def
-                                                                 raw-data
-                                                                 typedef?
-                                                                 parse-typedef)
-                      :functions (utils/parse-grouped-members ns-def
-                                                              raw-data
-                                                              #(and (function? %)
-                                                                    (utils/static? %))
-                                                              parse-function)
-                      :enums (utils/parse-members-with-filter ns-def
-                                                              raw-data
-                                                              enum?
-                                                              #(parse-enum % raw-data))
-                      :classes (utils/parse-members-with-filter ns-def
-                                                                raw-data
-                                                                js-class?
-                                                                #(parse-class % raw-data)))]
+        full-ns-def (merge (assoc ns-def :kind "namespace")
+                           (get-constants ns-def raw-data)
+                           (get-fields ns-def raw-data)
+                           (get-typedefs ns-def raw-data)
+                           (get-functions ns-def raw-data)
+                           (get-enums ns-def raw-data)
+                           (get-classes ns-def raw-data))]
     (utils/cache-entry full-ns-def)))
 
 (defn get-namespaces [raw-data]
