@@ -19,11 +19,13 @@
 (defn parse-enum-field [raw]
   {:name (:name raw)
    :description (:description raw)
+   :has-description (not (clojure.string/blank? (:description raw)))
    :value (:defaultvalue raw)})
 
 (defn do-parse-enum [raw]
   (let [fields (map parse-enum-field (:properties raw))]
     {:type (get-in raw [:type :names])
+     :has-type (> (count (get-in raw [:type :names])) 0)
      :fields fields
      :has-fields (> (count fields) 0)
      :kind "enum"}))

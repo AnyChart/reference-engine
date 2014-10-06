@@ -17,9 +17,19 @@
 (defn parse-methods [cdef raw-data]
   (utils/parse-grouped-members-to-obj cdef
                                       raw-data
-                                      function?
+                                      #(and (function? %)
+                                            (utils/scope-instance? %))
                                       parse-function
                                       :methods))
+
+(defn parse-static-methods [cdef raw-data]
+  (utils/parse-grouped-members-to-obj cdef
+                                      raw-data
+                                      #(and (function? %)
+                                            (utils/static? %))
+                                      parse-function
+                                      :static-methods))
+
 
 (defn parse-consts [cdef raw-data]
   (utils/parse-members-with-filter-to-obj cdef
@@ -31,9 +41,18 @@
 (defn parse-fields [cdef raw-data]
   (utils/parse-members-with-filter-to-obj cdef
                                           raw-data
-                                          field?
+                                          #(and (field? %)
+                                                (utils/scope-instance? %))
                                           parse-field
                                           :fields))
+
+(defn parse-static-fields [cdef raw-data]
+  (utils/parse-members-with-filter-to-obj cdef
+                                          raw-data
+                                          #(and (field? %)
+                                                (utils/static? %))
+                                          parse-field
+                                          :static-fields))
 
 (defn parse-class [raw raw-data]
   (let [cdef (utils/parse-general-doclet raw)
@@ -43,6 +62,8 @@
                      :inherits-names (:augments raw)
                      :has-inherits-names (> (count (:augments raw)) 0))
                    (parse-methods cdef raw-data)
+                   (parse-static-methods cdef raw-data)
                    (parse-consts cdef raw-data)
-                   (parse-fields cdef raw-data))]
+                   (parse-fields cdef raw-data)
+                   (parse-static-fields cdef raw-data))]
     (utils/cache-entry res)))

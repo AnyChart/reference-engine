@@ -60,8 +60,16 @@
 	</div>
       </div>
       <div id="content">
-	{{>ns-part}}
-	{{main}}
+        {{#kind.namespace}}
+	  {{>ns-part}}
+        {{/kind.namespace}}
+        {{#kind.enum}}
+          {{>enum-part}}
+        {{/kind.enum}}
+        {{#kind.class}}
+          {{>class-part}}
+        {{/kind.class}}
+	{{!main}}
 	</div>
       </div>
     </div>

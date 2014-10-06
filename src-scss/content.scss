@@ -133,6 +133,21 @@
 	}
     }
 
+    .enum-fields {
+	border-left: 1px solid #d1d1d1;
+	margin: 10px 10px 10px 30px;
+	font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+
+	li {
+	    line-height: 20px;
+	    padding-left: 10px;
+	}
+	
+	span {
+	    color: #7E7E7E;
+	}
+    }
+
     h4 {
 	font-weight: bold;
     }

@@ -447,6 +447,21 @@ a {
   padding-left: 10px;
 }
 /* line 136, ../../../../src-scss/content.scss */
+#content .enum-fields {
+  border-left: 1px solid #d1d1d1;
+  margin: 10px 10px 10px 30px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+}
+/* line 141, ../../../../src-scss/content.scss */
+#content .enum-fields li {
+  line-height: 20px;
+  padding-left: 10px;
+}
+/* line 146, ../../../../src-scss/content.scss */
+#content .enum-fields span {
+  color: #7E7E7E;
+}
+/* line 151, ../../../../src-scss/content.scss */
 #content h4 {
   font-weight: bold;
 }

@@ -37,6 +37,9 @@
 (defn static? [raw]
   (= (:scope raw) "static"))
 
+(defn scope-instance? [raw]
+  (= (:scope raw) "instance"))
+
 (defn parse-general-doclet [member]
   {:name (:name member)
    :description (:description member)

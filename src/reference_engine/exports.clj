@@ -38,9 +38,10 @@
   (if (contains? @cache longname)
     (cached-info longname)
     (cache-info longname
-              (or (substring? longname exports)
-                  (substring? (str memberof "['" name "']") exports)
-                  (substring? (str memberof "." name) exports)))))
+              (or (substring? (str longname ";") exports)
+                  (substring? (str "'" longname "'") exports)
+                  (substring? (str longname ".") exports)
+                  (substring? (str memberof ".prototype." name ";") exports)))))
 
 ;(def exported-by-name? (memoize exported-by-name?))
 

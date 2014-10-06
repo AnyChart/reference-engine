@@ -1,0 +1,24 @@
+<div class="head">
+  <h1>{{main.full-name}} class</h1>
+  <p>{{&main.description}}</p>
+</div>
+
+<div class="line-bottom">
+  {{#main.has-constants}}
+    <h2>Constants</h2>
+    {{#main.constants}}
+      <div class="reg">
+        <h3>{{name}}</h3>
+        <div class="description">
+	  {{&description}}
+        </div>
+      </div>
+    {{/main.constants}}
+  {{/main.has-constants}}
+  {{#main.has-functions}}
+    <h2>Functions</h2>
+    {{#main.functions}}
+      {{>fn-part}}
+    {{/main.functions}}
+  {{/main.has-fuctions}}
+</div>
