@@ -1,6 +1,6 @@
 (ns reference-engine.repl
   (:require [org.httpkit.server :as server]
-            [reference-engine.handler :refer [app]]
+            [reference-engine.handler :as handler]
             [clojure.repl :refer [doc]]))
 
 (defonce server (atom nil))
@@ -12,7 +12,8 @@
 
 (defn start []
   (stop)
-  (reset! server (server/run-server #'app {:port 9191})))
+  (handler/init-for-repl)
+  (reset! server (server/run-server #'handler/app {:port 9191})))
 
 (defn restart []
   (stop)

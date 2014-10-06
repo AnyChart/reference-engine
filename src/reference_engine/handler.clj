@@ -22,11 +22,6 @@
   "Resolves the path to the current running jar file."
   (-> :keyword class (.. getProtectionDomain getCodeSource getLocation getPath)))
 
-(defn extract-jsdoc []
-  (println "extracting jsdoc from " (str running-jar))
-  (sh "jar" "xf" (str running-jar "jsdoc")))
-
-
 (defn process-changes [root-path op filename]
   (generator/update-jsdoc root-path filename))
 
@@ -37,7 +32,6 @@
           (process-changes path op filename))))))
 
 (defn start-local [path]
-  (extract-jsdoc)
   (println "generating local documentation:" path)
   (generator/init-local path)
   (watch-for-changes path)
@@ -45,7 +39,13 @@
   (println "starting server http://localhost:9191/")  
   (server/run-server #'app {:port 9191}))
 
+(defn init-for-repl []
+  (let [path "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"]
+    (generator/init-local path)))
+
 (defn -main [mode & args]
   (if (= mode "server")
     (start-server)
     (start-local mode)))
+
+;;
