@@ -8,6 +8,9 @@
 
 ;; redis keys
 
+(defn redis-key-projects []
+  (str "ref_projects"))
+
 (defn redis-key-project-versions [project]
   (str "ref_project_" project "_version"))
 
@@ -21,24 +24,19 @@
   (str "ref_project_" project "_version_" version "_namespaces"))
 
 ;; projects
-(def projects (atom []))
 
-(defn all []
-  @projects)
+(defn get-all []
+  (wcar* (car/smembers (redis-key-projects))))
 
 (defn get-projects-from-fs []
   (map #(.getName %) (filter #(and (.isDirectory %)
                               (not (.isHidden %)))
                         (.listFiles (file config/data-path)))))
 
-(defn init []
-  (reset! projects (get-projects-from-fs)))
-
 (defn exists? [project]
-  (some #{project} @projects))
+  (= 1 (wcar* (car/sismember (redis-key-projects) project))))
 
-(defn default-project []
-  (first @projects))
+(defn default-project [] "acdvf")
 
 ;; versions
 
@@ -74,7 +72,17 @@
 ;; updating
 
 (defn generate-version-docs [project version]
-  (log/info "generating docs for" project "version" version))
+  (log/info "generating docs for" project "version" version)
+  (let [version-path (str config/data-path
+                          project
+                          "/versions/"
+                          version)]
+    (git/checkout-to (str config/data-path
+                          project
+                          "/repo/")
+                     version
+                     version-path)
+    ))
 
 (defn cleanup-version [project version]
   (wcar* (car/del (redis-key-namespaces project version)))
@@ -82,20 +90,26 @@
        (wcar* (car/keys (redis-key-entry-mask project version)))))
 
 (defn cleanup-project [project]
+  (git/run-sh "rm" "-rf" (str config/data-path
+                              project
+                              "/versions/*"))
   (map #(cleanup-version project %) (versions project))
   (wcar* (car/del (redis-key-project-versions project))))
 
 (defn update-project [project]
   (log/info "updating" project)
   (cleanup-project project)
+  (git/update (str config/data-path project "/repo/"))
   (let [versions (get-versions-from-repo project)]
     (log/info "versions:" versions)
-    (pmap #(generate-version-docs project %) versions)))
+    (doall (pmap #(generate-version-docs project %) versions))))
 
 (defn update []
-  (log/info "updating projects:")
-  (doall (map update-project @projects))
-  (log/info "all projects updated"))
+  (let [p (get-projects-from-fs)]
+    (wcar* (car/del (redis-key-projects)))
+    (map #(wcar* (car/sadd (redis-key-projects) %)) p)
+    (log/info "updating projects:")
+    (doall (map update-project p))
+    (log/info "all projects updated")))
 
-(init)
 (update)

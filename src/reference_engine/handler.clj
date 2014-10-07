@@ -3,7 +3,6 @@
             [reference-engine.routes.local :refer [local-routes]]
             [reference-engine.generator :as generator]
             [compojure.core :refer [routes]]
-            [async-watch.core :refer [changes-in cancel-changes]]
             [clojure.java.io :refer [file]]
             [clojure.java.shell :refer [sh]]
             [clojure.core.async :refer [go <!]]
