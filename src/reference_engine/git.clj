@@ -1,6 +1,7 @@
 (ns reference-engine.git
   (:require [clojure.java.shell :refer [sh with-sh-env with-sh-dir]]
             [clojure.java.io :refer [file writer]]
+            [clojure.tools.logging :as log]
             [clojure.string :refer [split trim]]
             [reference-engine.config :refer [git-ssh]]))
 

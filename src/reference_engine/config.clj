@@ -9,3 +9,5 @@
                  "/apps/api"))
 
 (def show-branches (not (System/getProperty "prod")))
+
+(def data-path (str base-path "/data/"))
