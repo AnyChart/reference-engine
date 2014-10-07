@@ -1,5 +1,5 @@
-# Run local docs server on OSX:
-## Requirenments
+# Run local api reference server on OSX:
+## Requirements
 * Java >= 1.7
   ```
   java -version
