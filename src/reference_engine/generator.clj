@@ -43,24 +43,6 @@
                                   ) folders))))]
     (reset! initial-json jsdoc-info)))
 
-(defn update-jsdoc [root-path path]
-  (println "updaing" path)
-  (reset! local-updating true)
-  (jsdoc-parser/cleanup)
-  (let [jsdoc-info
-        (remove #(= (str (get-in % [:meta :path])
-                         (get-in % [:meta :filename]))
-                    path) @initial-json)
-        new-info (get-jsdoc-recursive path)
-        new-exports (generate-exports root-path)
-        merged-jsdoc (concat jsdoc-info new-info)
-        data (jsdoc-parser/parse merged-jsdoc
-                                 new-exports)]
-    (reset! initial-json merged-jsdoc)
-    (reset! namespaces data))
-  (println "done")
-  (reset! local-updating false))
-
 (defn generate-local [path]
   (let [data (jsdoc-parser/parse (get-jsdoc-info path)
                                  (generate-exports path))]

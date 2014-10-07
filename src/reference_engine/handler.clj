@@ -18,25 +18,18 @@
 
 (defn start-server [])
 
-(def running-jar 
-  "Resolves the path to the current running jar file."
-  (-> :keyword class (.. getProtectionDomain getCodeSource getLocation getPath)))
-
-(defn process-changes [root-path op filename]
-  (generator/update-jsdoc root-path filename))
-
-(defn watch-for-changes [path]
-  (let [changes (changes-in [path])]
-    (go (while true
-        (let [[op filename] (<! changes)]
-          (process-changes path op filename))))))
-
 (defn start-local [path]
   (println "generating local documentation:" path)
   (generator/init-local path)
-  (watch-for-changes path)
   (sh "open" (str "http://localhost:9191/" (generator/get-first-namespace)))
-  (println "starting server http://localhost:9191/")  
+  (println "starting server http://localhost:9191/")
+  (println "############################")
+  (println "Press r<RET> to rebuild docs")
+  (go (while true
+        (let [c (read-line)]
+          (if (= (clojure.string/lower-case c) "r")
+            (generator/init-local path)
+            (println "Unknown command: " c)))))
   (server/run-server #'app {:port 9191}))
 
 (defn init-for-repl []
@@ -47,5 +40,3 @@
   (if (= mode "server")
     (start-server)
     (start-local mode)))
-
-;;
