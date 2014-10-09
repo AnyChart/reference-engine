@@ -13,6 +13,7 @@ before_install:
  - npm install -g grunt-cli
 install:
  - npm install
+ - gem install compass
 before_script:
  - grunt dev
 script: lein2 uberjar
