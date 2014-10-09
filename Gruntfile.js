@@ -105,6 +105,12 @@ module.exports = function(grunt) {
 				   'react:build',
 				   'closureDepsWriter:dev',
 				   'concurrent:watch']);
+
+    grunt.registerTask('dev', ['bower:install',
+			       'compass:dev',
+			       'react:build',
+			       'closureDepsWriter:dev']);
+    
     grunt.registerTask('release', ['bower:install',
 				   'compass:release',
 				   'react:build',
