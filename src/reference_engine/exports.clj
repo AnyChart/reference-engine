@@ -12,16 +12,17 @@
        (filter #(= (get-extension %) "js")
                (file-seq (file path)))))
 
-(def cache (atom {}))
+(defn create-cache []
+  (atom {}))
 
-(defn cleanup-cache []
+(defn cleanup-cache [cache]
   (reset! cache {}))
 
-(defn cache-info [longname res]
+(defn cache-info [longname res cache]
   (swap! cache assoc longname res)
   res)
 
-(defn cached-info [longname]
+(defn cached-info [longname cache]
   (get @cache longname))
 
 (defn get-exports [f]
@@ -34,31 +35,35 @@
 (defn substring? [sub st]
  (not= (.indexOf st sub) -1))
 
-(defn exported-by-name? [longname name memberof exports]
+(defn exported-by-name? [longname name memberof exports cache]
   (if (contains? @cache longname)
-    (cached-info longname)
+    (cached-info longname cache)
     (cache-info longname
-              (or (substring? (str longname ";") exports)
-                  (substring? (str "'" longname "'") exports)
-                  (substring? (str longname ".") exports)
-                  (substring? (str memberof ".prototype." name ";") exports)))))
+                (or (substring? (str longname ";") exports)
+                    (substring? (str "'" longname "'") exports)
+                    (substring? (str longname ".") exports)
+                    (substring? (str memberof ".prototype." name ";") exports))
+                cache)))
 
 ;(def exported-by-name? (memoize exported-by-name?))
 
-(defn exported? [meta exports]
+(defn exported? [meta exports cache]
   (exported-by-name? (:longname meta)
                      (:name meta)
-                     (:memberof meta) exports))
+                     (:memberof meta)
+                     exports
+                     cache))
 
-(defn check-exports [obj raw-data exports]
-  (if (exported? obj exports)
+(defn check-exports [obj raw-data exports cache inheritance-cache]
+  (if (exported? obj exports cache)
     true
     (if (= (:kind obj) "function")
       (let [name (:name obj)
-            container (inheritance/get-class obj raw-data)
-            parents (inheritance/get-all-parents container raw-data)]
+            container (inheritance/get-class obj raw-data inheritance-cache)
+            parents (inheritance/get-all-parents container raw-data inheritance-cache)]
         (some (fn [parent-obj]
                 (exported-by-name? (str (:longname parent-obj) "." name)
                                    name
                                    (:longname parent-obj)
-                                   exports)) parents)))))
+                                   exports
+                                   cache)) parents)))))

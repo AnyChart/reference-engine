@@ -11,3 +11,5 @@
 (def show-branches (not (System/getProperty "prod")))
 
 (def data-path (str base-path "/data/"))
+
+(def is-local (atom false))

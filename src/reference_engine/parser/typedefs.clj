@@ -17,10 +17,10 @@
 (defn parse-typedef-base-types [raw]
   {:type (get-in raw [:type :names])})
 
-(defn parse-typedef [raw]
+(defn parse-typedef [raw top-level-callback]
   (let [res 
         (merge (utils/parse-general-doclet raw)
                (parse-typedef-base-types raw)
                (parse-typedef-properties raw)
                {:kind "typedef"})]
-    (utils/cache-entry res)))
+    (top-level-callback res)))

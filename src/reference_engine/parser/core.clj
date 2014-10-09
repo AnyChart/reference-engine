@@ -4,10 +4,14 @@
             [reference-engine.parser.inheritance :as inheritance]
             [reference-engine.exports :as exports]))
 
+(defn create-cache []
+  {:inhertantce (inheritance/create-cache)
+   :exports (exports/create-cache)})
+
 (defn cleanup []
-  (utils/cleanup-cache)
-  (inheritance/cleanup-cache)
-  (exports/cleanup-cache))
+  (utils/cleanup-cache))
+  ;;(inheritance/cleanup-cache (:inhertantce cache))
+  ;;(exports/cleanup-cache (:exports cache)))
 
 (defn is-normal-doclet [raw]
   (and (:name raw)
@@ -15,8 +19,8 @@
                 (= (:access raw) "protected")
                 (= (:access raw) "inner")))))
 
-(defn filter-raw-data [raw exports]
-  (filter #(exports/check-exports % raw exports)
+(defn filter-raw-data [raw exports cache]
+  (filter #(exports/check-exports % raw exports (:exports cache) (:inhertantce cache))
           (pmap #(assoc % :longname (utils/cleanup-name (:longname %)))
                 (filter
                  (fn [meta]
@@ -27,5 +31,6 @@
                        (is-normal-doclet meta))))
                  raw))))
 
-(defn parse [raw exports]
-  (ns-parser/get-namespaces (filter-raw-data raw exports)))
+(defn parse [raw exports cache top-level-callback]
+  (println "raw data:" (count raw))
+  (ns-parser/get-namespaces (filter-raw-data raw exports cache) top-level-callback))

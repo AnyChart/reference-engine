@@ -42,6 +42,7 @@
   ;; or work in main thread, terrible terrible bug
   (let [res (future (str (run-git path "fetch")))]
     @res
+    (run-git path "fetch" "-p")
     (unlock path)
     "Updated"))
 
@@ -49,6 +50,9 @@
   (if (locked? path)
     "Repository locked"
     (do-update path)))
+
+(defn get-hash [path]
+  (run-git path "rev-parse" "HEAD"))
 
 (defn create-data-folder [path]
   (run-sh "mkdir" "-p" (str (.getParent (file path)) "/data")))
@@ -66,7 +70,6 @@
                (split (run-git path "branch" "-r") #"\n"))))
 
 (defn checkout-to [path branch-or-tag target]
-  (println "checkout" path branch-or-tag target)
   (run-sh "rm" "-rf" target)
   (run-sh "cp" "-R" path target)
   (run-git target "checkout" branch-or-tag)

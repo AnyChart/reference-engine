@@ -1,6 +1,8 @@
 (ns reference-engine.parser.utils
   (:require [clojure.string :refer [trim]]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [reference-engine.config :refer [is-local]]
+            [reference-engine.db :refer (wcar*)]))
 
 (def top-level-entries (atom {}))
 

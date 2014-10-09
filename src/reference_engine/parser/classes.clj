@@ -54,7 +54,7 @@
                                           parse-field
                                           :static-fields))
 
-(defn parse-class [raw raw-data]
+(defn parse-class [raw raw-data top-level-callback]
   (let [cdef (utils/parse-general-doclet raw)
         res (merge (assoc cdef
                      :kind "class"
@@ -66,4 +66,4 @@
                    (parse-consts cdef raw-data)
                    (parse-fields cdef raw-data)
                    (parse-static-fields cdef raw-data))]
-    (utils/cache-entry res)))
+    (top-level-callback res)))

@@ -8,9 +8,8 @@
             [reference-engine.parser.inheritance :as inh]
             [clojure.tools.logging :as log]))
 
-(def namespaces (atom {}))
+(def local-namespaces (atom {}))
 (def local-updating (atom false))
-(def initial-json (atom {}))
 
 (def running-jar 
   "Resolves the path to the current running jar file."
@@ -28,35 +27,42 @@
 
 (defn get-jsdoc-info [path]
   (println "running jsdoc -x")
-  (let [jsdoc-info 
-        (let [folders (conj
-                       (filter #(and (.isDirectory %)
-                                     (not (.isHidden %)))
-                               (vec (.listFiles (file path))))
-                       (file path))]
-          (apply concat (doall (pmap
-                                (fn [folder]
-                                  (let [p (.getAbsolutePath folder)]
-                                    (if (= p path)
-                                      (get-jsdoc p)
-                                      (get-jsdoc-recursive p)))
-                                  ) folders))))]
-    (reset! initial-json jsdoc-info)))
+  (let [folders (conj
+                 (filter #(and (.isDirectory %)
+                               (not (.isHidden %)))
+                         (vec (.listFiles (file path))))
+                 (file path))
+        jsdocs (doall (pmap
+                       (fn [folder]
+                         (let [p (.getAbsolutePath folder)]
+                               (if (= p path)
+                                 (get-jsdoc p)
+                                 (get-jsdoc-recursive p))))
+                       folders))]
+    (apply concat jsdocs)))
 
 (defn generate-local [path]
   (let [data (jsdoc-parser/parse (get-jsdoc-info path)
-                                 (generate-exports path))]
+                                 (generate-exports path)
+                                 (jsdoc-parser/create-cache)
+                                 utils/cache-entry)]
     (println "namespaces found:" (count data))
-    (reset! namespaces data)))
+    (reset! local-namespaces data)))
+
+(defn generate-for-server [path ns-callback top-level-callback]
+  (ns-callback (jsdoc-parser/parse (get-jsdoc-info path)
+                                   (generate-exports path)
+                                   (jsdoc-parser/create-cache)
+                                   top-level-callback)))
 
 (defn get-local [name]
   (utils/cached-entry name))
 
 (defn get-first-namespace []
-  (:full-name (first @namespaces)))
+  (:full-name (first @local-namespaces)))
 
 (defn get-namespaces []
-  @namespaces)
+  @local-namespaces)
 
 (defn init-local [path]
   (reset! local-updating true)

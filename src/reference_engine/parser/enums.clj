@@ -30,7 +30,7 @@
      :has-fields (> (count fields) 0)
      :kind "enum"}))
 
-(defn parse-enum [enum raw-data]
+(defn parse-enum [enum raw-data top-level-callback]
   (let [res (merge
              (if (and (is-link-to-another? enum)
                       (utils/inherit-doc? enum)
@@ -38,4 +38,4 @@
                (do-parse-enum (enum-by-name (linked-enum-name enum)))
                (do-parse-enum enum))
              (utils/parse-general-doclet enum))]
-    (utils/cache-entry res)))
+    (top-level-callback res)))

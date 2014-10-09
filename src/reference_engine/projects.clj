@@ -4,7 +4,8 @@
             [clojure.tools.logging :as log]
             [taoensso.carmine :as car]
             [reference-engine.db :refer (wcar*)]
-            [reference-engine.git :as git]))
+            [reference-engine.git :as git]
+            [reference-engine.generator :as docs-generator]))
 
 ;; redis keys
 
@@ -13,6 +14,9 @@
 
 (defn redis-key-project-versions [project]
   (str "ref_project_" project "_version"))
+
+(defn redis-key-project-version-hash [project version]
+  (str "ref_project_" project "_hash_version_" version))
 
 (defn redis-key-entry [project version name]
   (str "ref_project_" project "_version_" version "_" name))
@@ -71,6 +75,19 @@
 
 ;; updating
 
+(defn do-generate-docs [project version path]
+  (docs-generator/generate-for-server
+   (str path "/src")
+   (fn [namespaces]
+     (log/info "namespaces: " (map :full-name namespaces))
+     (map #(wcar* (car/sadd (redis-key-namespaces project version)
+                            (:full-name %))) namespaces))
+   (fn [entry]
+     (log/info "entry:" (:full-name entry))
+     (wcar* (car/set (redis-key-entry project version (:full-name entry))
+                     entry))
+     entry)))
+
 (defn generate-version-docs [project version]
   (log/info "generating docs for" project "version" version)
   (let [version-path (str config/data-path
@@ -82,7 +99,13 @@
                           "/repo/")
                      version
                      version-path)
-    ))
+    (let [hash (git/get-hash version-path)
+          saved-hash (wcar* (car/get (redis-key-project-version-hash project version)))]
+      (if (not (= hash saved-hash))
+        (do
+          (do-generate-docs project version version-path)
+          (wcar* (car/set (redis-key-project-version-hash project version) hash)))
+        (log/info version "already built, ignoring")))))
 
 (defn cleanup-version [project version]
   (wcar* (car/del (redis-key-namespaces project version)))
@@ -112,4 +135,4 @@
     (doall (map update-project p))
     (log/info "all projects updated")))
 
-(update)
+;;(update)
