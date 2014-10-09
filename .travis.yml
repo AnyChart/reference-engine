@@ -1,0 +1,22 @@
+language: clojure
+lein: lein2
+script: lein2 uberjar
+branches:
+  only:
+  - master
+  - develop
+  - staging
+services:
+  - redis-server
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then export SERVER="api.anychart.com"; fi
+  - if [ "$TRAVIS_BRANCH" == "staging" ]; then export SERVER="176.9.224.5"; fi
+  - if [ "$TRAVIS_BRANCH" == "develop" ]; then export SERVER="176.9.224.4"; fi
+  - echo "Deploying to $SERVER"
+  - cp .travis/known_hosts ~/.ssh/known_hosts
+  - chmod 600 ~/.ssh/known_hosts
+  - chmod 600 .travis/id_rsa
+  - chmod 600 .travis/id_rsa.pub
+  - ssh-add .travis/id_rsa
+  - scp -i .travis/id_rsa target/reference-engine-0.1-standalone.jar root@$SERVER:/apps/api/reference-engine-0.1-standalone.jar
+  - ssh root@$SERVER "supervisorctl restart playground"
