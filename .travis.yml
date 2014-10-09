@@ -19,4 +19,4 @@ after_success:
   - chmod 600 .travis/id_rsa.pub
   - ssh-add .travis/id_rsa
   - scp -i .travis/id_rsa target/reference-engine-0.1-standalone.jar root@$SERVER:/apps/api/reference-engine-0.1-standalone.jar
-  - ssh root@$SERVER "supervisorctl restart playground"
+  - ssh root@$SERVER "supervisorctl restart api-reference"
