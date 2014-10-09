@@ -58,7 +58,7 @@
   (route/resources "/")
   (GET "/_plz_" [] update-all)
   (GET "/:project/_plz_" [] update-project)
-  (POST "/:project/_plz_" [] update-project)
+  (POST "/:project/_plzz_" [] update-project)
   (GET "/:project/:version" [] show-default-ns)
   (GET "/:project/:version/" [] show-default-ns)
   (GET "/:project/:version/:page" [] show-page))
