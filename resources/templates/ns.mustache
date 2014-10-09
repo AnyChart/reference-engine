@@ -4,19 +4,19 @@
   {{#main.has-classes}}
     <h3>Classes:</h3>
     <ul>
-      {{#main.classes}}<li><a href="/{{full-name}}"><span>{{full-name}}</span></a></li>{{/main.classes}}
+      {{#main.classes}}<li><a href="{{#link}}{{full-name}}{{/link}}"><span>{{full-name}}</span></a></li>{{/main.classes}}
     </ul>
   {{/main.has-classes}}
   {{#main.has-typedefs}}
     <h3>Typedefs:</h3>
     <ul>
-      {{#main.typedefs}}<li><a href="/{{full-name}}"><span>{{full-name}}</span></a></li>{{/main.typedefs}}
+      {{#main.typedefs}}<li><a href="{{#link}}{{full-name}}{{/link}}"><span>{{full-name}}</span></a></li>{{/main.typedefs}}
     </ul>
   {{/main.has-typedefs}}
   {{#main.has-enums}}
     <h3>Enums:</h3>
     <ul>
-      {{#main.enums}}<li><a href="/{{full-name}}"><span>{{full-name}}</span></a></li>{{/main.enums}}
+      {{#main.enums}}<li><a href="{{#link}}{{full-name}}{{/link}}"><span>{{full-name}}</span></a></li>{{/main.enums}}
     </ul>
   {{/main.has-enums}}
 </div>

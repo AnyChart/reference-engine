@@ -1,5 +1,6 @@
 (ns reference-engine.handler
   (:require [reference-engine.routes.index :refer [index-routes]]
+            [reference-engine.routes.server :refer [server-routes]]
             [reference-engine.routes.local :refer [local-routes]]
             [reference-engine.generator :as generator]
             [compojure.core :refer [routes]]
@@ -10,12 +11,19 @@
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]])
   (:gen-class))
 
-(def app (wrap-json-body
-          (wrap-json-response
-           (routes local-routes index-routes))
-          {:keywords? true}))
+(def local-app (wrap-json-body
+                (wrap-json-response
+                 (routes local-routes index-routes))
+                {:keywords? true}))
 
-(defn start-server [])
+(def server-app (wrap-json-body
+                 (wrap-json-response
+                  (routes server-routes))
+                 {:keywords? true}))
+
+(defn start-server []
+  (println "starting server http://localhost:9197/")
+  (server/run-server #'server-app {:port 9197}))
 
 (defn start-local [path]
   (println "generating local documentation:" path)
@@ -29,7 +37,7 @@
           (if (= (clojure.string/lower-case c) "r")
             (generator/init-local path)
             (println "Unknown command: " c)))))
-  (server/run-server #'app {:port 9191}))
+  (server/run-server #'local-app {:port 9191}))
 
 (defn init-for-repl []
   (let [path "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"]

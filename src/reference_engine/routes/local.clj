@@ -24,7 +24,7 @@
                           :fn-part (slurp (resource "templates/fn.mustache"))
                           :enum-part (slurp (resource "templates/enum.mustache"))
                           :class-part (slurp (resource "templates/class.mustache"))})
-        (route/not-found "Source file not found")))))
+        (route/not-found "not found o!o")))))
  
 (defroutes local-routes
   (GET "/:page" [] show-page))

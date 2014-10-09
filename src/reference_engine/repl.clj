@@ -13,7 +13,7 @@
 (defn start []
   (stop)
   (handler/init-for-repl)
-  (reset! server (server/run-server #'handler/app {:port 9191})))
+  (reset! server (server/run-server #'handler/local-app {:port 9191})))
 
 (defn restart []
   (stop)

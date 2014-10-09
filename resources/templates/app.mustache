@@ -34,7 +34,7 @@
       </div>
       <ul class="tree">
 	{{#namespaces}}
-	  <li><a href="/{{.}}"><i class="fa fa-chevron-right"></i>{{.}}</a></li>
+	  <li><a href="{{#link}}{{.}}{{/link}}"><i class="fa fa-chevron-right"></i>{{.}}</a></li>
 	{{/namespaces}}
       </ul>
       <div class="footer">
@@ -51,7 +51,7 @@
 	  <li>{{main.full-name}}</a></li>
 	</ul>
 	<div class="right">
-	  <a class="version" href="#">Version 7.2.0 <i class="fa fa-caret-down"></i></a>
+	  <a class="version" href="#">Version {{v}} <i class="fa fa-caret-down"></i></a>
 	  <div class="support-icon"><i class="fa fa-question-circle"></i></div>
 	  <div class="meta">
 	    <p>Still have questions?</p>

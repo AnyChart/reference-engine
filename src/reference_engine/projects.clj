@@ -73,6 +73,9 @@
 (defn has-entry [project version name]
   (= 1 (wcar* (car/exists (redis-key-entry project version name)))))
 
+(defn get-entry [project version name]
+  (wcar* (car/get (redis-key-entry project version name))))
+
 ;; updating
 
 (defn do-generate-docs [project version path]
@@ -80,8 +83,8 @@
    (str path "/src")
    (fn [namespaces]
      (log/info "namespaces: " (map :full-name namespaces))
-     (map #(wcar* (car/sadd (redis-key-namespaces project version)
-                            (:full-name %))) namespaces))
+     (wcar* (apply car/sadd (redis-key-namespaces project version)
+                            (map :full-name namespaces))))
    (fn [entry]
      (log/info "entry:" (:full-name entry))
      (wcar* (car/set (redis-key-entry project version (:full-name entry))
@@ -125,12 +128,13 @@
   (git/update (str config/data-path project "/repo/"))
   (let [versions (get-versions-from-repo project)]
     (log/info "versions:" versions)
+    (wcar* (apply car/sadd (redis-key-project-versions project) versions))
     (doall (pmap #(generate-version-docs project %) versions))))
 
 (defn update []
   (let [p (get-projects-from-fs)]
     (wcar* (car/del (redis-key-projects)))
-    (map #(wcar* (car/sadd (redis-key-projects) %)) p)
+    (wcar* (apply car/sadd (redis-key-projects) p))
     (log/info "updating projects:")
     (doall (map update-project p))
     (log/info "all projects updated")))
