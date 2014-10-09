@@ -50,8 +50,13 @@
         "Updated!")
       (route/not-found "not found"))))
 
+(defn update-all [request]
+  (prj/update)
+  "Updated!")
+
 (defroutes server-routes
   (route/resources "/")
+  (GET "/_plz_" [] update-all)
   (GET "/:project/_plz_" [] update-project)
   (POST "/:project/_plz_" [] update-project)
   (GET "/:project/:version" [] show-default-ns)
