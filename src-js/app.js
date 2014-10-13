@@ -21,7 +21,7 @@ app.resize = function(e) {
     if (x < 229) x = 229;
     var maxWidth = goog.dom.getViewportSize().width;
     if (x > maxWidth - 500) x = maxWidth - 500;
-    
+     
     goog.style.setStyle(
 	goog.dom.getElement("sidebar"),
 	"width",
@@ -63,5 +63,5 @@ app.initVersionToggle = function() {
 app.init = function() {
     app.initResize();
     app.initVersionToggle();
-    //goog.events.listen(document, goog.events.EventType.CLICK, app.hideDialogs);
+    goog.events.listen(document, goog.events.EventType.CLICK, app.hideDialogs);
 };
