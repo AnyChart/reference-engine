@@ -46,12 +46,17 @@
     </div>
     <div id="main">
       <div class="header">
-	<ul>
+	<ul class="path">
 	  <li><a href="/">Home</a><span>/</span></li>
 	  <li>{{main.full-name}}</a></li>
 	</ul>
 	<div class="right">
-	  <a class="version" href="#">Version {{v}} <i class="fa fa-caret-down"></i></a>
+	  <a class="version" id="version-toggler" href="#">Version {{v}} <i class="fa fa-caret-down"></i></a>
+          <ul id="version-toggle" style="display:none">
+            {{#versions}}
+              <li><a href="/{{project}}/{{.}}/{{default-ns}}">Version {{.}}</a></li>
+            {{/versions}}
+          </ul>
 	  <div class="support-icon"><i class="fa fa-question-circle"></i></div>
 	  <div class="meta">
 	    <p>Still have questions?</p>
@@ -72,7 +77,7 @@
 	{{!main}}
 	</div>
       </div>
-    </div>
+      </div>
     <div id="locker" style="display:none"></div>
     <script>
       app.init();

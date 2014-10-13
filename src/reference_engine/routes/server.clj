@@ -19,6 +19,9 @@
                           :v version
                           :debug true
                           :main info
+                          :versions (sort (prj/versions project))
+                          :project project
+                          :default-ns (prj/namespace-default project version)
                           :kind {:namespace (= (:kind info) "namespace")
                                  :enum (= (:kind info) "enum")
                                  :class (= (:kind info) "class")}

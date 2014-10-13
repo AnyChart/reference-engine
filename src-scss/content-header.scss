@@ -8,9 +8,8 @@
     border-top: 10px solid #fff;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 14px;
-    z-index: 999;
-    
-    ul {
+     
+    ul.path {
 
 	padding-top: 18px;
 	margin-left: 15px;
@@ -36,7 +35,6 @@
 
     .right {
 	position: absolute;
-	width: 318px;
 	height: 30px;
 	right: 0px;
 	top: 10px;
@@ -50,6 +48,23 @@
 	    padding-right: 12px;
 	    border-radius: 4px;
 	    background-color: white;
+	    position: absolute;
+	    right: 200px;
+	    white-space: pre;
+
+	    &:hover {
+		border: 1px solid #A7A7A7;
+		background: #E8E8E8;
+	    }
+
+	    &:focus {
+		border: 1px solid #A7A7A7;
+		background: #E8E8E8;
+	    }
+	}
+
+	.version-toggle {
+	    background-color: #e6e6e6;
 	}
 
 	.support-icon {
@@ -63,8 +78,9 @@
 	    text-align: center;
 	    vertical-align: middle;
 	    margin-left: 11px;
-	    position: relative;
-	    top: -1px;
+	    position: absolute;
+	    top: 0px;
+	    right: 140px;
 	}
 
 	.meta {
@@ -73,8 +89,9 @@
 	    color: #ccc;
 	    height: 20px;
 	    position: absolute;
-	    right: 15px;
+	    right: 0px;
 	    top: 2px;
+	    width: 120px;
 	    
 	    p {
 		padding-bottom: 4px;
@@ -82,6 +99,56 @@
 
 	    a, a:hover, a:visited {
 		color: #fff;
+	    }
+	}
+
+	#version-toggle {
+	    font-size: 14px;
+	    position: relative;
+	    left: -50px;
+	    top: 30px;
+	    list-style: none;
+	    border: none;
+	    padding: 10px 0;
+	    margin: 2px 0 0;
+	    border-left: 5px solid #929292;
+	    background: rgba(255, 255, 255, 1);
+	    border-radius: 0 !important;
+	    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	    z-index: 999999;
+	    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+	    li {
+		line-height: 20px;
+		display: list-item;
+		white-space: nowrap;
+		color: #333;
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+
+		a {
+		    display: block;
+		    padding: 3px 20px;
+		    clear: both;
+		    font-weight: normal;
+		    line-height: 20px;
+		    color: #333;
+		    white-space: nowrap;
+		    margin-left: -5px;
+		}
+
+		a, a:hover, a:focus {
+		    background: none;
+		    cursor: pointer;
+		    font-size: 12px;
+		    border: none;
+		    border-left: 5px solid #929292;
+		    text-decoration: none;
+		}
+
+		a:hover {
+		    border-left-color: #474747;
+		    color: #929292;
+		}
 	    }
 	}
     }

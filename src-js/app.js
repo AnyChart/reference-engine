@@ -2,6 +2,7 @@ goog.provide('app');
 goog.require('goog.events');
 goog.require('goog.dom');
 goog.require('goog.style');
+goog.require('goog.dom.classes');
 
 var locker;
 
@@ -40,6 +41,27 @@ app.initResize = function() {
     goog.events.listen(locker, goog.events.EventType.MOUSEUP, app.stopResize);
 };
 
+app.hideDialogs = function() {
+    goog.style.setElementShown(goog.dom.getElement("version-toggle"), false);
+    goog.dom.classes.remove(goog.dom.getElement("version-toggler"), "version-toggle");
+};
+
+app.toggleVersions = function(e) {
+    var versions = goog.dom.getElement("version-toggle");
+    var toggler = goog.dom.getElement("version-toggler");
+    
+    goog.style.setElementShown(versions, !goog.style.isElementShown(versions));
+    goog.dom.classes.toggle(toggler, "version-toggle");
+    e.stopPropagation();
+};
+
+app.initVersionToggle = function() {
+    var toggler = goog.dom.getElement("version-toggler");
+    goog.events.listen(toggler, goog.events.EventType.CLICK, app.toggleVersions);
+};
+
 app.init = function() {
     app.initResize();
+    app.initVersionToggle();
+    goog.events.listen(document, goog.events.EventType.CLICK, app.hideDialogs);
 };

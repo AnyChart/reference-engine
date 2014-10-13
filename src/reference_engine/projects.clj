@@ -66,7 +66,8 @@
   (wcar* (car/smembers (redis-key-namespaces project version))))
 
 (defn namespace-default [project version]
-  (first (namespaces project version)))
+  (let [ns (namespaces project version)]
+    (first (sort ns))))
 
 ;; entries
 
