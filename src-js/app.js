@@ -17,7 +17,7 @@ app.stopResize = function() {
 };
 
 app.resize = function(e) {
-    var x = e.screenX;
+    var x = e.offsetX;
     if (x < 229) x = 229;
     var maxWidth = goog.dom.getViewportSize().width;
     if (x > maxWidth - 500) x = maxWidth - 500;
@@ -63,5 +63,5 @@ app.initVersionToggle = function() {
 app.init = function() {
     app.initResize();
     app.initVersionToggle();
-    goog.events.listen(document, goog.events.EventType.CLICK, app.hideDialogs);
+    //goog.events.listen(document, goog.events.EventType.CLICK, app.hideDialogs);
 };
