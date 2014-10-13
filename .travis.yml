@@ -30,3 +30,5 @@ after_success:
   - ssh-add .travis/id_rsa
   - scp -i .travis/id_rsa target/reference-engine-0.1-standalone.jar root@$SERVER:/apps/api/reference-engine-0.1-standalone.jar
   - ssh root@$SERVER "supervisorctl restart api-reference"
+notifications:
+  slack: anychart-team:sJRPhNn8Ur8yVdhvhgp6EbDM
