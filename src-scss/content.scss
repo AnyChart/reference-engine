@@ -108,16 +108,29 @@
 	    margin: 10px 0 0 40px;
 	    font-size: 14px;
 	    background: #F1F1F1;
-	    padding: 10px 10px 10px 10px;
+	    padding: 10px 10px 0px 10px;
 	    border: 1px solid #E8E8E8;
 	}
 
 	.params {
 	    padding-left: 10px;
+
+	    font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+	}
+
+	i.types, i.types a, i.types a:visited {
+	    font-style: normal;
+	    color: #7E7E7E;
+	    line-height: 20px;
+	    font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+	}
+
+	i.types a:hover {
+	    text-decoration: underline;
 	}
 
 	i.types i:before {
-	    content: ' | {';
+	    content: ' | ';
 	}
 	
 	i.types i:first-child:before {
@@ -130,6 +143,16 @@
 
 	.return {
 	    padding-left: 10px;
+	    line-height: 20px;
+	    font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+	}
+    }
+
+    .description .member {
+	margin-bottom: 10px;
+
+	p {
+	    font-size: 16px;
 	}
     }
 

@@ -6,6 +6,15 @@
             [clostache.parser :refer [render-resource]]
             [reference-engine.projects :as prj]))
 
+(defn generate-type-link [project version]
+  (fn [text]
+    (fn [render-fn]
+      (let [type (render-fn text)]
+        (render-fn text)))))
+        ;;(if (prj/has-entry project version type)
+        ;;  (str "<a href='/" project "/" version "/" type "'>" type "</a>")
+        ;;  type)))))
+
 (defn show-page [request]
   (let [project (get-in request [:params :project])
         version (get-in request [:params :version])
@@ -26,7 +35,13 @@
                                  :enum (= (:kind info) "enum")
                                  :class (= (:kind info) "class")}
                           :namespaces (prj/namespaces project version)
-                          :link #(str "/" project "/" version "/" %)}
+                          :link #(str "/" project "/" version "/" %)
+                          :type-link (fn [text]
+                                       (fn [render-fn]
+                                         (let [type (render-fn text)]
+                                           (if (prj/has-entry project version type)
+                                              (str "<a href='/" project "/" version "/" type "'>" type "</a>")
+                                             type))))}
                          {:ns-part (slurp (resource "templates/ns.mustache"))
                           :fn-part (slurp (resource "templates/fn.mustache"))
                           :enum-part (slurp (resource "templates/enum.mustache"))

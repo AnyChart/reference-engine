@@ -265,45 +265,67 @@
   margin: 10px 0 0 40px;
   font-size: 14px;
   background: #F1F1F1;
-  padding: 10px 10px 10px 10px;
+  padding: 10px 10px 0px 10px;
   border: 1px solid #E8E8E8;
 }
 /* line 115, ../../../../src-scss/content.scss */
 #content .reg .params {
   padding-left: 10px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
 }
-/* line 119, ../../../../src-scss/content.scss */
+/* line 121, ../../../../src-scss/content.scss */
+#content .reg i.types, #content .reg i.types a, #content .reg i.types a:visited {
+  font-style: normal;
+  color: #7E7E7E;
+  line-height: 20px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+}
+/* line 128, ../../../../src-scss/content.scss */
+#content .reg i.types a:hover {
+  text-decoration: underline;
+}
+/* line 132, ../../../../src-scss/content.scss */
 #content .reg i.types i:before {
-  content: ' | {';
+  content: ' | ';
 }
-/* line 123, ../../../../src-scss/content.scss */
+/* line 136, ../../../../src-scss/content.scss */
 #content .reg i.types i:first-child:before {
   content: '{';
 }
-/* line 127, ../../../../src-scss/content.scss */
+/* line 140, ../../../../src-scss/content.scss */
 #content .reg i.types i:after {
   content: '}';
 }
-/* line 131, ../../../../src-scss/content.scss */
+/* line 144, ../../../../src-scss/content.scss */
 #content .reg .return {
   padding-left: 10px;
+  line-height: 20px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
 }
-/* line 136, ../../../../src-scss/content.scss */
+/* line 151, ../../../../src-scss/content.scss */
+#content .description .member {
+  margin-bottom: 10px;
+}
+/* line 154, ../../../../src-scss/content.scss */
+#content .description .member p {
+  font-size: 16px;
+}
+/* line 159, ../../../../src-scss/content.scss */
 #content .enum-fields {
   border-left: 1px solid #d1d1d1;
   margin: 10px 10px 10px 30px;
   font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
 }
-/* line 141, ../../../../src-scss/content.scss */
+/* line 164, ../../../../src-scss/content.scss */
 #content .enum-fields li {
   line-height: 20px;
   padding-left: 10px;
 }
-/* line 146, ../../../../src-scss/content.scss */
+/* line 169, ../../../../src-scss/content.scss */
 #content .enum-fields span {
   color: #7E7E7E;
 }
-/* line 151, ../../../../src-scss/content.scss */
+/* line 174, ../../../../src-scss/content.scss */
 #content h4 {
   font-weight: bold;
 }

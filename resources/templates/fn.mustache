@@ -2,23 +2,27 @@
   <h3>{{name}}{{params-signature}}</h3>
   <div class="description">
     {{#members}}
-      {{&description}}
-      {{#has-params}}
-      <h4>params:</h4>
-      <ul class="params">
-	{{#params}}
-	  <li>{{name}} <i class="types">{{#type}}<i>{{.}}</i>{{/type}}</i> {{&description}}</li>
-	{{/params}}
-      </ul>
-      {{/has-params}}
-      {{#has-returns}}
-      {{#returns}}
-	<h4>returns:</h4>
-	<div class="return">
-	  <i class="types">{{#type}}<i>{{.}}</i>{{/type}}</i> {{&description}}
-	</div>
-      {{/returns}}
-      {{/has-returns}}
+      <div class="member">
+        <p>{{&description}}</p>
+        {{#has-params}}
+          <h4>params:</h4>
+          <ul class="params">
+	    {{#params}}
+	      <li>{{name}} <i class="types">{{#type}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/type}}</i> {{&description}}</li>
+	    {{/params}}
+          </ul>
+        {{/has-params}}
+        {{#has-returns}}
+          <h4>returns:</h4>
+	  <ul class="return">
+            {{#returns}}
+              <li>
+	        <i class="types">{{#type}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/type}}</i> {{&description}}
+              </li>
+            {{/returns}}
+          </ul>
+        {{/has-returns}}
+      </div>
       {{/#members}}
   </div>
 </div>
