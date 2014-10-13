@@ -63,11 +63,10 @@
 ;; namespaces
 
 (defn namespaces [project version]
-  (wcar* (car/smembers (redis-key-namespaces project version))))
+  (sort (wcar* (car/smembers (redis-key-namespaces project version)))))
 
 (defn namespace-default [project version]
-  (let [ns (namespaces project version)]
-    (first (sort ns))))
+  (first (namespaces project version)))
 
 ;; entries
 
