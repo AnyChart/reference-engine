@@ -73,8 +73,8 @@
     (if (prj/exists? project)
       (do
         (prj/update-project project)
-        "Updated!"
-        (notify-slack project))
+        (notify-slack project)
+        "Updated!")
       (route/not-found "not found"))))
 
 (defn update-all [request]
