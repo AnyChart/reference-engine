@@ -4,6 +4,8 @@
             [ring.util.response :refer [redirect]]
             [clojure.java.io :refer [resource]]
             [clostache.parser :refer [render-resource]]
+            [org.httpkit.client :as http]
+            [cheshire.core :refer [generate-string]]
             [reference-engine.projects :as prj]))
 
 (defn generate-type-link [project version]
@@ -67,6 +69,12 @@
         (prj/update-project project)
         "Updated!")
       (route/not-found "not found"))))
+
+(defn notify-slack [project]
+  (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
+             {:form-params {:payload (generate-string {:text (str "<http://api.anychart.dev> API reference updated for " project)
+                                                       :channel "#general"
+                                                       :username "api-reference"})}}))
 
 (defn update-all [request]
   (prj/update)
