@@ -16,6 +16,11 @@
                          {:version "7"
                           :debug true
                           :main info
+                          :versions []
+                          :project ""
+                          :v ""
+                          :link #(str %)
+                          :type-link #(str %)
                           :kind {:namespace (= (:kind info) "namespace")
                                  :enum (= (:kind info) "enum")
                                  :class (= (:kind info) "class")}

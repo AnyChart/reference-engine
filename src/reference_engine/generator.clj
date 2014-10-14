@@ -49,6 +49,8 @@
     (println "namespaces found:" (count data))
     (reset! local-namespaces data)))
 
+(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src")
+
 (defn generate-for-server [path ns-callback top-level-callback]
   (ns-callback (jsdoc-parser/parse (get-jsdoc-info path)
                                    (generate-exports path)

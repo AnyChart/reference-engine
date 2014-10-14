@@ -5,7 +5,7 @@
             [reference-engine.exports :as exports]))
 
 (defn create-cache []
-  {:inhertantce (inheritance/create-cache)
+  {:inheritance (inheritance/create-cache)
    :exports (exports/create-cache)})
 
 (defn cleanup []
@@ -20,7 +20,7 @@
                 (= (:access raw) "inner")))))
 
 (defn filter-raw-data [raw exports cache]
-  (filter #(exports/check-exports % raw exports (:exports cache) (:inhertantce cache))
+  (filter #(exports/check-exports % raw exports (:exports cache) (:inheritance cache))
           (pmap #(assoc % :longname (utils/cleanup-name (:longname %)))
                 (filter
                  (fn [meta]
@@ -33,4 +33,7 @@
 
 (defn parse [raw exports cache top-level-callback]
   (println "raw data:" (count raw))
-  (ns-parser/get-namespaces (filter-raw-data raw exports cache) top-level-callback))
+  (inheritance/inject-inherited-methods 
+   (ns-parser/get-namespaces (filter-raw-data raw exports cache) top-level-callback)
+   (:inheritance cache)
+   top-level-callback))

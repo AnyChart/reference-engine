@@ -1,5 +1,8 @@
 <div class="reg">
   <h3 id="{{name}}">{{name}}{{params-signature}}</h3>
+  {{#is-inherited}}
+    Inherited from {{#type-link}}{{inherited-from}}{{/type-link}}
+  {{/is-inherited}}
   <div class="description">
     {{#members}}
       <div class="member">
