@@ -62,19 +62,20 @@
         (route/not-found "Unknown version"))
       (route/not-found "Project not found"))))
 
-(defn update-project [request]
-  (let [project (get-in request [:params :project])]
-    (if (prj/exists? project)
-      (do
-        (prj/update-project project)
-        "Updated!")
-      (route/not-found "not found"))))
-
 (defn notify-slack [project]
   (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
              {:form-params {:payload (generate-string {:text (str "<http://api.anychart.dev> API reference updated for " project)
                                                        :channel "#general"
                                                        :username "api-reference"})}}))
+
+(defn update-project [request]
+  (let [project (get-in request [:params :project])]
+    (if (prj/exists? project)
+      (do
+        (prj/update-project project)
+        "Updated!"
+        (notify-slack project))
+      (route/not-found "not found"))))
 
 (defn update-all [request]
   (prj/update)
