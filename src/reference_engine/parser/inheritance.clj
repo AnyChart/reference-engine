@@ -55,25 +55,71 @@
       (swap! classes-parents-cache assoc (:full-name class) parents)
       parents)))
 
-(defn add-inherited-methods [class-name methods new-methods]
+(defn class-has-method? [class method-name]
+  (some #(= (:name %) method-name) (:methods class)))
+
+(defn get-method-docs [method-name class-name classes-cache]
+  (let [class (get @classes-cache class-name)
+        members (:members (first (filter #(= (:name %) method-name) (:methods class))))]
+    (first (filter #(not (:inherit-doc %)) members))))
+
+(defn get-inherited-doc [class parents method-name classes-cache]
+  (loop [parents parents
+         res nil]
+    (if (or (empty? parents) (not (= res nil)))
+      res
+      (recur (rest parents)
+             (get-method-docs
+              method-name
+              (first parents)
+              classes-cache)))))
+
+(defn inject-inherited-docs [class parents-cache classes-cache]
+  (let [parents (get @parents-cache (:full-name class))
+        new-class (assoc class
+                    :methods
+                    (doall
+                     (pmap
+                      (fn [method]
+                        (assoc method :members
+                               (doall (pmap (fn [member]
+                                              (if (:inherit-doc member)
+                                                (get-inherited-doc
+                                                 class
+                                                 parents
+                                                 (:name method)
+                                                 classes-cache)
+                                                member)) (:members method)))))
+                      (:methods class))))]
+    (swap! classes-cache assoc (:name class) new-class)
+    new-class))
+
+(defn add-inherited-methods [class class-name methods new-methods]
   (doall (reduce (fn [res m]
-                   (assoc res
-                     (:name m)
-                     (assoc m
-                       :inherited-from class-name
-                       :is-inherited true))) methods new-methods)))
+                   (if (class-has-method? class (:name m))
+                     res
+                     (assoc res
+                       (:name m)
+                       (assoc m
+                         :inherited-from class-name
+                         :is-inherited true)))) methods new-methods)))
 
 (defn get-inherited-methods [class parents-cache classes-cache]
-  (let [parents (reverse (get @parents-cache (:full-name class)))
-        inherited-methods (loop [parents parents
-                                 acc {}]
-                            (if (empty? parents)
-                              acc
-                              (recur (rest parents)
-                                     (add-inherited-methods (first parents) acc (:methods (get @classes-cache (first parents)))))))]
-    (assoc class
-      :inherited-methods (reduce #(conj %1 (last %2)) [] inherited-methods)
-      :has-inherited-methods (not (empty? inherited-methods)))))
+  (let [class (inject-inherited-docs class parents-cache classes-cache)]
+    (let [parents (reverse (get @parents-cache (:full-name class)))
+          inherited-methods (loop [parents parents
+                                   acc {}]
+                              (if (empty? parents)
+                                acc
+                                (recur (rest parents)
+                                       (add-inherited-methods
+                                        class
+                                        (first parents)
+                                        acc
+                                        (:methods (get @classes-cache (first parents)))))))]
+      (assoc class
+        :inherited-methods (reduce #(conj %1 (last %2)) [] inherited-methods)
+        :has-inherited-methods (not (empty? inherited-methods))))))
 
 (defn inject-inherited-methods [namespaces cache top-level-entry-replacer]
   (let [classes (apply concat (map :classes namespaces))]
