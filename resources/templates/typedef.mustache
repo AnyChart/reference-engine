@@ -1,0 +1,17 @@
+<div class="head">
+  <h1>{{main.full-name}} typedef</h1>
+  <p>{{&main.description}}</p>
+  {{>examples}}
+</div>
+<div class="reg typedef">
+  <h3>Defines:</h2>
+  <ul class="params">
+    {{#main.type}}<li>{{#type-link}}{{.}}{{/type.link}}</li>{{/main.type}}
+  </ul>
+  {{#main.has-properties}}
+    <h3>Properties:</h2>
+    <ul>
+      {{#main.properties}}<li>{{name}} {{type}} - {{description}}</li>{{/main.properties}}
+    </ul>
+  {{/main.has-properties}}
+</div>

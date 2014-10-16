@@ -47,6 +47,7 @@
    :description (:description member)
    :full-name (cleanup-name (:longname member))
    :examples (:examples member)
+   :has-examples (> (count (:examples member)) 0)
    :illustrations (get-tag member "illustration")
    :file (str (get-in member [:meta :path])
               "/"

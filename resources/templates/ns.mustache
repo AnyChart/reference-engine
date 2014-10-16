@@ -1,6 +1,7 @@
 <div class="head">
   <h1>{{main.full-name}}</h1>
   <p>{{&main.description}}</p>
+  {{>examples}}
   {{#main.has-classes}}
     <h3>Classes:</h3>
     <ul>
@@ -30,6 +31,7 @@
         <div class="description">
           <div class="member">
 	    <p>{{&description}}</p>
+            {{>examples}}
           </div>
         </div>
       </div>

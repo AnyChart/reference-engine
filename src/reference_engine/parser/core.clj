@@ -20,7 +20,8 @@
                 (= (:access raw) "inner")))))
 
 (defn filter-raw-data [raw exports cache]
-  (filter #(exports/check-exports % raw exports (:exports cache) (:inheritance cache))
+  (filter #(or (utils/force-include? %)
+               (exports/check-exports % raw exports (:exports cache) (:inheritance cache)))
           (pmap #(assoc % :longname (utils/cleanup-name (:longname %)))
                 (filter
                  (fn [meta]

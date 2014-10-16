@@ -35,7 +35,8 @@
                           :default-ns (prj/namespace-default project version)
                           :kind {:namespace (= (:kind info) "namespace")
                                  :enum (= (:kind info) "enum")
-                                 :class (= (:kind info) "class")}
+                                 :class (= (:kind info) "class")
+                                 :typedef (= (:kind info) "typedef")}
                           :namespaces (prj/namespaces project version)
                           :link #(str "/" project "/" version "/" %)
                           :type-link (fn [text]
@@ -47,7 +48,9 @@
                          {:ns-part (slurp (resource "templates/ns.mustache"))
                           :fn-part (slurp (resource "templates/fn.mustache"))
                           :enum-part (slurp (resource "templates/enum.mustache"))
-                          :class-part (slurp (resource "templates/class.mustache"))}))
+                          :class-part (slurp (resource "templates/class.mustache"))
+                          :typedef-part (slurp (resource "templates/typedef.mustache"))
+                          :examples (slurp (resource "templates/example.mustache"))}))
       (route/not-found "Not found :("))))
 
 (defn show-default-ns [request]

@@ -4,6 +4,7 @@
     {{#main.inherits-names}}<a href="{{#link}}{{.}}{{/link}}">{{.}}</a>{{/main.inherits-names}}
   {{/main.has-inherits-names}}</p>
   <p>{{&main.description}}</p>
+  {{>examples}}
 </div>
 
 <div class="line-bottom">
@@ -14,6 +15,7 @@
         <h3>{{name}}</h3>
         <div class="description">
 	  {{&description}}
+          {{>examples}}
         </div>
       </div>
     {{/main.constants}}
