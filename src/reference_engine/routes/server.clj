@@ -68,7 +68,7 @@
 (defn notify-slack [project]
   (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
              {:form-params {:payload (generate-string {:text (str "<http://api.anychart.dev> API reference updated for " project)
-                                                       :channel "#general"
+                                                       :channel "#notifications"
                                                        :username "api-reference"})}}))
 
 (defn update-project [request]
