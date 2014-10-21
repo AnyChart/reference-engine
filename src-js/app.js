@@ -1,4 +1,5 @@
 goog.provide('app');
+goog.require('app.view');
 goog.require('goog.events');
 goog.require('goog.dom');
 goog.require('goog.style');
@@ -72,9 +73,11 @@ app.initEditors = function() {
 };
 
 app.init = function(treeData) {
-    console.log(treeData);
     app.initResize();
     app.initVersionToggle();
     app.initEditors();
     goog.events.listen(document, goog.events.EventType.CLICK, app.hideDialogs);
+
+    React.renderComponent(TreeView({"tree": treeData}),
+			  document.getElementById("tree"));
 };
