@@ -15,7 +15,6 @@ install:
  - npm install
  - gem install compass
 before_script:
- - mkdir resources/public/dev/jsxc
  - grunt dev
 script: lein2 uberjar
 after_success:
