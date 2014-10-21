@@ -11,10 +11,6 @@
 (def local-namespaces (atom {}))
 (def local-updating (atom false))
 
-(def running-jar 
-  "Resolves the path to the current running jar file."
-  (-> :keyword class (.. getProtectionDomain getCodeSource getLocation getPath)))
-
 (defn get-jsdoc-recursive [path]
   (parse-string
    ((sh "/usr/local/bin/node" "jsdoc/jsdoc.js" "-r" "-X" path) :out)
@@ -42,17 +38,20 @@
     (apply concat jsdocs)))
 
 (defn generate-local [path]
-  (let [data (jsdoc-parser/parse (get-jsdoc-info path)
+  (let [data (jsdoc-parser/parse "local" "master"
+                                 (get-jsdoc-info path)
                                  (generate-exports path)
                                  (jsdoc-parser/create-cache)
                                  utils/cache-entry)]
     (println "namespaces found:" (count data))
     (reset! local-namespaces data)))
 
-;(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/scales")
+(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/data")
 
-(defn generate-for-server [path ns-callback top-level-callback]
-  (ns-callback (jsdoc-parser/parse (get-jsdoc-info path)
+(defn generate-for-server [project version path ns-callback top-level-callback]
+  (ns-callback (jsdoc-parser/parse project
+                                   version
+                                   (get-jsdoc-info path)
                                    (generate-exports path)
                                    (jsdoc-parser/create-cache)
                                    top-level-callback)))

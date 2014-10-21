@@ -15,8 +15,8 @@
 (defn get-constant-value [raw]
   (get-in raw [:meta :code :value]))
 
-(defn parse-constant [raw]
-  (merge (parse-general-doclet raw)
+(defn parse-constant [raw sample-callback]
+  (merge (parse-general-doclet raw sample-callback)
          (parse-constant-tag (first (get-tag raw "define")))
          {:value (get-constant-value raw)
           :kind "constant"}))

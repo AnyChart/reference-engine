@@ -42,16 +42,21 @@
 (defn scope-instance? [raw]
   (= (:scope raw) "instance"))
 
-(defn parse-general-doclet [member]
-  {:name (:name member)
-   :description (:description member)
-   :full-name (cleanup-name (:longname member))
-   :examples (:examples member)
-   :has-examples (> (count (:examples member)) 0)
-   :illustrations (get-tag member "illustration")
-   :file (str (get-in member [:meta :path])
-              "/"
-              (get-in member [:meta :filename]))})
+(defn parse-general-doclet [member sample-callback]
+  (let [samples (if (and (> (count (:examples member)) 0)
+                         (not (= (:examples member) "<CircularRef>")))
+                  (doall (map #(sample-callback (cleanup-name (:longname member)) %)
+                              (:examples member)))
+                  nil)]
+    {:name (:name member)
+     :description (:description member)
+     :full-name (cleanup-name (:longname member))
+     :examples samples
+     :has-examples (> (count samples) 0)
+     :illustrations (get-tag member "illustration")
+     :file (str (get-in member [:meta :path])
+                "/"
+                (get-in member [:meta :filename]))}))
 
 (defn filter-members [member raw-data criteria]
   (filter #(and (= (:memberof %) (:full-name member))

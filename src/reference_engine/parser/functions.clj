@@ -32,8 +32,8 @@
   (if (utils/inherit-doc? raw)
     {:inherit-doc true}))
 
-(defn parse-function [raw]
-  (merge (utils/parse-general-doclet raw)
+(defn parse-function [raw sample-callback]
+  (merge (utils/parse-general-doclet raw sample-callback)
          (parse-params-signature raw)
          (parse-params raw)
          (parse-returns raw)

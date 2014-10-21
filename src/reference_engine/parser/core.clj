@@ -2,7 +2,8 @@
   (:require [reference-engine.parser.utils :as utils]
             [reference-engine.parser.namespaces :as ns-parser]
             [reference-engine.parser.inheritance :as inheritance]
-            [reference-engine.exports :as exports]))
+            [reference-engine.exports :as exports]
+            [reference-engine.samples :as samples]))
 
 (defn create-cache []
   {:inheritance (inheritance/create-cache)
@@ -32,9 +33,11 @@
                        (is-normal-doclet meta))))
                  raw))))
 
-(defn parse [raw exports cache top-level-callback]
+(defn parse [project version raw exports cache top-level-callback]
   (println "raw data:" (count raw))
   (inheritance/inject-inherited-methods 
-   (ns-parser/get-namespaces (filter-raw-data raw exports cache) top-level-callback)
+   (ns-parser/get-namespaces (filter-raw-data raw exports cache)
+                             top-level-callback
+                             #(samples/parse-sample project version %1 %2))
    (:inheritance cache)
    top-level-callback))

@@ -7,59 +7,62 @@
             [reference-engine.parser.classes :refer [js-class? parse-class]]
             [reference-engine.parser.fields :refer [field? parse-field]]))
 
-(defn get-constants [ns-def raw-data]
+(defn get-constants [ns-def raw-data sample-callback]
   (utils/parse-members-with-filter-to-obj ns-def
                                           raw-data
                                           constant?
-                                          parse-constant
+                                          #(parse-constant % sample-callback)
                                           :constants))
 
-(defn get-fields [ns-def raw-data]
+(defn get-fields [ns-def raw-data sample-callback]
   (utils/parse-members-with-filter-to-obj ns-def
                                           raw-data
                                           field?
-                                          parse-field
+                                          #(parse-field % sample-callback)
                                           :fields))
 
-(defn get-typedefs [ns-def raw-data top-level-callback]
+(defn get-typedefs [ns-def raw-data top-level-callback sample-callback]
   (utils/parse-members-with-filter-to-obj ns-def
                                           raw-data
                                           typedef?
-                                          #(parse-typedef % top-level-callback)
+                                          #(parse-typedef % top-level-callback sample-callback)
                                           :typedefs))
 
-(defn get-functions [ns-def raw-data]
+(defn get-functions [ns-def raw-data sample-callback]
   (utils/parse-grouped-members-to-obj ns-def
                                       raw-data
                                       #(and (function? %)
                                             (utils/static? %))
-                                      parse-function
+                                      #(parse-function % sample-callback)
                                       :functions))
 
-(defn get-enums [ns-def raw-data top-level-callback]
+(defn get-enums [ns-def raw-data top-level-callback sample-callback]
   (utils/parse-members-with-filter-to-obj ns-def
                                           raw-data
                                           enum?
-                                          #(parse-enum % raw-data top-level-callback)
+                                          #(parse-enum % raw-data top-level-callback sample-callback)
                                           :enums))
 
-(defn get-classes [ns-def raw-data top-level-callback]
+(defn get-classes [ns-def raw-data top-level-callback sample-callback]
   (utils/parse-members-with-filter-to-obj ns-def
                                           raw-data
                                           js-class?
-                                          #(parse-class % raw-data top-level-callback)
+                                          #(parse-class % raw-data top-level-callback sample-callback)
                                           :classes))
 
-(defn parse [raw raw-data top-level-callback]
-  (let [ns-def (utils/parse-general-doclet raw)
+(defn parse [raw raw-data top-level-callback sample-callback]
+  (let [ns-def (utils/parse-general-doclet raw sample-callback)
         full-ns-def (merge (assoc ns-def :kind "namespace")
-                           (get-constants ns-def raw-data)
-                           (get-fields ns-def raw-data)
-                           (get-typedefs ns-def raw-data top-level-callback)
-                           (get-functions ns-def raw-data)
-                           (get-enums ns-def raw-data top-level-callback)
-                           (get-classes ns-def raw-data top-level-callback))]
+                           (get-constants ns-def raw-data sample-callback)
+                           (get-fields ns-def raw-data sample-callback)
+                           (get-typedefs ns-def raw-data top-level-callback
+                                         sample-callback)
+                           (get-functions ns-def raw-data sample-callback)
+                           (get-enums ns-def raw-data top-level-callback sample-callback)
+                           (get-classes ns-def raw-data top-level-callback
+                                        sample-callback))]
     (top-level-callback full-ns-def)))
 
-(defn get-namespaces [raw-data top-level-callback]
-  (map #(parse % raw-data top-level-callback) (filter #(= (:kind %) "namespace") raw-data)))
+(defn get-namespaces [raw-data top-level-callback sample-callback]
+  (map #(parse % raw-data top-level-callback sample-callback)
+       (filter #(= (:kind %) "namespace") raw-data)))
