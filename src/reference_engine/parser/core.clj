@@ -33,12 +33,13 @@
                        (is-normal-doclet meta))))
                  raw))))
 
-(defn parse [raw exports cache top-level-callback sample-callback]
+(defn parse [raw exports cache top-level-callback sample-callback links-prefix]
   (println "raw data:" (count raw))
   (let [namespaces (inheritance/inject-inherited-methods 
                     (ns-parser/get-namespaces (filter-raw-data raw exports cache)
                                               top-level-callback
-                                              sample-callback)
+                                              sample-callback
+                                              links-prefix)
                     (:inheritance cache)
                     top-level-callback)]
     {:namespaces namespaces

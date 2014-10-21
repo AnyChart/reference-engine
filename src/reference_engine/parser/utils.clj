@@ -42,14 +42,20 @@
 (defn scope-instance? [raw]
   (= (:scope raw) "instance"))
 
-(defn parse-general-doclet [member sample-callback]
+(defn parse-description [description links-prefix]
+  (if description
+    (clojure.string/replace description
+                            #"(?s)\{@link ([^ ]+)\}"
+                            (str "<a href=\"" links-prefix "$1\">$1</a>"))))
+
+(defn parse-general-doclet [member sample-callback links-prefix]
   (let [samples (if (and (> (count (:examples member)) 0)
                          (not (= (:examples member) "<CircularRef>")))
                   (doall (map #(sample-callback (cleanup-name (:longname member)) %)
                               (:examples member)))
                   nil)]
     {:name (:name member)
-     :description (:description member)
+     :description (parse-description (:description member) links-prefix)
      :full-name (cleanup-name (:longname member))
      :examples samples
      :has-examples (> (count samples) 0)

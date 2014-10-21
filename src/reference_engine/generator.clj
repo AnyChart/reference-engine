@@ -44,7 +44,8 @@
                                  (generate-exports path)
                                  (jsdoc-parser/create-cache)
                                  utils/cache-entry
-                                 samples/parse-sample-local)]
+                                 samples/parse-sample-local
+                                 "/")]
     (println "namespaces found:" (count (:namespaces data)))
     (reset! local-tree (generate-string (:tree data)))
     (reset! local-namespaces (:namespaces data))))
@@ -56,7 +57,8 @@
                                    (generate-exports path)
                                    (jsdoc-parser/create-cache)
                                    top-level-callback
-                                   sample-callback)))
+                                   sample-callback
+                                   (str "/" project "/" version "/"))))
 
 (defn get-local [name]
   (utils/cached-entry name))
