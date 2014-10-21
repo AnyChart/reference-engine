@@ -60,8 +60,20 @@ app.initVersionToggle = function() {
     goog.events.listen(toggler, goog.events.EventType.CLICK, app.toggleVersions);
 };
 
+app.initEditors = function() {
+    var editors = goog.dom.getElementsByClass("code-sample");
+    goog.array.map(editors, function(editorView) {
+	var editor = ace.edit(editorView);
+	editor.setTheme('ace/theme/tomorrow');
+	editor.setOptions({maxLines: 30});
+	editor.setReadOnly(true);
+	editor.getSession().setMode("ace/mode/javascript");
+    });
+};
+
 app.init = function() {
     app.initResize();
     app.initVersionToggle();
+    app.initEditors();
     goog.events.listen(document, goog.events.EventType.CLICK, app.hideDialogs);
 };
