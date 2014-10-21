@@ -3,6 +3,7 @@
             [compojure.route :as route]
             [reference-engine.generator :as docs-gen]
             [clojure.java.io :refer [resource]]
+            [cheshire.core :refer [generate-string]]
             [clostache.parser :refer [render-resource]]))
 
 (defn show-page [request]
@@ -25,7 +26,7 @@
                                  :enum (= (:kind info) "enum")
                                  :class (= (:kind info) "class")
                                  :typedef (= (:kind info) "typedef")}
-                          :namespaces namespaces}
+                          :tree @docs-gen/local-tree}
                          {:ns-part (slurp (resource "templates/ns.mustache"))
                           :fn-part (slurp (resource "templates/fn.mustache"))
                           :enum-part (slurp (resource "templates/enum.mustache"))

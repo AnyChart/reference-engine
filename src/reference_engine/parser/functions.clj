@@ -33,8 +33,9 @@
     {:inherit-doc true}))
 
 (defn parse-function [raw sample-callback]
-  (merge (utils/parse-general-doclet raw sample-callback)
-         (parse-params-signature raw)
-         (parse-params raw)
-         (parse-returns raw)
-         (parse-meta raw)))
+  (assoc (merge (utils/parse-general-doclet raw sample-callback)
+                (parse-params-signature raw)
+                (parse-params raw)
+                (parse-returns raw)
+                (parse-meta raw))
+    :kind "function"))

@@ -71,7 +71,8 @@ app.initEditors = function() {
     });
 };
 
-app.init = function() {
+app.init = function(treeData) {
+    console.log(treeData);
     app.initResize();
     app.initVersionToggle();
     app.initEditors();

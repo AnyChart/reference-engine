@@ -10,6 +10,7 @@
             [clojure.tools.logging :as log]))
 
 (def local-namespaces (atom {}))
+(def local-tree (atom []))
 (def local-updating (atom false))
 
 (defn get-jsdoc-recursive [path]
@@ -44,10 +45,11 @@
                                  (jsdoc-parser/create-cache)
                                  utils/cache-entry
                                  samples/parse-sample-local)]
-    (println "namespaces found:" (count data))
-    (reset! local-namespaces data)))
+    (println "namespaces found:" (count (:namespaces data)))
+    (reset! local-tree (generate-string (:tree data)))
+    (reset! local-namespaces (:namespaces data))))
 
-;(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/data")
+;(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src")
 
 (defn generate-for-server [project version path ns-callback top-level-callback sample-callback]
   (ns-callback (jsdoc-parser/parse (get-jsdoc-info path)

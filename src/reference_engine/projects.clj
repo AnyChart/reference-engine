@@ -2,6 +2,7 @@
   (:require [reference-engine.config :as config]
             [clojure.java.io :refer [file]]
             [clojure.tools.logging :as log]
+            [cheshire.core :refer [generate-string]]
             [taoensso.carmine :as car]
             [reference-engine.db :refer (wcar*)]
             [reference-engine.git :as git]
@@ -25,6 +26,9 @@
 
 (defn redis-key-namespaces [project version]
   (str "ref_project_" project "_version_" version "_namespaces"))
+
+(defn redis-key-tree [project version]
+  (str "ref_project_" project "_version_" version "_tree"))
 
 ;; projects
 
@@ -81,10 +85,13 @@
   (docs-generator/generate-for-server
    project version
    (str path "/src")
-   (fn [namespaces]
-     (log/info "namespaces: " (map :full-name namespaces))
-     (wcar* (apply car/sadd (redis-key-namespaces project version)
-                            (map :full-name namespaces))))
+   (fn [parse-result]
+     (let [namespaces (:namespaces parse-result)]
+       (log/info "namespaces: " (map :full-name namespaces))
+       (wcar* (car/set (redis-key-tree project version)
+                       (generate-string (:tree parse-result))))
+       (wcar* (apply car/sadd (redis-key-namespaces project version)
+                     (map :full-name namespaces)))))
    (fn [entry]
      (log/info "entry:" (:full-name entry))
      (wcar* (car/set (redis-key-entry project version (:full-name entry))
