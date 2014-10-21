@@ -80,6 +80,7 @@
 
 (defn do-generate-docs [project version path]
   (docs-generator/generate-for-server
+   project version
    (str path "/src")
    (fn [namespaces]
      (log/info "namespaces: " (map :full-name namespaces))

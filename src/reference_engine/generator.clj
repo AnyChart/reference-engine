@@ -6,6 +6,7 @@
             [reference-engine.exports :refer [generate-exports] :as exports]
             [clojure.java.io :refer [file resource]]
             [reference-engine.parser.inheritance :as inh]
+            [reference-engine.samples :as samples]
             [clojure.tools.logging :as log]))
 
 (def local-namespaces (atom {}))
@@ -38,23 +39,22 @@
     (apply concat jsdocs)))
 
 (defn generate-local [path]
-  (let [data (jsdoc-parser/parse "local" "master"
-                                 (get-jsdoc-info path)
+  (let [data (jsdoc-parser/parse (get-jsdoc-info path)
                                  (generate-exports path)
                                  (jsdoc-parser/create-cache)
-                                 utils/cache-entry)]
+                                 utils/cache-entry
+                                 #(samples/parse-sample "local" "master" %1 %2))]
     (println "namespaces found:" (count data))
     (reset! local-namespaces data)))
 
 ;(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/data")
 
 (defn generate-for-server [project version path ns-callback top-level-callback]
-  (ns-callback (jsdoc-parser/parse project
-                                   version
-                                   (get-jsdoc-info path)
+  (ns-callback (jsdoc-parser/parse (get-jsdoc-info path)
                                    (generate-exports path)
                                    (jsdoc-parser/create-cache)
-                                   top-level-callback)))
+                                   top-level-callback
+                                   #(samples/parse-sample project version %1 %2))))
 
 (defn get-local [name]
   (utils/cached-entry name))
