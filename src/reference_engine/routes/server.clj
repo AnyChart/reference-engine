@@ -1,7 +1,7 @@
 (ns reference-engine.routes.server
   (:require [compojure.core :refer [defroutes GET POST]]
             [compojure.route :as route]
-            [ring.util.response :refer [redirect]]
+            [ring.util.response :refer [response redirect]]
             [clojure.java.io :refer [resource]]
             [clostache.parser :refer [render-resource]]
             [org.httpkit.client :as http]
@@ -16,6 +16,38 @@
         ;;(if (prj/has-entry project version type)
         ;;  (str "<a href='/" project "/" version "/" type "'>" type "</a>")
         ;;  type)))))
+
+(defn show-page-json [request]
+  (let [project (get-in request [:params :project])
+        version (get-in request [:params :version])
+        page (get-in request [:params :page])]
+    (if (and (prj/exists? project)
+             (prj/version-exists? project version)
+             (prj/has-entry project version page))
+      (let [info (prj/get-entry project version page)]
+        (let [content (render-resource
+                       "templates/app-json.mustache"
+                       {:link #(str "/" project "/" version "/" %)
+                        :type-link (fn [text]
+                                     (fn [render-fn]
+                                       (let [type (render-fn text)]
+                                         (if (prj/has-entry project version type)
+                                           (str "<a href='/" project "/" version "/" type "'>" type "</a>")
+                                           type))))
+                        :main info
+                        :kind {:namespace (= (:kind info) "namespace")
+                               :enum (= (:kind info) "enum")
+                               :class (= (:kind info) "class")
+                               :typedef (= (:kind info) "typedef")}}
+                       {:ns-part (slurp (resource "templates/ns.mustache"))
+                        :fn-part (slurp (resource "templates/fn.mustache"))
+                        :enum-part (slurp (resource "templates/enum.mustache"))
+                        :class-part (slurp (resource "templates/class.mustache"))
+                        :typedef-part (slurp (resource "templates/typedef.mustache"))
+                        :examples (slurp (resource "templates/example.mustache"))})]
+          (response {:content content
+                     :page page})))
+      (route/not-found "Not found"))))
 
 (defn show-page [request]
   (let [project (get-in request [:params :project])
@@ -37,6 +69,7 @@
                                  :enum (= (:kind info) "enum")
                                  :class (= (:kind info) "class")
                                  :typedef (= (:kind info) "typedef")}
+                          :tree (prj/tree project version)
                           :namespaces (prj/namespaces project version)
                           :link #(str "/" project "/" version "/" %)
                           :type-link (fn [text]
@@ -92,4 +125,5 @@
   (POST "/:project/_plzz_" [] update-project)
   (GET "/:project/:version" [] show-default-ns)
   (GET "/:project/:version/" [] show-default-ns)
+  (GET "/:project/:version/:page/json" [] show-page-json)
   (GET "/:project/:version/:page" [] show-page))

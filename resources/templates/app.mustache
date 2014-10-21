@@ -8,14 +8,14 @@
     <title>API Reference - AnyChart</title>
     <script src="/ace-builds/src-min-noconflict/ace.js"></script>
     {{#debug}}
-    <script src="/dev/react/react.js"></script>
-    <link rel="stylesheet" href="/dev/css/styles.css?v={{version}}" />
-    <link href="/fonts/font-awesome.css" rel="stylesheet">
-    <script src="/dev/goog/base.js"></script>
-    <script src="/dev/deps.js"></script>
-    <script>
-      goog.require('app');
-    </script>
+      <script src="/dev/react/react.js"></script>
+      <link rel="stylesheet" href="/dev/css/styles.css?v={{version}}" />
+      <link href="/fonts/font-awesome.css" rel="stylesheet">
+      <script src="/dev/goog/base.js"></script>
+      <script src="/dev/deps.js"></script>
+      <script>
+        goog.require('app');
+      </script>
     {{/debug}}
   </head>
   <body>
@@ -35,9 +35,6 @@
       </div>
       <ul class="tree" id="tree">
         Loading...
-	{{#namespaces}}
-	  <li><a href="{{#link}}{{.}}{{/link}}"><i class="fa fa-chevron-right"></i>{{.}}</a></li>
-	{{/namespaces}}
       </ul>
       <div class="footer">
 	<a href="https://twitter.com/anychart" target="_blank"><i class="fa fa-twitter-square"></i></a>
@@ -49,8 +46,8 @@
     <div id="main">
       <div class="header">
 	<ul class="path">
-	  <li><a href="/">Home</a><span>/</span></li>
-	  <li>{{main.full-name}}</a></li>
+	  <li><a href="/anychart">Home</a><span>/</span></li>
+	  <li id="current-path">{{main.full-name}}</a></li>
 	</ul>
 	<div class="right">
 	  <a class="version" id="version-toggler" href="#">Version {{v}} <i class="fa fa-caret-down"></i></a>
@@ -79,13 +76,11 @@
         {{#kind.typedef}}
           {{>typedef-part}}
         {{/kind.typedef}}
-	{{!main}}
-	</div>
       </div>
-      </div>
+    </div>
     <div id="locker" style="display:none"></div>
     <script>
-      app.init({{&tree}});
+      app.init("{{project}}", "{{v}}", {{&tree}});
     </script>
   </body>
 </html>

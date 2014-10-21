@@ -73,6 +73,9 @@
 
 ;; entries
 
+(defn tree [project version]
+  (wcar* (car/get (redis-key-tree project version))))
+
 (defn has-entry [project version name]
   (= 1 (wcar* (car/exists (redis-key-entry project version name)))))
 

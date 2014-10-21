@@ -4,6 +4,7 @@ goog.require('goog.events');
 goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.dom.classes');
+goog.require('goog.net.XhrIo');
 
 var locker;
 
@@ -72,7 +73,42 @@ app.initEditors = function() {
     });
 };
 
-app.init = function(treeData) {
+app.project = null;
+app.version = null;
+
+app.replacePage = function(page, data) {
+    goog.dom.getElement("content").innerHTML = data.content;
+    goog.dom.getElement("current-path").innerHTML = data.page;
+};
+
+app.loadPage = function(page, e) {
+    if (e && (e.ctrlKey || e.shiftKey || e.metaKey)) return true;
+    if (history.pushState) {
+	goog.dom.getElement("content").innerHTML = "Loading...";
+	if (e) {
+	    history.pushState(null, null, page);
+	}
+	var request = new goog.net.XhrIo();
+	goog.events.listen(request, "complete", function(e) {
+	    if (request.isSuccess()) {
+		app.replacePage(page, request.getResponseJson());
+	    }else {
+		// :(
+		console.error(request.getResponseText());
+	    }
+	});
+	request.send(page+"/json");
+    
+	return false;
+    }else { return true; }
+};
+
+app.init = function(project, version, treeData) {
+    if (project) {
+	app.project = project;
+	app.version = version;
+    }
+    
     app.initResize();
     app.initVersionToggle();
     app.initEditors();
@@ -80,4 +116,10 @@ app.init = function(treeData) {
 
     React.renderComponent(TreeView({"tree": treeData}),
 			  document.getElementById("tree"));
+
+    goog.events.listen(window, goog.events.EventType.POPSTATE, function(e) {
+	var path = document.location.pathname;
+	app.loadPage(path);
+	return false;
+    });
 };
