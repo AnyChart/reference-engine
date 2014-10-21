@@ -68,7 +68,7 @@
 (defn notify-slack [project versions]
   (if (not (empty? versions))
     (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
-               {:form-params {:payload (generate-string {:text (str "<http://api.anychart.dev> API reference updated for " project " updated branches: " (clojure.string/join ", " versions))
+               {:form-params {:payload (generate-string {:text (str "<http://api.anychart.dev> API reference updated for " project ". Branches: " (clojure.string/join ", " versions))
                                                          :channel "#notifications"
                                                          :username "api-reference"})}})))
 
