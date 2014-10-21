@@ -5,9 +5,8 @@
             [taoensso.carmine :as car]
             [reference-engine.db :refer (wcar*)]
             [reference-engine.git :as git]
-            [reference-engine.generator :as docs-generator]))
-
-;; redis keys
+            [reference-engine.generator :as docs-generator]
+            [reference-engine.samples :as samples]))
 
 (defn redis-key-projects []
   (str "ref_projects"))
@@ -90,7 +89,12 @@
      (log/info "entry:" (:full-name entry))
      (wcar* (car/set (redis-key-entry project version (:full-name entry))
                      entry))
-     entry)))
+     entry)
+   (fn [obj-name sample]
+     (samples/parse-sample-server (str config/data-path project)
+                                  version
+                                  obj-name
+                                  sample))))
 
 (defn generate-version-docs [project version]
   (log/info "generating docs for" project "version" version)
@@ -108,8 +112,10 @@
       (if (not (= hash saved-hash))
         (do
           (do-generate-docs project version version-path)
-          (wcar* (car/set (redis-key-project-version-hash project version) hash)))
-        (log/info version "already built, ignoring")))))
+          (wcar* (car/set (redis-key-project-version-hash project version) hash))
+          version)
+        (do (log/info version "already built, ignoring")
+            nil)))))
 
 (defn cleanup-version [project version]
   (wcar* (car/del (redis-key-namespaces project version)))
@@ -120,17 +126,26 @@
   (git/run-sh "rm" "-rf" (str config/data-path
                               project
                               "/versions/*"))
+  (git/run-sh "rm" "-rf" (str config/data-path
+                              project
+                              "/samples-versions/*"))
+  (git/run-sh "rm" "-rf" (str config/data-path
+                              project
+                              "/samples-data/*"))
   (map #(cleanup-version project %) (versions project))
   (wcar* (car/del (redis-key-project-versions project))))
 
 (defn update-project [project]
   (log/info "updating" project)
   (cleanup-project project)
+  (samples/update-repo (str config/data-path project))
   (git/update (str config/data-path project "/repo/"))
   (let [versions (get-versions-from-repo project)]
     (log/info "versions:" versions)
     (wcar* (apply car/sadd (redis-key-project-versions project) versions))
-    (doall (pmap #(generate-version-docs project %) versions))))
+    (let [updated-versions (doall (pmap #(generate-version-docs project %) versions))]
+      (samples/synchronize-repo (str config/data-path project) versions)
+      updated-versions)))
 
 (defn update []
   (let [p (get-projects-from-fs)]

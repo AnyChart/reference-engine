@@ -43,18 +43,18 @@
                                  (generate-exports path)
                                  (jsdoc-parser/create-cache)
                                  utils/cache-entry
-                                 #(samples/parse-sample "local" "master" %1 %2))]
+                                 samples/parse-sample-local)]
     (println "namespaces found:" (count data))
     (reset! local-namespaces data)))
 
 ;(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/data")
 
-(defn generate-for-server [project version path ns-callback top-level-callback]
+(defn generate-for-server [project version path ns-callback top-level-callback sample-callback]
   (ns-callback (jsdoc-parser/parse (get-jsdoc-info path)
                                    (generate-exports path)
                                    (jsdoc-parser/create-cache)
                                    top-level-callback
-                                   #(samples/parse-sample project version %1 %2))))
+                                   sample-callback)))
 
 (defn get-local [name]
   (utils/cached-entry name))
