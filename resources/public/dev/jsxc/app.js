@@ -17,10 +17,19 @@ var TreeNode = React.createClass({displayName: 'TreeNode',
     
     render: function() {
 	var node = this.props.node;
+
+	var children = null;
+	if (node.children)
+	    children = React.DOM.ul(null, 
+	      goog.array.map(node.children, function(node) {
+		  return TreeNode({key: node["full-name"], node: node});
+	      })
+	    );
 	
 	return React.DOM.li({key: this.props.node["full-name"]}, 
 	         React.DOM.a({href: this.getLink()}, 
-	         React.DOM.i({className: "fa fa-chevron-right"}), this.getTitle())
+	         React.DOM.i({className: "fa fa-chevron-right"}), this.getTitle()), 
+	         children
 	       );
     }
 });
