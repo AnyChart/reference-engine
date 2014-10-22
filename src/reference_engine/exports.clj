@@ -28,9 +28,17 @@
 (defn get-exports [f]
   (str (last (re-find #"(?s)//exports[\s]*(.*)$" (slurp f)))))
 
+(defn generate-graphics-exports [path]
+  (clojure.string/replace (slurp (str path))
+                          "acgraph"
+                          "anychart.graphics"))
+
 (defn generate-exports [path]
   (println "searching for exports")
-  (time (reduce str (pmap get-exports (get-files path)))))
+  (let [main-exports (reduce str (pmap get-exports (get-files (str path "/src"))))]
+    (if (.exists (file (str path "/contrib/graphics")))
+      (str main-exports (generate-graphics-exports (str path "/contrib/graphics/src/export.js")))
+      main-exports)))
 
 (defn substring? [sub st]
  (not= (.indexOf st sub) -1))

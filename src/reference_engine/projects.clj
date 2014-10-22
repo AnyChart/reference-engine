@@ -87,7 +87,7 @@
 (defn do-generate-docs [project version path]
   (docs-generator/generate-for-server
    project version
-   (str path "/src")
+   (str path)
    (fn [parse-result]
      (let [namespaces (:namespaces parse-result)]
        (log/info "namespaces: " (map :full-name namespaces))

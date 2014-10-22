@@ -145,6 +145,8 @@ var TreeNode = React.createClass({displayName: 'TreeNode',
 var TreeView = React.createClass({displayName: 'TreeView',
     render: function() {
 	var self = this;
+	goog.array.sortObjectsByKey(self.props.tree, "full-name")
+	
 	return React.DOM.ul(null, goog.array.map(self.props.tree, function(node) {
 	    return TreeNode({key: node["full-name"], node: node});
 	}));

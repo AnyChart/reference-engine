@@ -13,31 +13,39 @@
 (def local-tree (atom []))
 (def local-updating (atom false))
 
+(defn parse-jsdoc-json [json-data]
+  (parse-string (clojure.string/replace json-data
+                                        "acgraph"
+                                        "anychart.graphics")
+                true))
+
 (defn get-jsdoc-recursive [path]
-  (parse-string
-   ((sh "/usr/local/bin/node" "jsdoc/jsdoc.js" "-r" "-X" path) :out)
-   true))
+  (parse-jsdoc-json
+   ((sh "/usr/local/bin/node" "jsdoc/jsdoc.js" "-r" "-X" path) :out)))
 
 (defn get-jsdoc [path]
-  (parse-string
-   ((sh "/usr/local/bin/node" "jsdoc/jsdoc.js" "-X" path) :out)
-   true))
+  (parse-jsdoc-json
+   ((sh "/usr/local/bin/node" "jsdoc/jsdoc.js" "-X" path) :out)))
 
 (defn get-jsdoc-info [path]
-  (println "running jsdoc -x")
-  (let [folders (conj
-                 (filter #(and (.isDirectory %)
-                               (not (.isHidden %)))
-                         (vec (.listFiles (file path))))
-                 (file path))
-        jsdocs (doall (pmap
-                       (fn [folder]
-                         (let [p (.getAbsolutePath folder)]
-                               (if (= p path)
-                                 (get-jsdoc p)
-                                 (get-jsdoc-recursive p))))
-                       folders))]
-    (apply concat jsdocs)))
+  (let [paths (if (.exists (file (str path "/contrib/graphics")))
+                [(str path "/src") (str path "/contrib/graphics/src")]
+                [(str path "/src")])]
+    (println "running jsdoc -x")
+    (println paths)
+    (let [folders (concat
+                   (filter #(and (.isDirectory %)
+                                 (not (.isHidden %)))
+                           (apply concat (map #(.listFiles (file %)) paths)))
+                   (map file paths))
+          jsdocs (doall (pmap
+                         (fn [folder]
+                           (let [p (.getAbsolutePath folder)]
+                             (if (= p path)
+                               (get-jsdoc p)
+                               (get-jsdoc-recursive p))))
+                         folders))]
+      (apply concat jsdocs))))
 
 (defn generate-local [path]
   (let [data (jsdoc-parser/parse (get-jsdoc-info path)
@@ -50,7 +58,7 @@
     (reset! local-tree (generate-string (:tree data)))
     (reset! local-namespaces (:namespaces data))))
 
-;(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src")
+(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo")
 
 (defn generate-for-server [project version path ns-callback top-level-callback sample-callback]
   (ns-callback (jsdoc-parser/parse (get-jsdoc-info path)

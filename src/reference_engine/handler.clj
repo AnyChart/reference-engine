@@ -40,7 +40,7 @@
   (server/run-server #'local-app {:port 9191}))
 
 (defn init-for-repl []
-  (let [path "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"]
+  (let [path "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo"]
     (generator/init-local path)))
 
 (defn -main [mode & args]
