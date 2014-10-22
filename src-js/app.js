@@ -102,10 +102,11 @@ app.replacePage = function(page, data) {
 };
 
 app.loadPage = function(page, e) {
+    var original = page;
     page = page.replace(/#.*/g, "");
     if (e && (e.ctrlKey || e.shiftKey || e.metaKey)) return true;
     if (page == app.page) {
-	return location.hash.length > 0;
+	return original.indexOf("#") != -1;
     }
     app.page = page;
     

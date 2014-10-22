@@ -17,9 +17,18 @@ var TreeNode = React.createClass({
     },
 
     getLink: function() {
+
+	var kind = this.props.node.kind;
+	var isTopLevel = goog.array.contains(["namespace", "class", "typedef", "enum"], kind);
+	var name = this.props.node["full-name"];
+	if (!isTopLevel) {
+	    var index = name.lastIndexOf(".");
+	    name = name.substr(0, index) + "#" + name.substr(index + 1);
+	}
+	
 	if (app.project != null)
-	    return "/" + app.project + "/" + app.version + "/" + this.props.node["full-name"];
-	return "/" + this.props.node["full-name"];
+	    return "/" + app.project + "/" + app.version + "/" + name;
+	return "/" + name;
     },
 
     toggleTree: function(e) {
