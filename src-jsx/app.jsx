@@ -6,9 +6,74 @@ goog.require('goog.style');
 var SearchField = React.createClass({
 
     getInitialState: function() {
+	return { searchVisible: false };
+    },
+
+    search: function(e) {
+	var query = e.target.value;
+	if (query.length) {
+	    query = query.toLowerCase();
+	    this.setState({results: goog.array.filter(this.props.index, function(row) {
+		return row.toLowerCase().indexOf(query) != -1;
+	    }), searchVisible: true});
+	}else {
+	    this.setState({results: null});
+	}
+    },
+
+    hideSearch: function() {
+	
+	this.setState({searchVisible: false});
+    },
+
+    componentDidMount: function() {
+	 goog.events.listen(document, goog.events.EventType.CLICK, this.hideSearch);
+    },
+
+    componentDidUnmount: function() {
+	goog.events.unlisten(document, goog.events.EventType.CLICK, this.hideSearch);
+    },
+
+    showSearch: function(e) {
+	this.search(e);
+    },
+
+    onLinkClick: function(e) {
+	var res = app.loadPage(e.target.getAttribute("href"), e);
+	this.setState({searchVisible: false});
+	return res;
+    },
+
+    getLink: function(title) {
+	if (app.project != null)
+	    return "/" + app.project + "/" + app.version + "/" + title;
+	return "/" + title;
     },
 
     render: function() {
+	var results = null;
+	var self = this;
+	if (this.state.results && this.state.searchVisible) {
+	    if (this.state.results.length) {
+		results = <ul className="search-results">
+		  {goog.array.map(this.state.results, function(row) {
+		      return <li key={row}><a href={self.getLink(row)} onClick={self.onLinkClick}>{row}</a></li>;
+		  })}
+		</ul>;
+	    }else {
+		results = <ul className="search-results">
+		  <li><a>Nothing found</a></li>
+		</ul>;
+	    }
+	}
+	
+	return (<div className="search">
+		  <i className="fa fa-search"></i>
+		  <div>
+		    <input type="text" ref="query" placeholder="search for method in the tree" onChange={this.search} onFocus={this.showSearch} />
+		  </div>
+		  {results}
+		</div>);
     }
 });
 

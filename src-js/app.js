@@ -130,6 +130,17 @@ app.loadPage = function(page, e) {
     }else { return true; }
 };
 
+app.addNodeToSearchIndex = function(node) {
+    if (!node.children || !node.children.length)
+	return [node["full-name"]];
+    return [node["full-name"]].concat(app.buildSearchIndex(node.children));
+};
+
+app.buildSearchIndex = function(treeData) {
+    return goog.array.concat.apply(null,
+	goog.array.map(treeData, app.addNodeToSearchIndex));
+};
+
 app.init = function(project, version, treeData) {
     if (project) {
 	app.project = project;
@@ -146,6 +157,9 @@ app.init = function(project, version, treeData) {
 
     React.renderComponent(TreeView({"tree": treeData}),
 			  document.getElementById("tree"));
+
+    React.renderComponent(SearchField({"index": app.buildSearchIndex(treeData)}),
+			  document.getElementById("search"));
 
     goog.events.listen(window, goog.events.EventType.POPSTATE, function(e) {
 	var path = document.location.pathname;
