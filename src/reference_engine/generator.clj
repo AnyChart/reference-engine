@@ -58,7 +58,7 @@
     (reset! local-tree (generate-string (:tree data)))
     (reset! local-namespaces (:namespaces data))))
 
-(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo")
+;;(generate-local "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo")
 
 (defn generate-for-server [project version path ns-callback top-level-callback sample-callback]
   (ns-callback (jsdoc-parser/parse (get-jsdoc-info path)
