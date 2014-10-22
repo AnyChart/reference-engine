@@ -17,6 +17,12 @@
         goog.require('app');
       </script>
     {{/debug}}
+    {{^debug}}
+      <script src="/min/react.min.js"></script>
+      <link rel="stylesheet" href="/min/styles.css?v={{version}}" />
+      <link rel="stylesheet" href="/fonts/font-awesome.css" />
+      <script src="/min/app.min.js"></script>
+    {{/debug}}
   </head>
   <body>
     <div id="sidebar">

@@ -71,9 +71,9 @@ module.exports = function(grunt) {
 	    }
 	},
 	closureBuilder: {
-	    landing: {
+	    app: {
 		options: {
-		    inputs: 'src-js/landing.js',
+		    inputs: 'src-js/app.js',
 		    closureLibraryPath: 'bower_components/closurelibrary/',
 		    compilerFile: 'bower_components/closure-compiler/lib/vendor/compiler.jar',
 		    compile: true,
@@ -86,7 +86,7 @@ module.exports = function(grunt) {
 		src: ['src-js',
 		      'resources/public/dev/jsxc',
 		      'bower_components/closurelibrary'],
-		dest: 'resources/public/min/landing.min.js'
+		dest: 'resources/public/min/app.min.js'
 	    }
 	}
     });

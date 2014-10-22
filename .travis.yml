@@ -15,7 +15,7 @@ install:
  - npm install
  - gem install compass
 before_script:
- - grunt dev
+ - grunt release
 script: lein2 uberjar
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then export SERVER="api.anychart.com"; fi
