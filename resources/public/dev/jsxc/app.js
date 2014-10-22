@@ -10,9 +10,13 @@ var TreeNode = React.createClass({displayName: 'TreeNode',
     },
 
     getTitle: function() {
+	var name = this.props.node["name"];
 	switch (this.props.node.kind) {
 	    case "namespace": return this.props.node["full-name"];
-	    default: return this.props.node["name"];
+	    case "enum": return "[" + name +"]";
+	    case "typedef": return "{" + name +"}";
+	    case "function": return name +"()";
+	    default: return name;
 	}
     },
 
