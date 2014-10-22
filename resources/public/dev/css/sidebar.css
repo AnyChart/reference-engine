@@ -12,21 +12,25 @@
   margin-left: 30px;
 }
 /* line 13, ../../../../src-scss/sidebar-tree.scss */
+#sidebar .tree > ul {
+  margin-left: 0px;
+}
+/* line 17, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree li {
   line-height: 20px;
   margin-top: 3px;
   margin-bottom: px;
 }
-/* line 19, ../../../../src-scss/sidebar-tree.scss */
+/* line 23, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a {
   color: #D4D4D4;
   font-weight: bold;
 }
-/* line 23, ../../../../src-scss/sidebar-tree.scss */
+/* line 27, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a i {
   margin-right: 8px;
 }
-/* line 27, ../../../../src-scss/sidebar-tree.scss */
+/* line 31, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a:hover {
   color: white;
 }

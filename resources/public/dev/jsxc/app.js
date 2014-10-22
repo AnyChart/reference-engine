@@ -3,6 +3,15 @@ goog.provide('app.view');
 goog.require('goog.dom');
 goog.require('goog.style');
 
+var SearchField = React.createClass({displayName: 'SearchField',
+
+    getInitialState: function() {
+    },
+
+    render: function() {
+    }
+});
+
 var TreeNode = React.createClass({displayName: 'TreeNode',
 
     getInitialState: function() {
@@ -25,7 +34,7 @@ var TreeNode = React.createClass({displayName: 'TreeNode',
 	var kind = this.props.node.kind;
 	var isTopLevel = goog.array.contains(["namespace", "class", "typedef", "enum"], kind);
 	var name = this.props.node["full-name"];
-	if (!isTopLevel) {
+	if (!isTopLevel && name.indexOf("#") == -1) {
 	    var index = name.lastIndexOf(".");
 	    name = name.substr(0, index) + "#" + name.substr(index + 1);
 	}

@@ -60,7 +60,7 @@
         (render-resource "templates/app.mustache"
                          {:version "7"
                           :v version
-                          :debug false
+                          :debug true
                           :main info
                           :versions (sort (prj/versions project))
                           :project project

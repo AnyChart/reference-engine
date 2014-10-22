@@ -286,7 +286,7 @@
 }
 /* line 132, ../../../../src-scss/content.scss */
 #content .reg i.types i:before {
-  content: ' | ';
+  content: ' | {';
 }
 /* line 136, ../../../../src-scss/content.scss */
 #content .reg i.types i:first-child:before {
