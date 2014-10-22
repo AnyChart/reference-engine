@@ -31,8 +31,8 @@
                         :type-link (fn [text]
                                      (fn [render-fn]
                                        (let [type (render-fn text)]
-                                         (if (prj/has-entry project version type)
-                                           (str "<a href='/" project "/" version "/" type "'>" type "</a>")
+                                         (if (.startsWith type "anychart")
+                                           (str "<a class='type-link' href='/" project "/" version "/" type "'>" type "</a>")
                                            type))))
                         :main info
                         :kind {:namespace (= (:kind info) "namespace")

@@ -46,7 +46,7 @@
   (if description
     (clojure.string/replace description
                             #"(?s)\{@link ([^ ]+)\}"
-                            (str "<a href=\"" links-prefix "$1\">$1</a>"))))
+                            (str "<a class=\"type-link\" href=\"" links-prefix "$1\">$1</a>"))))
 
 (defn parse-general-doclet [member sample-callback links-prefix]
   (let [samples (if (and (> (count (:examples member)) 0)

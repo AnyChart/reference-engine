@@ -55,6 +55,7 @@ app.toggleVersions = function(e) {
     goog.style.setElementShown(versions, !goog.style.isElementShown(versions));
     goog.dom.classes.toggle(toggler, "version-toggle");
     e.stopPropagation();
+    return false;
 };
 
 app.initVersionToggle = function() {
@@ -75,14 +76,39 @@ app.initEditors = function() {
 
 app.project = null;
 app.version = null;
+app.page = null;
+
+app.updateLinks = function() {
+    goog.array.map(goog.dom.getElementsByClass("type-link",
+					       goog.dom.getElement("content")),
+		   function(link) {
+		       goog.events.listen(link, goog.events.EventType.CLICK, function(e) {
+			   if (app.loadPage(link.getAttribute('href'), e)) {
+			       return true;
+			   }else {
+			       e.preventDefault();
+			       e.stopPropagation();
+			       return false;
+			   }
+		       });
+		   });
+};
 
 app.replacePage = function(page, data) {
     goog.dom.getElement("content").innerHTML = data.content;
     goog.dom.getElement("current-path").innerHTML = data.page;
+    app.updateLinks();
+    app.initEditors();
 };
 
 app.loadPage = function(page, e) {
+    page = page.replace(/#.*/g, "");
     if (e && (e.ctrlKey || e.shiftKey || e.metaKey)) return true;
+    if (page == app.page) {
+	return location.hash.length > 0;
+    }
+    app.page = page;
+    
     if (history.pushState) {
 	goog.dom.getElement("content").innerHTML = "Loading...";
 	if (e) {
@@ -108,10 +134,13 @@ app.init = function(project, version, treeData) {
 	app.project = project;
 	app.version = version;
     }
+    app.page = location.pathname;
     
     app.initResize();
     app.initVersionToggle();
     app.initEditors();
+    app.updateLinks();
+    
     goog.events.listen(document, goog.events.EventType.CLICK, app.hideDialogs);
 
     React.renderComponent(TreeView({"tree": treeData}),
