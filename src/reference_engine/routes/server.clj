@@ -110,7 +110,7 @@
     (if (prj/exists? project)
       (let [versions (filter #(not (= % nil))
                              (prj/update-project project))]
-        ;;(notify-slack project versions)
+        (notify-slack project versions)
         "Updated!")
       (route/not-found "not found"))))
 
