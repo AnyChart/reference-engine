@@ -73,6 +73,8 @@
   (run-sh "rm" "-rf" target)
   (run-sh "cp" "-R" path target)
   (run-git target "checkout" branch-or-tag)
-  (run-git target "pull" "origin" branch-or-tag)
+  (run-git target "pull" "origin" branch-or-tag))
+
+(defn update-submodules [target]
   (run-git target "submodule" "init")
   (run-git target "submodule" "update"))

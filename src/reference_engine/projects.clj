@@ -121,6 +121,7 @@
           saved-hash (wcar* (car/get (redis-key-project-version-hash project version)))]
       (if (not (= hash saved-hash))
         (do
+          (git/update-submodules version-path)
           (do-generate-docs project version version-path)
           (wcar* (car/set (redis-key-project-version-hash project version) hash))
           version)
