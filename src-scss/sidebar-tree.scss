@@ -1,7 +1,31 @@
+.hide-scroll {
+    overflow-y: hidden;
+    overflow-x: hidden;
+
+    position: absolute;
+    left: 20px;
+    right: 0;
+    top: 150px;
+    bottom: 69px;
+}
+
 #sidebar .tree {
     list-style: none;
     font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
     font-size: 14px;
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 100%;
+    
+    margin-right: -100px;
+    padding-right: 100px;
 
     ul {
 	margin-top: 5px;

@@ -60,7 +60,7 @@
         (render-resource "templates/app.mustache"
                          {:version "7"
                           :v version
-                          :debug true
+                          :debug false
                           :main info
                           :versions (sort (prj/versions project))
                           :project project
@@ -101,7 +101,7 @@
 (defn notify-slack [project versions]
   (if (not (empty? versions))
     (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
-               {:form-params {:payload (generate-string {:text (str "<http://api.anychart.dev> API reference updated for " project ". Branches: " (clojure.string/join ", " versions))
+               {:form-params {:payload (generate-string {:text (str "API reference updated for " project ". Branches: " (clojure.string/join ", " versions))
                                                          :channel "#notifications"
                                                          :username "api-reference"})}})))
 
@@ -110,7 +110,7 @@
     (if (prj/exists? project)
       (let [versions (filter #(not (= % nil))
                              (prj/update-project project))]
-        ;;(notify-slack project versions)
+        (notify-slack project versions)
         "Updated!")
       (route/not-found "not found"))))
 
