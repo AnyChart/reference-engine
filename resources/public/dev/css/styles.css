@@ -61,40 +61,60 @@ a {
 }
 
 /* line 1, ../../../../src-scss/sidebar-tree.scss */
+.hide-scroll {
+  overflow-y: hidden;
+  overflow-x: hidden;
+  position: absolute;
+  left: 20px;
+  right: 0;
+  top: 150px;
+  bottom: 69px;
+}
+
+/* line 12, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree {
   list-style: none;
   font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
   font-size: 14px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
   overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 100%;
+  margin-right: -100px;
+  padding-right: 100px;
 }
-/* line 8, ../../../../src-scss/sidebar-tree.scss */
+/* line 30, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree ul {
   margin-top: 5px;
   margin-right: 0px;
   margin-bottom: 10px;
   margin-left: 30px;
 }
-/* line 15, ../../../../src-scss/sidebar-tree.scss */
+/* line 37, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree > ul {
   margin-left: 0px;
 }
-/* line 19, ../../../../src-scss/sidebar-tree.scss */
+/* line 41, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree li {
   line-height: 20px;
   margin-top: 3px;
   margin-bottom: px;
 }
-/* line 26, ../../../../src-scss/sidebar-tree.scss */
+/* line 48, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a {
   color: #D4D4D4;
   font-weight: bold;
   white-space: nowrap;
 }
-/* line 31, ../../../../src-scss/sidebar-tree.scss */
+/* line 53, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a i {
   margin-right: 8px;
 }
-/* line 35, ../../../../src-scss/sidebar-tree.scss */
+/* line 57, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a:hover {
   color: white;
 }
@@ -229,15 +249,6 @@ a {
   color: #929292;
 }
 /* line 136, ../../../../src-scss/sidebar.scss */
-#sidebar .tree {
-  position: absolute;
-  left: 20px;
-  right: 0;
-  top: 150px;
-  bottom: 69px;
-  overflow-y: scroll;
-}
-/* line 145, ../../../../src-scss/sidebar.scss */
 #sidebar .footer {
   position: absolute;
   height: 60px;
@@ -249,18 +260,18 @@ a {
   padding-top: 8px;
   color: #929292;
 }
-/* line 156, ../../../../src-scss/sidebar.scss */
+/* line 147, ../../../../src-scss/sidebar.scss */
 #sidebar .footer a, #sidebar .footer a:visited, #sidebar .footer a:hover {
   font-size: 24px;
   color: #929292;
 }
-/* line 161, ../../../../src-scss/sidebar.scss */
+/* line 152, ../../../../src-scss/sidebar.scss */
 #sidebar .footer p {
   font-size: 12px;
   line-height: 12px;
   padding-top: 2px;
 }
-/* line 168, ../../../../src-scss/sidebar.scss */
+/* line 159, ../../../../src-scss/sidebar.scss */
 #sidebar #resizer {
   position: absolute;
   right: 0px;
