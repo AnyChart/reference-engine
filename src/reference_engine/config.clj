@@ -13,3 +13,5 @@
 (def data-path (str base-path "/data/"))
 
 (def is-local (atom false))
+
+(def debug? (System/getProperty "dev"))

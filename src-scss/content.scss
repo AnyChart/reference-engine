@@ -33,13 +33,13 @@
 	margin: 20px 0;
     }
 
-    a span {
+    a, a:visited, a span {
 	cursor: pointer;
 	color: #428bca;
 	font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
     }
 
-    a:hover span {
+    a:hover, a:hover span {
 	text-decoration: underline;
     }
 
@@ -173,5 +173,9 @@
 
     h4 {
 	font-weight: bold;
+    }
+
+    .code-sample {
+	margin-top: 10px;
     }
 }

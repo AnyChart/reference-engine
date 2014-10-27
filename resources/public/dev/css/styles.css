@@ -83,16 +83,17 @@ a {
   margin-top: 3px;
   margin-bottom: px;
 }
-/* line 23, ../../../../src-scss/sidebar-tree.scss */
+/* line 24, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a {
   color: #D4D4D4;
   font-weight: bold;
+  white-space: nowrap;
 }
-/* line 27, ../../../../src-scss/sidebar-tree.scss */
+/* line 29, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a i {
   margin-right: 8px;
 }
-/* line 31, ../../../../src-scss/sidebar-tree.scss */
+/* line 33, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a:hover {
   color: white;
 }
@@ -459,13 +460,13 @@ a {
   margin: 20px 0;
 }
 /* line 36, ../../../../src-scss/content.scss */
-#content a span {
+#content a, #content a:visited, #content a span {
   cursor: pointer;
   color: #428bca;
   font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
 }
 /* line 42, ../../../../src-scss/content.scss */
-#content a:hover span {
+#content a:hover, #content a:hover span {
   text-decoration: underline;
 }
 /* line 46, ../../../../src-scss/content.scss */
@@ -598,6 +599,10 @@ a {
 /* line 174, ../../../../src-scss/content.scss */
 #content h4 {
   font-weight: bold;
+}
+/* line 178, ../../../../src-scss/content.scss */
+#content .code-sample {
+  margin-top: 10px;
 }
 
 /* line 5, ../../../../src-scss/styles.scss */

@@ -60,7 +60,7 @@
         (render-resource "templates/app.mustache"
                          {:version "7"
                           :v version
-                          :debug false
+                          :debug true
                           :main info
                           :versions (sort (prj/versions project))
                           :project project
@@ -110,7 +110,7 @@
     (if (prj/exists? project)
       (let [versions (filter #(not (= % nil))
                              (prj/update-project project))]
-        (notify-slack project versions)
+        ;;(notify-slack project versions)
         "Updated!")
       (route/not-found "not found"))))
 

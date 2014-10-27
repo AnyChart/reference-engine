@@ -22,7 +22,6 @@ var SearchField = React.createClass({displayName: 'SearchField',
     },
 
     hideSearch: function() {
-	
 	this.setState({searchVisible: false});
     },
 
@@ -127,12 +126,17 @@ var TreeNode = React.createClass({displayName: 'TreeNode',
 	
 
 	var children = null;
-	if (node.children && this.state.visible)
+	if (node.children && this.state.visible) {
+	    var hash = {};
+	    
 	    children = React.DOM.ul({ref: "list"}, 
 	      goog.array.map(node.children, function(node) {
+		  if (hash[node["full-name"]]) return null;
+		  hash[node["full-name"]] = true;
 		  return TreeNode({key: node["full-name"], node: node});
 	      })
 	    );
+	}
 	
 	return React.DOM.li({key: this.props.node["full-name"]}, 
 	         React.DOM.a({href: this.getLink(), onClick: this.toggleTree}, 
@@ -145,9 +149,13 @@ var TreeNode = React.createClass({displayName: 'TreeNode',
 var TreeView = React.createClass({displayName: 'TreeView',
     render: function() {
 	var self = this;
-	goog.array.sortObjectsByKey(self.props.tree, "full-name")
+	goog.array.sortObjectsByKey(self.props.tree, "full-name");
+
+	var hash = {};
 	
 	return React.DOM.ul(null, goog.array.map(self.props.tree, function(node) {
+	    if (hash[node["full-name"]]) return null;
+	    hash[node["full-name"]] = true;
 	    return TreeNode({key: node["full-name"], node: node});
 	}));
     }

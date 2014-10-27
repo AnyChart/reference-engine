@@ -21,16 +21,17 @@
   margin-top: 3px;
   margin-bottom: px;
 }
-/* line 23, ../../../../src-scss/sidebar-tree.scss */
+/* line 24, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a {
   color: #D4D4D4;
   font-weight: bold;
+  white-space: nowrap;
 }
-/* line 27, ../../../../src-scss/sidebar-tree.scss */
+/* line 29, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a i {
   margin-right: 8px;
 }
-/* line 31, ../../../../src-scss/sidebar-tree.scss */
+/* line 33, ../../../../src-scss/sidebar-tree.scss */
 #sidebar .tree a:hover {
   color: white;
 }

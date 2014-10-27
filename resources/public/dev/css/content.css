@@ -189,13 +189,13 @@
   margin: 20px 0;
 }
 /* line 36, ../../../../src-scss/content.scss */
-#content a span {
+#content a, #content a:visited, #content a span {
   cursor: pointer;
   color: #428bca;
   font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
 }
 /* line 42, ../../../../src-scss/content.scss */
-#content a:hover span {
+#content a:hover, #content a:hover span {
   text-decoration: underline;
 }
 /* line 46, ../../../../src-scss/content.scss */
@@ -328,4 +328,8 @@
 /* line 174, ../../../../src-scss/content.scss */
 #content h4 {
   font-weight: bold;
+}
+/* line 178, ../../../../src-scss/content.scss */
+#content .code-sample {
+  margin-top: 10px;
 }

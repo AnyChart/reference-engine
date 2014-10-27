@@ -31,8 +31,6 @@
   (let [paths (if (.exists (file (str path "/contrib/graphics")))
                 [(str path "/src") (str path "/contrib/graphics/src")]
                 [(str path "/src")])]
-    (println "running jsdoc -x")
-    (println paths)
     (let [folders (concat
                    (filter #(and (.isDirectory %)
                                  (not (.isHidden %)))
@@ -41,7 +39,7 @@
           jsdocs (doall (pmap
                          (fn [folder]
                            (let [p (.getAbsolutePath folder)]
-                             (if (= p path)
+                             (if (some #{p} paths)
                                (get-jsdoc p)
                                (get-jsdoc-recursive p))))
                          folders))]

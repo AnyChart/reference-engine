@@ -96,7 +96,6 @@
        (wcar* (apply car/sadd (redis-key-namespaces project version)
                      (map :full-name namespaces)))))
    (fn [entry]
-     (log/info "entry:" (:full-name entry))
      (wcar* (car/set (redis-key-entry project version (:full-name entry))
                      entry))
      entry)
