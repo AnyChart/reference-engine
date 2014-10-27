@@ -280,38 +280,39 @@ a {
   border-top: 10px solid #fff;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 14px;
+  z-index: 999;
 }
-/* line 12, ../../../../src-scss/content-header.scss */
+/* line 13, ../../../../src-scss/content-header.scss */
 #main .header ul.path {
   padding-top: 18px;
   margin-left: 15px;
 }
-/* line 17, ../../../../src-scss/content-header.scss */
+/* line 18, ../../../../src-scss/content-header.scss */
 #main .header ul.path li {
   display: inline;
   color: #fff;
 }
-/* line 21, ../../../../src-scss/content-header.scss */
+/* line 22, ../../../../src-scss/content-header.scss */
 #main .header ul.path li a, #main .header ul.path li a:hover, #main .header ul.path li a:visited {
   color: #fff;
 }
-/* line 25, ../../../../src-scss/content-header.scss */
+/* line 26, ../../../../src-scss/content-header.scss */
 #main .header ul.path li span {
   color: #ccc;
   padding-left: 5px;
 }
-/* line 31, ../../../../src-scss/content-header.scss */
+/* line 32, ../../../../src-scss/content-header.scss */
 #main .header ul.path :last-child {
   color: #ccc;
 }
-/* line 36, ../../../../src-scss/content-header.scss */
+/* line 37, ../../../../src-scss/content-header.scss */
 #main .header .right {
   position: absolute;
   height: 30px;
   right: 0px;
   top: 10px;
 }
-/* line 42, ../../../../src-scss/content-header.scss */
+/* line 43, ../../../../src-scss/content-header.scss */
 #main .header .right .version {
   line-height: 28px;
   display: inline-block;
@@ -325,21 +326,21 @@ a {
   right: 200px;
   white-space: pre;
 }
-/* line 55, ../../../../src-scss/content-header.scss */
+/* line 56, ../../../../src-scss/content-header.scss */
 #main .header .right .version:hover {
   border: 1px solid #A7A7A7;
   background: #E8E8E8;
 }
-/* line 60, ../../../../src-scss/content-header.scss */
+/* line 61, ../../../../src-scss/content-header.scss */
 #main .header .right .version:focus {
   border: 1px solid #A7A7A7;
   background: #E8E8E8;
 }
-/* line 66, ../../../../src-scss/content-header.scss */
+/* line 67, ../../../../src-scss/content-header.scss */
 #main .header .right .version-toggle {
   background-color: #e6e6e6;
 }
-/* line 70, ../../../../src-scss/content-header.scss */
+/* line 71, ../../../../src-scss/content-header.scss */
 #main .header .right .support-icon {
   display: inline-block;
   font-size: 20px;
@@ -355,7 +356,7 @@ a {
   top: 0px;
   right: 140px;
 }
-/* line 86, ../../../../src-scss/content-header.scss */
+/* line 87, ../../../../src-scss/content-header.scss */
 #main .header .right .meta {
   display: inline-block;
   font-size: 12px;
@@ -366,15 +367,15 @@ a {
   top: 2px;
   width: 120px;
 }
-/* line 96, ../../../../src-scss/content-header.scss */
+/* line 97, ../../../../src-scss/content-header.scss */
 #main .header .right .meta p {
   padding-bottom: 4px;
 }
-/* line 100, ../../../../src-scss/content-header.scss */
+/* line 101, ../../../../src-scss/content-header.scss */
 #main .header .right .meta a, #main .header .right .meta a:hover, #main .header .right .meta a:visited {
   color: #fff;
 }
-/* line 105, ../../../../src-scss/content-header.scss */
+/* line 106, ../../../../src-scss/content-header.scss */
 #main .header .right #version-toggle {
   font-size: 14px;
   position: relative;
@@ -391,7 +392,7 @@ a {
   z-index: 999999;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
-/* line 121, ../../../../src-scss/content-header.scss */
+/* line 122, ../../../../src-scss/content-header.scss */
 #main .header .right #version-toggle li {
   line-height: 20px;
   display: list-item;
@@ -399,7 +400,7 @@ a {
   color: #333;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
-/* line 128, ../../../../src-scss/content-header.scss */
+/* line 129, ../../../../src-scss/content-header.scss */
 #main .header .right #version-toggle li a {
   display: block;
   padding: 3px 20px;
@@ -410,7 +411,7 @@ a {
   white-space: nowrap;
   margin-left: -5px;
 }
-/* line 139, ../../../../src-scss/content-header.scss */
+/* line 140, ../../../../src-scss/content-header.scss */
 #main .header .right #version-toggle li a, #main .header .right #version-toggle li a:hover, #main .header .right #version-toggle li a:focus {
   background: none;
   cursor: pointer;
@@ -419,7 +420,7 @@ a {
   border-left: 5px solid #929292;
   text-decoration: none;
 }
-/* line 148, ../../../../src-scss/content-header.scss */
+/* line 149, ../../../../src-scss/content-header.scss */
 #main .header .right #version-toggle li a:hover {
   border-left-color: #474747;
   color: #929292;
