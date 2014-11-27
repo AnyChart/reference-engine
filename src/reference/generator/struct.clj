@@ -1,21 +1,32 @@
 (ns reference.generator.struct)
 
-(defn- add-member [struct entry]
-  (let [member-of (:member-of entry)]
-    (if (contains? struct member-of)
-      (assoc-in struct [member-of :members] (conj (get-in struct [member-of :members]) entry))
-      (assoc struct member-of {:name member-of :entries [] :members [entry]}))))
-
-(defn- add-entry [struct entry]
-  (let [name (:full-name entry)]
-    (if (contains? struct name)
-      (assoc-in struct [name :entries] (conj (get-in struct [name :entries] entry)))
-      (assoc struct name {:name name :entries [entry] :members []}))))
-
-(defn- add-entry-to-struct
+(defn- reduce-by-kind
   ([] {})
   ([res entry]
-     (add-member (add-entry res entry) entry)))
+     (let [kind (:kind entry)
+           name (:full-name entry)
+           container-key (case kind
+                       "namespace" :namespaces
+                       "class" :classes
+                       "typedef" :typedefs
+                       "function" :functions
+                       "enum" :enums
+                       "constant" :constants
+                       "field" :fields)
+           container (get res container-key)
+           entries (get container name)]
+       (if entries
+         (assoc-in res [container-key name] (conj entries entry))
+         (assoc-in res [container-key name] [entry])))))
+
+(defn- group-by-kind [entries]
+  (reduce reduce-by-kind {:namespaces {}
+                          :classes {}
+                          :typedefs {}
+                          :functions {}
+                          :enums {}
+                          :constants {}
+                          :fields {}} entries))
 
 (defn build [entries]
-  (reduce add-entry-to-struct {} entries))
+  (-> (group-by-kind entries)))
