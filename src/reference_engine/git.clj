@@ -3,7 +3,7 @@
             [clojure.java.io :refer [file writer]]
             [clojure.tools.logging :as log]
             [clojure.string :refer [split trim]]
-            [reference-engine.config :refer [git-ssh]]))
+            [reference-engine.config :refer [git-ssh debug?]]))
 
 (def env-config {:GIT_SSH git-ssh})
 

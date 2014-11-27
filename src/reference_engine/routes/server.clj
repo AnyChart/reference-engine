@@ -6,7 +6,10 @@
             [clostache.parser :refer [render-resource]]
             [org.httpkit.client :as http]
             [cheshire.core :refer [generate-string]]
-            [reference-engine.projects :as prj]))
+            [reference-engine.projects :as prj]
+            [reference-engine.db :refer (wcar*)]
+            [taoensso.carmine.message-queue :as car-mq]
+            [taoensso.carmine :as car]))
 
 (defn generate-type-link [project version]
   (fn [text]
@@ -105,14 +108,33 @@
                                                          :channel "#notifications"
                                                          :username "api-reference"})}})))
 
+(defn do-update [project]
+  (let [versions (filter #(not (= % nil))
+                         (prj/update-project project))]
+    (notify-slack project versions)
+    "Updated!"))
+
 (defn update-project [request]
   (let [project (get-in request [:params :project])]
     (if (prj/exists? project)
-      (let [versions (filter #(not (= % nil))
-                             (prj/update-project project))]
-        (notify-slack project versions)
-        "Updated!")
+      (do (wcar* (car-mq/enqueue "reference-queue" project))
+          (str "queued"))
       (route/not-found "not found"))))
+
+(defn setup-worker []
+  (def update-worker
+    (car-mq/worker reference-engine.db/server-conn "reference-queue"
+                   {:handler (fn [{:keys [message attempt]}]
+                               (try
+                                 (do
+                                   (println message)
+                                   (do-update message)
+                                   {:status :success})
+                                 (catch Exception e
+                                   (do
+                                     (println e)
+                                     (notify-slack message "failed")
+                                     {:status :success}))))})))
 
 (defn update-all [request]
   (prj/update)

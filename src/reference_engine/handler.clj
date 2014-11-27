@@ -1,6 +1,6 @@
 (ns reference-engine.handler
   (:require [reference-engine.routes.index :refer [index-routes]]
-            [reference-engine.routes.server :refer [server-routes]]
+            [reference-engine.routes.server :refer [server-routes setup-worker]]
             [reference-engine.routes.local :refer [local-routes]]
             [reference-engine.generator :as generator]
             [compojure.core :refer [routes]]
@@ -23,21 +23,8 @@
 
 (defn start-server []
   (println "starting server http://localhost:9197/")
+  (setup-worker)
   (server/run-server #'server-app {:port 9197}))
-
-(defn start-local [path]
-  (println "generating local documentation:" path)
-  (generator/init-local path)
-  (sh "open" (str "http://localhost:9191/" (generator/get-first-namespace)))
-  (println "starting server http://localhost:9191/")
-  (println "############################")
-  (println "Press r<RET> to rebuild docs")
-  (go (while true
-        (let [c (read-line)]
-          (if (= (clojure.string/lower-case c) "r")
-            (generator/init-local path)
-            (println "Unknown command: " c)))))
-  (server/run-server #'local-app {:port 9191}))
 
 (defn init-for-repl []
   (let [path "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo"]
@@ -45,5 +32,4 @@
 
 (defn -main [mode & args]
   (if (= mode "server")
-    (start-server)
-    (start-local mode)))
+    (start-server)))

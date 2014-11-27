@@ -1,8 +1,8 @@
 (ns reference-engine.config)
 
-(def git-ssh (if (not (System/getProperty "dev"))
-               "/apps/playground/keys/git"
-               "/Users/alex/Work/anychart/reference-engine/resources/keys/git"))
+(def git-ssh (if-not (System/getProperty "dev")
+               "/apps/reference/keys/git"
+               "/Users/alex/Work/anychart/reference-engine/data/keys/git"))
 
 (def base-path (if (System/getProperty "dev")
                  "/Users/alex/Work/anychart/reference-engine"
