@@ -23,6 +23,8 @@
     {:name (:name raw)
      :kind (:kind raw)
      :scope (:scope raw)
+     :static (static? raw)
+     :force-include (tags/contains-tag? raw "includeDoc")
      :description (parse-description (:description raw))
      :full-name (cleanup-name (:longname raw))
      :member-of (cleanup-name (:memberof raw))
@@ -110,13 +112,14 @@
       :type (get-in raw [:type :names]))))
 
 (defn- parse-entry [raw]
-  (case (:kind raw)
-    "namespace" (parse-ns-def raw)
-    "member" (parse-member-def raw)
-    "class" (parse-class-def raw)
-    "typedef" (parse-typedef-def raw)
-    "function" (parse-function-def raw)
-    nil))
+  (if-not (tags/contains-tag? raw "ignoreDoc")
+    (case (:kind raw)
+      "namespace" (parse-ns-def raw)
+      "member" (parse-member-def raw)
+      "class" (parse-class-def raw)
+      "typedef" (parse-typedef-def raw)
+      "function" (parse-function-def raw)
+      nil)))
 
 (defn parse [jsdoc]
   (filter #(not (nil? %)) (map parse-entry jsdoc)))

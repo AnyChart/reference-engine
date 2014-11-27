@@ -2,8 +2,7 @@
   (:require [reference.generator.parser :as parser]
             [reference.generator.jsdoc :as jsdoc]
             [reference.generator.git :as git]
-            [reference.generator.struct :as struct]
-            [reference.generator.inheritance :as inheritance]))
+            [reference.generator.struct :as struct]))
 
 (defn build [& paths]
   (-> (apply concat (map jsdoc/get-jsdoc paths))
@@ -13,6 +12,6 @@
 
 (def res
   (time
-   (build "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/math")))
+   (build "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/data")))
   
 (println "count:" (count res))
