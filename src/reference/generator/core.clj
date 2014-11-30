@@ -2,18 +2,20 @@
   (:require [reference.generator.parser :as parser]
             [reference.generator.jsdoc :as jsdoc]
             [reference.generator.git :as git]
-            [reference.generator.struct :as struct]))
+            [reference.generator.struct :as struct]
+            [reference.generator.exports :as exports]))
 
-(defn build [& paths]
-  (-> (apply concat (map jsdoc/get-jsdoc paths))
+(defn build [exports-data & paths]
+  (exports/remove-not-exported
+   (-> (apply concat (map jsdoc/get-jsdoc paths))
       parser/parse
-      struct/build))
+      struct/build)
+   exports-data))
 
 (println "======")
-(def res
-  (time
-   (build "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/data")))
+(let [src-path "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/data"
+      exports-data (exports/add-export-from-folder src-path)]
+  (def res (build exports-data src-path)))
 
 (println "count:" (count res))
-(println "classes:" (count (:classes res)))
-(println "methods:" (:methods (last (first (:classes res)))))
+(println res)

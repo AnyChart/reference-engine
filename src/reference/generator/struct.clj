@@ -106,6 +106,7 @@
             :fields (members name struct :fields true)
             :functions (members name struct :functions true)
             :enums (filter #(= (:member-of (last %)) name) enums)
+            :typedefs (members name struct :typedefs true)
             :classes (filter #(= (:member-of (last %)) name) classes))]))
 
 (defn- structurize [struct]
