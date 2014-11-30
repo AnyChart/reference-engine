@@ -57,8 +57,21 @@
             :fields (members name struct :fields false)
             :static-fields (members name struct :fields true))]))
 
-(defn- check-inheritance [[name entry] classes]
-  [name entry]) ; to be added
+(defn- get-inheritance [entry classes cache]
+  (if (contains? @cache (:full-name entry))
+    (get @cache (:full-name entry))
+    (let [inherits
+          (if (:has-inherits entry)
+            (concat (:inherits entry)
+                    (reduce concat []
+                            (map #(get-inheritance (get classes %) classes cache)
+                                 (:inherits entry))))
+            nil)]
+      (swap! cache assoc (:full-name entry) inherits)
+      inherits)))
+
+(defn- check-inheritance [[name entry] classes cache]
+  [name (assoc entry :inherits-list (get-inheritance entry classes cache))])
 
 (defn- structurize-enum [[name entries] struct]
   (let [entry (get-actual-entry entries)]
@@ -81,13 +94,15 @@
             :classes (filter #(= (:member-of (last %)) name) classes))]))
 
 (defn- structurize [struct]
-  (let [classes-struct-base (map #(structurize-class % struct) (:classes struct))
-        classes-struct (map #(check-inheritance % classes-struct-base) classes-struct-base)
+  (let [inheritance-cache (atom {})
+        classes-struct-base (into {} (map #(structurize-class % struct) (:classes struct)))
+        classes-struct (map #(check-inheritance % classes-struct-base inheritance-cache)
+                            classes-struct-base)
         enums-struct (map #(structurize-enum % struct) (:enums struct))
         namespaces-struct (map
                            #(structurize-namespace % struct classes-struct enums-struct)
                            (:namespaces struct))]
-    {:classes classes-struct
+    {:classes (into {} classes-struct)
      :typedefs (:typedefs struct)
      :enums enums-struct
      :namespaces namespaces-struct}))

@@ -7,11 +7,12 @@
 (defn build [& paths]
   (-> (apply concat (map jsdoc/get-jsdoc paths))
       parser/parse
-      struct/build
-      inheritance/build))
+      struct/build))
 
+(println "======")
 (def res
   (time
    (build "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/data")))
-  
+
 (println "count:" (count res))
+(println "classes:" (count (:classes res)))
