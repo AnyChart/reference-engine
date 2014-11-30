@@ -90,14 +90,14 @@
 
 (defn- structurize-enum [[name entries] struct]
   (let [entry (get-actual-entry entries)]
-    [name (if-not (:linked entry)
-            entry
-            (let [linked-enum (get-actual-entry (get-in struct [:enums (:linked-to entry)]))]
-              (assoc entry
-                :type (:type linked-enum)
-                :has-type (:has-type linked-enum)
-                :fields (:fields linked-enum)
-                :has-fields (:has-fields linked-enum))))]))
+    (if-not (:linked entry)
+      entry
+      (let [linked-enum (get-actual-entry (get-in struct [:enums (:linked-to entry)]))]
+        (assoc entry
+          :type (:type linked-enum)
+          :has-type (:has-type linked-enum)
+          :fields (:fields linked-enum)
+          :has-fields (:has-fields linked-enum))))))
 
 (defn- structurize-namespace [[name entries] struct classes enums]
   (let [entry (get-actual-entry entries)]
@@ -126,7 +126,9 @@
                            #(structurize-namespace % struct classes-struct enums-struct)
                            (:namespaces struct))]
     {:classes (into {} classes-struct)
-     :typedefs (:typedefs struct)
+     :typedefs (map (fn [[name entries]]
+                      (get-actual-entry entries))
+                    (:typedefs struct))
      :enums enums-struct
      :namespaces namespaces-struct}))
 
