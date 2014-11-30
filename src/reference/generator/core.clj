@@ -16,3 +16,4 @@
 
 (println "count:" (count res))
 (println "classes:" (count (:classes res)))
+(println "methods:" (:methods (last (first (:classes res)))))

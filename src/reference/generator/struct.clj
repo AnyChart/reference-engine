@@ -73,6 +73,21 @@
 (defn- check-inheritance [[name entry] classes cache]
   [name (assoc entry :inherits-list (get-inheritance entry classes cache))])
 
+(defn- merge-inherited-methods [entry classes cache]
+  (if (contains? @cache (:full-name entry))
+    (get @cache (:full-name entry))
+    (let [parent-methods (reduce merge
+                                 (map #(merge-inherited-methods (get classes %)
+                                                                classes
+                                                                cache)
+                                      (:inherits entry)))
+          methods (merge parent-methods (:methods entry))]
+      (swap! cache assoc (:full-name entry) methods)
+      methods)))
+
+(defn- merge-inheritance [[name entry] classes cache]
+  [name (assoc entry :methods (merge-inherited-methods entry classes cache))])
+
 (defn- structurize-enum [[name entries] struct]
   (let [entry (get-actual-entry entries)]
     [name (if-not (:linked entry)
@@ -95,9 +110,16 @@
 
 (defn- structurize [struct]
   (let [inheritance-cache (atom {})
+        methods-inheritance-cache (atom {})
         classes-struct-base (into {} (map #(structurize-class % struct) (:classes struct)))
-        classes-struct (map #(check-inheritance % classes-struct-base inheritance-cache)
-                            classes-struct-base)
+        classes-struct-inh (into {} (map #(check-inheritance %
+                                                             classes-struct-base
+                                                             inheritance-cache)
+                                         classes-struct-base))
+        classes-struct (map #(merge-inheritance %
+                                                classes-struct-inh
+                                                methods-inheritance-cache)
+                            classes-struct-inh)
         enums-struct (map #(structurize-enum % struct) (:enums struct))
         namespaces-struct (map
                            #(structurize-namespace % struct classes-struct enums-struct)
