@@ -56,16 +56,16 @@
                      (:methods entry))))
 
 (defn- check-namespace-export [[name entry] exports classes cache]
-  {:enums (filter #(check-simple-export % exports cache) (:enums entry))
-   :typedefs (filter #(check-simple-export % exports cache) (:typedefs entry))
-   :fields (filter #(check-simple-export % exports cache) (:fields entry))
-   :constants (filter #(check-simple-export % exports cache) (:constants entry))
-   :functions (filter #(check-simple-export % exports cache) (:functions entry))
-   :classes (map #(check-class-export % exports classes cache)
-                 (filter #(check-simple-export % exports cache) (:classes entry)))})
+  (assoc entry
+    :enums (filter #(check-simple-export % exports cache) (:enums entry))
+    :typedefs (filter #(check-simple-export % exports cache) (:typedefs entry))
+    :fields (filter #(check-simple-export % exports cache) (:fields entry))
+    :constants (filter #(check-simple-export % exports cache) (:constants entry))
+    :functions (filter #(check-simple-export % exports cache) (:functions entry))
+    :classes (map #(check-class-export % exports classes cache)
+                  (filter #(check-simple-export % exports cache) (:classes entry)))))
 
 (defn remove-not-exported [struct exports]
-  (println exports)
   (let [cache (atom {})]
     (map #(check-namespace-export % exports (:classes struct) cache)
          (filter #(check-simple-export % exports cache)

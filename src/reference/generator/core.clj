@@ -5,17 +5,25 @@
             [reference.generator.struct :as struct]
             [reference.generator.exports :as exports]))
 
-(defn build [exports-data & paths]
+(defn get-namespaces [exports-data & paths]
   (exports/remove-not-exported
    (-> (apply concat (map jsdoc/get-jsdoc paths))
-      parser/parse
-      struct/build)
+       parser/parse
+       struct/build)
    exports-data))
 
-(println "======")
-(let [src-path "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src/data"
-      exports-data (exports/add-export-from-folder src-path)]
-  (def res (build exports-data src-path)))
+(defn get-top-level [namespaces]
+  (reduce (fn [res namespace]
+            (concat res
+                    [namespace]
+                    (:classes namespace)
+                    (:enums namespace)
+                    (:typedefs namespace)))
+          [] namespaces))
 
-(println "count:" (count res))
-(println res)
+(println "======")
+(let [src-path "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"
+      exports-data (exports/add-export-from-folder src-path)
+      res (get-namespaces exports-data src-path)]
+  (println (count res))
+  (println (map :full-name (get-top-level res))))
