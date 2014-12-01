@@ -6,19 +6,31 @@
 (defn- render-template [version template entry]
   (render-resource template
                    {:main entry
-                    :link #(str "/" version "/")}
+                    :link #(str "/" version "/" %)}
                    {:fn-part (slurp (resource "templates/fn.mustache"))
                     :examples (slurp (resource "templates/example.mustache"))}))
 
 (defn- render-namespace [version entry]
   (render-template version
                    "templates/ns.mustache"
-                   entry))
+                   (assoc entry
+                     :has-classes (not (empty? (:classes entry)))
+                     :has-typedefs (not (empty? (:typedefs entry)))
+                     :has-enums (not (empty? (:enums entry)))
+                     :has-constants (not (empty? (:constants entry)))
+                     :has-functions (not (empty? (:functions entry))))))
 
 (defn- render-class [version entry]
   (render-template version
                    "templates/class.mustache"
-                   entry))
+                   (assoc entry
+                     :has-inherits-names (not (empty? (:inherits entry)))
+                     :inherits-names (:inherits entry)
+                     :has-constants (not (empty? (:constants entry)))
+                     :has-static-methods (not (empty? (:static-methods entry)))
+                     :has-methods (not (empty? (:methods entry)))
+                     :has-fields (not (empty? (:fields entry)))
+                     :has-static-fields (not (empty? (:static-fields entry))))))
 
 (defn- render-enum [version entry]
   (render-template version

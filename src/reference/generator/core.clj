@@ -23,8 +23,8 @@
           [] namespaces))
 
 (println "======")
-(let [src-path "/Users/alex/Work/anychart/reference-engine/data/acdvf/repo/src"
+(let [src-path "/Users/alex/Work/anychart/reference-engine/data/repo/src/data"
       exports-data (exports/add-export-from-folder src-path)
       nses (get-namespaces exports-data src-path)]
-  (println (count res))
+  (println (count nses))
   (html-gen/pre-render-top-level "develop" (get-top-level nses)))

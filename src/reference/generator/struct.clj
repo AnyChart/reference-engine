@@ -53,7 +53,7 @@
             :member-of (get-parent-namespace entry struct)
             :methods (members name struct :functions false)
             :static-methods (members name struct :functions true)
-            :consts (members name struct :constants true)
+            :constants (members name struct :constants true)
             :fields (members name struct :fields false)
             :static-fields (members name struct :fields true))]))
 
@@ -105,7 +105,7 @@
             :constants (members name struct :constants true)
             :fields (members name struct :fields true)
             :functions (members name struct :functions true)
-            :enums (filter #(= (:member-of (last %)) name) enums)
+            :enums (filter #(= (:member-of %) name) enums)
             :typedefs (members name struct :typedefs true)
             :classes (filter #(= (:member-of (last %)) name) classes))]))
 

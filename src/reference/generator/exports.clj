@@ -25,7 +25,7 @@
        (not (nil? st))
        (not= (.indexOf st sub) -1)))
 
-(defn- check-simple-export [[name entries] exports cache]
+(defn- check-simple-export [name exports]
   (substring? name exports))
 
 (defn- filter-class-method [[method-name method-entry] entry classes exports cache]
@@ -46,27 +46,36 @@
         (swap! cache assoc key res)
         res))))
 
+(defn- linearize [entries]
+  (sort-by :name (map (fn [[name members]]
+                        {:name (:name (first members))
+                         :members members}) entries)))
+
 (defn- check-class-export [[name entry] exports classes cache]
   (assoc entry
-    :static-fields (filter #(check-simple-export % exports cache) (:static-fields entry))
-    :fields (filter #(check-simple-export % exports cache) (:fields entry))
-    :consts (filter #(check-simple-export % exports cache) (:consts entry))
-    :static-methods (filter #(check-simple-export % exports cache) (:static-methods entry))
-    :methods (filter #(filter-class-method % entry classes exports cache)
-                     (:methods entry))))
+    :static-fields (linearize (filter #(check-simple-export (first %) exports)
+                                      (:static-fields entry)))
+    :fields (linearize (filter #(check-simple-export (first %) exports) (:fields entry)))
+    :consts (linearize (filter #(check-simple-export (first %) exports) (:consts entry)))
+    :static-methods (linearize (filter #(check-simple-export (first %) exports)
+                                       (:static-methods entry)))
+    :methods (linearize (filter #(filter-class-method (first %) entry classes exports cache)
+                                (:methods entry)))))
 
 (defn- check-namespace-export [[name entry] exports classes cache]
   (assoc entry
-    :enums (filter #(check-simple-export % exports cache) (:enums entry))
-    :typedefs (filter #(check-simple-export % exports cache) (:typedefs entry))
-    :fields (filter #(check-simple-export % exports cache) (:fields entry))
-    :constants (filter #(check-simple-export % exports cache) (:constants entry))
-    :functions (filter #(check-simple-export % exports cache) (:functions entry))
+    :enums (filter #(check-simple-export (:full-name %) exports) (:enums entry))
+    :typedefs (filter #(check-simple-export (:full-name %) exports) (:typedefs entry))
+    :fields (linearize (filter #(check-simple-export (first %) exports) (:fields entry)))
+    :constants (linearize (filter #(check-simple-export (first %) exports)
+                                  (:constants entry)))
+    :functions (linearize (filter #(check-simple-export (first %) exports)
+                                  (:functions entry)))
     :classes (map #(check-class-export % exports classes cache)
-                  (filter #(check-simple-export % exports cache) (:classes entry)))))
+                  (filter #(check-simple-export (first %) exports) (:classes entry)))))
 
 (defn remove-not-exported [struct exports]
   (let [cache (atom {})]
     (map #(check-namespace-export % exports (:classes struct) cache)
-         (filter #(check-simple-export % exports cache)
+         (filter #(check-simple-export (first %) exports)
                  (:namespaces struct)))))
