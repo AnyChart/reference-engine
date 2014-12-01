@@ -4,7 +4,8 @@
             [reference.generator.git :as git]
             [reference.generator.struct :as struct]
             [reference.generator.exports :as exports]
-            [reference.generator.generator :as html-gen]))
+            [reference.generator.generator :as html-gen]
+            [reference.generator.tree :as tree-gen]))
 
 (defn- get-namespaces [exports-data & paths]
   (exports/remove-not-exported
@@ -26,5 +27,5 @@
 (let [src-path "/Users/alex/Work/anychart/reference-engine/data/repo/src/data"
       exports-data (exports/add-export-from-folder src-path)
       nses (get-namespaces exports-data src-path)]
-  (println (count nses))
-  (html-gen/pre-render-top-level "develop" (get-top-level nses)))
+  (html-gen/pre-render-top-level "develop" (get-top-level nses))
+  (println (tree-gen/generate-tree nses)))
