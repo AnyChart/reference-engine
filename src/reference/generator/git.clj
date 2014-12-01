@@ -2,8 +2,10 @@
   (:require [clj-jgit.porcelain :as git]
             [clj-jgit.querying :as gitq]
             [reference.config :as config]
-            [clojure.java.shell :refer [sh]]
+            [clojure.java.shell :refer [sh with-sh-env with-sh-dir]]
             [clojure.java.io :refer [file]]))
+
+(def env-config {:GIT_SSH "/Users/alex/Work/anychart/reference-engine/keys/git"})
 
 (defmacro auth-git [ & body ]
   `(binding [git/*ssh-identity-name* "github.com"
@@ -21,19 +23,21 @@
 (defn- get-branch-name [branch]
   (last (re-find #"refs/heads/(.*)$" (.getName branch))))
 
+(defn- update-submodules [path]
+  (with-sh-env env-config
+    (with-sh-dir path
+      (println (sh "/usr/bin/git" "submodule" "update")))))
+
 (defn- checkout-branch [[branch commit] repo]
   (if-let [short-name (get-branch-name branch)]
     (do
       (println "checkouting" short-name)
-      (sh "copy" "-r"
+      (sh "cp" "-r"
           (str config/data-path "/repo")
           (str config/data-path "/versions/" short-name))
-      (git/git-checkout (git/load-repo (str config/data-path "/versions/" short-name))
-                        short-name))))
-
-(defn update-submodules [short-name]
-  (let [repo (git/load-repo (str config/data-path "/versions/" short-name))]
-        (git/git-submodule-update repo)))
+      (let [repo (git/load-repo (str config/data-path "/versions/" short-name))]
+        (git/git-checkout repo short-name)
+        (update-submodules (str config/data-path "/versions/" short-name))))))
 
 (defn- delete-recursively [fname]
   (let [func (fn [func f]
@@ -47,15 +51,14 @@
   (let [repo (get-repo)]
     (auth-git
      (git/git-fetch-all repo)
-     (git/git-submodule-sync repo)
-     (println "===")
-     (println (git/git-submodule-update repo))
+     (update-submodules (str config/data-path "/repo"))
      (let [versions-base-path (str config/data-path "/versions")
            branches (filter (fn [[branch commit]]
                               (branches-filter (get-branch-name branch)))
                             (branches repo))]
        (if (.exists (file versions-base-path))
          (delete-recursively versions-base-path))
+       (sh "mkdir" versions-base-path)
        (doall (map #(checkout-branch % repo) branches))
        (map (fn [[branch commit]]
               {:name (get-branch-name branch)
