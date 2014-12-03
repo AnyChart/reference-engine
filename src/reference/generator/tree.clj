@@ -3,8 +3,10 @@
 
 (defn- simplify-members [members kind]
   (if (seq members)
-    (map #({:name %
-            :kind kind}) (set (map :name members)))))
+    (map (fn [member]
+           {:name member
+            :kind kind})
+         (set (map :name members)))))
 
 (defn- simplify-methods [methods]
   (map (fn [method]
@@ -15,9 +17,12 @@
 (defn- generate-enum-tree [enum]
   {:name (:name enum)
    :kind :enum
-   :children (map #({:name (:name %)
-                     :kind :enum-membeer})
-                  (:fields enum))})
+   :children (if (seq? (:fields enum))
+               (map (fn [field]
+                      {:name (:name field)
+                       :kind :enum-member})
+                    (:fields enum))
+               [])})
 
 (defn- generate-typedef-tree [typedef]
   {:name (:name typedef)

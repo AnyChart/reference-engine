@@ -21,7 +21,9 @@
 (defn- build-jsdoc [files]
   (filter-jsdoc
    (parse-string
-    (:out (apply sh (concat ["node" "./jsdoc/jsdoc.js" "-X"] files)))
+    (clojure.string/replace (:out (apply sh (concat ["node" "./jsdoc/jsdoc.js" "-X"] files)))
+                            "acgraph"
+                            "anychart.graphics")
     true)))
 
 (defn get-jsdoc [root-path]

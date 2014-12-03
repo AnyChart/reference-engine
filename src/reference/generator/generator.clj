@@ -1,7 +1,8 @@
 (ns reference.generator.generator
   (:require [clostache.parser :refer [render-resource]]
             [reference.config :as config]
-            [clojure.java.io :refer [resource]]))
+            [clojure.java.io :refer [resource]]
+            [clojure.java.shell :refer [sh]]))
 
 (defn- render-template [version template entry]
   (render-resource template
@@ -57,4 +58,6 @@
       (spit path data))))
 
 (defn pre-render-top-level [version top-level]
+  (sh "rm" "-rf" (str config/data-path "versions-data/" version))
+  (sh "mkdir" (str config/data-path "versions-data/" version))
   (pmap #(save version %) top-level))

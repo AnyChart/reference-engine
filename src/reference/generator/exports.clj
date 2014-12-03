@@ -10,7 +10,10 @@
                (file-seq (file path)))))
 
 (defn- get-exports [f]
-  (str (last (re-find #"(?s)//exports[\s]*(.*)$" (slurp f)))))
+  (clojure.string/replace 
+   (str (last (re-find #"(?s)//exports[\s]*(.*)$" (slurp f))))
+   "acgraph"
+   "anychart.graphics"))
 
 (defn add-export-from-folder
   ([path exports]
@@ -18,7 +21,10 @@
   ([path] (add-export-from-folder path nil)))
 
 (defn add-exports-from-file [path exports]
-  (str exports (slurp path)))
+  (str exports (clojure.string/replace
+                (slurp path)
+                "acgraph"
+                "anychart.graphics")))
 
 (defn- substring? [sub st]
   (and (not (nil? sub))
