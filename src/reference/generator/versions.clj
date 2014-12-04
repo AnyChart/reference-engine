@@ -43,4 +43,4 @@
 
 (defn build [])
 
-;;(force-build-version-without-git "develop")
+(force-build-version-without-git "develop")

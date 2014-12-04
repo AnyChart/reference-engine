@@ -4,13 +4,15 @@
 (defn- simplify-members [members kind]
   (if (seq members)
     (map (fn [member]
-           {:name member
+           {:name (:name member)
+            :full-name (:full-name member)
             :kind kind})
-         (set (map :name members)))))
+         members)))
 
 (defn- simplify-methods [methods]
   (map (fn [method]
          {:name (:name method)
+          :full-name (:full-name method)
           :kind :method})
        methods))
 
@@ -26,10 +28,12 @@
 
 (defn- generate-typedef-tree [typedef]
   {:name (:name typedef)
+   :full-name (:full-name typedef)
    :kind :typedef})
 
 (defn- generate-class-tree [classdef]
   {:name (:name classdef)
+   :full-name (:full-name classdef)
    :kind :class
    :children (sort-by :name
                       (concat (simplify-members (:constants classdef) :constant)
@@ -40,6 +44,7 @@
 
 (defn- generate-ns-tree [namespace]
   {:name (:full-name namespace)
+   :full-name (:full-name namespace)
    :kind :namespace
    :children (sort-by :name
                       (concat (simplify-members (:constants namespace) :constant)
