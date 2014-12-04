@@ -23,3 +23,5 @@ test.json
 jsdoc
 resources/keys/
 keys/
+.repl/
+resources/public/js/app.js

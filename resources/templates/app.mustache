@@ -65,7 +65,14 @@
     </div>
     <div id="locker" style="display:none"></div>
     <script>
-      //app.init("{{version}}", {{&tree}});
+      app.init("{{version}}", {{&tree}});
+      {{#debug}}
+        app.connect_repl();
+
+        function reinit() {
+          app.init("{{version}}", {{&tree}});
+        }
+      {{/debug}}
     </script>
 
     <!-- Google Tag Manager -->
