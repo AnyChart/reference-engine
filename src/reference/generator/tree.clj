@@ -5,26 +5,23 @@
   (if (seq members)
     (map (fn [member]
            {:name (:name member)
-            :full-name (:full-name member)
+            :full-name (str (:member-of (first (:members member)))
+                            "#"
+                            (:name member))
             :kind kind})
          members)))
 
 (defn- simplify-methods [methods]
   (map (fn [method]
          {:name (:name method)
-          :full-name (:full-name method)
+          :full-name (:full-name (first (:members method)))
           :kind :method})
        methods))
 
 (defn- generate-enum-tree [enum]
   {:name (:name enum)
-   :kind :enum
-   :children (if (seq? (:fields enum))
-               (map (fn [field]
-                      {:name (:name field)
-                       :kind :enum-member})
-                    (:fields enum))
-               [])})
+   :full-name (:full-name enum)
+   :kind :enum})
 
 (defn- generate-typedef-tree [typedef]
   {:name (:name typedef)

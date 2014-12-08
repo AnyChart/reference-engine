@@ -63,9 +63,9 @@
       (assoc (parse-general raw)
         :kind "enum"
         :type (get-in raw [:type :names])
-        :has-type (seq (get-in raw [:type :names]))
+        :has-type (boolean (seq (get-in raw [:type :names])))
         :fields fields
-        :has-fields (seq fields)))))
+        :has-fields (boolean (seq fields))))))
 
 (defn- parse-member-def [raw]
   (if (and (tags/contains-tag? raw "define")
@@ -91,24 +91,26 @@
     (assoc (parse-general raw)
       :inherit-doc (tags/inherit-doc? raw)
       :params params
-      :has-params (seq params)
+      :has-params (boolean (seq params))
       :returns returns
-      :has-returns (seq returns)
+      :has-returns (boolean (seq returns))
       :params-signature (clojure.string/join ", " (get-in raw [:meta :code :parameters])))))
 
 (defn- parse-class-def [raw]
   (assoc (parse-general raw)
     :inherits (:augments raw)
-    :has-inherits (seq (:augments raw))
+    :has-inherits (boolean (seq (:augments raw)))
     :constructor (parse-function-def raw)))
 
 (defn- parse-typedef-def [raw]
-  (let [props (map #({:name (:name %)
-                      :description (parse-description (:description %))
-                      :type (get-in % [:type :names])}) (:properties raw))]
+  (let [props (map (fn [prop]
+                     {:name (:name prop)
+                      :description (parse-description (:description prop))
+                      :type (get-in prop [:type :names])})
+                   (:properties raw))]
     (assoc (parse-general raw)
       :properties props
-      :has-properties (seq? props)
+      :has-properties (boolean (seq props))
       :type (get-in raw [:type :names]))))
 
 (defn- parse-entry [raw]

@@ -33,7 +33,7 @@
                         :content (p/get-page version page)
                         :tree (v/tree-json version)
                         :link #(str "/" version "/" %)})
-      (route/not-found (str "Not found" version page)))))
+      (route/not-found (str "Not found: /" version "/" page)))))
 
 (defn- update-all [request])
 

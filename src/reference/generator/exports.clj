@@ -31,16 +31,26 @@
        (not (nil? st))
        (not= (.indexOf st sub) -1)))
 
-(defn- check-simple-export [name exports]
-  (substring? name exports))
+(defn- raw-check [name exports]
+  (or (substring? (str "'" name "'") exports)
+      (substring? (str "\"" name "\"") exports)))
+
+(defn- check-simple-export [name exports cache]
+  (if (contains? @cache name)
+    (get @cache name)
+    (let [res (or (raw-check name exports)
+                  (substring? (str name ".") exports))]
+      (swap! cache assoc name res)
+      res)))
 
 (defn- filter-class-method [[method-name method-entry] entry classes exports cache]
   (let [key (:full-name method-entry)]
     (if (contains? @cache key)
       (get @cache key)
       (let [class-name (:full-name entry)
-            res (if (or (substring? key exports)
-                        (substring? (str class-name ".prototype." method-name) exports))
+            res (if (or (check-simple-export key exports cache)
+                        (check-simple-export (str class-name ".prototype." method-name)
+                                             exports cache))
                   true
                   (let [parent-class-names (:inherits entry)
                         parent-classes (map #(get classes %) parent-class-names)]
@@ -53,35 +63,40 @@
         res))))
 
 (defn- linearize [entries]
-  (sort-by :name (map (fn [[name members]]
-                        {:name (:name (first members))
-                         :members members}) entries)))
+  (filter (fn [entry] (not= nil entry))
+          (sort-by :name (map (fn [[name members]]
+                                (if (empty? members)
+                                  nil
+                                  {:name (:name (first members))
+                                   :members members})) entries))))
 
 (defn- check-class-export [[name entry] exports classes cache]
   (assoc entry
-    :static-fields (linearize (filter #(check-simple-export (first %) exports)
+    :static-fields (linearize (filter #(check-simple-export (first %) exports cache)
                                       (:static-fields entry)))
-    :fields (linearize (filter #(check-simple-export (first %) exports) (:fields entry)))
-    :consts (linearize (filter #(check-simple-export (first %) exports) (:consts entry)))
-    :static-methods (linearize (filter #(check-simple-export (first %) exports)
+    :fields (linearize (filter #(check-simple-export (first %) exports cache)
+                               (:fields entry)))
+    :consts (linearize (filter #(check-simple-export (first %) exports cache)
+                               (:consts entry)))
+    :static-methods (linearize (filter #(check-simple-export (first %) exports cache)
                                        (:static-methods entry)))
     :methods (linearize (filter #(filter-class-method (first %) entry classes exports cache)
                                 (:methods entry)))))
 
 (defn- check-namespace-export [[name entry] exports classes cache]
   (assoc entry
-    :enums (filter #(check-simple-export (:full-name %) exports) (:enums entry))
-    :typedefs (filter #(check-simple-export (:full-name %) exports) (:typedefs entry))
-    :fields (linearize (filter #(check-simple-export (first %) exports) (:fields entry)))
-    :constants (linearize (filter #(check-simple-export (first %) exports)
+    :enums (filter #(check-simple-export (:full-name %) exports cache) (:enums entry))
+    :typedefs (filter #(check-simple-export (:full-name %) exports cache) (:typedefs entry))
+    :fields (linearize (filter #(check-simple-export (first %) exports cache) (:fields entry)))
+    :constants (linearize (filter #(check-simple-export (first %) exports cache)
                                   (:constants entry)))
-    :functions (linearize (filter #(check-simple-export (first %) exports)
+    :functions (linearize (filter #(check-simple-export (first %) exports cache)
                                   (:functions entry)))
     :classes (map #(check-class-export % exports classes cache)
-                  (filter #(check-simple-export (first %) exports) (:classes entry)))))
+                  (filter #(check-simple-export (first %) exports cache) (:classes entry)))))
 
 (defn remove-not-exported [struct exports]
   (let [cache (atom {})]
     (map #(check-namespace-export % exports (:classes struct) cache)
-         (filter #(check-simple-export (first %) exports)
+         (filter #(check-simple-export (first %) exports cache)
                  (:namespaces struct)))))

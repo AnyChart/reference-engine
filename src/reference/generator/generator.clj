@@ -4,12 +4,25 @@
             [clojure.java.io :refer [resource]]
             [clojure.java.shell :refer [sh]]))
 
+(defn- fix-links [version data]
+  (clojure.string/replace data
+                          #"\{@link ([^}]+)\}"
+                          (str "<a href='/" version "/$1'>$1</a>")))
+
 (defn- render-template [version template entry]
-  (render-resource template
-                   {:main entry
-                    :link #(str "/" version "/" %)}
-                   {:fn-part (slurp (resource "templates/fn.mustache"))
-                    :examples (slurp (resource "templates/example.mustache"))}))
+  (fix-links version
+             (render-resource template
+                              {:main entry
+                               :link #(str "/" version "/" %)
+                               :type-link (fn [text]
+                                            (fn [render-fn]
+                                              (let [type (render-fn text)]
+                                                (if (.startsWith type "anychart")
+                                                  (str "<a class='type-link' href='/"
+                                                       version "/" type "'>" type "</a>")
+                                                  type))))}
+                              {:fn-part (slurp (resource "templates/fn.mustache"))
+                               :examples (slurp (resource "templates/example.mustache"))})))
 
 (defn- render-namespace [version entry]
   (render-template version

@@ -76,12 +76,15 @@
 (defn- merge-inherited-methods [entry classes cache]
   (if (contains? @cache (:full-name entry))
     (get @cache (:full-name entry))
-    (let [parent-methods (reduce merge
+    (let [methods (filter (fn [[mname mentries]]
+                            (not-any? :inherit-doc mentries))
+                          (:methods entry))
+          parent-methods (reduce merge
                                  (map #(merge-inherited-methods (get classes %)
                                                                 classes
                                                                 cache)
                                       (:inherits entry)))
-          methods (merge parent-methods (:methods entry))]
+          methods (merge parent-methods methods)]
       (swap! cache assoc (:full-name entry) methods)
       methods)))
 
@@ -102,11 +105,11 @@
 (defn- structurize-namespace [[name entries] struct classes enums]
   (let [entry (get-actual-entry entries)]
     [name (assoc entry
-            :constants (members name struct :constants true)
-            :fields (members name struct :fields true)
-            :functions (members name struct :functions true)
+            :constants (members name struct :constants false)
+            :fields (members name struct :fields false)
+            :functions (members name struct :functions false)
             :enums (filter #(= (:member-of %) name) enums)
-            :typedefs (members name struct :typedefs true)
+            :typedefs (members name struct :typedefs false)
             :classes (filter #(= (:member-of (last %)) name) classes))]))
 
 (defn- structurize [struct]

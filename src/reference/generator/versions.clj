@@ -43,4 +43,5 @@
 
 (defn build [])
 
-(force-build-version-without-git "develop")
+(time
+ (force-build-version-without-git "develop"))
