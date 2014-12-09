@@ -21,12 +21,12 @@
 (defn- show-page [request]
   (let [version (get-in request [:params :version])
         page (get-in request [:params :page])]
-    (println "vp:" version page)
     (if (and (v/version-exists? version)
              (p/page-exists? version page))
       (render-resource "templates/app.mustache"
                        {:version version
                         :debug true
+                        :page page
                         :versions (v/all-versions)
                         :static-version "7"
                         :content (p/get-page version page)
@@ -43,6 +43,14 @@
     (-> (response (v/search-index version))
         (header "Content-Type" "application/json"))))
 
+(defn- try-show-page [request]
+  (let [version (get-in request [:params :version])
+        page (get-in request [:params :page])]
+    (if (and (v/version-exists? version)
+             (p/page-exists? version page))
+      (redirect (str "/" version "/" page))
+      (redirect (str "/" version "/anychart")))))
+
 (defn- update-all [request])
 
 (defroutes app-routes
@@ -54,6 +62,7 @@
   (GET "/:version/data/search.json" [] get-search-data)
   (GET "/:version" [] show-default-ns)
   (GET "/:version/" [] show-default-ns)
+  (GET "/:version/try/:page" [] try-show-page)
   (GET "/:version/:page/json" [] get-page-json)
   (GET "/:version/:page" [] show-page)
   (route/not-found "not found"))

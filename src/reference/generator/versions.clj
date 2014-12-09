@@ -17,7 +17,8 @@
         exports-data (exports/add-exports-from-file
                       (str graphics-src "export.js")
                       (exports/add-export-from-folder acdvf-src))
-        namespaces-data (get-namespaces exports-data
+        namespaces-data (get-namespaces version
+                                        exports-data
                                         graphics-src
                                         acdvf-src)
         tree-data (tree-gen/generate-tree namespaces-data)

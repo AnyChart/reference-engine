@@ -7,10 +7,10 @@
             [reference.generator.generator :as html-gen]
             [reference.generator.tree :as tree-gen]))
 
-(defn get-namespaces [exports-data & paths]
+(defn get-namespaces [version exports-data & paths]
   (exports/remove-not-exported
    (-> (apply concat (map jsdoc/get-jsdoc paths))
-       parser/parse
+       (parser/parse version)
        struct/build)
    exports-data))
 

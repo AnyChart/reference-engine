@@ -43,13 +43,13 @@
       <div class="header">
 	<ul class="path">
 	  <li>Home <span>/</span></li>
-	  <li id="current-path">{{main.full-name}}</a></li>
+	  <li id="current-path">{{page}}</a></li>
 	</ul>
 	<div class="right">
 	  <a class="version" id="version-toggler" href="#">Version {{version}} <i class="fa fa-caret-down"></i></a>
           <ul id="version-toggle" style="display:none">
             {{#versions}}
-              <li><a href="/{{.}}/{{default-ns}}">Version {{.}}</a></li>
+              <li><a href="/{{.}}/try/{{page}}">Version {{.}}</a></li>
             {{/versions}}
           </ul>
 	  <div class="support-icon"><i class="fa fa-question-circle"></i></div>
