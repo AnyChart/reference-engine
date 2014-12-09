@@ -46,10 +46,10 @@
 	  <li id="current-path">{{main.full-name}}</a></li>
 	</ul>
 	<div class="right">
-	  <a class="version" id="version-toggler" href="#">Version {{v}} <i class="fa fa-caret-down"></i></a>
+	  <a class="version" id="version-toggler" href="#">Version {{version}} <i class="fa fa-caret-down"></i></a>
           <ul id="version-toggle" style="display:none">
             {{#versions}}
-              <li><a href="/{{project}}/{{.}}/{{default-ns}}">Version {{.}}</a></li>
+              <li><a href="/{{.}}/{{default-ns}}">Version {{.}}</a></li>
             {{/versions}}
           </ul>
 	  <div class="support-icon"><i class="fa fa-question-circle"></i></div>
@@ -65,12 +65,12 @@
     </div>
     <div id="locker" style="display:none"></div>
     <script>
-      app.init("{{version}}", {{&tree}});
+      app.init("{{version}}");
       {{#debug}}
         app.connect_repl();
 
         function reinit() {
-          app.init("{{version}}", {{&tree}});
+          app.init("{{version}}");
         }
       {{/debug}}
     </script>

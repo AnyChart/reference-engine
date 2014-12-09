@@ -3,7 +3,7 @@
             [org.httpkit.server :as server]
             [compojure.core :refer [routes defroutes GET POST]]
             [compojure.route :as route]
-            [ring.util.response :refer [response redirect]]
+            [ring.util.response :refer [response redirect header]]
             [clostache.parser :refer [render-resource]]
             [reference.data.versions :as v]
             [reference.data.pages :as p])
@@ -19,7 +19,6 @@
 (defn- get-page-json [request])
 
 (defn- show-page [request]
-  (println "show page called")
   (let [version (get-in request [:params :version])
         page (get-in request [:params :page])]
     (println "vp:" version page)
@@ -31,9 +30,18 @@
                         :versions (v/all-versions)
                         :static-version "7"
                         :content (p/get-page version page)
-                        :tree (v/tree-json version)
                         :link #(str "/" version "/" %)})
       (route/not-found (str "Not found: /" version "/" page)))))
+
+(defn- get-tree-data [request]
+  (let [version (get-in request [:params :version])]
+    (-> (response (v/tree-json version))
+        (header "Content-Type" "application/json"))))
+
+(defn- get-search-data [request]
+  (let [version (get-in request [:params :version])]
+    (-> (response (v/search-index version))
+        (header "Content-Type" "application/json"))))
 
 (defn- update-all [request])
 
@@ -42,6 +50,8 @@
   (GET "/" [] show-default-version)
   (GET "/_plz_" [] update-all)
   (POST "/_plz_" [] update-all)
+  (GET "/:version/data/tree.json" [] get-tree-data)
+  (GET "/:version/data/search.json" [] get-search-data)
   (GET "/:version" [] show-default-ns)
   (GET "/:version/" [] show-default-ns)
   (GET "/:version/:page/json" [] get-page-json)
