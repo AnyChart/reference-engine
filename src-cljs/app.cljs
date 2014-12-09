@@ -160,6 +160,16 @@
                         goog.events.EventType/MOUSEMOVE
                         resize-tree))
 
+(defn- create-editor [el]
+  (let [editor (.edit js/ace el)]
+    (.setTheme editor "ace/theme/tomorrow")
+    (.setOptions editor #js {:maxLines 30})
+    (.setReadOnly editor true)
+    (.setMode (.getSession editor) "ace/mode/javascript")))
+
+(defn- init-editors []
+  (goog.array/map (goog.dom/getElementsByClass "code-sample") create-editor))
+
 (defn- init-events []
   (goog.events/listen (goog.dom/getElement "version-toggler")
                       goog.events.EventType/CLICK
@@ -173,6 +183,7 @@
 
 (defn ^:export init [version]
   (init-events)
+  (init-editors)
   (load-tree version)
   (load-search-index version))
 

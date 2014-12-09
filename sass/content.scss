@@ -177,5 +177,13 @@
 
     .code-sample {
 	margin-top: 10px;
+
+        .ace_cursor {
+          color: transparent;
+        }
+
+        .ace_gutter-active-line, .ace_active-line {
+          background: transparent;
+        }
     }
 }
