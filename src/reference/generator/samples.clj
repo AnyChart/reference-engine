@@ -1,6 +1,9 @@
 (ns reference.generator.samples
   (:require [reference.config :as config]
-            [clojure.java.io :refer [file]]))
+            [clojure.java.io :refer [file]]
+            [clojure.java.shell :refer [sh]]
+            [clj-jgit.porcelain :as git]
+            [reference.generator.git :refer [auth-git] :as git-cli]))
 
 (defn- line-chart-example [code]
   (str "var chart = anychart.lineChart();\n"
@@ -59,6 +62,29 @@ code
     (spit (str (base-path version) name ".sample")
           (sample-file-content code))
     (str "{{PLAYGROUND}}/acdvf-reference/" version "/" name)))
+
+(defn update []
+  (git-cli/update-samples (str config/data-path "samples-repo")))
+
+(defn checkout-version [version]
+  (if (.exists (file (base-path version)))
+    (sh "rm" "-rf" (base-path version)))
+  
+  (sh "cp" "-r"
+      (str config/data-path "samples-repo")
+      (base-path version))
+
+  (let [repo (git/load-repo (base-path version))
+        branches (git/git-branch-list repo)
+        branch-names (map #(git-cli/get-branch-name %) branches)]
+    (if (some #{version} branch-names)
+      (git/git-checkout repo version)
+      (do
+        (git/git-branch-create repo version)
+        (git/git-checkout repo version)))))
+
+(defn commit-version [version]
+  (git-cli/commit-and-push (base-path version) version))
 
 (defn parse-sample [entry-name example version]
   (let [c (re-matches #".*<c>([^<]*)</c>.*" example)
