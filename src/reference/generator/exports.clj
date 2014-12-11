@@ -74,8 +74,9 @@
                                                           exports cache)))
                                (:methods class))))))
 
-(defn- filter-class-method [[method-name method-entry] entry classes exports cache]
-  (let [key (:full-name method-entry)]
+(defn- filter-class-method [method-entry entry classes exports cache]
+  (let [key (:full-name method-entry)
+        method-name (:name method-entry)]
     (if (contains? @cache key)
       (get @cache key)
       (let [class-name (:full-name entry)
@@ -83,6 +84,7 @@
             method-full-name-2 (str class-name ".prototype[\"" method-name "\"]")
             res (or (check-string-export method-full-name-1 exports cache)
                     (check-string-export method-full-name-2 exports cache))]
+        ;;(info method-full-name-1 res)
         (swap! cache assoc key res)
         res))))
 
@@ -104,7 +106,7 @@
                                (:consts entry)))
     :static-methods (linearize (filter #(check-simple-export (first %) exports cache)
                                        (:static-methods entry)))
-    :methods (linearize (filter #(filter-class-method (first %) entry classes exports cache)
+    :methods (linearize (filter #(filter-class-method (first (last %)) entry classes exports cache)
                                 (:methods entry)))))
 
 (defn- check-namespace-export [[name entry] exports classes cache]
