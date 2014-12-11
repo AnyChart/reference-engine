@@ -46,22 +46,43 @@
       (swap! cache assoc name res)
       res)))
 
+(defn- check-string-export [name exports cache]
+  (if (contains? @cache name)
+    (get @cache name)
+    (let [res (substring? name exports)]
+      (swap! cache assoc name res)
+      res)))
+
+(defn- add-exported-method [method class]
+  (map (fn [child-class]
+         (str child-class ".prototype['" (:name method) "'];\n"))
+       (:children-list class)))
+
+(defn- add-exports-for-inheritance [[name class] exports cache]
+  (if (check-simple-export name exports cache)
+    (apply concat (map (fn [[method-name method-members]]
+                         (add-exported-method (first method-members) class))
+                       (filter (fn [[method-name method-members]]
+                                 (or (check-string-export (str name
+                                                               ".prototype['"
+                                                               (:name (first method-members))
+                                                               "']") exports cache)
+                                     (check-string-export (str name
+                                                               ".prototype[\""
+                                                               (:name (first method-members))
+                                                               "\"]")
+                                                          exports cache)))
+                               (:methods class))))))
+
 (defn- filter-class-method [[method-name method-entry] entry classes exports cache]
   (let [key (:full-name method-entry)]
     (if (contains? @cache key)
       (get @cache key)
       (let [class-name (:full-name entry)
-            res (if (or (check-simple-export key exports cache)
-                        (check-simple-export (str class-name ".prototype." method-name)
-                                             exports cache))
-                  true
-                  (let [parent-class-names (:inherits entry)
-                        parent-classes (map #(get classes %) parent-class-names)]
-                    (some (fn [centry]
-                            (filter-class-method
-                             [method-name (get-in centry [:methods method-name])]
-                             centry classes exports cache))
-                          parent-classes)))]
+            method-full-name-1 (str class-name ".prototype['" method-name "']")
+            method-full-name-2 (str class-name ".prototype[\"" method-name "\"]")
+            res (or (check-string-export method-full-name-1 exports cache)
+                    (check-string-export method-full-name-2 exports cache))]
         (swap! cache assoc key res)
         res))))
 
@@ -98,8 +119,12 @@
     :classes (map #(check-class-export % exports classes cache)
                   (filter #(check-simple-export (first %) exports cache) (:classes entry)))))
 
+(defn- update-exports [classes exports cache]
+  (apply str (apply concat (map #(add-exports-for-inheritance % exports cache) classes))))
+
 (defn remove-not-exported [struct exports]
-  (let [cache (atom {})]
+  (let [cache (atom {})
+        exports (str (update-exports (:classes struct) exports cache) exports)]
     (map #(check-namespace-export % exports (:classes struct) cache)
          (filter #(check-simple-export (first %) exports cache)
                  (:namespaces struct)))))

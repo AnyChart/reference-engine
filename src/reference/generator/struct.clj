@@ -1,4 +1,5 @@
-(ns reference.generator.struct)
+(ns reference.generator.struct
+  (:require [taoensso.timbre :as timbre :refer [info]]))
 
 (defn- reduce-by-kind
   ([] {})
@@ -20,6 +21,7 @@
          (assoc-in res [container-key name] [entry])))))
 
 (defn- group-by-kind [entries]
+  (info "group-by-kind" (count entries))
   (reduce reduce-by-kind {:namespaces {}
                           :classes {}
                           :typedefs {}
@@ -91,6 +93,23 @@
 (defn- merge-inheritance [[name entry] classes cache]
   [name (assoc entry :methods (merge-inherited-methods entry classes cache))])
 
+(defn- get-children-inheritance [entry classes cache]
+  (let [name (:full-name entry)]
+    (if (contains? @cache name)
+      (get @cache name)
+      (let [children-classes (map last (filter
+                                        (fn [[cname c]]
+                                          (some #{name} (:inherits-list c)))
+                                        classes))]
+        (concat (map :full-name children-classes)
+                (reduce concat
+                        []
+                        (map (fn [c] (get-children-inheritance c classes cache))
+                             children-classes)))))))
+
+(defn- check-children-inheritance [[name entry] classes cache]
+  [name (assoc entry :children-list (get-children-inheritance entry classes cache))])
+
 (defn- structurize-enum [[name entries] struct]
   (let [entry (get-actual-entry entries)]
     (if-not (:linked entry)
@@ -114,20 +133,28 @@
 
 (defn- structurize [struct]
   (let [inheritance-cache (atom {})
+        child-cache (atom {})
         methods-inheritance-cache (atom {})
         classes-struct-base (into {} (map #(structurize-class % struct) (:classes struct)))
         classes-struct-inh (into {} (map #(check-inheritance %
                                                              classes-struct-base
                                                              inheritance-cache)
                                          classes-struct-base))
+        classes-struct-parent (into {} (map #(check-children-inheritance
+                                              %
+                                              classes-struct-inh
+                                              child-cache)
+                                            classes-struct-inh))
         classes-struct (map #(merge-inheritance %
-                                                classes-struct-inh
+                                                classes-struct-parent
                                                 methods-inheritance-cache)
-                            classes-struct-inh)
+                            classes-struct-parent)
         enums-struct (map #(structurize-enum % struct) (:enums struct))
         namespaces-struct (map
                            #(structurize-namespace % struct classes-struct enums-struct)
                            (:namespaces struct))]
+    (info "classes" (count classes-struct))
+    (info "namespaces" (count namespaces-struct))
     {:classes (into {} classes-struct)
      :typedefs (map (fn [[name entries]]
                       (get-actual-entry entries))

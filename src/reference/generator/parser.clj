@@ -1,7 +1,8 @@
 (ns reference.generator.parser
   (:require [reference.generator.parser.tags :as tags]
             [reference.generator.samples :refer [parse-sample]]
-            [clojure.string :refer [trim]]))
+            [clojure.string :refer [trim]]
+            [taoensso.timbre :as timbre :refer [info]]))
 
 (defn- parse-description [description]
   description)
@@ -130,4 +131,6 @@
       nil)))
 
 (defn parse [jsdoc version]
-  (filter #(not (nil? %)) (map #(parse-entry % version) jsdoc)))
+  (let [res (filter #(not (nil? %)) (map #(parse-entry % version) jsdoc))]
+    (info "parsed jsdoc entries" (count res))
+    res))
