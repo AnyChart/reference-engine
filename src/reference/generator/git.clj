@@ -3,9 +3,10 @@
             [clj-jgit.querying :as gitq]
             [reference.config :as config]
             [clojure.java.shell :refer [sh with-sh-env with-sh-dir]]
-            [clojure.java.io :refer [file]]))
+            [clojure.java.io :refer [file]]
+            [taoensso.timbre :as timbre :refer [info]]))
 
-(def env-config {:GIT_SSH "/Users/alex/Work/anychart/reference-engine/keys/git"})
+(def env-config {:GIT_SSH (str config/keys-path "git")})
 
 (defmacro auth-git [ & body ]
   `(binding [git/*ssh-identity-name* "github.com"
@@ -21,8 +22,9 @@
 (defn run-git [path & command]
   (with-sh-env env-config
     (with-sh-dir path
+      (info "git" path command)
       (let [res (apply sh "/usr/bin/git" command)]
-        (println res)
+        (info "output:" res)
         (:out res)))))
 
 (defn- get-repo []
@@ -96,6 +98,15 @@
       (sh "git" "push" "origin" version))))
 
 (defn update-samples [path]
-  (auth-git
-   (git/git-fetch-all
-    (git/load-repo path))))
+  (info "update" path)
+  (with-sh-env env-config
+    (with-sh-dir path
+      (sh "git" "fetch")
+      (sh "git" "pull")
+      (sh "git" "remote" "prune" "origin"))))
+
+(defn checkout-or-create [path version]
+  (let [branches (actual-branches path)]
+    (if (some #(= version %) branches)
+      (run-git path "checkout" version)
+      (run-git path "checkout" "-b" version))))

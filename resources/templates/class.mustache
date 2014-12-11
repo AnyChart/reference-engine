@@ -13,10 +13,12 @@
     {{#main.constants}}
       <div class="reg">
         <h3>{{name}}</h3>
-        <div class="description">
-	  {{&description}}
+        {{#members}}
+        <div class="member">
+	  <p>{{&description}}</p>
           {{>examples}}
         </div>
+        {{/members}}
       </div>
     {{/main.constants}}
   {{/main.has-constants}}

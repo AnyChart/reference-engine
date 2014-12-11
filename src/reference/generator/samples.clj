@@ -1,33 +1,37 @@
 (ns reference.generator.samples
   (:require [reference.config :as config]
             [clojure.java.io :refer [file]]
-            [clojure.java.shell :refer [sh]]
+            [clojure.java.shell :refer [sh with-sh-dir]]
             [clj-jgit.porcelain :as git]
-            [reference.generator.git :refer [auth-git] :as git-cli]))
+            [reference.generator.git :refer [auth-git] :as git-cli]
+            [taoensso.timbre :as timbre :refer [info debug]]))
 
 (defn- line-chart-example [code]
-  (str "var chart = anychart.lineChart();\n"
+  (debug "line-chart-example")
+  (str "chart = anychart.lineChart();\n"
        code
-       "chart.container(stage).draw()"))
+       "\nchart.container(stage).draw()"))
 
 (defn- simple-h100-example [code]
+  (debug "simple-h100-example")
   (str "stage.height(100);\n"
        code))
 
 (defn- stage-only-example [code]
+  (debug "stage-only-example")
   (str "var layer = acgraph.layer();\n"
        "stage.width(600);\n"
        code
-       "layer.parent(stage);"))
+       "\nlayer.parent(stage);"))
 
 (defn- sample-file-content [code]
   (str "{:tags []\n"
-" :exports \"chart\"}\n"
-"$('#container').width(600).height(400);\n\n"
+" :exports \"stage\"}\n"
 "anychart.onDocumentReady(function() {\n"
-"  var container ='container';\n"
-"  var stage = anychart.graphics.create(container, 400, 300);\n"
+"  stage = anychart.graphics.create('container', 400, 300);\n"
 code
+"\n  document.getElementById('container').style.width = stage.width() + 'px';\n"
+"  document.getElementById('container').style.height = stage.height() + 'px;'\n"
 "\n});"))
 
 (defn- base-path [version]
@@ -59,36 +63,40 @@ code
 
 (defn- save-sample [entry-name code version]
   (let [name (get-sample-name entry-name version)]
+    (debug "saving sample" entry-name name version)
     (spit (str (base-path version) name ".sample")
           (sample-file-content code))
     (str "{{PLAYGROUND}}/acdvf-reference/" version "/" name)))
 
 (defn update []
+  (info "update samples repo")
   (git-cli/update-samples (str config/data-path "samples-repo")))
 
 (defn checkout-version [version]
+  (info "checkout samples version" version)
+  
   (if (.exists (file (base-path version)))
     (sh "rm" "-rf" (base-path version)))
   
   (sh "cp" "-r"
       (str config/data-path "samples-repo")
       (base-path version))
-
-  (let [repo (git/load-repo (base-path version))
-        branches (git/git-branch-list repo)
-        branch-names (map #(git-cli/get-branch-name %) branches)]
-    (if (some #{version} branch-names)
-      (git/git-checkout repo version)
-      (do
-        (git/git-branch-create repo version)
-        (git/git-checkout repo version)))))
+      
+  (git-cli/checkout-or-create (base-path version) version)
+  
+  (let [samples-files (.listFiles (file (base-path version)))]
+    (info "removing all sample files" (base-path version))
+    (doall (map #(.delete %)
+                (filter #(not (.isHidden %)) samples-files)))))
 
 (defn commit-version [version]
+  (info "commit samples" version)
   (git-cli/commit-and-push (base-path version) version))
 
 (defn parse-sample [entry-name example version]
-  (let [c (re-matches #".*<c>([^<]*)</c>.*" example)
-        t (re-matches #".*<t>([^<]*)</t>.*" example)
+  (debug "parse-sample" entry-name version)
+  (let [c (last (re-matches #"(?s).*<c>([^<]*)</c>.*" example))
+        t (last (re-matches #"(?s).*<t>([^<]*)</t>.*" example))
         raw-code (clojure.string/trim-newline
                   (clojure.string/trim
                    (clojure.string/replace example #"<[ct]>([^<]*)</[ct]>" "")))
@@ -97,10 +105,10 @@ code
                "simple-h100" (simple-h100-example raw-code)
                "stageOnly" (stage-only-example raw-code)
                raw-code)]
-    {:caption (last c)
+    {:caption c
      :link (if-not (= t "listingOnly")
              (save-sample (clojure.string/replace entry-name #"#" ".")
                           code version))
-     :t (last t)
+     :t t
      :listring-only? (= t "listingOnly")
      :code code}))

@@ -5,9 +5,15 @@
             [compojure.route :as route]
             [ring.util.response :refer [response redirect header]]
             [clostache.parser :refer [render-resource]]
+            [taoensso.carmine.message-queue :as car-mq]
             [reference.data.versions :as v]
-            [reference.data.pages :as p])
+            [reference.generator.versions :as v-gen]
+            [reference.data.pages :as p]
+            [taoensso.timbre :as timbre :refer [info]])
   (:gen-class))
+
+(if (System/getProperty "dev")
+  (timbre/set-level! :info))
 
 (defn- show-default-version [request]
   (redirect (str "/" (v/default-version) "/anychart")))
@@ -51,7 +57,9 @@
       (redirect (str "/" version "/" page))
       (redirect (str "/" version "/anychart")))))
 
-(defn- update-all [request])
+(defn- update-all [request]
+  (v/wcar* (car-mq/enqueue "reference-queue" "rebuild"))
+  (str "ok!"))
 
 (defroutes app-routes
   (route/resources "/")
@@ -71,4 +79,19 @@
           (wrap-json-response (routes app-routes))
           {:keywords? true}))
 
-(defn -main [& args])
+(defn -main [& args]
+  (def update-worker
+    (car-mq/worker v/server-conn "reference-queue"
+                   {:handler (fn [{:keys [message attempt]}]
+                               (try
+                                 (do
+                                   (println message)
+                                   (v-gen/build)
+                                   {:status :success})
+                                 (catch Exception e
+                                   (do
+                                     (println e)
+                                     (v-gen/notify-slack "ШЕФ ВСЕ ПРОПАЛО")
+                                     {:status :success}))))}))
+  
+  (server/run-server #'app {:port 9197}))

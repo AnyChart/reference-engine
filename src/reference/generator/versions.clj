@@ -9,23 +9,42 @@
             [reference.generator.search :as search-gen]
             [reference.generator.samples :as samples]
             [reference.data.versions :as vdata]
-            [cheshire.core :refer [generate-string]]))
+            [cheshire.core :refer [generate-string]]
+            [org.httpkit.client :as http]))
 
 (defn force-build-version-without-git [version]
+  ;;(samples/checkout-version version)
+  
   (let [base-path (str config/data-path "versions/" version "/")
-        acdvf-src (str base-path "src/")
+        acdvf-src (str base-path "src/tmp")
         graphics-src (str base-path "contrib/graphics/src/")
         exports-data (exports/add-exports-from-file
                       (str graphics-src "export.js")
                       (exports/add-export-from-folder acdvf-src))
         namespaces-data (get-namespaces version
                                         exports-data
-                                        graphics-src
+                                        ;;graphics-src
                                         acdvf-src)
         tree-data (tree-gen/generate-tree namespaces-data)
         search-index (search-gen/build-index namespaces-data)]
     (doall (html-gen/pre-render-top-level version (get-top-level namespaces-data)))
-    (vdata/add-version version (generate-string tree-data) (generate-string search-index))))
+    (vdata/add-version version (generate-string tree-data)
+                       (generate-string search-index))
+    ;;(vdata/update-hash version commit)
+
+    ;;(samples/commit-version version)
+    ;;(notify-slack version)
+    (println version "- done!")))
+
+;;(force-build-version-without-git "develop")
+
+(defn notify-slack [version]
+  (if (not (empty? version))
+    (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
+               {:form-params {:payload (generate-string {:text
+                                                         (str "API reference generated for " version)
+                                                         :channel "#notifications"
+                                                         :username "api-reference"})}})))
 
 (defn- build-branch [branch]
   (let [version (:name branch)
@@ -53,7 +72,7 @@
           (vdata/update-hash version commit)
 
           (samples/commit-version version)
-          
+          (notify-slack version)
           (println version "- done!"))))))
 
 (defn build []
@@ -62,4 +81,4 @@
     (println "branches" (map :name branches))
     (doall (map build-branch branches))))
 
-(time (build))
+;;(time (build))

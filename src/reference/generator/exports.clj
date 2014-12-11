@@ -1,5 +1,6 @@
 (ns reference.generator.exports
-  (:require [clojure.java.io :refer [file]]))
+  (:require [clojure.java.io :refer [file]]
+            [taoensso.timbre :as timbre :refer [info]]))
 
 (defn- get-extension [f]
   (last (clojure.string/split (.getName f) #"\.")))
@@ -17,10 +18,12 @@
 
 (defn add-export-from-folder
   ([path exports]
+     (info "add-export-from-folder" path)
      (str exports (reduce str (map get-exports (get-files path)))))
   ([path] (add-export-from-folder path nil)))
 
 (defn add-exports-from-file [path exports]
+  (info "add-exports-from-file" path)
   (str exports (clojure.string/replace
                 (slurp path)
                 "acgraph"

@@ -1,5 +1,6 @@
 (ns reference.generator.tree
-  (:require [clojure.pprint :refer [pprint]]))
+  (:require [clojure.pprint :refer [pprint]]
+            [taoensso.timbre :as timbre :refer [info]]))
 
 (defn- simplify-members [members kind]
   (if (seq members)

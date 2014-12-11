@@ -12,11 +12,15 @@
                  [ring/ring-core "1.3.1"]
                  ;; jgit
                  [clj-jgit "0.8.2"]
+                 ;; logging
+                 [com.taoensso/timbre "3.3.1"]
                  ;;frontend
                  [org.clojure/clojurescript "0.0-2371"]
                  [reagent "0.4.3"]
                  [weasel "0.4.2"]]
   :plugins [[lein-cljsbuild "1.0.3"]]
+  :profiles {:dev {:jvm-opts ["-Ddev=true"]}
+             :uberjar {:jvm-opts []}}
   :cljsbuild {:builds [{:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/app.js"
                                    :optimizations :whitespace

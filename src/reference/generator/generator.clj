@@ -1,32 +1,41 @@
 (ns reference.generator.generator
-  (:require [clostache.parser :refer [render-resource]]
+  (:require [clostache.parser :refer [render]]
             [reference.config :as config]
-            [clojure.java.io :refer [resource]]
-            [clojure.java.shell :refer [sh]]))
+            [clojure.java.io :refer [file resource]]
+            [clojure.java.shell :refer [sh]]
+            [taoensso.timbre :as timbre :refer [info]]))
 
 (defn- fix-links [version data]
   (clojure.string/replace data
                           #"\{@link ([^}]+)\}"
                           (str "<a href='/" version "/$1'>$1</a>")))
 
+(def ns-template (slurp (resource "templates/ns.mustache")))
+(def class-template (slurp (resource "templates/class.mustache")))
+(def enum-template (slurp (resource "templates/enum.mustache")))
+(def typedef-template (slurp (resource "templates/typedef.mustache")))
+(def fn-template (slurp (resource "templates/fn.mustache")))
+(def example-template (slurp (resource "templates/example.mustache")))
+  
 (defn- render-template [version template entry]
   (fix-links version
-             (render-resource template
-                              {:main entry
-                               :link #(str "/" version "/" %)
-                               :type-link (fn [text]
-                                            (fn [render-fn]
-                                              (let [type (render-fn text)]
-                                                (if (.startsWith type "anychart")
-                                                  (str "<a class='type-link' href='/"
-                                                       version "/" type "'>" type "</a>")
-                                                  type))))}
-                              {:fn-part (slurp (resource "templates/fn.mustache"))
-                               :examples (slurp (resource "templates/example.mustache"))})))
+             (render template
+                     {:main entry
+                      :link #(str "/" version "/" %)
+                      :type-link (fn [text]
+                                   (fn [render-fn]
+                                     (let [type (render-fn text)]
+                                       (if (.startsWith type "anychart")
+                                         (str "<a class='type-link' href='/"
+                                              version "/" type "'>" type "</a>")
+                                         type))))}
+                     {:fn-part fn-template
+                      :examples example-template})))
 
 (defn- render-namespace [version entry]
+  (info "render-namespace" version (:full-name entry))
   (render-template version
-                   "templates/ns.mustache"
+                   ns-template
                    (assoc entry
                      :has-classes (not (empty? (:classes entry)))
                      :has-typedefs (not (empty? (:typedefs entry)))
@@ -35,8 +44,9 @@
                      :has-functions (not (empty? (:functions entry))))))
 
 (defn- render-class [version entry]
+  (info "render-class" version (:full-name entry))
   (render-template version
-                   "templates/class.mustache"
+                   class-template
                    (assoc entry
                      :has-inherits-names (not (empty? (:inherits entry)))
                      :inherits-names (:inherits entry)
@@ -47,16 +57,19 @@
                      :has-static-fields (not (empty? (:static-fields entry))))))
 
 (defn- render-enum [version entry]
+  (info "render-enum" version (:full-name entry))
   (render-template version
-                   "templates/enum.mustache"
+                   enum-template
                    entry))
 
 (defn- render-typedef [version entry]
+  (info "render-typedef" version (:full-name entry))
   (render-template version
-                   "templates/typedef.mustache"
+                   typedef-template
                    entry))
 
 (defn- render-top-level [version entry]
+  (info "render-top-level" version (:full-name entry))
   (case (:kind entry)
     "namespace" (render-namespace version entry)
     "class" (render-class version entry)
@@ -67,10 +80,15 @@
 (defn- save [version entry]
   (let [path (str config/data-path "/versions-data/" version "/" (:full-name entry) ".html")
         data (render-top-level version entry)]
+    ;;(info "save" path "content:" (boolean data))
     (if data
       (spit path data))))
 
 (defn pre-render-top-level [version top-level]
-  (sh "rm" "-rf" (str config/data-path "versions-data/" version))
-  (sh "mkdir" (str config/data-path "versions-data/" version))
+  (info "pre-render-top-level" version (count top-level))
+  (let [path (str config/data-path "versions-data/" version)]
+    (if (.exists (file path))
+      (sh "rm" "-rf" path))
+    (sh "mkdir" path)
+    (info "rendering into" path))
   (pmap #(save version %) top-level))
