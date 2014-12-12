@@ -24,5 +24,9 @@
   :cljsbuild {:builds [{:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/app.js"
                                    :optimizations :whitespace
+                                   :preamble ["reagent/react.js"]}}
+                       {:source-paths ["src-cljs"]
+                        :compiler {:output-to "resources/public/js/app.min.js"
+                                   :optimizations :advanced
                                    :preamble ["reagent/react.js"]}}]}
   :main reference.handler)

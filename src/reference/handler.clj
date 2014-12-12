@@ -22,7 +22,14 @@
   (let [version (get-in request [:params :version])]
     (redirect (str "/" version "/anychart"))))
 
-(defn- get-page-json [request])
+(defn- get-page-data [request]
+  (let [version (get-in request [:params :version])
+        page (get-in request [:params :page])]
+    (if (and (v/version-exists? version)
+             (p/page-exists? version page))
+      (response {:content (p/get-page version page)
+                 :version version
+                 :page page}))))
 
 (defn- show-page [request]
   (let [version (get-in request [:params :version])
@@ -71,7 +78,7 @@
   (GET "/:version" [] show-default-ns)
   (GET "/:version/" [] show-default-ns)
   (GET "/:version/try/:page" [] try-show-page)
-  (GET "/:version/:page/json" [] get-page-json)
+  (GET "/:version/:page/data" [] get-page-data)
   (GET "/:version/:page" [] show-page)
   (route/not-found "not found"))
 

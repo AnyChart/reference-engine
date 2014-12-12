@@ -175,9 +175,23 @@
 	font-weight: bold;
     }
 
-    .code-sample {
-	margin-top: 10px;
+    .code-sample-wrapper {
+        margin-top: 10px;
+    }
 
+    .sample-topbar {
+      position: relative;
+      width: 100%;
+      height: 20px;
+
+      a { display: block;
+          position: absolute;
+          right: 0; }
+    }
+
+    .sample-caption { font-weight: bold; }
+
+    .code-sample {
         .ace_cursor {
           color: transparent;
         }

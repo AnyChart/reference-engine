@@ -16,7 +16,7 @@
   ;;(samples/checkout-version version)
   
   (let [base-path (str config/data-path "versions/" version "/")
-        acdvf-src (str base-path "src/core/axes")
+        acdvf-src (str base-path "src/data")
         graphics-src (str base-path "contrib/graphics/src/")
         exports-data (exports/add-exports-from-file
                       (str graphics-src "export.js")
@@ -36,7 +36,7 @@
     ;;(notify-slack version)
     (println version "- done!")))
 
-;;(force-build-version-without-git "develop")
+(force-build-version-without-git "develop")
 
 (defn notify-slack [version]
   (if (not (empty? version))

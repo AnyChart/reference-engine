@@ -66,7 +66,7 @@ code
     (debug "saving sample" entry-name name version)
     (spit (str (base-path version) name ".sample")
           (sample-file-content code))
-    (str "{{PLAYGROUND}}/acdvf-reference/" version "/" name)))
+    (str "http://playground.anychart.stg/acdvf-reference/" version "/" name)))
 
 (defn update []
   (info "update samples repo")
@@ -104,11 +104,15 @@ code
                "lineChart" (line-chart-example raw-code)
                "simple-h100" (simple-h100-example raw-code)
                "stageOnly" (stage-only-example raw-code)
-               raw-code)]
+               raw-code)
+        link (if-not (= t "listingOnly")
+               (save-sample (clojure.string/replace entry-name #"#" ".")
+                            code version))]
     {:caption c
-     :link (if-not (= t "listingOnly")
-             (save-sample (clojure.string/replace entry-name #"#" ".")
-                          code version))
+     :has-caption (boolean c)
+     :link link
+     :has-link (boolean link)
+     :has-topbar (or (boolean c) (boolean link))
      :t t
      :listring-only? (= t "listingOnly")
      :code code}))

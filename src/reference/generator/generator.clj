@@ -8,7 +8,7 @@
 (defn- fix-links [version data]
   (clojure.string/replace data
                           #"\{@link ([^}]+)\}"
-                          (str "<a href='/" version "/$1'>$1</a>")))
+                          (str "<a class='type-link' href='/" version "/$1'>$1</a>")))
 
 (def ns-template (slurp (resource "templates/ns.mustache")))
 (def class-template (slurp (resource "templates/class.mustache")))

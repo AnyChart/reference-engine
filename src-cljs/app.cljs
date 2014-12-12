@@ -1,5 +1,7 @@
 (ns app
   (:require [reagent.core :as reagent :refer [atom]]
+            [app.ajax :as ajax]
+            [app.editors :as editors]
             [cljs.core.async :refer [chan put! take! timeout] :as async]
             [weasel.repl :as ws-repl]
             [clojure.walk :refer [prewalk]]
@@ -36,6 +38,7 @@
 
 (defn- toggle-group [event node]
   (.preventDefault event)
+  (.stopPropagation event)
   (let [key (:full-name node)
         visible (node-visible? node)]
     (swap! opened-nodes assoc key (not visible)))
@@ -54,16 +57,19 @@
     [:ul
      (map #(tree-node version %) (:children node))]))
 
+(defn- load-page [event]
+  (app.ajax/load-page-from-link event (-> event .-target (.getAttribute "href"))))
+
 (defn- tree-node [version node]
   (if (or (= (:kind node) "namespace")
           (= (:kind node) "class"))
     [:li {:key (:full-name node)}
      [toggle-link node]
-     [:a {:href (link node version)}
+     [:a {:href (link node version) :on-click load-page}
       (title node)]
      [child-nodes version node]]
     [:li {:key (:full-name node)}
-     [:a {:href (link node version)} (title node)]]))
+     [:a {:href (link node version) :on-click load-page} (title node)]]))
 
 (defn- tree-view [version namespaces]
   [:ul (map #(tree-node version %) namespaces)])
@@ -73,7 +79,7 @@
 
 (defn- search-results-row [version data]
   [:li {:key data}
-   [:a {:href (str "/" version "/" data)} data]])
+   [:a {:href (str "/" version "/" data) :on-click load-page} data]])
 
 (defn- search-results-view [version]
   (if (:visible @search-state)
@@ -160,16 +166,6 @@
                         goog.events.EventType/MOUSEMOVE
                         resize-tree))
 
-(defn- create-editor [el]
-  (let [editor (.edit js/ace el)]
-    (.setTheme editor "ace/theme/tomorrow")
-    (.setOptions editor #js {:maxLines 30})
-    (.setReadOnly editor true)
-    (.setMode (.getSession editor) "ace/mode/javascript")))
-
-(defn- init-editors []
-  (goog.array/map (goog.dom/getElementsByClass "code-sample") create-editor))
-
 (defn- init-events []
   (goog.events/listen (goog.dom/getElement "version-toggler")
                       goog.events.EventType/CLICK
@@ -183,7 +179,8 @@
 
 (defn ^:export init [version]
   (init-events)
-  (init-editors)
+  (editors/init-editors)
+  (ajax/init-navigation)
   (load-tree version)
   (load-search-index version))
 
