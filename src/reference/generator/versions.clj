@@ -36,7 +36,7 @@
     ;;(notify-slack version)
     (println version "- done!")))
 
-(force-build-version-without-git "develop")
+;;(force-build-version-without-git "develop")
 
 (defn notify-slack [version]
   (if (not (empty? version))

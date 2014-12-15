@@ -1,4 +1,4 @@
-(ns app.editors
+(ns editors
   (:require [goog.array]
             [goog.dom]))
 

@@ -1,7 +1,7 @@
 (ns app
   (:require [reagent.core :as reagent :refer [atom]]
             [app.ajax :as ajax]
-            [app.editors :as editors]
+            [editors]
             [cljs.core.async :refer [chan put! take! timeout] :as async]
             [weasel.repl :as ws-repl]
             [clojure.walk :refer [prewalk]]
@@ -45,7 +45,7 @@
   false)
 
 (defn- toggle-link [node]
-  [:a {:on-click #(toggle-group % node) :href "#"}
+  [:a {:on-click #(toggle-group % node)}
       [:i {:class (str "fa " (if (node-visible? node)
                                "fa-chevron-down"
                                "fa-chevron-right"))}]])
@@ -55,37 +55,88 @@
 (defn- child-nodes [version node]
   (if (node-visible? node)
     [:ul
-     (map #(tree-node version %) (:children node))]))
+     (map (fn [el]
+            [tree-node {:version version :node el}])
+          (:children node))]))
 
-(defn- load-page [event]
-  (app.ajax/load-page-from-link event (-> event .-target (.getAttribute "href"))))
+(defn- is-open-in-new-tab [event]
+  (or (.-ctrlKey event)
+      (.-metaKey event)))
 
-(defn- tree-node [version node]
+(declare search-state)
+
+(defn- load-page [e]
+  (if-not (is-open-in-new-tab e)
+    (let [url (-> e .-target (.getAttribute "href"))]
+      (if (app.ajax/is-current url)
+        (.preventDefault e)
+        (if (app.ajax/is-ajax url)
+          (do
+            (swap! search-state assoc :visible false)
+            (.preventDefault e)
+            (.pushState js/history nil nil url)
+            (app.ajax/load-page url)))))))
+
+(defn setup-node-link [component]
+  (let [root (reagent/dom-node component)
+        link (goog.dom/getElementByClass "node-link" root)]
+    (goog.events.listen link
+                        goog.events.EventType/CLICK
+                        load-page)))
+
+(defn remove-node-link [component]
+  (let [root (reagent/dom-node component)
+        link (goog.dom/getElementByClass "node-link" root)]
+    (goog.events.removeAll link)))
+
+(defn tree-node-view [{:keys [version node]}]
   (if (or (= (:kind node) "namespace")
           (= (:kind node) "class"))
     [:li {:key (:full-name node)}
      [toggle-link node]
-     [:a {:href (link node version) :on-click load-page}
+     [:a {:class "node-link" :href (link node version)}
       (title node)]
      [child-nodes version node]]
     [:li {:key (:full-name node)}
-     [:a {:href (link node version) :on-click load-page} (title node)]]))
+     [:a {:class "node-link" :href (link node version)} (title node)]]))
+
+(def tree-node
+  (with-meta tree-node-view
+    {:component-did-mount
+     (fn [this]
+       (setup-node-link this))
+     :component-will-unmount
+     (fn [this]
+       (remove-node-link this))}))
 
 (defn- tree-view [version namespaces]
-  [:ul (map #(tree-node version %) namespaces)])
+  [:ul (map (fn [ns]
+              [tree-node {:version version :node ns}])
+            namespaces)])
 
 (def search-state (atom {}))
 (def search-index (atom []))
 
-(defn- search-results-row [version data]
+(defn- search-results-row-view [version data]
   [:li {:key data}
-   [:a {:href (str "/" version "/" data) :on-click load-page} data]])
+   [:a {:class "node-link" :href (str "/" version "/" data)} data]])
+
+(def search-results-row
+  (with-meta search-results-row-view
+    {:component-did-mount
+     (fn [this]
+       (setup-node-link this))
+     :component-will-unmount
+     (fn [this]
+       (remove-node-link this))}))
 
 (defn- search-results-view [version]
   (if (:visible @search-state)
     (if (seq (:results @search-state))
       [:ul.search-results
-       (map #(search-results-row version %) (:results @search-state))]
+       (map (fn [row]
+              [search-results-row version row])
+            (:results @search-state))]
       [:ul.search-results
        [:li [:a "Nothing found"]]])))
 

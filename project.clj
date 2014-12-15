@@ -28,5 +28,7 @@
                        {:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/app.min.js"
                                    :optimizations :advanced
+                                   :pretty-print false
+                                   :externs ["externs/ace.js"]
                                    :preamble ["reagent/react.js"]}}]}
   :main reference.handler)

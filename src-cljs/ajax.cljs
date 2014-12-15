@@ -1,6 +1,6 @@
 (ns app.ajax
   (:require [cljs.core.async :refer [chan put! take! timeout] :as async]
-            [app.editors]
+            [editors]
             [goog.net.XhrIo]
             [goog.net.EventType]
             [goog.events]
@@ -18,8 +18,14 @@
 (defn- cleanup-url [page]
   (clojure.string/replace page #"#.*" ""))
 
+(defn is-current [link]
+  (and (= (cleanup-url link) @current-page)
+       (= (.indexOf link "#") -1)))
+
+(defn is-ajax [link]
+  (not= (cleanup-url link) @current-page))
+
 (defn- load-page-data [page]
-  (println "load page")
   (if @page-loader
     (.abort @page-loader))
   
@@ -39,9 +45,13 @@
 (defn- show-loaded-page [data]
   (aset (goog.dom/getElement "content") "innerHTML" (:content data))
   (aset (goog.dom/getElement "current-path") "innerHTML" (:page data))
-  (app.editors/init-editors))
+  (editors/init-editors))
 
 (declare update-links)
+
+(defn- is-open-in-new-tab [event]
+  (or (.-ctrlKey event)
+      (.-metaKey event)))
 
 (defn load-page [page]
   (go
@@ -50,20 +60,22 @@
       (show-loaded-page data)
       (update-links))))
   
-(defn load-page-from-link [event page]
-  (if (or (.-ctrlKey event)
-          (.-metaKey event)
-          (= (cleanup-url page) @current-page))
-    true
-    (do (.preventDefault event)
-        (.stopPropagation event)
-        (load-page page)
-        (.pushState js/history nil nil page)
-        false)))
+(defn load-page-from-link [e url]
+  (if-not (is-open-in-new-tab e)
+    (if (is-current url)
+      (.preventDefault e)
+      (if (is-ajax url)
+        (do
+          (.preventDefault e)
+          (.pushState js/history nil nil url)
+          (load-page url))))))
 
-(defn- navigation-callback []
-  (if-not (= (cleanup-url page) @current-page)
-    (load-page (.-pathname (.-location js/document)))))
+(defn- navigation-callback [event]
+  (let [page (.-pathname (.-location js/document))]
+    (if-not (= (cleanup-url page) @current-page)
+      (do
+        (.preventDefault event)
+        (load-page page)))))
 
 (defn init-navigation []
   (reset! current-page (.-pathname js/location))
@@ -73,8 +85,8 @@
 
 ;;(load-page "http://localhost:9197/develop/anychart.core.axes.Ticks")
 
-
 (defn- link-click-handler [event link]
+  (.stopPropagation event)
   (load-page-from-link event (.getAttribute link "href")))
 
 (defn- update-links []

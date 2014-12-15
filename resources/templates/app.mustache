@@ -9,7 +9,12 @@
     <script src="/ace-builds/src-min-noconflict/ace.js"></script>
     <link rel="stylesheet" href="/css/styles.css?v={{static-version}}" />
     <link rel="stylesheet" href="/fonts/font-awesome.css" />
+    {{#debug}}
     <script src="/js/app.js?v={{static-version}}"></script>
+    {{/debug}}
+    {{^debug}}
+    <script src="/js/app.min.js?v={{static-version}}"></script>
+    {{/debug}}
     <meta name="keywords" content="anychart, charts, javascript charts, ajax charts, mobile charts, line charts, bar charts, pie charts, javascript plots, dashboard, reporting, html5, js"/>
     <meta name="description" content="AnyChart - Interactive JavaScript charts and dashboards for your projects. Mobile-ready solution for business intelligence, data visualisation and reporting."/>
     <meta property=og:title content="AnyChart - Interactive JavaScript charts and dashboards for your projects."/>
