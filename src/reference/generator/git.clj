@@ -78,7 +78,12 @@
 
 (defn update [branches-filter]
   (with-sh-env env-config
+    (sh "rm" "-rf" (str config/data-path "/repo"))
     (with-sh-dir (str config/data-path "/repo")
+      (sh "git" "clone" "git@github.com:AnyChart/ACDVF.git" "repo"))
+    
+    (with-sh-dir (str config/data-path "/repo")
+      (sh "git" "submodule" "init")
       (sh "git" "fetch")
       (sh "git" "pull")
       (sh "git" "remote" "prune" "origin")))

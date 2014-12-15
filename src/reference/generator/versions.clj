@@ -16,7 +16,7 @@
   ;;(samples/checkout-version version)
   
   (let [base-path (str config/data-path "versions/" version "/")
-        acdvf-src (str base-path "src/")
+        acdvf-src (str base-path "src/core/axes")
         graphics-src (str base-path "contrib/graphics/src/")
         exports-data (exports/add-exports-from-file
                       (str graphics-src "export.js")
