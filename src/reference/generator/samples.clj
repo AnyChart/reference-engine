@@ -66,7 +66,10 @@ code
     (debug "saving sample" entry-name name version)
     (spit (str (base-path version) name ".sample")
           (sample-file-content code))
-    (str "http://playground.anychart.stg/acdvf-reference/" version "/" name)))
+    (str "http://playground.anychart." (if config/is-prod
+                                         "com"
+                                         "stg")
+         "/acdvf-reference/" version "/" name)))
 
 (defn update []
   (info "update samples repo")
@@ -90,8 +93,10 @@ code
                 (filter #(not (.isHidden %)) samples-files)))))
 
 (defn commit-version [version]
-  (info "commit samples" version)
-  (git-cli/commit-and-push (base-path version) version))
+  (if-not config/is-prod
+    (do
+      (info "commit samples" version)
+      (git-cli/commit-and-push (base-path version) version))))
 
 (defn parse-sample [entry-name example version]
   (debug "parse-sample" entry-name version)

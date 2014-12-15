@@ -9,3 +9,7 @@
 (def node-path (if (not (System/getProperty "dev"))
                  "/usr/bin/nodejs"
                  "node"))
+
+(def is-prod (boolean (System/getProperty "prod")))
+
+(println "production mode:" is-prod)
