@@ -29,10 +29,12 @@
       <div class="reg">
         <h3 id="{{name}}">{{name}}</h3>
         <div class="description">
+          {{#members}}
           <div class="member">
 	    <p>{{&description}}</p>
             {{>examples}}
           </div>
+          {{/members}}
         </div>
       </div>
     {{/main.constants}}

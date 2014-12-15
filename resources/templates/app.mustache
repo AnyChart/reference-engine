@@ -4,24 +4,16 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="./i/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/i/favicon.ico" type="image/x-icon">
     <title>API Reference - AnyChart</title>
     <script src="/ace-builds/src-min-noconflict/ace.js"></script>
+    <link rel="stylesheet" href="/css/styles.css?v={{static-version}}" />
+    <link rel="stylesheet" href="/fonts/font-awesome.css" />
     {{#debug}}
-      <script src="/dev/react/react.js"></script>
-      <link rel="stylesheet" href="/dev/css/styles.css?v={{version}}" />
-      <link href="/fonts/font-awesome.css" rel="stylesheet">
-      <script src="/dev/goog/base.js"></script>
-      <script src="/dev/deps.js"></script>
-      <script>
-        goog.require('app');
-      </script>
+    <script src="/js/app.js?v={{static-version}}"></script>
     {{/debug}}
     {{^debug}}
-      <script src="/min/react.min.js"></script>
-      <link rel="stylesheet" href="/min/styles.css?v={{version}}" />
-      <link rel="stylesheet" href="/fonts/font-awesome.css" />
-      <script src="/min/app.min.js"></script>
+    <script src="/js/app.min.js?v={{static-version}}"></script>
     {{/debug}}
     <meta name="keywords" content="anychart, charts, javascript charts, ajax charts, mobile charts, line charts, bar charts, pie charts, javascript plots, dashboard, reporting, html5, js"/>
     <meta name="description" content="AnyChart - Interactive JavaScript charts and dashboards for your projects. Mobile-ready solution for business intelligence, data visualisation and reporting."/>
@@ -56,13 +48,13 @@
       <div class="header">
 	<ul class="path">
 	  <li>Home <span>/</span></li>
-	  <li id="current-path">{{main.full-name}}</a></li>
+	  <li id="current-path">{{page}}</a></li>
 	</ul>
 	<div class="right">
-	  <a class="version" id="version-toggler" href="#">Version {{v}} <i class="fa fa-caret-down"></i></a>
+	  <a class="version" id="version-toggler" href="#">Version {{version}} <i class="fa fa-caret-down"></i></a>
           <ul id="version-toggle" style="display:none">
             {{#versions}}
-              <li><a href="/{{project}}/{{.}}/{{default-ns}}">Version {{.}}</a></li>
+              <li><a href="/{{.}}/try/{{page}}">Version {{.}}</a></li>
             {{/versions}}
           </ul>
 	  <div class="support-icon"><i class="fa fa-question-circle"></i></div>
@@ -73,23 +65,19 @@
 	</div>
       </div>
       <div id="content">
-        {{#kind.namespace}}
-	  {{>ns-part}}
-        {{/kind.namespace}}
-        {{#kind.enum}}
-          {{>enum-part}}
-        {{/kind.enum}}
-        {{#kind.class}}
-          {{>class-part}}
-        {{/kind.class}}
-        {{#kind.typedef}}
-          {{>typedef-part}}
-        {{/kind.typedef}}
+        {{&content}}
       </div>
     </div>
     <div id="locker" style="display:none"></div>
     <script>
-      app.init("{{project}}", "{{v}}", {{&tree}});
+      app.init("{{version}}");
+      {{#debug}}
+        app.connect_repl();
+
+        function reinit() {
+          app.init("{{version}}");
+        }
+      {{/debug}}
     </script>
 
     <!-- Google Tag Manager -->
