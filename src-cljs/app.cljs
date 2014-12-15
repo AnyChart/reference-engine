@@ -2,10 +2,12 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [app.ajax :as ajax]
             [editors]
+            [search]
+            [links]
+            [data]
             [cljs.core.async :refer [chan put! take! timeout] :as async]
             [weasel.repl :as ws-repl]
             [clojure.walk :refer [prewalk]]
-            [goog.net.XhrIo]
             [goog.style]
             [goog.json :as json]
             [goog.events]
@@ -59,35 +61,6 @@
             [tree-node {:version version :node el}])
           (:children node))]))
 
-(defn- is-open-in-new-tab [event]
-  (or (.-ctrlKey event)
-      (.-metaKey event)))
-
-(declare search-state)
-
-(defn- load-page [e]
-  (if-not (is-open-in-new-tab e)
-    (let [url (-> e .-target (.getAttribute "href"))]
-      (if (app.ajax/is-current url)
-        (.preventDefault e)
-        (if (app.ajax/is-ajax url)
-          (do
-            (swap! search-state assoc :visible false)
-            (.preventDefault e)
-            (.pushState js/history nil nil url)
-            (app.ajax/load-page url)))))))
-
-(defn setup-node-link [component]
-  (let [root (reagent/dom-node component)
-        link (goog.dom/getElementByClass "node-link" root)]
-    (goog.events.listen link
-                        goog.events.EventType/CLICK
-                        load-page)))
-
-(defn remove-node-link [component]
-  (let [root (reagent/dom-node component)
-        link (goog.dom/getElementByClass "node-link" root)]
-    (goog.events.removeAll link)))
 
 (defn tree-node-view [{:keys [version node]}]
   (if (or (= (:kind node) "namespace")
@@ -104,87 +77,21 @@
   (with-meta tree-node-view
     {:component-did-mount
      (fn [this]
-       (setup-node-link this))
+       (links/setup-node-link this))
      :component-will-unmount
      (fn [this]
-       (remove-node-link this))}))
+       (links/remove-node-link this))}))
 
 (defn- tree-view [version namespaces]
   [:ul (map (fn [ns]
               [tree-node {:version version :node ns}])
             namespaces)])
 
-(def search-state (atom {}))
-(def search-index (atom []))
-
-(defn- search-results-row-view [version data]
-  [:li {:key data}
-   [:a {:class "node-link" :href (str "/" version "/" data)} data]])
-
-(def search-results-row
-  (with-meta search-results-row-view
-    {:component-did-mount
-     (fn [this]
-       (setup-node-link this))
-     :component-will-unmount
-     (fn [this]
-       (remove-node-link this))}))
-
-(defn- search-results-view [version]
-  (if (:visible @search-state)
-    (if (seq (:results @search-state))
-      [:ul.search-results
-       (map (fn [row]
-              [search-results-row version row])
-            (:results @search-state))]
-      [:ul.search-results
-       [:li [:a "Nothing found"]]])))
-
-(defn- search-for [query]
-  (take 50 (filter (fn [row]
-                     (>= (.indexOf row query) 0))
-                   @search-index)))
-
-(defn- search-change [event]
-  (let [query (-> event .-target .-value)
-        results (search-for query)]
-    (swap! search-state assoc
-           :query query
-           :visible (not (empty? query))
-           :results results)))
-
-(defn- search-view [version tree]
-  [:div.search
-   [:i.fa.fa-search]
-   [:div
-    [:input {:type "text"
-             :placeholder "search for method in the tree"
-             :on-change search-change
-             :value (:query @search-state)}]]
-   [search-results-view version]])
-
-(defn- load-json [version data]
-  (let [c (chan 1)]
-    (goog.net.XhrIo/send
-     (str "/" version "/data/" data)
-     (fn [e]
-       (if (.isSuccess (.-target e))
-         (let [res (.getResponseJson (.-target e))]
-           (put! c (js->clj res :keywordize-keys true))))))
-    c))
-
 (defn- load-tree [version]
   (go
-    (let [tree (<! (load-json version "tree.json"))]
+    (let [tree (<! (data/load-json version "tree.json"))]
       (reagent/render-component [tree-view version tree]
                                 (.getElementById js/document "tree")))))
-
-(defn- load-search-index [version]
-  (go
-    (let [index-data (<! (load-json version "search.json"))]
-      (reset! search-index index-data)
-      (reagent/render-component [search-view version]
-                                (.getElementById js/document "search")))))
 
 (defn- toggle-versions [e]
   (let [ul (goog.dom/getElement "version-toggle")
@@ -233,6 +140,6 @@
   (editors/init-editors)
   (ajax/init-navigation)
   (load-tree version)
-  (load-search-index version))
+  (search/load-search-index version))
 
 ;;(.reinit js/window)
