@@ -20,7 +20,8 @@
                  [weasel "0.4.2"]]
   :plugins [[lein-cljsbuild "1.0.3"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
-             :uberjar {:jvm-opts []}}
+             :uberjar {:jvm-opts []
+                       :aot []}}
   :cljsbuild {:builds [{:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/app.js"
                                    :optimizations :whitespace
