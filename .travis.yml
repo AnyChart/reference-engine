@@ -8,25 +8,22 @@ branches:
   - staging
 services:
   - redis-server
-before_install:
- - npm install -g grunt-cli
 install:
- - npm install
  - gem install compass
 before_script:
- - grunt release
+ - compass compile
+ - lein cljsbuild once
 script: lein2 uberjar
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then export SERVER="api.anychart.com"; fi
-  - if [ "$TRAVIS_BRANCH" == "staging" ]; then export SERVER="176.9.224.5"; fi
-  - if [ "$TRAVIS_BRANCH" == "develop" ]; then export SERVER="176.9.224.4"; fi
+  - if [ "$TRAVIS_BRANCH" == "staging" ]; then export SERVER="185.22.60.95"; fi
   - echo "Deploying to $SERVER"
   - cp .travis/known_hosts ~/.ssh/known_hosts
   - chmod 600 ~/.ssh/known_hosts
   - chmod 600 .travis/id_rsa
   - chmod 600 .travis/id_rsa.pub
   - ssh-add .travis/id_rsa
-  - scp -i .travis/id_rsa target/reference-engine-0.1-standalone.jar root@$SERVER:/apps/api/reference-engine-0.1-standalone.jar
-  - ssh root@$SERVER "supervisorctl restart api-reference"
+  - scp -i .travis/id_rsa target/reference-engine-0.2.0-standalone.jar root@$SERVER:/apps/reference/reference-engine-0.2.0-standalone.jar
+  - ssh root@$SERVER "supervisorctl restart reference"
 notifications:
   slack: anychart-team:sJRPhNn8Ur8yVdhvhgp6EbDM
