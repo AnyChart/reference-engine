@@ -184,6 +184,8 @@ export GIT_SSH="/apps/reference/keys/git"
 cd /apps/reference/data/
 git clone git@github.com:AnyChart/ACDVF.git repo
 git clone git@github.com:AnyChart/ACDVF-docs-playground-samples.git samples-repo
+cd repo
+git submodule init
 ```
 
 # Reference local build

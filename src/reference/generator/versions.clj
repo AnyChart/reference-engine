@@ -16,7 +16,7 @@
   ;;(samples/checkout-version version)
   
   (let [base-path (str config/data-path "versions/" version "/")
-        acdvf-src (str base-path "src/data")
+        acdvf-src (str base-path "src/")
         graphics-src (str base-path "contrib/graphics/src/")
         exports-data (exports/add-exports-from-file
                       (str graphics-src "export.js")
@@ -24,9 +24,7 @@
         namespaces-data (get-namespaces version
                                         exports-data
                                         ;;graphics-src
-                                        ;;acdvf-src
-                                        (str base-path "contrib/graphics/src/vector/tmp")
-                                        )
+                                        acdvf-src)
         tree-data (tree-gen/generate-tree namespaces-data)
         search-index (search-gen/build-index namespaces-data)]
     (doall (html-gen/pre-render-top-level version (get-top-level namespaces-data)))
