@@ -23,7 +23,7 @@ after_success:
   - chmod 600 .travis/id_rsa
   - chmod 600 .travis/id_rsa.pub
   - ssh-add .travis/id_rsa
-  - scp -i .travis/id_rsa target/reference-engine-0.2.0-standalone.jar root@$SERVER:/apps/reference/reference-engine-0.2.0-standalone.jar
+  - scp -i .travis/id_rsa target/reference-0.2.0-standalone.jar root@$SERVER:/apps/reference/reference-0.2.0-standalone.jar
   - ssh root@$SERVER "supervisorctl restart reference"
 notifications:
   slack: anychart-team:sJRPhNn8Ur8yVdhvhgp6EbDM
