@@ -17,7 +17,7 @@ resources/public/jsxc/.module-cache
 bower_components
 node_modules
 bower_deps
-data
+data/
 test.json
 .docs
 jsdoc
