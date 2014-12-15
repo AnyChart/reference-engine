@@ -121,14 +121,17 @@
           :fields (:fields linked-enum)
           :has-fields (:has-fields linked-enum))))))
 
-(defn- structurize-namespace [[name entries] struct classes enums]
+(defn- structurize-typedef [[name entries] struct]
+  (get-actual-entry entries))
+
+(defn- structurize-namespace [[name entries] struct classes enums typedefs]
   (let [entry (get-actual-entry entries)]
     [name (assoc entry
             :constants (members name struct :constants false)
             :fields (members name struct :fields false)
             :functions (members name struct :functions false)
             :enums (filter #(= (:member-of %) name) enums)
-            :typedefs (members name struct :typedefs false)
+            :typedefs (filter #(= (:member-of %) name) typedefs)
             :classes (filter #(= (:member-of (last %)) name) classes))]))
 
 (defn- structurize [struct]
@@ -150,15 +153,19 @@
                                                 methods-inheritance-cache)
                             classes-struct-parent)
         enums-struct (map #(structurize-enum % struct) (:enums struct))
+        typedefs-struct (map #(structurize-typedef % struct) (:typedefs struct))
         namespaces-struct (map
-                           #(structurize-namespace % struct classes-struct enums-struct)
+                           #(structurize-namespace %
+                                                   struct
+                                                   classes-struct
+                                                   enums-struct
+                                                   typedefs-struct)
                            (:namespaces struct))]
     (info "classes" (count classes-struct))
     (info "namespaces" (count namespaces-struct))
+    (info "typedefs" (count typedefs-struct))
     {:classes (into {} classes-struct)
-     :typedefs (map (fn [[name entries]]
-                      (get-actual-entry entries))
-                    (:typedefs struct))
+     :typedefs typedefs-struct
      :enums enums-struct
      :namespaces namespaces-struct}))
 

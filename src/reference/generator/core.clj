@@ -19,7 +19,6 @@
     res))
 
 (defn get-top-level [namespaces]
-  (info "get-top-level" (count namespaces))
   (reduce (fn [res namespace]
             (concat res
                     [namespace]

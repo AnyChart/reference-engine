@@ -24,7 +24,9 @@
         namespaces-data (get-namespaces version
                                         exports-data
                                         ;;graphics-src
-                                        acdvf-src)
+                                        ;;acdvf-src
+                                        (str base-path "contrib/graphics/src/vector/tmp")
+                                        )
         tree-data (tree-gen/generate-tree namespaces-data)
         search-index (search-gen/build-index namespaces-data)]
     (doall (html-gen/pre-render-top-level version (get-top-level namespaces-data)))

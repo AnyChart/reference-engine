@@ -46,6 +46,9 @@
       (swap! cache assoc name res)
       res)))
 
+(defn- check-element-export [element]
+  (:force-include element))
+
 (defn- check-string-export [name exports cache]
   (if (contains? @cache name)
     (get @cache name)
@@ -112,7 +115,8 @@
 (defn- check-namespace-export [[name entry] exports classes cache]
   (assoc entry
     :enums (filter #(check-simple-export (:full-name %) exports cache) (:enums entry))
-    :typedefs (filter #(check-simple-export (:full-name %) exports cache) (:typedefs entry))
+    :typedefs (filter #(or (check-element-export %)
+                           (check-simple-export (:full-name %) exports cache)) (:typedefs entry))
     :fields (linearize (filter #(check-simple-export (first %) exports cache) (:fields entry)))
     :constants (linearize (filter #(check-simple-export (first %) exports cache)
                                   (:constants entry)))
