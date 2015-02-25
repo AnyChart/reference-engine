@@ -45,19 +45,13 @@
 (defn get-branch-name [branch]
   (last (re-find #"refs/heads/(.*)$" (.getName branch))))
 
-(defn- update-submodules [path]
-  (with-sh-env env-config
-    (with-sh-dir path
-      (println (sh "/usr/bin/git" "submodule" "update")))))
-
 (defn- checkout-branch [short-name repo]
   (println "checkouting" short-name)
   (sh "cp" "-r"
       (str config/data-path "/repo")
       (str config/data-path "/versions/" short-name))
   (run-git (str config/data-path "/versions/" short-name)
-           "checkout" short-name)
-  (update-submodules (str config/data-path "/versions/" short-name)))
+           "checkout" short-name))
 
 (defn- delete-recursively [fname]
   (let [func (fn [func f]
@@ -76,7 +70,6 @@
   
   (let [repo (get-repo)]
     (auth-git
-     (update-submodules (str config/data-path "/repo"))
      (let [versions-base-path (str config/data-path "/versions")
            branches (filter branches-filter
                             (actual-branches (str config/data-path "/repo")))]

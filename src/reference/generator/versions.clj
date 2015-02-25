@@ -14,7 +14,6 @@
 
 (defn force-build-version-without-git [version]
   ;;(samples/checkout-version version)
-  
   (let [base-path (str config/data-path "versions/" version "/")
         acdvf-src (str base-path "src/data")
         graphics-src (str base-path "contrib/graphics/src/")

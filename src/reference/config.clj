@@ -9,3 +9,8 @@
 (def node-path (if (not (System/getProperty "dev"))
                  "/usr/bin/nodejs"
                  "node"))
+(def adoc-tmp-path (str data-path "tmp-adoc/"))
+(def versions-path (str data-path "versions/"))
+
+(def jsdoc-path "/usr/local/bin/jsdoc")
+(def jsdoc-numproc 8)
