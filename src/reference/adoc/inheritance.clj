@@ -3,14 +3,29 @@
 (defn- class-by-name [name classes]
   (first (filter #(= (:full-name %) name) classes)))
 
-(defn- get-all-class-methods [class classes]
-  (if (:has-extends class)
-    (let [parent-name (first (:extends class))
-          parent (class-by-name parent-name classes)]
-      (map #(assoc % :inherited-from parent-name) (:methods parent)))
+(defn- inherit-method? [method class-methods-names]
+  (not (some #(= (:name method) %) class-methods-names)))
+
+(defn- get-inherited-methods [parent-class class-methods-names classes]
+  (if parent-class
+    (let [methods (:methods parent-class)
+          parent-class-name (:full-name parent-class)
+          parent-parent-class-name (first (:extends parent-class))
+          inherited-methods (filter #(inherit-method? % class-methods-names) methods)]
+      (concat (map #(assoc % :inherited-from parent-class-name) inherited-methods)
+              (get-inherited-methods (class-by-name parent-parent-class-name classes)
+                                     (concat class-methods-names
+                                             (map :name inherited-methods))
+                                     classes)))
     []))
 
-(defn- get-all-class-methods [class classes]
-  ())
+(defn- build-class-inheritance [class classes]
+  (let [class-methods (:methods class)
+        class-methods-names (map :name class-methods)
+        parent-class-name (first (:extends class))
+        parent-class (class-by-name parent-class-name classes)
+        parent-class-methods (get-inherited-methods parent-class class-methods-names classes)]
+    (assoc class :inherited-methods parent-class-methods)))
 
-(defn- add-class-methods [class classes])
+(defn build-inheritance [classes]
+  (map #(build-class-inheritance % classes) classes))

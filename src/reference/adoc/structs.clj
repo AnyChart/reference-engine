@@ -109,12 +109,12 @@
          :kind :class
          :extends (:augments class)
          :has-extends (boolean (seq (:augments class)))
-         :enums (map #(create-enum % doclets)
+         :enums (map :longname
                      (get-doclets-with-filter doclets
                                               class
                                               "member"
                                               #(:isEnum %)))
-         :classes (map #(create-class % doclets)
+         :classes (map :longname
                        (get-doclets-by-memberof-and-kind doclets
                                                          namespace
                                                          "class"))
@@ -133,16 +133,15 @@
 ;; - static function
 (defn- create-namespace [namespace doclets]
   (assoc (parse-general namespace)
-         :typedefs (map #(create-typedef % doclets)
-                        (get-doclets-by-memberof-and-kind doclets
-                                                          namespace
-                                                          "typedef"))
-         :enums (map #(create-enum % doclets)
+         :typedefs (map :longname (get-doclets-by-memberof-and-kind doclets
+                                                                    namespace
+                                                                    "typedef"))
+         :enums (map :longname
                      (get-doclets-with-filter doclets
                                               namespace
                                               "member"
                                               #(:isEnum %)))
-         :classes (map #(create-class % doclets)
+         :classes (map :longname
                        (get-doclets-by-memberof-and-kind doclets
                                                          namespace
                                                          "class"))
@@ -157,25 +156,9 @@
                                                   "function"
                                                   is-static))))
 
-(defn- get-all-top-level-from-class [class-def]
-  (concat (:classes class-def)
-          (:enums class-def)
-          (map get-all-top-level-from-class (:classes class-def))))
-
-(defn- get-all-top-level-from-ns [ns-def]
-  (concat (:typedefs ns-def)
-          (:enums ns-def)
-          (:classes ns-def)
-          (map get-all-top-level-from-class (:classes ns-def))))
-
-(defn- get-all-top-level [namespaces]
-  (apply concat (map get-all-top-level-from-ns namespaces)))
-
-(defn get-all-classes [top-level]
-  (filter #(= (:kind %) :class) top-level))
-
 (defn structurize [doclets]
-  (info "structurize")
-  (let [namespaces (map #(create-namespace % doclets)
-                        (get-doclets-by-kind doclets "namespace"))]
-    (get-all-top-level namespaces)))
+  {:classes (map #(create-class % doclets) (get-doclets-by-kind doclets "class"))
+   :namespaces (map #(create-namespace % doclets) (get-doclets-by-kind doclets "namespace"))
+   :typedefs (map #(create-typedef % doclets) (get-doclets-by-kind doclets "typedef"))
+   :enums (map #(create-enum % doclets) (filter #(and (= "member" (:kind %))
+                                                      (:isEnum %)) doclets))})

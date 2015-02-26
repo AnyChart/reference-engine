@@ -1,6 +1,7 @@
 (ns reference.adoc.adoc
   (:require [reference.config :as config]
-            [reference.adoc.structs :refer [structurize get-all-classes]]
+            [reference.adoc.structs :refer [structurize]]
+            [reference.adoc.inheritance :refer [build-inheritance]]
             [reference.generator.git :refer [run-sh]]
             [cheshire.core :refer [parse-string]]
             [clojure.java.shell :refer [sh]]
@@ -48,4 +49,8 @@
     (let [doclets (get-jsdoc jsdoc-path)
           top-level (structurize doclets)]
       (info "doclets count" (count doclets))
-      (info "top level entries" (count top-level)))))
+      (info "top level entries" (count top-level))
+      (assoc top-level :classes (build-inheritance (:classes top-level))))))
+
+(let [top-level (build "master")]
+  (println "classes:" (:classes top-level)))
