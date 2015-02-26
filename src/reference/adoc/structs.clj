@@ -157,6 +157,7 @@
                                                   is-static))))
 
 (defn structurize [doclets]
+  (info "structurize doclets")
   {:classes (map #(create-class % doclets) (get-doclets-by-kind doclets "class"))
    :namespaces (map #(create-namespace % doclets) (get-doclets-by-kind doclets "namespace"))
    :typedefs (map #(create-typedef % doclets) (get-doclets-by-kind doclets "typedef"))

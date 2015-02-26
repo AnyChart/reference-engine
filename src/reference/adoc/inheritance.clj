@@ -1,4 +1,5 @@
-(ns reference.adoc.inheritance)
+(ns reference.adoc.inheritance
+  (:require [taoensso.timbre :as timbre :refer [info]]))
 
 (defn- class-by-name [name classes]
   (first (filter #(= (:full-name %) name) classes)))
@@ -20,6 +21,7 @@
     []))
 
 (defn- build-class-inheritance [class classes]
+  (info "build-class-inheritance" (:full-name class))
   (let [class-methods (:methods class)
         class-methods-names (map :name class-methods)
         parent-class-name (first (:extends class))
@@ -28,4 +30,5 @@
     (assoc class :inherited-methods parent-class-methods)))
 
 (defn build-inheritance [classes]
+  (info "build-inheritance")
   (map #(build-class-inheritance % classes) classes))
