@@ -80,4 +80,5 @@
   (pmap #(save version % (render-class version %)) (:classes top-level))
   (pmap #(save version % (render-namespace version %)) (:namespaces top-level))
   (pmap #(save version % (render-typedef version %)) (:typedefs top-level))
-  (pmap #(save version % (render-enum version %)) (:enums top-level)))
+  (pmap #(save version % (render-enum version %)) (:enums top-level))
+  true)
