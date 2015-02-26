@@ -1,41 +1,20 @@
 <div class="head">
   <h1>{{main.full-name}} class</h1>
-  <p>{{#main.has-inherits-names}}extends 
-    {{#main.inherits-names}}<a class="type-link" href="{{#link}}{{.}}{{/link}}">{{.}}</a>{{/main.inherits-names}}
-  {{/main.has-inherits-names}}</p>
+  <p>{{#main.has-extends}}extends 
+    {{#main.extends}}<a class="type-link" href="{{#link}}{{.}}{{/link}}">{{.}}</a>{{/main.extends}}
+  {{/main.has-extends}}</p>
   <p>{{&main.description}}</p>
   {{>examples}}
 </div>
 
 <div class="line-bottom">
-  {{#main.has-constants}}
-    <h2>Constants</h2>
-    {{#main.constants}}
-      <div class="reg">
-        <h3>{{name}}</h3>
-        {{#members}}
-        <div class="member">
-	  <p>{{&description}}</p>
-          {{>examples}}
-        </div>
-        {{/members}}
-      </div>
-    {{/main.constants}}
-  {{/main.has-constants}}
-  {{#main.has-static-methods}}
-    <h2>Static methods</h2>
-    {{#main.static-methods}}{{>fn-part}}{{/main.static-methods}}
-  {{/main.has-static-methods}}
-  {{#main.has-static-fields}}
-    <h2>Static fields</h2>
-  {{/main.has-static-fields}}
-
   {{#main.has-methods}}
     <h2>Methods</h2>
-    {{#main.methods}}{{>fn-part}}{{/main.methods}}
+    {{#main.methods}}{{>method-part}}{{/main.methods}}
   {{/main.has-methods}}
 
-  {{#main.has-fields}}
-    <h2>Fields</h2>
-  {{/main.has-fields}}
+  {{#main.has-inhertied-methods}}
+    <h2>Inhertied methods</h2>
+    {{#main.inherited-methods}}{{>method-part}}{{/main.inherited-methods}}
+  {{/main.has-inherited-methods}}
 </div>

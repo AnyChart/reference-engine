@@ -13,7 +13,9 @@
           parent-class-name (:full-name parent-class)
           parent-parent-class-name (first (:extends parent-class))
           inherited-methods (filter #(inherit-method? % class-methods-names) methods)]
-      (concat (map #(assoc % :inherited-from parent-class-name) inherited-methods)
+      (concat (map #(assoc %
+                           :inherited-from parent-class-name
+                           :is-inherited true) inherited-methods)
               (get-inherited-methods (class-by-name parent-parent-class-name classes)
                                      (concat class-methods-names
                                              (map :name inherited-methods))

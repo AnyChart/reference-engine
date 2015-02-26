@@ -34,6 +34,7 @@
 (defn- parse-general [entry]
   {:name (:name entry)
    :description (parse-description (:description entry))
+   :has-description (not (empty? (:description entry)))
    :full-name (cleanup-name (:longname entry))
    :since (:since entry)})
 
@@ -68,11 +69,12 @@
   (assoc (parse-examples-and-listing (parse-general typedef) typedef)
          :kind :typedef
          :properties (map create-typedef-property (:properties typedef))
+         :has-properties (not (empty? (:properties typedef)))
          :type (get-in typedef [:type :names])))
 
 (defn- create-enum-field [doclet]
   (assoc (parse-general doclet)
-         :default (:defaultvalue doclet)))
+         :value (:defaultvalue doclet)))
 
 (defn- get-enum-fields [enum doclets]
   (map create-enum-field (get-doclets-with-filter doclets enum "member" is-static)))
