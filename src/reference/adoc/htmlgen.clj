@@ -70,16 +70,14 @@
   (if data
     (spit (str config/data-path "/versions-data/" version "/" (:full-name entry) ".html") data)))
 
-(defn pre-render-top-level [version top-level])
-
-;  (info "pre-render-top-level" version (count top-level))
-;  (let [path (str config/data-path "versions-data/" version)]
-;    (if (.exists (file path))
-;      (sh "rm" "-rf" path))
-;    (sh "mkdir" path)
-;    (info "rendering into" path))
-;  (doall
-;   (pmap #(save version % (render-class version %)) (:classes top-level))
-;   (pmap #(save version % (render-namespace version %)) (:namespaces top-level))
-;   (pmap #(save version % (render-typedef version %)) (:typedefs top-level))
-;   (pmap #(save version % (render-enum version %)) (:enums top-level))))
+(defn pre-render-top-level [version top-level]
+  (info "pre-render-top-level" version (count top-level))
+  (let [path (str config/data-path "versions-data/" version)]
+    (if (.exists (file path))
+      (sh "rm" "-rf" path))
+    (sh "mkdir" path)
+    (info "rendering into" path))
+  (pmap #(save version % (render-class version %)) (:classes top-level))
+  (pmap #(save version % (render-namespace version %)) (:namespaces top-level))
+  (pmap #(save version % (render-typedef version %)) (:typedefs top-level))
+  (pmap #(save version % (render-enum version %)) (:enums top-level)))
