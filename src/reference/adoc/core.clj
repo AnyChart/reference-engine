@@ -25,7 +25,7 @@
                        (generate-string search-index))
     (info "building" version "completed")))
 
-(defn- notify-slack [version]
+(defn notify-slack [version]
   (if (not (empty? version))
     (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
                {:form-params {:payload (generate-string {:text
