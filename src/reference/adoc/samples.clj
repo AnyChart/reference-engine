@@ -15,10 +15,13 @@
 (defn- sample-meta [exports]
   (str "{:tags [] :is_new false :exports " (if exports exports "chart") "}\n"))
 
-(defn- sample-code [script-node]
-  (clojure.string/replace (apply str (:content script-node))
+(defn- prettify-code [code]
+  (clojure.string/replace code
                           #"[ ]{8}"
                           ""))
+
+(defn- sample-code [script-node]
+  (prettify-code (apply str (:content script-node))))                        
 
 (defn- process-sample [sample-file base-path version]
   (let [base-folder (clojure.string/replace (.getParent sample-file)
