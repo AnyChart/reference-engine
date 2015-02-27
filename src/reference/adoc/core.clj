@@ -17,11 +17,10 @@
                          :classes (build-inheritance (:classes raw-top-level)))
         tree-data (generate-tree top-level)
         search-index (generate-search-index top-level)]
-    (info tree-data)))
-    ;(doall (pre-render-top-level version top-level))
-    ;(vdata/add-version version
-    ;                   (generate-string tree-data)
-    ;                   (generate-string search-index))
-    ;(info "building" version "completed")))
+    (doall (pre-render-top-level version top-level))
+    (vdata/add-version version
+                       (generate-string tree-data)
+                       (generate-string search-index))
+    (info "building" version "completed")))
 
-(build "master")
+(build "develop")

@@ -18,6 +18,15 @@
                   (= longname (:memberof %)))
             doclets)))
 
+(defn- is-static [entry]
+  (= (:scope entry) "static"))
+
+(defn- is-function [entry]
+  (or (= (:kind entry) "function")
+      (and (= (:kind entry) "member")
+           (or (boolean (seq (:params entry)))
+               (boolean (seq (:returns entry)))))))
+
 (defn- get-doclets-with-filter [doclets memberof kind filter-fn]
   (let [longname (:longname memberof)] 
     (filter #(and (= kind (:kind %))
@@ -25,8 +34,45 @@
                   (filter-fn %))
             doclets)))
 
-(defn- is-static [entry]
-  (= (:scope entry) "static"))
+(defn- get-functions [doclets memberof]
+  (let [longname (:longname memberof)] 
+    (filter #(and (is-function %)
+                  (= longname (:memberof %))
+                  (not (is-static %)))
+            doclets)))
+
+(defn- get-static-functions [doclets memberof]
+  (let [longname (:longname memberof)] 
+    (filter #(and (is-function %)
+                  (= longname (:memberof %))
+                  (is-static %))
+            doclets)))
+
+(defn- get-members [doclets memberof]
+  (let [longname (:longname memberof)] 
+    (filter #(and (not (is-function %))
+                  (= (:kind %) "member")
+                  (= longname (:memberof %))
+                  (not (is-static %)))
+            doclets)))
+
+(defn- get-static-members [doclets memberof]
+  (let [longname (:longname memberof)] 
+    (filter #(and (not (is-function %))
+                  (= (:kind %) "member")
+                  (= longname (:memberof %))
+                  (is-static %)
+                  (not (:isEnum %)))
+            doclets)))
+
+(defn- get-enums [doclets memberof]
+  (let [longname (:longname memberof)] 
+    (filter #(and (not (is-function %))
+                  (= (:kind %) "member")
+                  (= longname (:memberof %))
+                  (:isEnum %)
+                  (is-static %))
+            doclets)))
 
 (defn- get-tag [doclet tag]
   (filter #(= (:title %) tag) (:tags doclet)))
@@ -77,7 +123,7 @@
          :value (:defaultvalue doclet)))
 
 (defn- get-enum-fields [enum doclets]
-  (map create-enum-field (get-doclets-with-filter doclets enum "member" is-static)))
+  (map create-enum-field (get-static-members doclets enum)))
 
 (defn- create-enum [enum doclets]
   (assoc (parse-examples-and-listing (parse-general enum) enum)
@@ -111,20 +157,13 @@
          :kind :class
          :extends (:augments class)
          :has-extends (boolean (seq (:augments class)))
-         :enums (map :longname
-                     (get-doclets-with-filter doclets
-                                              class
-                                              "member"
-                                              #(:isEnum %)))
+         :enums (map :longname (get-enums doclets class))
          :classes (map :longname
                        (get-doclets-by-memberof-and-kind doclets
                                                          namespace
                                                          "class"))
          :methods (group-functions (map #(create-function % doclets)
-                                        (get-doclets-with-filter doclets
-                                                                 namespace
-                                                                 "function"
-                                                                 #(not (is-static %)))))))
+                                        (get-functions doclets namespace)))))
 
 ;; namespace:
 ;; - namespace
@@ -138,25 +177,15 @@
          :typedefs (map :longname (get-doclets-by-memberof-and-kind doclets
                                                                     namespace
                                                                     "typedef"))
-         :enums (map :longname
-                     (get-doclets-with-filter doclets
-                                              namespace
-                                              "member"
-                                              #(:isEnum %)))
+         :enums (map :longname (get-enums doclets namespace))
          :classes (map :longname
                        (get-doclets-by-memberof-and-kind doclets
                                                          namespace
                                                          "class"))
          :constants (map #(create-constant % doclets)
-                         (get-doclets-with-filter doclets
-                                                  namespace
-                                                  "member"
-                                                  is-static))
+                         (get-static-members doclets namespace))
          :functions (map #(create-function % doclets)
-                         (get-doclets-with-filter doclets
-                                                  namespace
-                                                  "function"
-                                                  is-static))))
+                         (get-static-functions doclets namespace))))
 
 (defn structurize [doclets]
   (info "structurize doclets")

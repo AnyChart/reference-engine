@@ -31,7 +31,6 @@
      :kind :typedef}))
 
 (defn- generate-class-tree [class-name struct]
-  (info "class tree")
   (let [classdef (get-obj-from-struct (:classes struct) class-name)]
     {:name (:name classdef)
      :full-name (:full-name classdef)
