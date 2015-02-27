@@ -5,12 +5,11 @@
   (first (filter #(= (:full-name %) name) struct)))
 
 (defn- simplify-members [members container kind]
-  (if (seq members)
-    (map (fn [member]
-           {:name member
-            :full-name (str (:full-name container) "#" member)
-            :kind kind})
-         members)))
+  (map (fn [member]
+         {:name (:name member)
+          :full-name (str (:full-name container) "#" (:name member))
+          :kind kind})
+       members))
 
 (defn- simplify-methods [methods container]
   (map (fn [method]
@@ -45,8 +44,6 @@
                          (map #(generate-class-tree % struct) (:classes namespace))))}))
 
 (defn- generate-ns-tree [namespace struct]
-  (info (simplify-members (:constants namespace) namespace :constant))
-  (info (simplify-members (:functions namespace) namespace :function))
   {:name (:full-name namespace)
    :full-name (:full-name namespace)
    :kind :namespace
