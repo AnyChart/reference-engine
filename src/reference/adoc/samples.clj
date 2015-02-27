@@ -12,6 +12,14 @@
     (info "samples count:" (count res))
     res))
 
+(defn- sample-meta [exports]
+  (str "{:tags [] :is_new false :exports " (if exports exports "chart") "}\n"))
+
+(defn- sample-code [script-node]
+  (clojure.string/replace (apply str (:content script-node))
+                          #"[ ]{8}"
+                          ""))
+
 (defn- process-sample [sample-file base-path version]
   (let [base-folder (clojure.string/replace (.getParent sample-file)
                                             (clojure.string/re-quote-replacement base-path)
@@ -22,8 +30,8 @@
         page (html/html-resource sample-file)
         script-node (first (filter #(not (:src (:attrs %))) (html/select page [:script])))
         exports (:x-export (:attrs script-node))
-        sample-content (:content script-node)]
-    (info "exports:" exports)))
+        generated-sample (str (sample-meta exports) (sample-code script-node))]
+    (info "sample:" generated-sample)))
 
 (defn process-samples [version]
   (info "process samples" version)
