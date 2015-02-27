@@ -1,5 +1,6 @@
 (ns reference.adoc.samples
   (:require [reference.config :as config]
+            [reference.git :as git]
             [clojure.java.io :refer [file]]
             [net.cgrand.enlive-html :as html]
             [taoensso.timbre :as timbre :refer [info]]))
@@ -21,25 +22,30 @@
                           ""))
 
 (defn- sample-code [script-node]
-  (prettify-code (apply str (:content script-node))))                        
+  (prettify-code (apply str (:content script-node))))
+
+(defn- sample-file-name [name]
+  (clojure.string/replace name #"\.html$" ".sample"))
 
 (defn- process-sample [sample-file base-path version]
   (let [base-folder (clojure.string/replace (.getParent sample-file)
                                             (clojure.string/re-quote-replacement base-path)
                                             "")
         target-folder (clojure.string/replace base-folder #"[/]*_samples" "")
-        target-relative-path (str target-folder "/" (.getName sample-file))
+        target-relative-path (str target-folder "/" (sample-file-name (.getName sample-file)))
         target-path (str config/samples-path version "/" target-relative-path)
         page (html/html-resource sample-file)
         script-node (first (filter #(not (:src (:attrs %))) (html/select page [:script])))
         exports (:x-export (:attrs script-node))
         generated-sample (str (sample-meta exports) (sample-code script-node))]
-    (info "sample:" generated-sample)))
+    (git/run-sh "mkdir" "-p" (str config/samples-path version "/" target-folder))
+    (spit target-path generated-sample)))
 
 (defn process-samples [version]
   (info "process samples" version)
   (let [src-path (str config/versions-path version "/")
         samples (get-all-samples src-path)]
+    (git/run-sh "rm" "-rf" (str config/samples-path version))
     (doall (map #(process-sample % src-path version) samples))))
 
 (process-samples "develop")
