@@ -10,6 +10,7 @@
                  [compojure "1.1.9"]
                  [ring/ring-json "0.3.1"]
                  [ring/ring-core "1.3.1"]
+                 [enlive "1.1.5"]
                  ;; jgit
                  [clj-jgit "0.8.2"]
                  ;; logging

@@ -11,6 +11,8 @@
                  "node"))
 (def adoc-tmp-path (str data-path "tmp-adoc/"))
 (def versions-path (str data-path "versions/"))
+(def samples-path (str data-path "samples/"))
 
 (def jsdoc-path "/usr/local/bin/jsdoc")
 (def jsdoc-numproc 8)
+
