@@ -1,9 +1,9 @@
 (ns reference.adoc.search
   (:require [taoensso.timbre :as timbre :refer [info]]))
 
-(defn- add-simple-members [members]
+(defn- add-simple-members [container members]
   (reduce conj #{} (map (fn [member]
-                          (str (:member-of (first (:members member)))
+                          (str (:full-name container)
                                "#"
                                (:name member)))
                         members)))
@@ -26,12 +26,13 @@
 
 (defn- build-index-from-ns [namespace]
   (concat #{(:full-name namespace)}
-          (add-simple-members (:constants namespace))
-          (add-simple-members (:functions namespace))))
+          (add-simple-members namespace (:constants namespace))
+          (add-simple-members namespace (:functions namespace))))
 
 (defn generate-search-index [struct]
   (info "building search index")
-  (concat (map build-index-from-ns (:namespaces struct))
-          (map build-index-from-class (:classes struct))
-          (map build-index-from-typedef (:typedefs struct))
-          (map build-index-from-enum (:enums struct))))
+  (concat 
+   (apply concat (map build-index-from-ns (:namespaces struct)))
+   (apply concat (map build-index-from-class (:classes struct)))
+   (concat (map build-index-from-typedef (:typedefs struct)))
+   (concat (apply concat (map build-index-from-enum (:enums struct))))))

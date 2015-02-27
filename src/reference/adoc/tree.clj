@@ -45,6 +45,8 @@
                          (map #(generate-class-tree % struct) (:classes namespace))))}))
 
 (defn- generate-ns-tree [namespace struct]
+  (info (simplify-members (:constants namespace) namespace :constant))
+  (info (simplify-members (:functions namespace) namespace :function))
   {:name (:full-name namespace)
    :full-name (:full-name namespace)
    :kind :namespace
