@@ -7,7 +7,7 @@
             [clostache.parser :refer [render-resource]]
             [taoensso.carmine.message-queue :as car-mq]
             [reference.data.versions :as v]
-            [reference.generator.versions :as v-gen]
+            [reference.adoc.core :as v-gen]
             [reference.data.pages :as p]
             [taoensso.timbre :as timbre :refer [info]])
   (:gen-class))
@@ -93,7 +93,7 @@
                                (try
                                  (do
                                    (println message)
-                                   (v-gen/build)
+                                   (v-gen/build-all)
                                    {:status :success})
                                  (catch Exception e
                                    (do
