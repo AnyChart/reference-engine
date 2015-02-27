@@ -58,3 +58,5 @@
   (let [branches (git/update (fn [branch-name] true))]
     (info "branches:" (map :name branches))
     (doall (map build-branch branches))))
+
+;;(build "custom")
