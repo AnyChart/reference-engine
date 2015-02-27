@@ -98,14 +98,15 @@
     (map (fn [[name methods]]
            {:name name
             :methods methods})
-         (reduce (fn [[res val]]
+         (reduce (fn [res val]
                    (let [name (:name val)
-                         group (get res name)]
-                     (assoc res name (if group
-                                       (conj group val)
-                                       [val]))) {} functions)
-                 functions)))
-  [])
+                         group (get res name)
+                         group-val (if group
+                                     (conj group val)
+                                     [val])]
+                     (assoc res name group-val)))
+                 {} functions))
+  []))
 
 (defn- create-typedef-property [prop]
   (assoc (parse-general prop)
@@ -162,8 +163,8 @@
                        (get-doclets-by-memberof-and-kind doclets
                                                          namespace
                                                          "class"))
-         :methods (group-functions (map #(create-function % doclets)
-                                        (get-functions doclets namespace)))))
+         :methods (group-functions
+                   (map #(create-function % doclets) (get-functions doclets class)))))
 
 ;; namespace:
 ;; - namespace
