@@ -8,6 +8,7 @@
   (not (some #(= (:name method) %) class-methods-names)))
 
 (defn- get-inherited-methods [parent-class class-methods-names classes]
+  ;;(info "get-inherited-methods" (:full-name parent-class))
   (if parent-class
     (let [methods (:methods parent-class)
           parent-class-name (:full-name parent-class)
@@ -23,10 +24,13 @@
     []))
 
 (defn- build-class-inheritance [class classes]
-  (info "build-class-inheritance" (:full-name class))
+  ;;(info "build-class-inheritance" (:full-name class) "from" (first (:extends class)))
   (let [class-methods (:methods class)
         class-methods-names (map :name class-methods)
-        parent-class-name (first (:extends class))
+        parent-class-base-name (first (:extends class))
+        parent-class-name (if (= (:full-name class) parent-class-base-name)
+                            nil
+                            parent-class-base-name)
         parent-class (class-by-name parent-class-name classes)
         parent-class-methods (get-inherited-methods parent-class class-methods-names classes)]
     (assoc class :inherited-methods parent-class-methods)))

@@ -28,7 +28,7 @@
 
 (defn- get-jsdoc [path]
   (info "get-jsdoc" path)
-  (let [groups (-> (get-all-files-by-ext path "js") group-files)]
+  (let [groups (-> (get-all-files-by-ext path "adoc.js") group-files)]
     (info "groups:" (count groups))
     (apply concat (doall (pmap build-jsdoc groups)))))
 

@@ -59,4 +59,8 @@
     (info "branches:" (map :name branches))
     (doall (map build-branch branches))))
 
-;;(build "custom")
+;;(build "develop")
+
+;;(build-all)
+
+;;(build "DVF-1245_rework_radar_polar")
