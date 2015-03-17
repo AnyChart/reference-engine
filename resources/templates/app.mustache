@@ -4,17 +4,19 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/i/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
     <title>API Reference - AnyChart</title>
-    <script src="/ace-builds/src-min-noconflict/ace.js"></script>
-    <link rel="stylesheet" href="/css/styles.css?v={{static-version}}" />
-    <link rel="stylesheet" href="/fonts/font-awesome.css" />
+    <link rel="stylesheet" href="/css/reference.css?v={{static-version}}" />
+    <link rel="stylesheet" href="/fonts/css/playground.css">
+    <link rel="stylesheet" href="/fonts/css/animation.css">
+    <!--[if IE 7]><link rel="stylesheet" href="/fonts/css/playground-ie7.css"><![endif]-->
     {{#debug}}
     <script src="/js/app.js?v={{static-version}}"></script>
     {{/debug}}
     {{^debug}}
     <script src="/js/app.min.js?v={{static-version}}"></script>
     {{/debug}}
+    <!-- metas -->
     <meta name="keywords" content="anychart, charts, javascript charts, ajax charts, mobile charts, line charts, bar charts, pie charts, javascript plots, dashboard, reporting, html5, js"/>
     <meta name="description" content="AnyChart - Interactive JavaScript charts and dashboards for your projects. Mobile-ready solution for business intelligence, data visualisation and reporting."/>
     <meta property=og:title content="AnyChart - Interactive JavaScript charts and dashboards for your projects."/>
@@ -23,54 +25,93 @@
     <meta property=og:description content="AnyChart: Interactive JavaScript charts and business dashboards for your projects. Mobile-ready solution for business intelligence, data visualisation and reporting."/>
   </head>
   <body>
-    <div id="sidebar">
-      <div class="header">
-	<img src="/i/small_logo_white.png" />
-	<div>
-	  <h1>AnyChart</h1>
-	  <h6>api reference</h6>
-	</div>
-      </div>
-      <div id="search"></div>
-      <div class="hide-scroll">
-      <ul class="tree" id="tree">
-        Loading...
-      </ul>
-      </div>
-      <div class="footer">
-	<a href="https://twitter.com/anychart" target="_blank"><i class="fa fa-twitter-square"></i></a>
-	<a href="https://www.facebook.com/AnyCharts" target="_blank"><i class="fa fa-facebook-square"></i></a>
-	<p>&copy; 2014 AnyChart.Com All rights reserved.</p>
-      </div>
-      <div id="resizer"></div>
-    </div>
     <div id="main">
-      <div class="header">
-	<ul class="path">
-	  <li>Home <span>/</span></li>
-	  <li id="current-path">{{page}}</a></li>
-	</ul>
-	<div class="right">
-	  <a class="version" id="version-toggler" href="#">Version {{version}} <i class="fa fa-caret-down"></i></a>
-          <ul id="version-toggle" style="display:none">
-            {{#versions}}
-              <li><a href="/{{.}}/try/{{page}}">Version {{.}}</a></li>
-            {{/versions}}
+      <div id="sidebar">
+        <div id="logo">
+          <img src="/img/logo.png" width="56" height="55" />
+          <div>
+            <h1>AnyChart</h1>
+            <h2>api reference</h2>
+          </div>
+        </div>
+        <div id="search-bar">
+          <i class="icon-search"></i><div><input id="search" placeholder="search for method"></input></div>
+        </div>
+        <div id="tree">
+          <ul>
+            <li class="namespace">
+              <a href="#"><i class="icon-down-open"></i>namespace</a>
+              <ul>
+                <li class="const"><a href="#">CONST</a></li>
+                <li class="method"><a href="#">method()</a></li>
+                <li class="enum"><a href="#">[Enum]</a></li>
+                <li class="class"><a href="#"><i class="icon-right-open"></i>Class</a>
+                    <ul>
+                      <li class="const"><a href="#">CONST</a></li>
+                      <li class="method"><a href="#">method()</a></li>
+                    </ul>
+                </li>
+              </ul>
+            </li>
           </ul>
-	  <div class="support-icon"><i class="fa fa-question-circle"></i></div>
-	  <div class="meta">
-	    <p>Still have questions?</p>
-	    <a href="//support.anychart.com">Contact support</a>
-	  </div>
-	</div>
+        </div>
+        <div id="sidebar-footer">
+          <a class="twitter" href="https://twitter.com/anychart" target="_blank"><i class="icon-twitter-squared"></i></a>
+          <a class="facebook" href="https://www.facebook.com/AnyCharts" target="_blank"><i class="icon-facebook-squared"></i></a>
+          <p>&copy; 2015 AnyChart.Com All rights reserved.</p>
+        </div>
       </div>
-      <div id="content">
-        {{&content}}
+      <div id="body">
+        <div id="body-header">
+          <ul class="path">
+            <li><a href="#">Home</a><span>/</span></li>
+            <li><a href="#">anychart.cartesian.series</a><span>/</span></li>
+            <li><a href="#">financialChart</a><span>/</span></li>
+            <li><a href="#">background()</a></li>
+          </ul>
+          <div class="right">
+            <ul id="versions" style="display:none">
+              {{#versions}}
+                <li><a href="/{{.}}/try/{{page}}">Version {{.}}</a></li>
+              {{/versions}}
+            </ul>
+            <a id="version">Version {{version}}<i class="icon-down-dir"></i></a>
+            <a class="help"><i class="icon-help-circled"></i></a>
+            <div>
+              <span>Still have questions?</span>
+              <a href="/">Contact support</a>
+            </div>
+          </div>
+        </div>
+        <div id="content">
+          <a id="top"></a>
+          {{&content}}
+          <h1><span>class</span> anychart.Chart</h1>
+          <div class="description">
+            <p>Base class for all charts, contains the margins, the background and the title. Because of this is a Base class, you should not create instance of this class.</p>
+            <strong>Methods overview</strong>
+            <ul>
+              <li><a href="#">background()</a> - Bla</li>
+              <li><a href="#">background()</a> - Bla</li>
+            </ul>
+          </div>
+          <h2>Methods</h2>
+          <div class="method">
+            <h3>grid</h3>
+            <div>
+              <ul>
+                <li class="active"><a href="#">grid()</a></li>
+                <li><a href="#">grid(value)</a></li>
+                <li><a href="#">grid(index, value)</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div id="locker" style="display:none"></div>
     <script>
-      app.init("{{version}}");
+      //app.init("{{version}}");
       {{#debug}}
         app.connect_repl();
 
@@ -79,8 +120,7 @@
         }
       {{/debug}}
     </script>
-
-    <!-- Google Tag Manager -->
+<!-- Google Tag Manager -->
 <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-5B8NXZ"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

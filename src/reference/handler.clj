@@ -38,7 +38,7 @@
              (p/page-exists? version page))
       (render-resource "templates/app.mustache"
                        {:version version
-                        :debug false
+                        :debug true
                         :page page
                         :versions (v/all-versions)
                         :static-version "7"
