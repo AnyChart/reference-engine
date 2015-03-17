@@ -72,5 +72,3 @@
                                 (.getElementById js/document "search-bar"))
       (reagent/render-component [search-results version]
                                 (.getElementById js/document "search-results")))))
-
-(load-search-index "master")
