@@ -1,6 +1,6 @@
 (ns reference.adoc.adoc
   (:require [reference.config :as config]
-            [reference.generator.git :refer [run-sh]]
+            [reference.git :refer [run-sh]]
             [cheshire.core :refer [parse-string]]
             [clojure.java.shell :refer [sh]]
             [clojure.java.io :refer [file]]

@@ -4,30 +4,19 @@
             [goog.events]
             [goog.events.EventType]
             [goog.dom]
-            [app.ajax :refer [load-json]])
+            [app.ajax :refer [load-json]]
+            [app.pages :refer [setup-node-link remove-node-link]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def state (atom {}))
 (def index (atom []))
-
-(defn- setup-node-link [component]
-  (let [root (reagent/dom-node component)
-        link (goog.dom/getElementByClass "node-link" root)]
-    (goog.events.listen link
-                        goog.events.EventType/CLICK
-                        load-page)))
-
-(defn- remove-node-link [component]
-  (let [root (reagent/dom-node component)
-        link (goog.dom/getElementByClass "node-link" root)]
-    (goog.events.removeAll link)))
 
 (defn- result-row [version name]
   [:li {:key name}
    [:a {:class "node-link" :href (str "/" version "/" name)} name]])
 
 (def wrapped-result-row
-  (with-meta search-results-row-view
+  (with-meta result-row
     {:component-did-mount
      (fn [this]
        (setup-node-link this))

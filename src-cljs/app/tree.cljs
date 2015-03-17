@@ -1,8 +1,7 @@
 (ns app.tree
   (:require [reagent.core :as reagent :refer [atom]]
             [cljs.core.async :refer [chan put! take! timeout] :as async]
-            [app.ajax :refer [load-json]]
-            [app.pages :refer [ignore-click?]])
+            [app.ajax :refer [load-json]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def expanded (reagent.core/atom {}))
@@ -33,6 +32,10 @@
 
 (defn- get-link [node version]
   (str "/" version "/" (:full-name node)))
+
+(defn- ignore-click? [event]
+  (or (.-ctrlKey event)
+      (.-metaKey event)))
 
 (defn- node-click [event node version]
   (if (not (ignore-click? event))

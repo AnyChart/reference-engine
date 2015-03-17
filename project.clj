@@ -1,7 +1,7 @@
 (defproject reference "1.0.0"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [com.taoensso/carmine "2.7.0"]
+                 [com.taoensso/carmine "2.9.0"]
                  [version-clj "0.1.0"]
                  ;; templates
                  [de.ubercode.clostache/clostache "1.4.0"]
@@ -16,10 +16,10 @@
                  ;; logging
                  [com.taoensso/timbre "3.3.1"]
                  ;;frontend
-                 [org.clojure/clojurescript "0.0-2371"]
-                 [reagent "0.4.3"]
-                 [weasel "0.4.2"]]
-  :plugins [[lein-cljsbuild "1.0.3"]]
+                 [org.clojure/clojurescript "0.0-3123"]
+                 [reagent "0.5.0"]
+                 [weasel "0.6.0"]]
+  :plugins [[lein-cljsbuild "1.0.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
   :cljsbuild {:builds [{:source-paths ["src-cljs"]
