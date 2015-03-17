@@ -37,5 +37,3 @@
   (goog.events/listen (goog.dom/getElement "locker")
                       goog.events.EventType/MOUSEUP
                       stop-tree-resize))
-
-(init-resize)
