@@ -214,3 +214,12 @@
         padding-top: 3px;
     }
 }
+
+#resizer {
+    position: absolute;
+    right: -1px;
+    width: 5px;
+    top: 0;
+    bottom: 0;
+    cursor: col-resize;
+}
