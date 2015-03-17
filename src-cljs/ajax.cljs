@@ -97,3 +97,13 @@
                       (goog.events/listen link
                                           goog.events.EventType/CLICK
                                           (fn [e] (link-click-handler e link)))))))
+
+(defn load-json [version data]
+  (let [c (chan 1)]
+    (goog.net.XhrIo/send
+     (str "/" version "/data/" data)
+     (fn [e]
+       (if (.isSuccess (.-target e))
+         (let [res (.getResponseJson (.-target e))]
+           (put! c (js->clj res :keywordize-keys true))))))
+    c))

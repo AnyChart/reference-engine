@@ -41,43 +41,90 @@
     left: 15px;
     right: 14px;
 
-    i {
-        color: white;
+    > div {
+
+        i {
+            color: white;
+            font-size: 14px;
+            vertical-align: -6px;
+        }
+
+        div.input-container {
+            position: absolute;
+            right: 8px;
+            left: 27px;
+            top: 0;
+        }
+
+        input {
+            background: #FFFFFF;
+            border-radius: 4px;
+            border: none;
+
+            font-family: HelveticaNeue;
+            font-size: 14px;
+            line-height: 28px;
+            padding-left: 7px;
+            width: 100%;
+            outline: none;
+        }
+
+        input::-webkit-input-placeholder {
+            color: #555555;
+        }
+        input:-moz-placeholder {
+            color: #555555;
+        }
+        input::-moz-placeholder {
+            color: #555555;
+        }
+        input:-ms-input-placeholder {
+            color: #555555;
+        }
+    }
+}
+
+#search-results {
+    position: absolute;
+    top: 121px;
+    bottom: 0;
+    overflow: auto;
+    z-index: 99999;
+    left: 42px;
+    
+    ul {
         font-size: 14px;
-        vertical-align: -6px;
-    }
-
-    div {
-        position: absolute;
-        right: 8px;
-        left: 27px;
-        top: 0;
-    }
-
-    input {
-        background: #FFFFFF;
-        border-radius: 4px;
+        width: auto;
+        list-style: none;
+        display: table;
+        table-layout: fixed;
         border: none;
+        padding: 10px 0;
+        margin: 2px 0 0;
+        background: white;
 
-        font-family: HelveticaNeue;
-        font-size: 14px;
-        line-height: 28px;
-        padding-left: 7px;
-        width: 100%;
-        outline: none;
-    }
+        li {
+            line-height: 20px;
+            display: table-row;
+            white-space: nowrap;
+            color: #333;
+            font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+        }
 
-    input::-webkit-input-placeholder {
-        color: #555555;
-    }
-    input:-moz-placeholder {
-        color: #555555;
-    }
-    input::-moz-placeholder {
-        color: #555555;
-    }
-    input:-ms-input-placeholder {
-        color: #555555;
+        a {
+            padding-left: 10px;
+            padding-right: 10px;
+            background: none;
+            cursor: pointer;
+            font-size: 12px;
+            border: none;
+            text-decoration: none;
+            color: #333;
+
+            &:hover {
+                color:#929292
+            }
+        }
     }
 }
 
@@ -96,6 +143,7 @@
 
     a {
         color: #D4D4D4;
+        cursor: pointer;
     }
 
     i {
