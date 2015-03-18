@@ -97,7 +97,7 @@
   (if-not (empty? functions)
     (map (fn [[name methods]]
            {:name name
-            :methods methods})
+            :overrides methods})
          (reduce (fn [res val]
                    (let [name (:name val)
                          group (get res name)
@@ -142,11 +142,15 @@
   (assoc (parse-function-return param)
          :name (:name param)))
 
+(defn- create-function-signature [name params]
+  (str name "(" (clojure.string/join ", " (map :name params)) ")"))
+
 (defn- create-function [func doclets]
   (assoc (parse-examples-and-listing (parse-general func) func)
          :kind :function
          :detailed-desc (:value (first (get-tag func "detailed")))
          :params (map parse-function-param (:params func))
+         :signature (create-function-signature (:name func) (:params func))
          :returns (map parse-function-return (:returns func))))
 
 ;; class

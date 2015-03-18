@@ -1,20 +1,23 @@
-<div class="head">
-  <h1>{{main.full-name}} class</h1>
-  <p>{{#main.has-extends}}extends 
-    {{#main.extends}}<a class="type-link" href="{{#link}}{{.}}{{/link}}">{{.}}</a>{{/main.extends}}
-  {{/main.has-extends}}</p>
+<h1><span>class</span> {{main.full-name}}</h1>
+<div class="description">
+  {{#main.has-extends}}
+  <p>
+    Extends: {{#main.extends}}<a class="type-link" href="{{#link}}{{.}}{{/link}}">{{.}}</a>{{/main.extends}}
+  </p>
+  {{/main.has-extends}}
   <p>{{&main.description}}</p>
-  {{>examples}}
 </div>
 
-<div class="line-bottom">
-  {{#main.has-methods}}
-    <h2>Methods</h2>
-    {{#main.methods}}{{>method-part}}{{/main.methods}}
-  {{/main.has-methods}}
+{{#main.has-methods}}
+<h2>Methods</h2>
+{{#main.methods}}
+  {{>method-part}}
+{{/main.methods}}
+{{/main.has-methods}}
 
-  {{#main.has-inherited-methods}}
-    <h2>Inhertied methods</h2>
-    {{#main.inherited-methods}}{{>method-part}}{{/main.inherited-methods}}
-  {{/main.has-inherited-methods}}
-</div>
+{{#main.has-inherited-methods}}
+<h2>Inherited methods</h2>
+{{#main.inherited-methods}}
+  {{>method-part}}
+{{/main.inherited-methods}}
+{{/main.has-inherited-methods}}

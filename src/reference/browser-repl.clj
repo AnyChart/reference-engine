@@ -1,5 +1,6 @@
 (ns reference.browser-repl
-  (:require [weasel.repl.websocket]))
+  (:require [weasel.repl.websocket]
+            [cemerick.piggieback]))
 
 (defn start []
   (cemerick.piggieback/cljs-repl

@@ -1,6 +1,5 @@
 (ns app.ajax
   (:require [cljs.core.async :refer [chan put! take! timeout] :as async]
-            [editors]
             [goog.net.XhrIo]
             [goog.net.EventType]
             [goog.events]
@@ -45,7 +44,7 @@
 (defn- show-loaded-page [data]
   (aset (goog.dom/getElement "content") "innerHTML" (:content data))
   (aset (goog.dom/getElement "current-path") "innerHTML" (:page data))
-  (editors/init-editors))
+  (app.editors/init-editors))
 
 (declare update-links)
 

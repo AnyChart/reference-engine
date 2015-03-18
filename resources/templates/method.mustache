@@ -1,32 +1,79 @@
-<div class="reg">
-  <h3 id="{{name}}">{{name}}()</h3>
+<div class="method">
+  <h3 id="{{name}}">{{name}}</h3>
   {{#is-inherited}}
     Inherited from {{#type-link}}{{inherited-from}}{{/type-link}}
   {{/is-inherited}}
-  <div class="description">
-    {{#methods}}
-      <div class="member">
-        <p>{{&description}}</p>
+  <div>
+    <ul class="overrides">
+    {{#overrides}}
+      <li><a href="{{name}}">{{signature}}</a></li>
+    {{/overrides}}
+    </ul>
+    <div class="overrides">
+    {{#overrides}}
+      <div>
+        {{#has-since}}
+        <div class="since">Since version {{since}}</div>
+        {{/has-since}}
+        <p>
+          {{&description}}
+          {{#has-detailed}}
+          <div class="detailed">
+            <a href="{{name}}" class="btn"><i class="icon-info-circled"></i> Detailed description</a>
+            <div>
+              <a class="close">x</a>
+              <p>{{&detailed}}</p>
+            </div>
+          </div>
+          {{/has-detailed}}
+        </p>
         {{#has-params}}
-          <h4>params:</h4>
-          <ul class="params">
-	    {{#params}}
-	      <li>{{name}} <i class="types">{{#type}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/type}}</i> {{&description}}</li>
-	    {{/params}}
-          </ul>
+        <table class="params">
+          <thead>
+            <tr>
+              <th>Params</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#params}}
+              <tr>
+                <td class="name code">{{name}}</td>
+                <td class="type"><i class="types">{{#type}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/type}}</i></td>
+                <td class="val">{{default}}</td>
+                <td class="description">{{&description}}</td>
+              </tr>
+            {{/params}}
+          </tbody>
+        </table>
         {{/has-params}}
         {{#has-returns}}
-          <h4>returns:</h4>
-	  <ul class="return">
-            {{#returns}}
-              <li>
-	        <i class="types">{{#type}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/type}}</i> {{&description}}
-              </li>
-            {{/returns}}
-          </ul>
+        <div class="returns">
+          {{#returns}}
+          <span class="b">Returns:</span> <i class="types">{{#type}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/type}}</i>
+          {{/returns}}
+        </div>
         {{/has-returns}}
-        {{>examples}}
+        {{#has-listings}}
+        <div class="listings">
+          <strong>Code listings:</strong>
+          {{#listings}}
+            <a class="btn"><i class="icon-code"></i> {{name}}</a>
+          {{/listings}}
+        </div>
+        {{/has-listings}}
+        {{#has-playground-samples}}
+        <div class="playground">
+          <strong>Try it in playground:</strong>
+          {{#playground-samples}}
+          <a class="btn" href="{{link}}"><i class="icon-play"></i> {{name}}</a>
+          {{/playground-samples}}
+        </div>
+        {{/has-playground-samples}}
       </div>
-      {{/#methods}}
+    {{/overrides}}
+    </div>
   </div>
 </div>
