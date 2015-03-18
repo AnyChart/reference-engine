@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'playground';
-  src: url('../font/playground.eot?4500571');
-  src: url('../font/playground.eot?4500571#iefix') format('embedded-opentype'),
-       url('../font/playground.woff?4500571') format('woff'),
-       url('../font/playground.ttf?4500571') format('truetype'),
-       url('../font/playground.svg?4500571#playground') format('svg');
+  src: url('../font/playground.eot?53528513');
+  src: url('../font/playground.eot?53528513#iefix') format('embedded-opentype'),
+       url('../font/playground.woff?53528513') format('woff'),
+       url('../font/playground.ttf?53528513') format('truetype'),
+       url('../font/playground.svg?53528513#playground') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -14,7 +14,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'playground';
-    src: url('../font/playground.svg?4500571#playground') format('svg');
+    src: url('../font/playground.svg?53528513#playground') format('svg');
   }
 }
 */
@@ -57,3 +57,6 @@
 .icon-down-open:before { content: '\e804'; } /* '' */
 .icon-down-dir:before { content: '\e805'; } /* '' */
 .icon-help-circled:before { content: '\e806'; } /* '' */
+.icon-info-circled:before { content: '\e807'; } /* '' */
+.icon-code:before { content: '\e808'; } /* '' */
+.icon-play:before { content: '\e809'; } /* '' */

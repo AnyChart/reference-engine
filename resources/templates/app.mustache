@@ -71,7 +71,6 @@
         </div>
         <div id="content">
           <a id="top"></a>
-          {{&content}}
           <h1><span>class</span> anychart.Chart</h1>
           <div class="description">
             <p>Base class for all charts, contains the margins, the background and the title. Because of this is a Base class, you should not create instance of this class.</p>
@@ -83,21 +82,74 @@
           </div>
           <h2>Methods</h2>
           <div class="method">
-            <h3>grid</h3>
+            <h3 id="grid">grid</h3>
             <div>
-              <ul>
+              <ul class="overrides">
                 <li class="active"><a href="#">grid()</a></li>
                 <li><a href="#">grid(value)</a></li>
                 <li><a href="#">grid(index, value)</a></li>
               </ul>
+              <div class="overrides">
+                <div class="active">
+                  <div class="since">Since version 7.3.0</div>
+                  <p>
+                    Set axis grid settings by index.
+                    <div class="detailed">
+                      <a href="#" class="btn"><i class="icon-info-circled"></i> Detailed description</a>
+                      <div>
+                        <a class="close">x</a>
+                        <b>Note for documentation writers:</b>
+Google compiler thinks that "Object" has "toJSON" method that must accept string and return *. To avoid this we have to put in the "wrong" params. In external documentation parameter must be boolean, and method must return Object|string. For the moment we have no way around this "nice feature" of the compiler.
+                      </div>
+                    </div>
+                  </p>
+
+                  <table class="params">
+                    <thead>
+                      <tr>
+                        <th>Params</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="name code">value</td>
+                        <td class="type"><a href="#">type</td>
+                        <td class="val">none</td>
+                        <td class="description">Background object to set</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  
+                  <div class="returns">
+                    <span class="b">Returns:</span> anychart.Chart - an instance of anychart.Chart class for method chaining
+                  </div>
+
+                  <div class="listings">
+                    <strong>Code listings:</strong>
+                    <a class="btn"><i class="icon-code"></i> Sample listing</a>
+                    <a class="btn"><i class="icon-code"></i> Sample listing</a>
+                  </div>
+
+                  <div class="playground">
+                    <strong>Try it in playground:</strong>
+                    <a class="btn"><i class="icon-play"></i> Sample listing</a>
+                    <a class="btn"><i class="icon-play"></i> Sample listing</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+          
+          {{&content}}
         </div>
       </div>
     </div>
     <div id="locker" style="display:none"></div>
     <script>
-      app.init("{{version}}");
+      //app.init("{{version}}");
       {{#debug}}
         app.connect_repl();
 
