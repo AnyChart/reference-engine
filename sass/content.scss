@@ -39,7 +39,7 @@
     h1 {
         font-family: HelveticaNeue;
         font-size: 28px;
-        color: #808080;
+        color: #474747;
         line-height: 34px;
 
         span {
@@ -83,6 +83,35 @@
 
     i.types i:after {
         content: '}';
+    }
+
+    table.enum-fields {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+        border-spacing: 2px;
+        border-color: gray;
+
+        th, td {
+            line-height: 20px;
+            text-align: left;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+            padding: 4px 5px;
+        }
+        
+        th {
+            font-weight: bold;
+            border-top: none;
+        }
+
+        .name {
+            color: #474747;
+        }
+
+        .value {
+            color: #7E7E7E;
+        }
     }
     
     .method {
