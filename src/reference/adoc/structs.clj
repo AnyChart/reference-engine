@@ -117,7 +117,8 @@
          :kind :typedef
          :properties (map create-typedef-property (:properties typedef))
          :has-properties (not (empty? (:properties typedef)))
-         :type (get-in typedef [:type :names])))
+         :type (get-in typedef [:type :names])
+         :has-types (> (count (get-in typedef [:type :names])) 1)))
 
 (defn- create-enum-field [doclet]
   (assoc (parse-general doclet)

@@ -57,6 +57,14 @@
         margin-bottom: 10px;
     }
 
+    h4 {
+        font-weight: bold;
+        color: #474747;
+        font-size: 16px;
+        line-height: 22px;
+        margin: 20px 0 0 0;
+    }
+
     > .description {
         margin-left: 20px;
         margin-top: 39px;
@@ -85,7 +93,22 @@
         content: '}';
     }
 
-    table.enum-fields {
+    .group {
+
+        ul {
+            margin: 5px 0 10px 20px;
+            width: auto;
+            list-style: none;
+
+            li {
+                color: #474747;
+                line-height: 20px;
+                display: list-item;
+            }
+        }
+    }
+
+    table.enum-fields, table.typedef-fields {
         width: 100%;
         margin-bottom: 20px;
         border-collapse: collapse;
