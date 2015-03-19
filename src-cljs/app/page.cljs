@@ -25,7 +25,7 @@
         divs (goog.dom.getChildren tabs-content)]
     (goog.dom.classes/add (first-child "li" tabs-header) "active")
     (goog.dom.classes/add (first-child "div" tabs-content) "active")
-    (map (fn [li]
+    (doall (map (fn [li]
            (goog.events.listen
             (first-child "a" li)
             goog.events.EventType.CLICK
@@ -41,7 +41,7 @@
                 (goog.dom.classes/add (aget tabs index) "active")
                 (goog.dom.classes/add (aget divs index) "active"))
               false)))
-         (nodelist-to-seq tabs))))
+         (nodelist-to-seq tabs)))))
 
 (defn- init-methods []
   (map init-method (nodelist-to-seq
