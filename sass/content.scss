@@ -73,6 +73,18 @@
         font-size: 14px;
     }
 
+    i.types i:first-child:before {
+        content: '{';
+    }
+
+    i.types i:before {
+        content: ' | {';
+    }
+
+    i.types i:after {
+        content: '}';
+    }
+    
     .method {
         margin-bottom: 20px;
         

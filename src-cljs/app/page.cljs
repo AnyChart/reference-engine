@@ -39,8 +39,7 @@
                                           (tag-by-name-and-class "div" "active" tabs-content)
                                           0) "active")
                 (goog.dom.classes/add (aget tabs index) "active")
-                (goog.dom.classes/add (aget divs index) "active"))
-              false)))
+                (goog.dom.classes/add (aget divs index) "active")))))
          (nodelist-to-seq tabs)))))
 
 (defn- init-methods []

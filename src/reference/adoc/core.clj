@@ -59,7 +59,7 @@
     (info "branches:" (map :name branches))
     (doall (map build-branch branches))))
 
-;; (build "master")
+(build "master")
 
 ;;(build-all)
 

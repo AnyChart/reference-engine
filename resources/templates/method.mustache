@@ -41,7 +41,7 @@
             {{#params}}
               <tr>
                 <td class="name code">{{name}}</td>
-                <td class="type"><i class="types">{{#type}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/type}}</i></td>
+                <td class="type"><i class="types">{{#types}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/types}}</i></td>
                 <td class="val">{{default}}</td>
                 <td class="description">{{&description}}</td>
               </tr>
@@ -52,7 +52,7 @@
         {{#has-returns}}
         <div class="returns">
           {{#returns}}
-          <span class="b">Returns:</span> <i class="types">{{#type}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/type}}</i>
+          <span class="b">Returns:</span> <i class="types">{{#types}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/types}}</i>
           {{/returns}}
         </div>
         {{/has-returns}}
