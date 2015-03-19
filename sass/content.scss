@@ -183,6 +183,10 @@
             > div {
                 display: none;
 
+                &.active {
+                    display: block;
+                }
+
                 > p {
                     margin-bottom: 20px;
                 }

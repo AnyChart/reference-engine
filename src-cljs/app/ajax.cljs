@@ -6,7 +6,8 @@
             [goog.events.EventType]
             [goog.dom]
             [goog.array]
-            [clojure.string])
+            [clojure.string]
+            [app.editors])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (enable-console-print!)

@@ -6,7 +6,7 @@
   <div>
     <ul class="overrides">
     {{#overrides}}
-      <li><a href="{{name}}">{{signature}}</a></li>
+      <li><a href="#{{name}}">{{signature}}</a></li>
     {{/overrides}}
     </ul>
     <div class="overrides">
@@ -19,7 +19,7 @@
           {{&description}}
           {{#has-detailed}}
           <div class="detailed">
-            <a href="{{name}}" class="btn"><i class="icon-info-circled"></i> Detailed description</a>
+            <a href="#{{name}}" class="btn"><i class="icon-info-circled"></i> Detailed description</a>
             <div>
               <a class="close">x</a>
               <p>{{&detailed}}</p>

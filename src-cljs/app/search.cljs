@@ -28,7 +28,7 @@
   (if (:visible @state)
     (if (seq (:results @state))
       [:ul
-       (map (fn [row] [result-row version row])
+       (map (fn [row] ^{:key (row)} [result-row version row])
             (:results @state))]
       [:ul
        [:li [:a "Nothing found"]]])))

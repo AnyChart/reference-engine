@@ -47,15 +47,15 @@
       false)))
 
 (defn- tree-node [data version]
-  [:li {:key (:full-name data) :class (get-class data) :href (get-link data version)}
+  [:li {:class (get-class data) :href (get-link data version)}
    [:a {:on-click #(node-click % data version)} (get-icon data) (get-title data)]
    (if (and (is-group data) (is-expanded data))
      [:ul
-      (map (fn [node] [tree-node node version]) (:children data))])])
+      (map (fn [node] ^{:key (:full-name node)} [tree-node node version]) (:children data))])])
 
 (defn- tree-view [version tree]
   [:ul
-   (map (fn [node] [tree-node node version]) tree)])
+   (map (fn [node] ^{:key (:full-name node)} [tree-node node version]) tree)])
 
 (defn- load-tree [version]
   (go

@@ -16,7 +16,7 @@
                  ;; logging
                  [com.taoensso/timbre "3.3.1"]
                  ;;frontend
-                 [org.clojure/clojurescript "0.0-3123"]
+                 [org.clojure/clojurescript "0.0-3126"]
                  [com.cemerick/piggieback "0.1.5"]
                  [reagent "0.5.0"]
                  [weasel "0.6.0"]]

@@ -146,12 +146,16 @@
   (str name "(" (clojure.string/join ", " (map :name params)) ")"))
 
 (defn- create-function [func doclets]
-  (assoc (parse-examples-and-listing (parse-general func) func)
-         :kind :function
-         :detailed-desc (:value (first (get-tag func "detailed")))
-         :params (map parse-function-param (:params func))
-         :signature (create-function-signature (:name func) (:params func))
-         :returns (map parse-function-return (:returns func))))
+  (let [params (map parse-function-param (:params func))]
+    (assoc (parse-examples-and-listing (parse-general func) func)
+           :kind :function
+           :has-detailed (boolean (:value (first (get-tag func "detailed"))))
+           :detailed (:value (first (get-tag func "detailed")))
+           :has-params (boolean (seq params))
+           :params params
+           :signature (create-function-signature (:name func) params)
+           :has-returns (boolean (seq (:returns func)))
+           :returns (map parse-function-return (:returns func)))))
 
 ;; class
 ;; - class

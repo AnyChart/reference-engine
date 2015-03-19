@@ -1,6 +1,8 @@
 (ns app.versions
   (:require [goog.dom]
-            [goog.style]))
+            [goog.style]
+            [goog.events]
+            [goog.events.EventType]))
 
 (defn- toggle-versions [event]
   (let [ul (goog.dom/getElement "versions")

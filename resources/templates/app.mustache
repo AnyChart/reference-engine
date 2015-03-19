@@ -77,12 +77,12 @@
     </div>
     <div id="locker" style="display:none"></div>
     <script>
-      app.init("{{version}}");
+      app.core.init("{{version}}");
       {{#debug}}
-        app.connect_repl();
+        app.core.connect_repl();
 
         function reinit() {
-          app.init("{{version}}");
+          app.core.init("{{version}}");
         }
       {{/debug}}
     </script>
