@@ -44,5 +44,11 @@
   (let [src-path (str config/versions-path version)
         jsdoc-path (str config/adoc-tmp-path version)]
     (convert-to-jsdoc src-path jsdoc-path)
-    (filter #(and (not (:inherited %))
-                  (not (:undocumented %))) (get-jsdoc jsdoc-path))))
+    (filter #(and (:name %)
+                  (not (or (= (:access %) "private")
+                           (= (:access %) "protected")
+                           (= (:access %) "inner")))
+                  (not (:undocumented %))
+                  (not (:inherited %))
+                  (not (some (fn [tag] (= (:originalTitle tag) "ignoreDoc")) (:tags %))))
+            (get-jsdoc jsdoc-path))))
