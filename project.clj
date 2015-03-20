@@ -23,7 +23,8 @@
   :plugins [[lein-cljsbuild "1.0.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
-  :cljsbuild {:builds [{:source-paths ["src-cljs"]
+  :cljsbuild {:builds [{:id "dev"
+                        :source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/app.js"
                                    :optimizations :whitespace
                                    :preamble ["reagent/react.js"]}}

@@ -1,7 +1,7 @@
 (ns app.tree
   (:require [reagent.core :as reagent :refer [atom]]
             [cljs.core.async :refer [chan put! take! timeout] :as async]
-            [app.ajax :refer [load-json]])
+            [app.ajax :refer [load-json load-page-from-link]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def expanded (reagent.core/atom {}))
@@ -42,9 +42,9 @@
     (do
       (.preventDefault event)
       (.stopPropagation event)
+      (load-page-from-link event (str "/" version "/" (:full-name node)))
       (if (is-group node)
-        (swap! expanded assoc (:full-name node) (not (is-expanded node))))
-      false)))
+        (swap! expanded assoc (:full-name node) (not (is-expanded node)))))))
 
 (defn- tree-node [data version]
   [:li {:class (get-class data) :href (get-link data version)}

@@ -7,7 +7,7 @@
             [goog.dom]
             [goog.array]
             [clojure.string]
-            [app.editors])
+            [app.page])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (enable-console-print!)
