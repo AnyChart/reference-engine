@@ -1,4 +1,4 @@
-(defproject reference "1.0.0"
+(defproject reference "2.0.0"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [com.taoensso/carmine "2.9.0"]
