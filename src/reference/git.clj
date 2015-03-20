@@ -30,11 +30,20 @@
 (defn- get-repo []
   (git/load-repo (str config/data-path "/repo")))
 
-(defn- actual-branches [path]
+(defn- get-all-branches [path]
   (map (fn [s] (last (re-matches #".*origin/([^ ]+).*" s)))
        (filter (fn [s] (and (not (= s nil))
                             (not (.contains s "->"))))
                (clojure.string/split (run-git path "branch" "-r") #"\n"))))
+
+(defn- get-all-tags [path]
+  (clojure.string/split (run-git path "tag" "-l") #"\n"))
+
+(defn- actual-branches [path]
+  (if config/is-prod
+    (get-all-tags path)
+    (concat (get-all-tags path)
+            (get-all-branches path))))
 
 (defn- get-hash [path]
   (run-git path "rev-parse" "HEAD"))
@@ -63,7 +72,12 @@
 
 (defn update [branches-filter]
   (with-sh-env env-config
+    (sh "rm" "-rf" (str config/data-path "/repo"))
+    (with-sh-dir (str config/data-path)
+      (sh "git" "clone" "git@github.com:AnyChart/ACDVF.git" "repo"))
+    
     (with-sh-dir (str config/data-path "/repo")
+      (sh "git" "submodule" "init")
       (sh "git" "fetch")
       (sh "git" "pull")
       (sh "git" "remote" "prune" "origin")))

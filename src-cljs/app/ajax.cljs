@@ -54,6 +54,7 @@
       (.-metaKey event)))
 
 (defn load-page [page]
+  (.hide js/search)
   (go
     (let [data (<! (load-page-data (cleanup-url page)))]
       (reset! current-page (cleanup-url page))
@@ -61,6 +62,7 @@
       (update-links))))
   
 (defn load-page-from-link [e url]
+  (.hide js/search)
   (if-not (is-open-in-new-tab e)
     (if (is-current url)
       (.preventDefault e)

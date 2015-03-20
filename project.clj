@@ -28,7 +28,8 @@
                         :compiler {:output-to "resources/public/js/app.js"
                                    :optimizations :whitespace
                                    :preamble ["reagent/react.js"]}}
-                       {:source-paths ["src-cljs"]
+                       {:id "prod"
+                        :source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/app.min.js"
                                    :optimizations :advanced
                                    :pretty-print false

@@ -16,14 +16,14 @@ before_script:
 script: lein2 uberjar
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then export SERVER="api.anychart.com"; fi
-  - if [ "$TRAVIS_BRANCH" == "staging" ]; then export SERVER="185.22.60.95"; fi
+  - if [ "$TRAVIS_BRANCH" == "staging" ]; then export SERVER="104.236.109.248"; fi
   - echo "Deploying to $SERVER"
   - cp .travis/known_hosts ~/.ssh/known_hosts
   - chmod 600 ~/.ssh/known_hosts
   - chmod 600 .travis/id_rsa
   - chmod 600 .travis/id_rsa.pub
   - ssh-add .travis/id_rsa
-  - scp -i .travis/id_rsa target/reference-engine-0.2.0-standalone.jar root@$SERVER:/apps/reference/reference-engine-0.2.0-standalone.jar
+  - scp -i .travis/id_rsa target/reference-0.2.0-standalone.jar root@$SERVER:/apps/reference/reference-0.2.0-standalone.jar
   - ssh root@$SERVER "supervisorctl restart reference"
 notifications:
   slack: anychart-team:sJRPhNn8Ur8yVdhvhgp6EbDM
