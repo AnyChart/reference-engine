@@ -1,0 +1,48 @@
+@import "reset";
+@import "sidebar";
+@import "content-header";
+@import "content";
+
+body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+#main {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 400px;
+}
+
+#body {
+    position: absolute;
+    left: 400px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#preview {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0.3;
+}
+
+#locker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: transparent;
+}

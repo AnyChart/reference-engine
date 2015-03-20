@@ -7,8 +7,8 @@
             [clostache.parser :refer [render-resource]]
             [taoensso.carmine.message-queue :as car-mq]
             [reference.data.versions :as v]
+            [reference.adoc.core :as v-gen]
             [reference.data.pages :as p]
-            [reference.generator.versions :as v-gen]
             [taoensso.timbre :as timbre :refer [info]])
   (:gen-class))
 
@@ -41,7 +41,7 @@
                         :debug false
                         :page page
                         :versions (v/all-versions)
-                        :static-version "7"
+                        :static-version "8"
                         :content (p/get-page version page)
                         :link #(str "/" version "/" %)})
       (route/not-found (str "Not found: /" version "/" page)))))
@@ -93,7 +93,7 @@
                                (try
                                  (do
                                    (println message)
-                                   (v-gen/build)
+                                   (v-gen/build-all)
                                    {:status :success})
                                  (catch Exception e
                                    (do

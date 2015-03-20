@@ -1,12 +1,22 @@
-<div class="head">
-  <h1>{{main.full-name}}{{#main.has-type}}{{#main.type}} {{.}}{{/main.type}}{{/main.has-type}} enum</h1>
-  <p>{{&main.description}}</p>
-</div>
-
+<h1><span>[enum]</span> {{main.full-name}}</h1>
+<div class="description">{{&main.description}}</div>
 {{#main.has-fields}}
-<ul class="enum-fields">
+<table class="enum-fields">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
   {{#main.fields}}
-    <li><span>{{name}} = {{value}}</span>{{#has-description}} - {{&description}}{{/has-description}}</li>
+    <tr>
+      <td class="name">{{name}}</td>
+      <td class="value">{{value}}</td>
+      <td>{{&description}}</td>
+    </tr>
   {{/main.fields}}
-</ul>
+  </tbody>
+</table>
 {{/main.has-fields}}

@@ -17,7 +17,6 @@ resources/public/jsxc/.module-cache
 bower_components
 node_modules
 bower_deps
-data/
 test.json
 .docs
 jsdoc
@@ -25,3 +24,5 @@ resources/keys/
 keys/
 .repl/
 resources/public/js/app.js
+data/
+.repl-*/

@@ -1,11 +1,17 @@
-<div class="function">
+<div class="method">
   <h3 id="{{name}}">{{name}}</h3>
+  {{#is-inherited}}
+    Inherited from {{#type-link}}{{inherited-from}}{{/type-link}}
+  {{/is-inherited}}
   <div>
     <ul class="overrides">
-      <li class="active"><a href="#{{name}}">{{signature}}</a></li>
+    {{#overrides}}
+      <li><a href="#{{name}}">{{signature}}</a></li>
+    {{/overrides}}
     </ul>
     <div class="overrides">
-      <div class="active">
+    {{#overrides}}
+      <div>
         {{#has-since}}
         <div class="since">Since version {{since}}</div>
         {{/has-since}}
@@ -67,6 +73,7 @@
         </div>
         {{/has-playground-samples}}
       </div>
+    {{/overrides}}
     </div>
   </div>
 </div>
