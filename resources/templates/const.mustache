@@ -1,8 +1,8 @@
-<div class="function">
+<div class="const">
   <h3 id="{{name}}">{{name}}</h3>
   <div>
     <ul class="overrides">
-      <li class="active"><a href="#{{name}}">{{signature}}</a></li>
+      <li class="active"><a href="#{{name}}">{{name}}</a></li>
     </ul>
     <div class="overrides">
       <div class="active">
@@ -21,35 +21,6 @@
           </div>
           {{/has-detailed}}
         </p>
-        {{#has-params}}
-        <table class="params">
-          <thead>
-            <tr>
-              <th>Params</th>
-              <th>Type</th>
-              <th>Default</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#params}}
-              <tr>
-                <td class="name code">{{name}}</td>
-                <td class="type"><i class="types">{{#types}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/types}}</i></td>
-                <td class="val">{{default}}</td>
-                <td class="description">{{&description}}</td>
-              </tr>
-            {{/params}}
-          </tbody>
-        </table>
-        {{/has-params}}
-        {{#has-returns}}
-        <div class="returns">
-          {{#returns}}
-          <span class="b">Returns:</span> <i class="types">{{#types}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/types}}</i>
-          {{/returns}}
-        </div>
-        {{/has-returns}}
         {{#has-listings}}
         <div class="listings">
           <strong>Code listings:</strong>

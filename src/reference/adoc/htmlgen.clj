@@ -15,6 +15,7 @@
 (def enum-template (slurp (resource "templates/enum.mustache")))
 (def typedef-template (slurp (resource "templates/typedef.mustache")))
 (def fn-template (slurp (resource "templates/fn.mustache")))
+(def const-template (slurp (resource "templates/const.mustache")))
 (def method-template (slurp (resource "templates/method.mustache")))
 (def example-template (slurp (resource "templates/example.mustache")))
   
@@ -32,6 +33,7 @@
                                          type))))}
                      {:fn-part fn-template
                       :method-part method-template
+                      :const-part const-template
                       :examples example-template})))
 
 (defn- render-namespace [version entry]

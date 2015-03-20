@@ -1,4 +1,4 @@
-<h1><span>namespace</span> {{main.full-name}}</h1>
+  <h1><span>namespace</span> {{main.full-name}}</h1>
   <div class="description">
     {{&main.description}}
     {{#main.has-constants}}
@@ -7,7 +7,7 @@
       <ul>
         {{#main.constants}}
         <li>
-          <a class="type-link" href="{{#link}}{{name}}{{/link}}"><span>{{name}}</span></a></li>
+          <a class="type-link" href="#{{name}}"><span>{{name}}</span></a></li>
         {{/main.constants}}
       </ul>
     </div>
@@ -19,7 +19,7 @@
       <ul>
         {{#main.functions}}
         <li>
-          <a class="type-link" href="{{#link}}{{name}}{{/link}}"><span>{{name}}</span></a></li>
+          <a class="type-link" href="#{{name}}"><span>{{name}}()</span></a></li>
         {{/main.functions}}
       </ul>
     </div>
@@ -61,4 +61,13 @@
     </div>
     {{/main.has-classes}}
   </div>
-</div>
+
+{{#main.has-functions}}
+<h2>Functions</h2>
+{{#main.functions}}{{>fn-part}}{{/main.functions}}
+{{/main.has-functions}}
+
+{{#main.has-constants}}
+<h2>Constants</h2>
+{{#main.constants}}{{>const-part}}{{/main.constants}}
+{{/main.has-constants}}
