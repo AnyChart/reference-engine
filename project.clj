@@ -20,16 +20,15 @@
                  [com.cemerick/piggieback "0.1.5"]
                  [reagent "0.5.0"]
                  [weasel "0.6.0"]]
+  :hooks [leiningen.cljsbuild]
   :plugins [[lein-cljsbuild "1.0.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
-  :cljsbuild {:builds [{:id "dev"
-                        :source-paths ["src-cljs"]
+  :cljsbuild {:builds [{:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/app.js"
                                    :optimizations :whitespace
                                    :preamble ["reagent/react.js"]}}
-                       {:id "prod"
-                        :source-paths ["src-cljs"]
+                       {:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/js/app.min.js"
                                    :optimizations :advanced
                                    :pretty-print false
