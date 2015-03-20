@@ -38,10 +38,10 @@
              (p/page-exists? version page))
       (render-resource "templates/app.mustache"
                        {:version version
-                        :debug true
+                        :debug false
                         :page page
                         :versions (v/all-versions)
-                        :static-version "7"
+                        :static-version "8"
                         :content (p/get-page version page)
                         :link #(str "/" version "/" %)})
       (route/not-found (str "Not found: /" version "/" page)))))
