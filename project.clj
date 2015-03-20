@@ -20,6 +20,7 @@
                  [com.cemerick/piggieback "0.1.5"]
                  [reagent "0.5.0"]
                  [weasel "0.6.0"]]
+  
   :hooks [leiningen.cljsbuild]
   :plugins [[lein-cljsbuild "1.0.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
