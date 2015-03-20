@@ -88,8 +88,8 @@
   (let [samples (:examples doclet)
         listings (get-tag doclet "listing")]
     (assoc entry
-           :samples samples
-           :has-samples (boolean (seq samples))
+           :playground-samples samples
+           :has-playground-samples (boolean (seq samples))
            :listings (map :value listings)
            :has-listings (boolean (seq listings)))))
 

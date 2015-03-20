@@ -30,11 +30,15 @@
                                        (if (.startsWith type "anychart")
                                          (str "<a class='type-link' href='/"
                                               version "/" type "'>" type "</a>")
-                                         type))))}
+                                         type))))
+                      :playground-link (fn [text]
+                                         (fn [render-fn]
+                                           (str "//playground.anychart.stg/api/"
+                                                version
+                                                "/" (render-fn text))))}
                      {:fn-part fn-template
                       :method-part method-template
-                      :const-part const-template
-                      :examples example-template})))
+                      :const-part const-template})))
 
 (defn- render-namespace [version entry]
   (info "render-namespace" version (:full-name entry))

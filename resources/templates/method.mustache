@@ -68,7 +68,7 @@
         <div class="playground">
           <strong>Try it in playground:</strong>
           {{#playground-samples}}
-          <a class="btn" href="{{link}}"><i class="icon-play"></i> {{name}}</a>
+          <a class="btn" target="_blank" href="{{#playground-link}}{{.}}{{/playground-link}}"><i class="icon-play"></i> {{.}}</a>
           {{/playground-samples}}
         </div>
         {{/has-playground-samples}}

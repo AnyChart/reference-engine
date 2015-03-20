@@ -82,7 +82,7 @@
     }
 
     i.types i:first-child:before {
-        content: '{';
+        content: '';
     }
 
     i.types i:before {
@@ -90,7 +90,7 @@
     }
 
     i.types i:after {
-        content: '}';
+        content: '';
     }
 
     .group {

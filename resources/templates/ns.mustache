@@ -31,7 +31,7 @@
       <ul>
         {{#main.enums}}
         <li>
-          <a class="type-link" href="{{#link}}{{name}}{{/link}}"><span>{{name}}</span></a></li>
+          <a class="type-link" href="{{#link}}{{.}}{{/link}}"><span>{{.}}</span></a></li>
         {{/main.enums}}
       </ul>
     </div>
@@ -43,7 +43,7 @@
       <ul>
         {{#main.typedefs}}
         <li>
-          <a class="type-link" href="{{#link}}{{name}}{{/link}}"><span>{{name}}</span></a></li>
+          <a class="type-link" href="{{#link}}{{.}}{{/link}}"><span>{{.}}</span></a></li>
         {{/main.typedefs}}
       </ul>
     </div>
@@ -55,19 +55,19 @@
       <ul>
         {{#main.classes}}
         <li>
-          <a class="type-link" href="{{#link}}{{name}}{{/link}}"><span>{{name}}</span></a></li>
+          <a class="type-link" href="{{#link}}{{.}}{{/link}}"><span>{{.}}</span></a></li>
         {{/main.classes}}
       </ul>
     </div>
     {{/main.has-classes}}
   </div>
 
-{{#main.has-functions}}
-<h2>Functions</h2>
-{{#main.functions}}{{>fn-part}}{{/main.functions}}
-{{/main.has-functions}}
-
 {{#main.has-constants}}
 <h2>Constants</h2>
 {{#main.constants}}{{>const-part}}{{/main.constants}}
 {{/main.has-constants}}
+
+{{#main.has-functions}}
+<h2>Functions</h2>
+{{#main.functions}}{{>fn-part}}{{/main.functions}}
+{{/main.has-functions}}
