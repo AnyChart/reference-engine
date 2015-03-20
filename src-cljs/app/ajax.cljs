@@ -7,7 +7,8 @@
             [goog.dom]
             [goog.array]
             [clojure.string]
-            [app.page])
+            [app.page]
+            [app.editors])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (enable-console-print!)
@@ -44,8 +45,10 @@
 
 (defn- show-loaded-page [data]
   (aset (goog.dom/getElement "content") "innerHTML" (:content data))
-  (aset (goog.dom/getElement "current-path") "innerHTML" (:page data))
-  (app.editors/init-editors))
+  ;;(aset (goog.dom/getElement "current-path") "innerHTML" (:page data))
+  ;;(app.editors/init-editors))
+  (app.page/init)
+  )
 
 (declare update-links)
 
@@ -54,7 +57,7 @@
       (.-metaKey event)))
 
 (defn load-page [page]
-  (.hide js/search)
+  ;;(.hide js/search)
   (go
     (let [data (<! (load-page-data (cleanup-url page)))]
       (reset! current-page (cleanup-url page))
@@ -62,7 +65,7 @@
       (update-links))))
   
 (defn load-page-from-link [e url]
-  (.hide js/search)
+  ;;(.hide js/search)
   (if-not (is-open-in-new-tab e)
     (if (is-current url)
       (.preventDefault e)

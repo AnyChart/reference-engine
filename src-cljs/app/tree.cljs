@@ -4,6 +4,8 @@
             [app.ajax :refer [load-json load-page-from-link]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
+(enable-console-print!)
+
 (def expanded (reagent.core/atom {}))
 
 (defn- get-title [node]
@@ -42,7 +44,7 @@
     (do
       (.preventDefault event)
       (.stopPropagation event)
-      (load-page-from-link event (str "/" version "/" (:full-name node)))
+      (app.ajax/load-page-from-link event (str "/" version "/" (:full-name node)))
       (if (is-group node)
         (swap! expanded assoc (:full-name node) (not (is-expanded node)))))))
 
