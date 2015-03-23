@@ -5,6 +5,7 @@
             [reference.adoc.htmlgen :refer [pre-render-top-level]]
             [reference.adoc.tree :refer [generate-tree]]
             [reference.adoc.search :refer [generate-search-index]]
+            [reference.adoc.media :refer [move-media]]
             [reference.versions :as versions]
             [reference.git :as git]
             [reference.data.versions :as vdata]
@@ -14,8 +15,9 @@
 
 (defn build [version]
   (info "build" version)
+  (move-media version)
   (let [doclets (get-doclets version)
-        raw-top-level (structurize doclets)
+        raw-top-level (structurize doclets version)
         top-level (assoc raw-top-level
                          :classes (build-inheritance (:classes raw-top-level)))
         tree-data (generate-tree top-level)
@@ -42,8 +44,9 @@
     (if-not (= commit saved-commit)
       (do
         (info "building" version)
+        (move-media version)
         (let [doclets (get-doclets version)
-              raw-top-level (structurize doclets)
+              raw-top-level (structurize doclets version)
               top-level (assoc raw-top-level
                                :classes (build-inheritance (:classes raw-top-level)))
               tree-data (generate-tree top-level)
