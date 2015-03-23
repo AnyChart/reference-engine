@@ -141,18 +141,13 @@
 (defn- create-enum [enum doclets version]
   (assoc (parse-examples-and-listing (parse-general enum version) enum)
          :kind :enum
-         :linked (if (and (= (get-in enum ["meta" "code" "type"]) "MemberExpression")
-                          (get-in enum ["meta" "code" "value"]))
-                   (get-in enum ["meta" "code" "value"])
+         :linked (if (and (= (get-in enum [:meta :code :type]) "MemberExpression")
+                          (get-in enum [:meta :code :value]))
+                   (get-in enum [:meta :code :value])
                    false)
          :fields (get-enum-fields enum doclets version)))
 
 (defn- check-enum-link [enum enums]
-  (if (:linked enum)
-    (do
-      (info (:full-name enum) "linked with" (:linked enum))
-      (info "find?" (:longname (first (filter #(= (:full-name %) (:linked enum))))))))
-  
   (if (:linked enum)
     (if-let [linked (first (filter #(= (:full-name %) (:linked enum))
                                    enums))]
