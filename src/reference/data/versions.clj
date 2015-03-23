@@ -22,6 +22,11 @@
          (car/set (redis-version-tree-key version) tree-data)
          (car/set (redis-version-search-key version) search-data)))
 
+(defn remove-version [version]
+  (wcar* (car/srem (redis-versions-key) version)
+         (car/del (redis-version-tree-key version))
+         (car/del (redis-version-search-key version))))
+
 (defn update-hash [version hash]
   (wcar* (car/set (redis-version-build-hash-key version) hash)))
 

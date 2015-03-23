@@ -5,6 +5,7 @@
             [reference.adoc.htmlgen :refer [pre-render-top-level]]
             [reference.adoc.tree :refer [generate-tree]]
             [reference.adoc.search :refer [generate-search-index]]
+            [reference.versions :as versions]
             [reference.git :as git]
             [reference.data.versions :as vdata]
             [cheshire.core :refer [generate-string]]
@@ -25,14 +26,15 @@
                        (generate-string search-index))
     (info "building" version "completed")))
 
-(defn notify-slack [version]
-  (if (not (empty? version))
-    (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
-               {:form-params {:payload (generate-string {:text
-                                                         (str "API reference generated for " version)
-                                                         :channel "#notifications"
-                                                         :username "api-reference"})}})))
-
+(defn notify-slack
+  ([version] (notify-slack version (str "API reference generated for " version)))
+  ([version text] 
+   (if (not (empty? text))
+     (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
+                {:form-params {:payload (generate-string {:text text
+                                                          :channel "#notifications"
+                                                          :username "api-reference"})}}))))
+  
 (defn- build-branch [branch]
   (let [version (:name branch)
         commit (:commit branch)
@@ -55,11 +57,14 @@
           (info "building" version "completed"))))))
 
 (defn build-all []
-  (let [branches (git/update (fn [branch-name] true))]
+  (let [branches (git/update (fn [branch-name] true))
+        removed (versions/remove-unused-branches (map :name branches))]
+    (if (seq removed)
+      (notify-slack "" "Removed versions:" (clojure.string/join " ," removed)))
     (info "branches:" (map :name branches))
     (doall (map build-branch branches))))
 
-(build "develop")
+;;(build "develop")
 
 ;;(build-all)
 
