@@ -6,10 +6,7 @@
             [reference.git :as git]))
 
 (defn- local-branches []
-  (map #(.getName %)
-       (filter #(and (not (.isHidden %))
-                     (.isDirectory %))
-               (.listFiles (file config/versions-path)))))
+  (vdata/all-versions))
 
 (defn- outdated-branches [actual-branches current-branches]
   (clojure.set/difference (set actual-branches) (set current-branches)))
