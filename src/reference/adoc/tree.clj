@@ -61,7 +61,8 @@
   (let [name (:full-name ns)
         target-name (:full-name tlns)]
     (and (re-find (re-pattern (str "^" target-name "\\.")) name)
-         (not (is-top-level-ns ns)))))
+         (not (is-top-level-ns ns))
+         (not (= target-name "anychart")))))
 
 (defn- group-namespaces [top-level all-nses]
   (let [children-nses (filter #(is-child-ns % top-level) all-nses)]
