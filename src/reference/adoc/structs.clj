@@ -192,6 +192,7 @@
 ;; - static function
 (defn- create-namespace [namespace doclets]
   (assoc (parse-general namespace)
+         :parent (:memberof namespace)
          :typedefs (map :longname (get-doclets-by-memberof-and-kind doclets
                                                                     namespace
                                                                     "typedef"))

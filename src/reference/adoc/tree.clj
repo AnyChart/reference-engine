@@ -42,6 +42,10 @@
                          (map #(generate-enum-tree % struct) (:enums namespace))
                          (map #(generate-class-tree % struct) (:classes namespace))))}))
 
+(defn- is-top-level-ns [namespace]
+  (< (count (clojure.string/split (:full-name namespace) #"\."))
+     3))
+
 (defn- generate-ns-tree [namespace struct]
   {:name (:full-name namespace)
    :full-name (:full-name namespace)
@@ -53,6 +57,18 @@
                               (map #(generate-typedef-tree % struct) (:typedefs namespace))
                               (map #(generate-class-tree % struct) (:classes namespace))))})
 
+(defn- is-child-ns [ns tlns]
+  (let [name (:full-name ns)
+        target-name (:full-name tlns)]
+    (and (re-find (re-pattern (str "^" target-name "\\.")) name)
+         (not (is-top-level-ns ns)))))
+
+(defn- group-namespaces [top-level all-nses]
+  (let [children-nses (filter #(is-child-ns % top-level) all-nses)]
+    (assoc top-level :children (concat children-nses (:children top-level)))))
+
 (defn generate-tree [struct]
   (info "generate-tree")
-  (map #(generate-ns-tree % struct) (sort-by :full-name (:namespaces struct))))
+  (let [nses (map #(generate-ns-tree % struct) (sort-by :full-name (:namespaces struct)))
+        tl-namespaces (filter is-top-level-ns nses)]
+    (map #(group-namespaces % nses) tl-namespaces)))
