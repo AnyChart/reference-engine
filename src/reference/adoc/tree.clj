@@ -35,7 +35,7 @@
     {:name (:name classdef)
      :full-name (:full-name classdef)
      :kind :class
-     :children (sort-by :name
+     :children (sort-by (juxt :kind :name)
                         (concat
                          (simplify-methods (:methods classdef) classdef)
                          (simplify-methods (:inherited-methods classdef) classdef)
@@ -46,7 +46,7 @@
   {:name (:full-name namespace)
    :full-name (:full-name namespace)
    :kind :namespace
-   :children (sort-by :name
+   :children (sort-by (juxt :kind :name)
                       (concat (simplify-members (:constants namespace) namespace :constant)
                               (simplify-members (:functions namespace) namespace :function)
                               (map #(generate-enum-tree % struct) (:enums namespace))
