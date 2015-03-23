@@ -9,6 +9,7 @@
             [reference.versions :as versions]
             [reference.git :as git]
             [reference.data.versions :as vdata]
+            [reference.data.pages :as pdata]
             [cheshire.core :refer [generate-string]]
             [org.httpkit.client :as http]
             [taoensso.timbre :as timbre :refer [info]]))
@@ -23,6 +24,7 @@
         tree-data (generate-tree top-level)
         search-index (generate-search-index top-level)]
     (doall (pre-render-top-level version top-level))
+    (pdata/add-top-level version top-level)
     (vdata/add-version version
                        (generate-string tree-data)
                        (generate-string search-index))
@@ -52,6 +54,7 @@
               tree-data (generate-tree top-level)
               search-index (generate-search-index top-level)]
           (doall (pre-render-top-level version top-level))
+          (pdata/add-top-level version top-level)
           (vdata/add-version version
                              (generate-string tree-data)
                              (generate-string search-index))
@@ -67,7 +70,7 @@
     (info "branches:" (map :name branches))
     (doall (map build-branch branches))))
 
-;;(build "develop")
+(build "develop")
 
 ;;(build-all)
 

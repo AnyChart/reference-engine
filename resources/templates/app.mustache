@@ -50,10 +50,9 @@
       <div id="body">
         <div id="body-header">
           <ul class="path">
-            <li><a href="#">Home</a><span>/</span></li>
-            <li><a href="#">anychart.cartesian.series</a><span>/</span></li>
-            <li><a href="#">financialChart</a><span>/</span></li>
-            <li><a href="#">background()</a></li>
+            <li><a href="/{{version}}">Home</a><span>/</span></li>
+            <li id="path-ns"><a href="#"></a><span>/</span></li>
+            <li id="path-class" style="display:none"><a href="#"></a></li>
           </ul>
           <div class="right">
             <ul id="versions" style="display:none">
@@ -77,13 +76,9 @@
     </div>
     <div id="locker" style="display:none"></div>
     <script>
-      app.core.init("{{version}}");
+      app.core.init("{{version}}", "{{page}}", {{&info}});
       {{#debug}}
         app.core.connect_repl();
-
-        function reinit() {
-          app.core.init("{{version}}");
-        }
       {{/debug}}
     </script>
 <!-- Google Tag Manager -->

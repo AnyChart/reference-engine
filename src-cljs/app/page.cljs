@@ -46,5 +46,37 @@
   (map init-method (nodelist-to-seq
                     (goog.dom.getElementsByTagNameAndClass "div" "method"))))
 
-(defn init []
-  (doall (init-methods)))
+(defn- extract-namespace [page]
+  (clojure.string/replace page #"\.[^\.]+$" ""))
+
+(defn- extract-name [page]
+  (last (re-matches #".+\.([^\.]+)$" page)))
+
+(defn- init-path [version page info]
+  (let [ns-el (goog.dom.getElement "path-ns")
+        ns-link (first-child "a" ns-el)
+        ns-span (first-child "span" ns-el)
+        class-el (goog.dom.getElement "path-class")
+        class-link (first-child "a" class-el)
+        ns (if (= (:kind info) "namespace")
+             page
+             (extract-namespace page))
+        class (if-not (= (:kind info) "namespace")
+                (extract-name page))]
+    (if-not (= (:kind info) "namespace")
+      (do
+        (goog.style/showElement class-el true)
+        (goog.style/showElement ns-span true)
+        (set! (.-innerHTML class-link) class)
+        (.setAttribute class-link "href" page))
+      (do
+        (goog.style/showElement class-el false)
+        (goog.style/showElement ns-span false)))
+    (.setAttribute ns-link "href" (str "/" version "/" ns))
+    (set! (.-innerHTML ns-link) ns)))
+
+(defn init [version page info]
+  (doall (init-methods))
+  (init-path version page (if-not (contains? info :kind)
+                            (assoc info :kind (get info "kind"))
+                            info)))

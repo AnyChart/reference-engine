@@ -47,7 +47,7 @@
   (aset (goog.dom/getElement "content") "innerHTML" (:content data))
   ;;(aset (goog.dom/getElement "current-path") "innerHTML" (:page data))
   ;;(app.editors/init-editors))
-  (app.page/init)
+  (app.page/init (:version data) (:page data) (js->clj (:info data)))
   )
 
 (declare update-links)
@@ -86,7 +86,11 @@
   (reset! current-page (.-pathname js/location))
   (goog.events/listen js/window
                       goog.events.EventType/POPSTATE
-                      navigation-callback))
+                      navigation-callback)
+  (goog.events/listen (goog.dom/getElement "path-ns") goog.events.EventType/CLICK
+                      (fn [e] (link-click-handler e (.-target e))))
+  (goog.events/listen (goog.dom/getElement "path-class") goog.events.EventType/CLICK
+                      (fn [e] (link-click-handler e (.-target e)))))
 
 ;;(load-page "http://localhost:9197/develop/anychart.core.axes.Ticks")
 

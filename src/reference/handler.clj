@@ -9,7 +9,8 @@
             [reference.data.versions :as v]
             [reference.adoc.core :as v-gen]
             [reference.data.pages :as p]
-            [taoensso.timbre :as timbre :refer [info]])
+            [taoensso.timbre :as timbre :refer [info]]
+            [cheshire.core :refer [generate-string]])
   (:gen-class))
 
 (if (System/getProperty "dev")
@@ -28,6 +29,7 @@
     (if (and (v/version-exists? version)
              (p/page-exists? version page))
       (response {:content (p/get-page version page)
+                 :info (p/page-info version page)
                  :version version
                  :page page}))))
 
@@ -35,10 +37,11 @@
   (let [version (get-in request [:params :version])
         page (get-in request [:params :page])]
     (if (and (v/version-exists? version)
-             (p/page-exists? version page))
+             (p/page-exists? version page)) 
       (render-resource "templates/app.mustache"
                        {:version version
                         :debug false
+                        :info (generate-string (p/page-info version page))
                         :page page
                         :versions (v/all-versions)
                         :static-version "8"

@@ -17,12 +17,12 @@
   (init-versions-events)
   (init-resize))
 
-(defn ^:export init [version]
+(defn ^:export init [version page info]
   (init-events)
   ;;(editors/init-editors)
   (ajax/init-navigation)
   (load-tree version)
   (load-search-index version)
-  (app.page/init))
+  (app.page/init version page (js->clj info)))
 
 ;;(.reinit js/window)
