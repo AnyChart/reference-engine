@@ -141,7 +141,20 @@
 (defn- create-enum [enum doclets version]
   (assoc (parse-examples-and-listing (parse-general enum version) enum)
          :kind :enum
+         :linked (if (and (= (get-in enum ["meta" "code" "type"])
+                             "MemberExpression")
+                          (get-in ["meta" "code" "value"]))
+                   (get-in enum ["meta" "code" "value"])
+                   false)
          :fields (get-enum-fields enum doclets version)))
+
+(defn- check-enum-link [enum enums]
+  (if (:linked enum)
+    (if-let [linked (first (filter #(= (:full-name %) (:linked enum))
+                                   enums))]
+      (assoc enum :fields (:fields (check-enum-link linked enums)))
+      enum)
+    enum))
 
 (defn- create-constant [const doclets version]
   (parse-examples-and-listing (parse-general const version) const))
@@ -217,5 +230,7 @@
                     (get-doclets-by-kind doclets "namespace"))
    :typedefs (map #(create-typedef % doclets version)
                   (get-doclets-by-kind doclets "typedef"))
-   :enums (map #(create-enum % doclets version) (filter #(and (= "member" (:kind %))
-                                                              (:isEnum %)) doclets))})
+   :enums (let [enums (map #(create-enum % doclets version)
+                           (filter #(and (= "member" (:kind %))
+                                         (:isEnum %)) doclets))]
+            (map #(check-enum-link % enums) enums))})
