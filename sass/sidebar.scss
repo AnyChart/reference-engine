@@ -3,7 +3,7 @@
     border-right: 1px solid #323232;
 }
 
-#logo {
+#sidebar #logo {
     position: absolute;
     left: 20px;
     top: 22px;
@@ -34,7 +34,7 @@
     }
 }
 
-#search-bar {
+#sidebar #search-bar {
     position: absolute;
     top: 95px;
     height: 30px;
@@ -84,7 +84,7 @@
     }
 }
 
-#search-results {
+#sidebar #search-results {
     position: absolute;
     top: 121px;
     bottom: 0;
@@ -128,7 +128,7 @@
     }
 }
 
-#tree {
+#sidebar #tree {
     position: absolute;
     left: 30px;
     right: 14px;
@@ -185,7 +185,7 @@
     }
 }
 
-#sidebar-footer {
+#sidebar #sidebar-footer {
     position: absolute;
     bottom: 26px;
     left: 10px;
@@ -216,7 +216,7 @@
     }
 }
 
-#resizer {
+#sidebar #resizer {
     position: absolute;
     right: -1px;
     width: 5px;
