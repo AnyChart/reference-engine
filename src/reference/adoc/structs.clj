@@ -84,6 +84,14 @@
    :full-name (cleanup-name (:longname entry))
    :since (:since entry)})
 
+(defn- parse-example [example]
+  (if (re-find #" " example)
+    (let [[file title] (rest (re-matches #"^([^ ]+)( .*)" (clojure.string/trim example)))]
+      {:file file
+       :title (clojure.string/trim title)})
+    {:file example
+     :title example}))
+
 (defn- parse-examples-and-listing [entry doclet]
   (let [samples (:examples doclet)
         listings (get-tag doclet "listing")]
@@ -141,7 +149,7 @@
 
 (defn- parse-function-param [param]
   (assoc (parse-function-return param)
-         :name (:name param)))
+         :name (clojure.string/replace (:name param) #"^opt_" "")))
 
 (defn- create-function-signature [name params]
   (str name "(" (clojure.string/join ", " (map :name params)) ")"))

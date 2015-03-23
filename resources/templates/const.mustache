@@ -25,7 +25,7 @@
         <div class="listings">
           <strong>Code listings:</strong>
           {{#listings}}
-            <a class="btn"><i class="icon-code"></i> {{name}}</a>
+            <a class="btn"><i class="icon-code"></i> {{title}}</a>
           {{/listings}}
         </div>
         {{/has-listings}}
@@ -33,7 +33,7 @@
         <div class="playground">
           <strong>Try it in playground:</strong>
           {{#playground-samples}}
-          <a class="btn" target="_blank" href="{{#playground-link}}{{.}}{{/playground-link}}"><i class="icon-play"></i> {{.}}</a>
+          <a class="btn" target="_blank" href="{{#playground-link}}{{file}}{{/playground-link}}"><i class="icon-play"></i> {{title}}</a>
           {{/playground-samples}}
         </div>
         {{/has-playground-samples}}
