@@ -1,6 +1,23 @@
 (ns reference.config
   (:require [clojure.java.io :refer [file]]))
 
+(def domain (atom "localhost"))
+(defn set-domain-from-request [request]
+  (reset! domain (:server-name request)))
+
+(defn is-prod []
+  (.endsWith @domain ".com"))
+
+(defn playground-domain []
+  (if (is-prod)
+    "playground.anychart.com"
+    "playground.anychart.stg"))
+
+(defn reference-domain []
+  (if (is-prod)
+    "api.anychart.com"
+    "api.anychart.stg"))
+
 (def base-path (if (not (System/getProperty "dev"))
                  "/apps/reference/"
                  "/Users/alex/Work/anychart/reference-engine/"))

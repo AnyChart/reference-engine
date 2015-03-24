@@ -9,6 +9,7 @@
             [reference.data.versions :as v]
             [reference.adoc.core :as v-gen]
             [reference.data.pages :as p]
+            [reference.config :as config]
             [taoensso.timbre :as timbre :refer [info]]
             [cheshire.core :refer [generate-string]])
   (:gen-class))
@@ -34,6 +35,7 @@
                  :page page}))))
 
 (defn- show-page [request]
+  (config/set-domain-from-request request)
   (let [version (get-in request [:params :version])
         page (get-in request [:params :page])]
     (if (and (v/version-exists? version)
@@ -68,6 +70,7 @@
       (redirect (str "/" version "/anychart")))))
 
 (defn- update-all [request]
+  (config/set-domain-from-request request)
   (v/wcar* (car-mq/enqueue "reference-queue" "rebuild"))
   (str "ok!"))
 

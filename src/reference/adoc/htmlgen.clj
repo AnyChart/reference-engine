@@ -33,7 +33,7 @@
                                          type))))
                       :playground-link (fn [text]
                                          (fn [render-fn]
-                                           (str "//playground.anychart.stg/api/"
+                                           (str "//" (config/playground-domain) "/api/"
                                                 version
                                                 "/" (render-fn text))))}
                      {:fn-part fn-template
