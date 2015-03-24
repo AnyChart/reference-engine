@@ -228,9 +228,13 @@
                                                                     "typedef"))
          :enums (map :longname (get-enums doclets namespace))
          :classes (map :longname
-                       (get-doclets-by-memberof-and-kind doclets
-                                                         namespace
-                                                         "class"))
+                       (apply concat
+                              (map #(concat [%] (get-doclets-by-memberof-and-kind doclets
+                                                                                  %
+                                                                                  "class"))
+                                   (get-doclets-by-memberof-and-kind doclets
+                                                                     namespace
+                                                                     "class"))))
          :constants (map #(create-constant % doclets version)
                          (get-static-members doclets namespace))
          :functions (map #(create-function % doclets version)
