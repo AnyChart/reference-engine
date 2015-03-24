@@ -33,7 +33,7 @@
                             parent-class-base-name)
         parent-class (class-by-name parent-class-name classes)
         parent-class-methods (get-inherited-methods parent-class class-methods-names classes)]
-    (assoc class :inherited-methods parent-class-methods)))
+    (assoc class :inherited-methods (sort-by :name parent-class-methods))))
 
 (defn build-inheritance [classes]
   (info "build-inheritance")

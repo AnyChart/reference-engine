@@ -106,17 +106,19 @@
 
 (defn- group-functions [functions]
   (if-not (empty? functions)
-    (map (fn [[name methods]]
-           {:name name
-            :overrides methods})
-         (reduce (fn [res val]
-                   (let [name (:name val)
-                         group (get res name)
-                         group-val (if group
-                                     (conj group val)
-                                     [val])]
-                     (assoc res name group-val)))
-                 {} functions))
+    (sort-by
+     :name
+     (map (fn [[name methods]]
+            {:name name
+             :overrides methods})
+          (reduce (fn [res val]
+                    (let [name (:name val)
+                          group (get res name)
+                          group-val (if group
+                                      (conj group val)
+                                      [val])]
+                      (assoc res name group-val)))
+                  {} functions)))
   []))
 
 (defn- create-typedef-property [prop version]
@@ -126,7 +128,9 @@
 (defn- create-typedef [typedef doclets version]
   (assoc (parse-examples-and-listing (parse-general typedef version) typedef)
          :kind :typedef
-         :properties (map #(create-typedef-property % version) (:properties typedef))
+         :properties (sort-by :name
+                              (map #(create-typedef-property % version)
+                                   (:properties typedef)))
          :has-properties (not (empty? (:properties typedef)))
          :type (get-in typedef [:type :names])
          :has-types (> (count (get-in typedef [:type :names])) 1)))
@@ -136,7 +140,8 @@
          :value (:defaultvalue doclet)))
 
 (defn- get-enum-fields [enum doclets version]
-  (map #(create-enum-field % version) (get-static-members doclets enum)))
+  (sort-by :name
+           (map #(create-enum-field % version) (get-static-members doclets enum))))
 
 (defn- create-enum [enum doclets version]
   (assoc (parse-examples-and-listing (parse-general enum version) enum)
@@ -204,11 +209,11 @@
          :kind :class
          :extends (:augments class)
          :has-extends (boolean (seq (:augments class)))
-         :enums (map :longname (get-enums doclets class))
-         :classes (map :longname
-                       (get-doclets-by-memberof-and-kind doclets
-                                                         namespace
-                                                         "class"))
+         :enums (sort (map :longname (get-enums doclets class)))
+         :classes (sort (map :longname
+                             (get-doclets-by-memberof-and-kind doclets
+                                                               namespace
+                                                               "class")))
          :methods (group-functions
                    (map #(create-function % doclets version)
                         (get-functions doclets class)))))
@@ -223,22 +228,25 @@
 (defn- create-namespace [namespace doclets version]
   (assoc (parse-general namespace version)
          :parent (:memberof namespace)
-         :typedefs (map :longname (get-doclets-by-memberof-and-kind doclets
-                                                                    namespace
-                                                                    "typedef"))
-         :enums (map :longname (get-enums doclets namespace))
-         :classes (map :longname
-                       (apply concat
-                              (map #(concat [%] (get-doclets-by-memberof-and-kind doclets
-                                                                                  %
-                                                                                  "class"))
-                                   (get-doclets-by-memberof-and-kind doclets
-                                                                     namespace
-                                                                     "class"))))
-         :constants (map #(create-constant % doclets version)
-                         (get-static-members doclets namespace))
-         :functions (map #(create-function % doclets version)
-                         (get-static-functions doclets namespace))))
+         :typedefs (sort (map :longname (get-doclets-by-memberof-and-kind doclets
+                                                                          namespace
+                                                                          "typedef")))
+         :enums (sort (map :longname (get-enums doclets namespace)))
+         :classes (sort
+                   (map :longname
+                        (apply concat
+                               (map #(concat [%] (get-doclets-by-memberof-and-kind doclets
+                                                                                   %
+                                                                                   "class"))
+                                    (get-doclets-by-memberof-and-kind doclets
+                                                                      namespace
+                                                                      "class")))))
+         :constants (sort-by :name
+                             (map #(create-constant % doclets version)
+                                  (get-static-members doclets namespace)))
+         :functions (sort-by :name
+                             (map #(create-function % doclets version)
+                                  (get-static-functions doclets namespace)))))
 
 (defn structurize [doclets version]
   (info "structurize doclets")
