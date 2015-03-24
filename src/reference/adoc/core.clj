@@ -72,9 +72,8 @@
     (if (seq removed)
       (notify-slack "" "Removed versions:" (clojure.string/join " ," removed)))
     (info "branches:" (map :name branches))
-    (if (empty? (filter #(not (nil? %))
-                        (doall (map build-branch branches))))
-      (notify-slack "" "All versions are up to date"))))
+    (doall (map build-branch branches))
+    (notify-slack "" "All versions are up to date")))
 
 ;;(build "develop")
 
