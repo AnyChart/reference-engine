@@ -36,7 +36,7 @@
   ([version text] 
    (if (not (empty? text))
      (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
-                {:form-params {:payload (generate-string {:text (str (config/reference-domain) ":" text)
+                {:form-params {:payload (generate-string {:text (str "http://" (config/reference-domain) " :" text)
                                                           :channel "#notifications"
                                                           :username "api-reference"})}}))))
   
