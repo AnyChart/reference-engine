@@ -74,16 +74,20 @@
 
 (defn- save [version entry data]
   (if data
-    (spit (str config/data-path "/versions-data/" version "/" (:full-name entry) ".html") data)))
+    (spit (str config/data-path "/versions-data/" version "-tmp/" (:full-name entry) ".html") data)))
 
 (defn pre-render-top-level [version top-level]
   (info "pre-render-top-level" version (count top-level))
-  (let [path (str config/data-path "versions-data/" version)]
+  (let [path (str config/data-path "versions-data/" version "-tmp")
+        prod-path (str config/data-path "versions-data/" version)]
     (if (.exists (file path))
       (sh "rm" "-rf" path))
     (sh "mkdir" path)
-    (info "rendering into" path))
-  (doall (pmap #(save version % (render-class version %)) (:classes top-level)))
-  (doall (pmap #(save version % (render-namespace version %)) (:namespaces top-level)))
-  (doall (pmap #(save version % (render-typedef version %)) (:typedefs top-level)))
-  (doall (pmap #(save version % (render-enum version %)) (:enums top-level))))
+    (info "rendering into" path)
+    (doall (pmap #(save version % (render-class version %)) (:classes top-level)))
+    (doall (pmap #(save version % (render-namespace version %)) (:namespaces top-level)))
+    (doall (pmap #(save version % (render-typedef version %)) (:typedefs top-level)))
+    (doall (pmap #(save version % (render-enum version %)) (:enums top-level)))
+    (if (.exists (file prod-path))
+      (sh "rm" "-rf" prod-path))
+    (sh "mv" path prod-path)))
