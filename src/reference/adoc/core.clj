@@ -46,7 +46,7 @@
         saved-commit (vdata/get-hash version)]
     (if-not (= commit saved-commit)
       (do
-        (notify-slack "" (str "start building" version))
+        (notify-slack "" (str "start building " version))
         (info "building" version)
         (move-media version)
         (let [doclets (get-doclets version)
