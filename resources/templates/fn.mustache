@@ -27,7 +27,7 @@
             <tr>
               <th>Params</th>
               <th>Type</th>
-              <th>Default</th>
+              {{#has-params-defaults}}<th>Default</th>{{/has-params-defaults}}
               <th>Description</th>
             </tr>
           </thead>
@@ -36,7 +36,7 @@
               <tr>
                 <td class="name code">{{name}}</td>
                 <td class="type"><i class="types">{{#types}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/types}}</i></td>
-                <td class="val">{{default}}</td>
+                {{#has-params-defaults}}<td class="val">{{default}}</td>{{/has-params-defaults}}<td class="val">{{default}}</td>
                 <td class="description">{{&description}}</td>
               </tr>
             {{/params}}

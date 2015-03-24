@@ -162,9 +162,22 @@
   {:types (get-in ret [:type :names])
    :description (parse-description (:description ret) version)})
 
+(defn- parse-param-description [description version]
+  (if description
+    (clojure.string/replace (parse-description description version)
+                            #"\s*\[[^\]]+\]\s*" "")))
+
 (defn- parse-function-param [param version]
-  (assoc (parse-function-return param version)
-         :name (clojure.string/replace (:name param) #"^opt_" "")))
+  {:types (get-in param [:type :names])
+   :description (parse-param-description (:description param) version)
+   :name (clojure.string/replace (:name param) #"^opt_" "")
+   :default (if (and (:description param)
+                     (re-find #"^opt_" (:name param))
+                     (re-find #"\s*\[[^\]]+\]\s*" (:description param)))
+              (last (re-matches #"\s*\[([^\]]+)\]\s*.*" (:description param))))})
+
+(defn- function-has-params-defaults [params]
+  (boolean (some #(:default %) params)))
 
 (defn- create-function-signature [name params]
   (str name "(" (clojure.string/join ", " (map :name params)) ")"))
@@ -176,6 +189,7 @@
            :has-detailed (boolean (:value (first (get-tag func "detailed"))))
            :detailed (:value (first (get-tag func "detailed")))
            :has-params (boolean (seq params))
+           :has-params-defaults (function-has-params-defaults params)
            :params params
            :signature (create-function-signature (:name func) params)
            :has-returns (boolean (seq (:returns func)))

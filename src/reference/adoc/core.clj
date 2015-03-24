@@ -70,7 +70,7 @@
     (info "branches:" (map :name branches))
     (doall (map build-branch branches))))
 
-;;(build "develop")
+(build "develop")
 
 ;;(build-all)
 
