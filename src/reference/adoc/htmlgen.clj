@@ -34,8 +34,7 @@
                       :playground-link (fn [text]
                                          (fn [render-fn]
                                            (str "//" (config/playground-domain) "/api/"
-                                                version
-                                                "/" (render-fn text))))}
+                                                version (render-fn text) "-plain")))}
                      {:fn-part fn-template
                       :method-part method-template
                       :const-part const-template})))
