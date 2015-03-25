@@ -156,7 +156,7 @@
 
 (defn- create-enum-field [doclet version]
   (assoc (parse-general doclet version)
-         :value (:defaultvalue doclet)))
+         :value (get-in doclet [:meta :code :value])))
 
 (defn- get-enum-fields [enum doclets version]
   (sort-by :name
