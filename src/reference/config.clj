@@ -18,6 +18,11 @@
     "api.anychart.com"
     "api.anychart.stg"))
 
+(defn docs-domain []
+  (if (is-prod)
+    "docs.anychart.com"
+    "docs.anychart.stg"))
+
 (def base-path (if (not (System/getProperty "dev"))
                  "/apps/reference/"
                  "/Users/alex/Work/anychart/reference-engine/"))
