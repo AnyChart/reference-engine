@@ -1,9 +1,11 @@
 (ns app.page
   (:require [goog.dom]
+            [goog.array]
             [goog.style]
             [goog.events]
             [goog.events.EventType]
-            [goog.dom.classes]))
+            [goog.dom.classes]
+            [clojure.string]))
 
 (enable-console-print!)
 
@@ -75,8 +77,48 @@
     (.setAttribute ns-link "href" (str "/" version "/" ns))
     (set! (.-innerHTML ns-link) ns)))
 
+(defn- create-editor [el]
+  (let [editor (.edit js/ace el)]
+    (.setTheme editor "ace/theme/tomorrow")
+    (.setOptions editor #js {:maxLines 999999})
+    (.setReadOnly editor true)
+    (.setMode (.getSession editor) "ace/mode/javascript")))
+
+(defn- close-listing [code e]
+  (.stopPropagation e)
+  (goog.style.showElement code false))
+
+(defn- init-concrete-listing [code]
+  (let [close (first-child "a" code)
+        src (aget (goog.dom.getElementsByTagNameAndClass "div" nil code) 0)]
+    (create-editor src)
+    (goog.events.listen close goog.events.EventType.CLICK #(close-listing code %))
+    (.log js/console (str "init" src))))
+
+(defn- init-listing-link [link]
+  (let [target-listing (.substring (.getAttribute link "href") 1)]
+    (goog.events.listen link
+                        goog.events.EventType.CLICK
+                        (fn [e]
+                          (.preventDefault e)
+                          (goog.style.showElement (goog.dom.getElement target-listing)
+                                                  true)))))
+
+(defn- init-listing [listing]
+  (let [links (goog.dom.getElementsByTagNameAndClass "a" "btn" listing)
+        listings (goog.dom.getElementsByTagNameAndClass "div" "code-listing" listing)]
+    (goog.array.map links init-listing-link)
+    (goog.array.map listings init-concrete-listing)))
+
+(defn- init-listings []
+  (let [listings (goog.dom.getElementsByTagNameAndClass "div" "listings")]
+    (goog.array.map listings init-listing)))
+
+(init-listings)
+
 (defn init [version page info]
   (doall (init-methods))
+  (doall (init-listings))
   (init-path version page (if-not (contains? info :kind)
                             (assoc info :kind (get info "kind"))
                             info)))

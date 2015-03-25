@@ -21,22 +21,8 @@
           </div>
           {{/has-detailed}}
         </p>
-        {{#has-listings}}
-        <div class="listings">
-          <strong>Code listings:</strong>
-          {{#listings}}
-            <a class="btn"><i class="icon-code"></i> {{title}}</a>
-          {{/listings}}
-        </div>
-        {{/has-listings}}
-        {{#has-playground-samples}}
-        <div class="playground">
-          <strong>Try it in playground:</strong>
-          {{#playground-samples}}
-          <a class="btn" target="_blank" href="{{#playground-link}}{{file}}{{/playground-link}}"><i class="icon-play"></i> {{title}}</a>
-          {{/playground-samples}}
-        </div>
-        {{/has-playground-samples}}
+        {{>listing-part}}
+        {{>samples-part}}
       </div>
     </div>
   </div>

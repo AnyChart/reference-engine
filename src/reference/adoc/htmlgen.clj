@@ -22,7 +22,8 @@
 (def fn-template (slurp (resource "templates/fn.mustache")))
 (def const-template (slurp (resource "templates/const.mustache")))
 (def method-template (slurp (resource "templates/method.mustache")))
-(def example-template (slurp (resource "templates/example.mustache")))
+(def example-template (slurp (resource "templates/samples.mustache")))
+(def listing-template (slurp (resource "templates/listing.mustache")))
 
 (defn- render-template [version template entry]
   (fix-links version
@@ -42,7 +43,9 @@
                                                 version (render-fn text) "-plain")))}
                      {:fn-part fn-template
                       :method-part method-template
-                      :const-part const-template})))
+                      :const-part const-template
+                      :listing-part listing-template
+                      :samples-part example-template})))
 
 (defn- render-namespace [version entry]
   (info "render-namespace" version (:full-name entry))

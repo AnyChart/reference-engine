@@ -29,7 +29,7 @@
 (defn- load-page-data [page]
   (if @page-loader
     (.abort @page-loader))
-  
+
   (let [c (chan 1)]
     (aset (goog.dom/getElement "content") "innerHTML" "Loading...")
     (reset! page-loader (goog.net.XhrIo.))
@@ -44,11 +44,8 @@
     c))
 
 (defn- show-loaded-page [data]
-  (aset (goog.dom/getElement "content") "innerHTML" (:content data))
-  ;;(aset (goog.dom/getElement "current-path") "innerHTML" (:page data))
-  ;;(app.editors/init-editors))
   (app.page/init (:version data) (:page data) (js->clj (:info data)))
-  )
+  (aset (goog.dom/getElement "content") "innerHTML" (:content data)))
 
 (declare update-links)
 
@@ -63,7 +60,7 @@
       (reset! current-page (cleanup-url page))
       (show-loaded-page data)
       (update-links))))
-  
+
 (defn load-page-from-link [e url]
   ;;(.hide js/search)
   (if-not (is-open-in-new-tab e)

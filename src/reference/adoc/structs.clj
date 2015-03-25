@@ -3,6 +3,8 @@
             [reference.config :as config]
             [reference.adoc.media :refer [update-links]]))
 
+(def id-counter (atom 0))
+
 (defn- parse-description [description version]
   (update-links description version))
 
@@ -104,13 +106,21 @@
     {:file (get-example-link base-path doclet example)
      :title example}))
 
+(defn- parse-listing [listing]
+  (let [title (last (re-find #"(?s)^([^\n]*)\n" listing))]
+    {:id (swap! id-counter inc)
+     :title (if (empty? title)
+              "Listing"
+              title)
+     :code (last (re-find #"(?s)^[^\n]*\n(.*)" listing))}))
+
 (defn- parse-examples-and-listing [base-path entry doclet]
   (let [samples (map #(parse-example base-path doclet %) (:examples doclet))
-        listings (get-tag doclet "listing")]
+        listings (map parse-listing (map :value (get-tag doclet "listing")))]
     (assoc entry
            :playground-samples samples
            :has-playground-samples (boolean (seq samples))
-           :listings (map :value listings)
+           :listings listings
            :has-listings (boolean (seq listings)))))
 
 (defn- group-functions [functions]

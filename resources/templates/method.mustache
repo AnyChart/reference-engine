@@ -42,7 +42,7 @@
               <tr>
                 <td class="name code">{{name}}</td>
                 <td class="type"><i class="types">{{#types}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/types}}</i></td>
-                {{#has-params-defaults}}<td class="val">{{default}}</td>{{/has-params-defaults}}
+                {{#has-params-defaults}}<td class="val">{{&default}}</td>{{/has-params-defaults}}
                 <td class="description">{{&description}}</td>
               </tr>
             {{/params}}
@@ -56,22 +56,8 @@
           {{/returns}}
         </div>
         {{/has-returns}}
-        {{#has-listings}}
-        <div class="listings">
-          <strong>Code listings:</strong>
-          {{#listings}}
-            <a class="btn"><i class="icon-code"></i> {{name}}</a>
-          {{/listings}}
-        </div>
-        {{/has-listings}}
-        {{#has-playground-samples}}
-        <div class="playground">
-          <strong>Try it in playground:</strong>
-          {{#playground-samples}}
-          <a class="btn" target="_blank" href="{{#playground-link}}{{file}}{{/playground-link}}"><i class="icon-play"></i> {{title}}</a>
-          {{/playground-samples}}
-        </div>
-        {{/has-playground-samples}}
+        {{>listing-part}}
+        {{>samples-part}}
       </div>
     {{/overrides}}
     </div>

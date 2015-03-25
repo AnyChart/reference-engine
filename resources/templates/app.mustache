@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
     <title>API Reference - AnyChart</title>
+    <script src="/ace-builds/src-min-noconflict/ace.js"></script>
     <link rel="stylesheet" href="/css/reference.css?v={{static-version}}" />
     <link rel="stylesheet" href="/fonts/css/playground.css">
     <link rel="stylesheet" href="/fonts/css/animation.css">
     <!--[if IE 7]><link rel="stylesheet" href="/fonts/css/playground-ie7.css"><![endif]-->
     {{#debug}}
     <script src="/js/app.js?v={{static-version}}"></script>
+    <script type='text/javascript' id='lt_ws' src='http://localhost:57438/socket.io/lighttable/ws.js'></script>
     {{/debug}}
     {{^debug}}
     <script src="/js/app.min.js?v={{static-version}}"></script>
