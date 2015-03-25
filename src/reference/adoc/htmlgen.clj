@@ -11,10 +11,9 @@
                           (str "<a href='//" (config/docs-domain) "/" version "/$1'>$2</a>")))
 
 (defn- fix-links [version data]
-  (fix-docs-links (
-                   (clojure.string/replace data
+  (fix-docs-links version (clojure.string/replace data
                                            #"\{@link ([^}]+)\}"
-                                           (str "<a class='type-link' href='/" version "/$1'>$1</a>")))))
+                                           (str "<a class='type-link' href='/" version "/$1'>$1</a>"))))
 
 (def ns-template (slurp (resource "templates/ns.mustache")))
 (def class-template (slurp (resource "templates/class.mustache")))
