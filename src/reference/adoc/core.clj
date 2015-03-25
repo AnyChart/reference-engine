@@ -70,7 +70,7 @@
         removed (versions/remove-unused-branches (map :name branches))]
     (notify-slack "" "Start api update")
     (if (seq removed)
-      (notify-slack "" "Removed versions:" (clojure.string/join " ," removed)))
+      (notify-slack "" (str "Removed versions:" (clojure.string/join " ," removed))))
     (info "branches:" (map :name branches))
     (doall (map build-branch branches))
     (notify-slack "" "All versions are up to date")))
