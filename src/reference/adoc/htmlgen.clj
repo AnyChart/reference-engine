@@ -5,8 +5,13 @@
             [clojure.java.shell :refer [sh]]
             [taoensso.timbre :as timbre :refer [info]]))
 
-(defn- fix-docs-links [version data]
+(defn- fix-version [version data]
   (clojure.string/replace data
+                          "__VERSION__"
+                          version))
+
+(defn- fix-docs-links [version data]
+  (clojure.string/replace (fix-version data)
                           #"\{docs:([^\}]+)\}([^\{]+)\{docs\}"
                           (str "<a href='//" (config/docs-domain) "/" version "/$1'>$2</a>")))
 
