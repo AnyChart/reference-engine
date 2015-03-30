@@ -14,7 +14,7 @@
                  ;; jgit
                  [clj-jgit "0.8.2"]
                  ;; logging
-                 [com.taoensso/timbre "3.3.1"]
+                 [com.taoensso/timbre "3.3.1"]]
   :plugins [[lein-cljsbuild "1.0.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
