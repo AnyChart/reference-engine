@@ -1,7 +1,7 @@
 #content {
     position: absolute;
     left: 0;
-    top: 54px;
+    top: 55px;
     right: 0;
     bottom: 0;
     overflow-y: auto;
@@ -318,6 +318,7 @@
             }
 
             .playground {
+                margin-top: 10px;
                 a {
                     color: rgb(66, 139, 202);
                 }
