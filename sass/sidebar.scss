@@ -141,6 +141,12 @@
 
     overflow-y: auto;
 
+    .loader {
+        color: white;
+        text-align: center;
+        margin-top: 50px;
+    }
+
     a {
         color: #D4D4D4;
         cursor: pointer;
