@@ -24,6 +24,7 @@
     "docs.anychart.stg"))
 
 (defn filter-branch [name]
+  (println "checking" name)
   (if (is-prod)
     (and (not (.contains name "->"))
          (re-matches #"[ ]+origin/\d\.\d\.\d" name))
