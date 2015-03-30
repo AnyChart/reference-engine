@@ -46,7 +46,7 @@
                         :info (generate-string (p/page-info version page))
                         :page page
                         :versions (v/all-versions)
-                        :static-version "8"
+                        :static-version "10"
                         :content (p/get-page version page)
                         :link #(str "/" version "/" %)})
       (route/not-found (str "Not found: /" version "/" page)))))
