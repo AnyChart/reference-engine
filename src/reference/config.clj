@@ -23,6 +23,12 @@
     "docs.anychart.com"
     "docs.anychart.stg"))
 
+(defn filter-branch [name]
+  (if (is-prod)
+    (and (not (.contains name "->"))
+         (re-matches #"[ ]+origin/\d\.\d\.\d" name))
+    true))
+
 (def base-path (if (not (System/getProperty "dev"))
                  "/apps/reference/"
                  "/Users/alex/Work/anychart/reference-engine/"))

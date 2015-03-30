@@ -66,7 +66,7 @@
           branch)))))
 
 (defn build-all []
-  (let [branches (git/update (fn [branch-name] true))
+  (let [branches (git/update (fn [branch-name] (config/filter-branch branch-name)))
         removed (versions/remove-unused-branches (map :name branches))]
     (notify-slack "" "Start api update")
     (if (seq removed)
