@@ -132,7 +132,8 @@ function loadPage(url) {
 function loadPageFromLink(e) {
     if (e.ctrlKey || e.metaKey) return true;
     var href = $(e.target).attr("href");
-    return loadPage(href);
+    if (href)
+        return loadPage(href);
 };
 
 $(window).on('popstate', function(e) {

@@ -42,16 +42,16 @@ var TreeNode = React.createClass({
             return (<i className={className}></i>);
     },
 
-    handleClick: function(e) {
-        if (!e.ctrlKey && !e.metaKey) {
-            if (this.isGroup())
-                this.setState({"collapsed": this.isExpanded()});
-
-            if (!window["loadPage"](this.getLink())) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        }
+    componentDidMount: function() {
+        var self = this;
+        $(this.getDOMNode()).find(">a").click(function(e) {
+            if (e.ctrlKey || e.metaKey) return;
+            
+            if (self.isGroup())
+                self.setState({"collapsed": self.isExpanded()});
+            
+            return window["loadPage"](self.getLink());
+        });
     },
     
     render: function() {
@@ -63,7 +63,7 @@ var TreeNode = React.createClass({
             })}</ul>);
         
         return (<li className={this.getClass()}>
-            <a onClick={this.handleClick} href={this.getLink()}>{this.getIcon()}{this.getTitle()}</a>
+            <a href={this.getLink()}>{this.getIcon()}{this.getTitle()}</a>
             {subnodes}
                 </li>);
     }

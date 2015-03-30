@@ -23,11 +23,13 @@ var SearchView = React.createClass({displayName: "SearchView",
 });
 
 var SearchResultsRow = React.createClass({displayName: "SearchResultsRow",
-    rowClick: function(e) {
-        if (!e.ctrlKey && !e.metaKey && !window["loadPage"](this.getLink())) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
+    componentDidMount: function() {
+        var self = this;
+        $(this.getDOMNode()).find(">a").click(function(e) {
+            if (e.ctrlKey || e.metaKey) return;
+            
+            return window["loadPage"](self.getLink());
+        });
     },
 
     getLink: function() {
@@ -36,7 +38,7 @@ var SearchResultsRow = React.createClass({displayName: "SearchResultsRow",
     
     render: function() {
         return (React.createElement("li", null, 
-            React.createElement("a", {className: "node-link", href: this.getLink(), onClick: this.rowClick}, this.props.data)
+            React.createElement("a", {className: "node-link", href: this.getLink()}, this.props.data)
         ));
     }
 });
