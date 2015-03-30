@@ -4,8 +4,10 @@
     right: 0;
     top: 0;
     height: 54px;
-    background: #666666;
+    
+    border-top: 1px solid #666666;
     border-bottom: 1px solid #838383;
+    background: #929292;
 
     ul.path {
         margin-left: 15px;
@@ -32,7 +34,7 @@
         }
 
         &:last-child a {
-            color: #C1C1C1;
+            color: #CCC;
         }
     }
 
@@ -90,7 +92,7 @@
             span {
                 font-family: HelveticaNeue;
                 font-size: 12px;
-                color: #C1C1C1;
+                color: #CCC;
                 line-height: 14px;
                 display: block;
             }
