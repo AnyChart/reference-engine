@@ -12,7 +12,6 @@ install:
  - gem install compass
 before_script:
  - compass compile
- - lein cljsbuild once
 script: lein2 uberjar
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then export SERVER="api.anychart.com"; fi

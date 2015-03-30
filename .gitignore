@@ -23,7 +23,6 @@ jsdoc
 resources/keys/
 keys/
 .repl/
-resources/public/js/app.js
 data/
 .repl-*/
 .module-cache/
