@@ -63,7 +63,7 @@ var TreeNode = React.createClass({
             })}</ul>);
         
         return (<li className={this.getClass()}>
-            <a onClick={this.handleClick} href={this.getLink()}>{this.getIcon()} {this.getTitle()}</a>
+            <a onClick={this.handleClick} href={this.getLink()}>{this.getIcon()}{this.getTitle()}</a>
             {subnodes}
                 </li>);
     }

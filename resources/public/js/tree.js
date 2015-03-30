@@ -63,7 +63,7 @@ var TreeNode = React.createClass({displayName: "TreeNode",
             })));
         
         return (React.createElement("li", {className: this.getClass()}, 
-            React.createElement("a", {onClick: this.handleClick, href: this.getLink()}, this.getIcon(), " ", this.getTitle()), 
+            React.createElement("a", {onClick: this.handleClick, href: this.getLink()}, this.getIcon(), this.getTitle()), 
             subnodes
                 ));
     }
