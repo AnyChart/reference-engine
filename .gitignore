@@ -26,3 +26,4 @@ keys/
 resources/public/js/app.js
 data/
 .repl-*/
+.module-cache/

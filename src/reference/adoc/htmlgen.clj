@@ -11,7 +11,7 @@
                           version))
 
 (defn- fix-docs-links [version data]
-  (clojure.string/replace (fix-version data)
+  (clojure.string/replace (fix-version version data)
                           #"\{docs:([^\}]+)\}([^\{]+)\{docs\}"
                           (str "<a href='//" (config/docs-domain) "/" version "/$1'>$2</a>")))
 

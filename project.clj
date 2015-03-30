@@ -15,24 +15,7 @@
                  [clj-jgit "0.8.2"]
                  ;; logging
                  [com.taoensso/timbre "3.3.1"]
-                 ;;frontend
-                 [org.clojure/clojurescript "0.0-3126"]
-                 [com.cemerick/piggieback "0.1.5"]
-                 [reagent "0.5.0"]
-                 [weasel "0.6.0"]]
-
-  :hooks [leiningen.cljsbuild]
   :plugins [[lein-cljsbuild "1.0.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
-  :cljsbuild {:builds [{:source-paths ["src-cljs"]
-                        :compiler {:output-to "resources/public/js/app.js"
-                                   :optimizations :whitespace
-                                   :preamble ["reagent/react.js"]}}
-                       {:source-paths ["src-cljs"]
-                        :compiler {:output-to "resources/public/js/app.min.js"
-                                   :optimizations :advanced
-                                   :pretty-print false
-                                   :externs ["externs/ace.js"]
-                                   :preamble ["reagent/react.js"]}}]}
   :main reference.handler)
