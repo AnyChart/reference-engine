@@ -41,6 +41,20 @@ function initPage(version, page, info) {
         });
     });
 
+    $("div.detailed").each(function() {
+        var $this = $(this);
+        var $view = $this.find(">div");
+        $view.hide();
+        $(this).find(">a:first").click(function() {
+            $view.toggle();
+            return false;
+        });
+        $view.find("a.close").click(function() {
+            $view.hide();
+            return false;
+        });
+    });
+
     var $classEl = $("#path-class");
     var $nsEl = $("#path-ns");
     if (info["kind"] == "namespace") {
