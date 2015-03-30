@@ -1,7 +1,7 @@
 #content {
     position: absolute;
     left: 0;
-    top: 55px;
+    top: 56px;
     right: 0;
     bottom: 0;
     overflow-y: auto;
@@ -146,7 +146,11 @@
             font-size: 20px;
             line-height: 20px;
             font-weight: normal;
-            padding: 10px 0;
+            padding: 10px 0 0 0;
+        }
+
+        > div {
+            margin-top: 10px;
         }
 
         ul.overrides {
@@ -232,6 +236,16 @@
                 font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
                 font-size: 16px;
                 font-weight: bold;
+            }
+        }
+
+        .detailed li {
+            line-height: 16px;
+            font-size:13px;
+            font-family: inherit;
+
+            b {
+                font-family: Monaco;
             }
         }
 

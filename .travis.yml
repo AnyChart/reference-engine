@@ -4,7 +4,7 @@ node_js:
   - "0.10"
 branches:
   only:
-  - master
+  - new-master
   - staging
 services:
   - redis-server
@@ -14,7 +14,7 @@ before_script:
  - compass compile
 script: lein2 uberjar
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then export SERVER="api.anychart.com"; fi
+  - if [ "$TRAVIS_BRANCH" == "new-master" ]; then export SERVER="45.55.146.151"; fi
   - if [ "$TRAVIS_BRANCH" == "staging" ]; then export SERVER="104.236.109.248"; fi
   - echo "Deploying to $SERVER"
   - cp .travis/known_hosts ~/.ssh/known_hosts
