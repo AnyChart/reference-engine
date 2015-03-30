@@ -9,7 +9,10 @@
   (vdata/all-versions))
 
 (defn- outdated-branches [actual-branches current-branches]
-  (clojure.set/difference (set actual-branches) (set current-branches)))
+  (info "actual:" actual-branches)
+  (info "current:" current-branches)
+  (let [diff (clojure.set/difference (set actual-branches) (set current-branches))]
+    (filter #(not (some #{%} actual-branches)) diff)))
 
 (defn- remove-branch [version]
   (info "removing" version)
