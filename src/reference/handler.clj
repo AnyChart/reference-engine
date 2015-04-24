@@ -92,7 +92,7 @@
           (wrap-json-response (routes app-routes))
           {:keywords? true}))
 
-(defn -main [& args]
+(defn -main [domain & args]
   (def update-worker
     (car-mq/worker v/server-conn "reference-queue"
                    {:handler (fn [{:keys [message attempt]}]
@@ -106,5 +106,6 @@
                                      (println e)
                                      (v-gen/notify-slack "ШЕФ ВСЕ ПРОПАЛО")
                                      {:status :success}))))}))
-  
+  (if (seq args)
+    (timbre/set-level! (keyword (first args))))
   (server/run-server #'app {:port 9197}))
