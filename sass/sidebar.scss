@@ -151,11 +151,14 @@
         color: #D4D4D4;
         cursor: pointer;
         white-space: nowrap;
+        font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
     }
 
     i {
         margin-right: 7px;
     }
+
+    ul { margin-bottom: 10px; }
 
     .namespace > a {
         font-family: Menlo-Bold;
@@ -180,10 +183,14 @@
     }
 
     .class > a {
-        font-family: Menlo-Bold;
         font-size: 14px;
         margin-left: -4px;
         margin-top: 2px;
+        font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+    }
+
+    li.class {
+        padding-bottom: 5px;
     }
 
     a:hover {
@@ -219,6 +226,11 @@
         color: #808080;
         line-height: 14px;
         padding-top: 3px;
+    }
+
+    a i {
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+        -webkit-text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
     }
 }
 

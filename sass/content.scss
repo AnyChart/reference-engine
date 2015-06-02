@@ -71,9 +71,16 @@
         margin-left: 20px;
         margin-top: 39px;
         margin-bottom: 40px;
+        font-size: 16px;
+        line-height: 22px;
 
         p {
             margin-bottom: 22px;
+            margin: 0;
+        }
+
+        ul {
+            margin: 5px 0 10px 0;
         }
     }
 
@@ -331,6 +338,7 @@
 
             .listings {
                 margin-top: 10px;
+                margin-left: 10px;
             }
 
             .playground {
@@ -343,3 +351,5 @@
         }
     }
 }
+
+#content .method ul.overrides li a, #content .function ul.overrides li a, #content .const ul.overrides li a {padding-top: 5px; padding-left: 20px; padding-right: 20px}
