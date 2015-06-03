@@ -156,6 +156,10 @@
             padding: 10px 0 0 0;
         }
 
+        span.inherited {
+            color: #929292; font-size: 13px;
+        }
+
         > div {
             margin-top: 10px;
         }
@@ -322,6 +326,10 @@
                     vertical-align: top;
                     border-top: 1px solid #ddd;
                 }
+
+                .name, .type, .val {
+                    font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+                }
             }
 
             .returns {
@@ -353,3 +361,5 @@
 }
 
 #content .method ul.overrides li a, #content .function ul.overrides li a, #content .const ul.overrides li a {padding-top: 5px; padding-left: 20px; padding-right: 20px}
+
+#content li a.type-link {font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;}

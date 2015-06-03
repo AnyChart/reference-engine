@@ -14,15 +14,15 @@
 
     h1 {
         /* AnyChart: */
-        font-family: TrebuchetMS;
+        font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
         font-size: 24px;
         color: #FFFFFF;
-        line-height: 25px;
+        line-height: 25px;        
     }
 
     h2 {
         /* api reference: */
-        font-family: TrebuchetMS;
+        font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
         font-size: 16px;
         color: #B8B8B8;
         line-height: 19px;
@@ -70,16 +70,16 @@
         }
 
         input::-webkit-input-placeholder {
-            color: #555555;
+            color: #929292;
         }
         input:-moz-placeholder {
-            color: #555555;
+            color: #929292;
         }
         input::-moz-placeholder {
-            color: #555555;
+            color: #929292;
         }
         input:-ms-input-placeholder {
-            color: #555555;
+            color: #929292;
         }
     }
 }

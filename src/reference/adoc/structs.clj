@@ -110,7 +110,7 @@
   (let [title (last (re-find #"(?s)^([^\n]*)\n" listing))]
     {:id (swap! id-counter inc)
      :title (if (empty? title)
-              "Listing"
+              "Example"
               title)
      :code (last (re-find #"(?s)^[^\n]*\n(.*)" listing))}))
 
