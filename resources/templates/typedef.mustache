@@ -1,6 +1,10 @@
 <h1><span>{typedef}</span> {{main.full-name}}</h1>
 <div class="description">
-  {{&main.description}}
+    {{&main.description}}
+    {{#main}}
+        {{>listing-part}}
+        {{>samples-part}}
+    {{/main}}
 </div>
 {{#main.has-types}}
 This type can contains one of the following types:
