@@ -91,12 +91,10 @@ function expandInTree(page) {
             nodes[link].setState({"collapsed": false});
     }
 
-    var link = "/" + version + "/" +page;
-    if (nodes[link]) {
-        $("#tree").scrollTop($(nodes[link].getDOMNode()).offset().top - $("#tree").offset().top);
-    }
-    
-    $("#tree").scrollTop()
+    //var link = "/" + version + "/" +page;
+    //if (nodes[link]) {
+    //    $("#tree").scrollTop($(nodes[link].getDOMNode()).offset().top - $("#tree").offset().top);
+    //}
 }
 
 var searchResults;
