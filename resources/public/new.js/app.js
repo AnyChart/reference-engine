@@ -82,8 +82,10 @@ function expandInTree(page) {
         page = page.substring(0, page.indexOf("#"));
 
     var parent = page.substring(0, page.lastIndexOf("."));
-    var cases = [page, parent];
-    for (var i = 1; i < cases.length; i++) {
+    var cases = [page];
+    if (parent.indexOf(".") > 0)
+        cases.push(parent);
+    for (var i = 0; i < cases.length; i++) {
         var link = "/" + version + "/" + cases[i];
         if (nodes[link])
             nodes[link].setState({"collapsed": false});
@@ -150,9 +152,11 @@ function loadPage(url) {
     currentPage = cleanup(url);
     history.pushState(null, null, url);
     $("#content").html("Loading...");
+    
     $.get(cleanup(url)+"/data", function(res) {
         $("#content").html(res["content"]);
         initPage(res["version"], res["page"], res["info"]);
+        expandInTree(res["page"]);
     });
     return false;
 };
