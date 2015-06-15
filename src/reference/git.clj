@@ -64,8 +64,9 @@
 (defn update [branches-filter]
   (with-sh-env env-config
     (with-sh-dir (str config/data-path "/repo")
-      (sh "git" "fetch")
+      (sh "git" "fetch" "-p")
       (sh "git" "pull")
+      (sh "git" "remote" "update" "--prune")
       (sh "git" "remote" "prune" "origin")))
   
   (let [repo (get-repo)]
