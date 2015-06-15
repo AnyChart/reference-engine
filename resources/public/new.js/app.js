@@ -90,6 +90,13 @@ function expandInTree(page) {
         if (nodes[link])
             nodes[link].setState({"collapsed": false});
     }
+
+    var link = "/" + version + "/" +page;
+    if (nodes[link]) {
+        $("#tree").scrollTop($(nodes[link].getDOMNode()).offset().top - $("#tree").offset().top);
+    }
+    
+    $("#tree").scrollTop()
 }
 
 var searchResults;
