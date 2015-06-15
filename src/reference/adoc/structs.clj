@@ -194,14 +194,28 @@
     (clojure.string/replace (parse-description description version)
                             #"\s*\[[^\]]+\]\s*" "")))
 
+(defn- convert-code-to-list [code]
+  (let [lines (clojure.string/split-lines code)]
+    (if (= (count lines) 1)
+      code
+      (str "<ul>" (reduce str (map #(str "<li>" % "</li>") lines)) "</ul>")))
+  code)
+
+(defn- get-param-default [param]
+  (if (and (:description param)
+           (re-find #"^opt_" (:name param))
+           (re-find #"\s*\[[^\]]+\]\s*" (:description param)))
+    (last (re-find #"^\[([^\]]+)\]" (:description param)))))
+
+(defn- parse-param-default [param]
+  (if-let [default (get-param-default param)]
+    (convert-code-to-list default)))
+
 (defn- parse-function-param [param version]
   {:types (get-in param [:type :names])
    :description (parse-param-description (:description param) version)
    :name (clojure.string/replace (:name param) #"^opt_" "")
-   :default (if (and (:description param)
-                     (re-find #"^opt_" (:name param))
-                     (re-find #"\s*\[[^\]]+\]\s*" (:description param)))
-              (last (re-matches #"\s*\[([^\]]+)\]\s*.*" (:description param))))})
+   :default (parse-param-default param)})
 
 (defn- function-has-params-defaults [params]
   (boolean (some #(:default %) params)))

@@ -15,6 +15,10 @@
     font-size: 14px;
     line-height: 20px;
 
+    code, pre {
+        white-space: pre-wrap;
+    }
+
     strong, b {
         color: rgb(71, 71, 71);
         font-weight: bold;
@@ -329,6 +333,10 @@
 
                 .name, .type, .val {
                     font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+                }
+
+                .val {
+                    white-space: pre-wrap;
                 }
             }
 
