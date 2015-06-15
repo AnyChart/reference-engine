@@ -33,10 +33,10 @@
           </thead>
           <tbody>
             {{#params}}
-              <tr>
+                <tr>
                 <td class="name code">{{name}}</td>
                 <td class="type"><i class="types">{{#types}}<i>{{#type-link}}{{.}}{{/type-link}}</i>{{/types}}</i></td>
-                {{#has-params-defaults}}<td class="val">{{&default}}</td>{{/has-params-defaults}}<td class="val">{{default}}</td>
+                {{#has-params-defaults}}<td class="val">{{&default}}</td>{{/has-params-defaults}}
                 <td class="description">{{&description}}</td>
               </tr>
             {{/params}}
