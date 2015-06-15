@@ -102,9 +102,12 @@
       {:file (get-example-link base-path doclet file)
        :title (if-not (empty? title)
                 (clojure.string/trim title)
-                file)})
+                "Usage sample")})
     {:file (get-example-link base-path doclet example)
-     :title example}))
+     :title "Usage sample"}))
+
+(defn- parse-examples [base-path doclet examples]
+  (map #(parse-example base-path doclet %) examples))
 
 (defn- parse-listing [listing]
   (let [title (last (re-find #"(?s)^([^\n]*)\n" listing))]
@@ -115,7 +118,7 @@
      :code (last (re-find #"(?s)^[^\n]*\n(.*)" listing))}))
 
 (defn- parse-examples-and-listing [base-path entry doclet]
-  (let [samples (map #(parse-example base-path doclet %) (:examples doclet))
+  (let [samples (parse-examples base-path doclet (:examples doclet))
         listings (map parse-listing (map :value (get-tag doclet "listing")))]
     (assoc entry
            :playground-samples samples
