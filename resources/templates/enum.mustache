@@ -1,5 +1,12 @@
 <h1><span>[enum]</span> {{main.full-name}}</h1>
-<div class="description">{{&main.description}}</div>
+<div class="description">
+    {{&main.description}}
+    {{#main}}
+        {{>listing-part}}
+        {{>samples-part}}
+    {{/main}}
+</div>
+
 {{#main.has-fields}}
 <table class="enum-fields">
   <thead>

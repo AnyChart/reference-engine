@@ -203,7 +203,7 @@
 
 (defn- get-param-default [param]
   (if (and (:description param)
-           ;; (re-find #"^opt_" (:name param))
+           ;;(re-find #"^opt_" (:name param))
            (re-find #"\s*\[[^\]]+\]\s*" (:description param)))
     (last (re-find #"^\[([^\]]+)\]" (:description param)))))
 
