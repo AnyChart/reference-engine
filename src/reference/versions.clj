@@ -11,8 +11,7 @@
 (defn- outdated-branches [actual-branches current-branches]
   (info "actual:" actual-branches)
   (info "current:" current-branches)
-  (let [diff (clojure.set/difference (set actual-branches) (set current-branches))]
-    (filter #(not (some #{%} actual-branches)) diff)))
+  (filter #(not (some #{%} actual-branches)) current-branches))
 
 (defn- remove-branch [version]
   (info "removing" version)
