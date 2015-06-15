@@ -2,6 +2,8 @@
  * @jsx React.DOM
  */
 
+var nodes = {};
+
 var TreeNode = React.createClass({
 
     getInitialState: function() {
@@ -61,6 +63,8 @@ var TreeNode = React.createClass({
             subnodes = (<ul>{this.props.data.children.map(function(data) {
                 return (<TreeNode key={data["full-name"]} data={data} version={version} />);
             })}</ul>);
+
+        nodes[this.getLink()] = this;
         
         return (<li className={this.getClass()}>
             <a href={this.getLink()}>{this.getIcon()}{this.getTitle()}</a>
@@ -72,6 +76,7 @@ var TreeNode = React.createClass({
 var TreeView = React.createClass({
     render: function() {
         var version = this.props.version;
+        var page = this.props.page;
         var rootNodes = this.props.data.map(function(data) {
             return (<TreeNode key={data["full-name"]} data={data} version={version} />);
         });

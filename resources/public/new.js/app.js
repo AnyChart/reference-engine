@@ -77,14 +77,28 @@ function initPage(version, page, info) {
     $("#content .type-link").click(loadPageFromLink);
 };
 
+function expandInTree(page) {
+    if (page.indexOf("#") != -1)
+        page = page.substring(0, page.indexOf("#"));
+
+    var parent = page.substring(0, page.lastIndexOf("."));
+    var cases = [page, parent];
+    for (var i = 1; i < cases.length; i++) {
+        var link = "/" + version + "/" + cases[i];
+        if (nodes[link])
+            nodes[link].setState({"collapsed": false});
+    }
+}
+
 var searchResults;
 var searchIndex;
 function init(version, page, info) {
     $.get("/"+version+"/data/tree.json", function(json) {
         React.render(
-            React.createElement(TreeView, {"data": json, "version": version}),
+            React.createElement(TreeView, {"data": json, "version": version, "page": page}),
             $("#tree").get(0)
         );
+        expandInTree(page);
     });
 
     $.get("/"+version+"/data/search.json", function(json) {
