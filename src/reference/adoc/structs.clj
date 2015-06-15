@@ -208,8 +208,7 @@
     (last (re-find #"^\[([^\]]+)\]" (:description param)))))
 
 (defn- parse-param-default [param]
-  (if-let [default (get-param-default param)]
-    (convert-code-to-list default)))
+  (get-param-default param))
 
 (defn- parse-function-param [param version]
   {:types (get-in param [:type :names])
