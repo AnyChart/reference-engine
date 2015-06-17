@@ -1,5 +1,6 @@
 (ns reference.data.pages
-  (:require [reference.components.jdbc :refer [query one insert! exec]]))
+  (:require [reference.components.jdbc :refer [query one insert! exec]]
+            [honeysql.helpers :refer :all]))
 
 ;; CREATE SEQUENCE page_id_seq;
 ;; CREATE TYPE page_type AS ENUM ('namespace', 'class', 'typedef', 'enum');
@@ -11,13 +12,13 @@
 ;;   content text
 ;; )
 
-(defn page-by-url [version-id page-url]
+(defn page-by-url [jdbc version-id page-url]
   (one jdbc (-> (select :*)
-                (from :samples)
+                (from :pages)
                 (where [:= :version_id version-id]
-                       [:= :url url]))))
+                       [:= :url page-url]))))
 
-(defn add-page [version-id type url content]
+(defn add-page [jdbc version-id type url content]
   (insert! jdbc :pages {:url url
                         :type type
                         :content content

@@ -20,7 +20,7 @@
 (defn- build-jsdoc [jsdoc-path files]
   (info "jsdoc run:" (concat [jsdoc-path "-X" "-a" "public"] files))
   (parse-string
-   (clojure.string/replace (:out (apply sh (concat [config/jsdoc-path "-X"] files)))
+   (clojure.string/replace (:out (apply sh (concat [jsdoc-path "-X"] files)))
                            "acgraph"
                            "anychart.graphics")
    true))
@@ -28,9 +28,9 @@
 (defn- get-jsdoc [max-groups jsdoc-path path]
   (info "get-jsdoc" path)
   (let [groups (-> (get-all-files-by-ext path "adoc.js")
-                   (group-files max-groups)]
+                   (group-files max-groups))]
     (info "groups:" (count groups))
-    (apply concat (doall (pmap build-jsdoc jsdoc-path groups))))))
+    (apply concat (doall (pmap build-jsdoc jsdoc-path groups)))))
 
 (defn- convert-to-jsdoc [src-path jsdoc-path]
   (info "convert-to-jsdoc" src-path jsdoc-path)

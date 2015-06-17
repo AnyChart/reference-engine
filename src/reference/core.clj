@@ -40,7 +40,11 @@
    :generator {:show-branches true
                :git-ssh "/Users/alex/Work/anychart/playground-engine/keys/git"
                :data-dir "/Users/alex/Work/anychart/reference/data"
-               :queue "reference-queue"}})
+               :max-processes 8
+               :jsdoc-bin "/usr/local/bin/jsdoc"
+               :queue "reference-queue"
+               :docs "http://docs.anychart.stg/"
+               :playground "http://playground.anychart.stg"}})
 
 (def config base-config)
 

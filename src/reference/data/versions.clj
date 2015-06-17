@@ -1,6 +1,7 @@
 (ns reference.data.versions
   (:require [reference.components.jdbc :refer [query one insert! exec]]
-            [version-clj.core :refer [version-compare]]))
+            [version-clj.core :refer [version-compare]]
+            [honeysql.helpers :refer :all]))
 
 ;; CREATE SEQUENCE version_id_seq;
 ;; CREATE TABLE versions (
@@ -34,7 +35,7 @@
   (exec jdbc (-> (delete-from :versions)
                  (where [:= :key key]))))
 
-(defn versions [jdbcd]
+(defn versions [jdbc]
   (reverse
    (sort version-compare
          (map :key (query jdbc (-> (select :key)

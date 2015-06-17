@@ -1,8 +1,12 @@
 (ns reference.components.generator
   (:require [com.stuartsierra.component :as component]
-            [reference.components.redis :as redisc]))
+            [reference.components.redis :as redisc]
+            [reference.adoc.core :as gen]))
 
-(defn- generate-reference [comp]
+(defn generate-reference [comp]
+  (gen/build-all (:jdbc comp)
+                 (:notifier comp)
+                 (:config comp))
   (println "generate reference"))
 
 (defn- message-processor [comp]

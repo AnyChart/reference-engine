@@ -2,7 +2,7 @@
   (:require [clojure.java.shell :refer [sh with-sh-env with-sh-dir]]
             [clojure.string :refer [split]]))
 
-(defn- run-sh [& command]
+(defn run-sh [& command]
   (apply sh command))
 
 (defn- run-git [git-ssh path & command]
@@ -21,7 +21,7 @@
   (run-git git-ssh repo "checkout" branch)
   (run-git git-ssh repo "pull" "origin" branch))
 
-(defn commit-gallery [git-ssh repo]
+(defn commit-samples [git-ssh repo branch]
   (run-git git-ssh repo "pull" "origin" branch)
   (run-git git-ssh repo "add" "-A" "./")
   (run-git git-ssh repo "commit" "-m" "samples update")

@@ -6,7 +6,6 @@
             [reference.adoc.tree :refer [generate-tree]]
             [reference.adoc.search :refer [generate-search-index]]
             [reference.adoc.media :refer [move-media]]
-            [reference.versions :as versions]
             [reference.git :as git]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
@@ -58,13 +57,22 @@
   (notifications/complete-version-building (:name branch)))
 
 (defn build-all
-  [jdbc notifier {:keys [show-branches git-ssh data-dir max-processes jsdoc-bin]}]
+  [jdbc notifier
+   {:keys [show-branches git-ssh data-dir max-processes jsdoc-bin docs playground]}]
   (notifications/start-building notifier)
-  (let [actual-braches (update-branches show-branches git-ssh data-dir)
+  (let [actual-branches (update-branches show-branches git-ssh data-dir)
         removed-branches (remove-branches jdbc (map :name actual-branches))
         branches (filter-for-rebuild jdbc actual-branches)]
     (notifications/versions-for-build notifier branches)
     (if (seq removed-branches)
       (notifications/delete-branches notifier removed-branches))
-    (doall (map #(build-branch % jdbc notifier git-ssh data-dir max-processes jsdoc-bin)))
+    (doall (map #(build-branch %
+                               jdbc
+                               notifier
+                               git-ssh
+                               data-dir
+                               max-processes
+                               jsdoc-bin
+                               docs
+                               playground)))
     (notifications/complete-building notifier)))
