@@ -12,7 +12,7 @@
 (defn new-notifier [config]
   (map->Notifier {:config config}))
 
-(defn delete-branches [notifier])
+(defn delete-branches [notifier branches])
 
 (defn start-building [notifier])
 
