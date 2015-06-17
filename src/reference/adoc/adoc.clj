@@ -6,31 +6,33 @@
             [taoensso.timbre :as timbre :refer [info]]))
 
 (defn- get-all-files-by-ext [path extension]
-  (let [res (map #(.getAbsolutePath %)
-                 (filter #(and
-                           (re-matches (re-pattern (str ".*\\." extension)) (.getName %))
-                           (not (.isHidden %)))
-                         (file-seq (file path))))]
+  (let [res (doall (map #(.getAbsolutePath %)
+                        (filter #(and
+                                  (re-matches (re-pattern (str ".*\\." extension)) (.getName %))
+                                  (not (.isHidden %)))
+                                (file-seq (file path)))))]
     (info "get-all-js-files" path "count:" (count res))
     res))
 
 (defn- group-files [groups files]
-  (partition-all groups files))
+  (doall (partition-all (/ (count files) groups) files)))
 
 (defn- build-jsdoc [jsdoc-path files]
-  (info "jsdoc run:" (concat [jsdoc-path "-X" "-a" "public"] files))
-  (parse-string
-   (clojure.string/replace (:out (apply sh (concat [jsdoc-path "-X"] files)))
-                           "acgraph"
-                           "anychart.graphics")
-   true))
+  (when (seq files)
+    (info "jsdoc run:" (vec (concat [jsdoc-path "-X" "-a" "public"])))
+    (let [res (:out (apply sh (vec (concat [jsdoc-path "-X"] (vec files)))))]
+      (info "got res" (count res))
+      (parse-string
+       (clojure.string/replace res 
+                               "acgraph"
+                               "anychart.graphics")
+       true))))
 
 (defn- get-jsdoc [max-groups jsdoc-path path]
-  (info "get-jsdoc" path)
-  (let [groups (-> (get-all-files-by-ext path "adoc.js")
-                   (group-files max-groups))]
+  (info "get-jsdoc" path max-groups jsdoc-path)
+  (let [groups (group-files max-groups (get-all-files-by-ext path "adoc.js"))]
     (info "groups:" (count groups))
-    (apply concat (doall (pmap build-jsdoc jsdoc-path groups)))))
+    (apply concat (doall (pmap #(build-jsdoc jsdoc-path %) groups)))))
 
 (defn- convert-to-jsdoc [src-path jsdoc-path]
   (info "convert-to-jsdoc" src-path jsdoc-path)
@@ -40,7 +42,7 @@
               (get-all-files-by-ext jsdoc-path "adoc"))))
 
 (defn get-doclets [data-dir max-groups jsdoc-bin version]
-  (info "get-doclets" version)
+  (info "get-doclets" version jsdoc-bin)
   (let [src-path (str data-dir "/versions/" version)
         jsdoc-path (str data-dir "/versions-tmp/" version)]
     (convert-to-jsdoc src-path jsdoc-path)

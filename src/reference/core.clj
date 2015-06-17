@@ -55,3 +55,6 @@
 
 (defn stop []
   (alter-var-root #'dev component/stop))
+
+(defn test-build []
+  (generator/generate-reference (:generator dev)))

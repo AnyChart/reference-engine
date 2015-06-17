@@ -42,6 +42,7 @@
 
 (defn- build-branch
   [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground]
+  (info "building" branch)
   (notifications/start-version-building notifier (:name branch))
   (let [doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
         raw-top-level (structurize doclets (:name branch))
