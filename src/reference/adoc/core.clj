@@ -33,7 +33,7 @@
     removed-branches))
 
 (defn- filter-for-rebuild [jdbc branches]
-  (map :name (filter #(vdata/need-rebuild? jdbc (:name %) (:commit %)) branches)))
+  (filter #(vdata/need-rebuild? jdbc (:name %) (:commit %)) branches))
 
 (defn- build-media [jdbc version-id version-key data-dir])
 

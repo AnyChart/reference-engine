@@ -1,7 +1,8 @@
 (ns reference.data.versions
   (:require [reference.components.jdbc :refer [query one insert! exec]]
             [version-clj.core :refer [version-compare]]
-            [honeysql.helpers :refer :all]))
+            [honeysql.helpers :refer :all]
+            [cheshire.core :refer [generate-string]]))
 
 ;; CREATE SEQUENCE version_id_seq;
 ;; CREATE TABLE versions (
@@ -16,8 +17,8 @@
 (defn add-version [jdbc key commit tree search]
   (:id (first (insert! jdbc :versions {:key key
                                        :commit commit
-                                       :tree tree
-                                       :search search}))))
+                                       :tree (generate-string tree)
+                                       :search (generate-string search)}))))
 
 (defn version-by-key [jdbc key]
   (one jdbc (-> (select :key :id)
