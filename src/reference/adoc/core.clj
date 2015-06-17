@@ -40,9 +40,9 @@
 
 (defn- build-pages [jdbc top-level])
 
-(defn- build-branch [branch jdbc notifier git-ssh data-dir]
+(defn- build-branch [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin]
   (notifications/start-version-building (:name branch))
-  (build-media jdbc data-dir (:name branch))
+  (build-media jdbc data-dir max-processes jsdoc-bin (:name branch))
   (let [doclets (get-doclets data-dir (:name branch))
         raw-top-level (structurize doclets (:name branch))
         top-level (assoc raw-top-level
@@ -51,9 +51,10 @@
         search-index (generate-search-index top-level)]
     (build-pages jdbc top-level)
     (vdata/add-version jdbc (:name branch) (:commit branch) tree-data search-index))
-  (notifications/complete-building (:name branch)))
+  (notifications/complete-version-building (:name branch)))
 
-(defn build-all [jdbc notifier {:keys [show-branches git-ssh data-dir]}]
+(defn build-all
+  [jdbc notifier {:keys [show-branches git-ssh data-dir max-processes jsdoc-bin]}]
   (notifications/start-building notifier)
   (let [actual-braches (update-branches show-branches git-ssh data-dir)
         removed-branches (remove-branches jdbc (map :name actual-branches))
@@ -61,5 +62,5 @@
     (notifications/versions-for-build notifier branches)
     (if (seq removed-branches)
       (notifications/delete-branches notifier removed-branches))
-    (doall (map #(build-branch % jdbc notifier git-ssh data-dir)))
+    (doall (map #(build-branch % jdbc notifier git-ssh data-dir max-processes jsdoc-bin)))
     (notifications/complete-building notifier)))
