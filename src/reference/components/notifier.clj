@@ -11,3 +11,15 @@
 
 (defn new-notifier [config]
   (map->Notifier {:config config}))
+
+(defn delete-branches [notifier])
+
+(defn start-building [notifier])
+
+(defn complete-building [notifier])
+
+(defn versions-for-build [notifier versions])
+
+(defn start-version-building [notifier version])
+
+(defn complete-version-building [notifier version])

@@ -10,74 +10,56 @@
             [reference.git :as git]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
+            [reference.components.notifier :as notifications]
             [reference.config :as config]
             [cheshire.core :refer [generate-string]]
             [org.httpkit.client :as http]
             [taoensso.timbre :as timbre :refer [info]]))
 
-(defn build [version]
-  (info "build" version)
-  (move-media version)
-  (let [doclets (get-doclets version)
-        raw-top-level (structurize doclets version)
+(defn- update-branches [show-branches git-ssh data-dir]
+  (let [repo-path (str data-dir "/repo/")
+        versions-path (str data-dir "/versions/")]
+    (git/update git-ssh repo-path)
+    (let [branches (if show-branches
+                     (git/actual-branches git-ssh repo-path)
+                     (git/version-branches git-ssh repo-path))]
+      (doall (pmap #(git/checkout git-ssh repo-path % (str versions-path %)) branches))
+      (git/get-hashes git-ssh versions-path branches))))
+
+(defn- remove-branches [jdbc actual-branches]
+  (let [current-branches (vdata/versions jdbc)
+        removed-branches (filter #(some #{%} actual-branches) current-branches)]
+    (if (seq removed-branches)
+      (doall (map #(vdata/delete-by-key %) removed-branches)))
+    removed-branches))
+
+(defn- filter-for-rebuild [jdbc branches]
+  (map :name (filter #(vdata/need-rebuild? jdbc (:name %) (:commit %)) branches)))
+
+(defn- build-media [jdbc data-dir branch])
+
+(defn- build-pages [jdbc top-level])
+
+(defn- build-branch [branch jdbc notifier git-ssh data-dir]
+  (notifications/start-version-building (:name branch))
+  (build-media jdbc data-dir (:name branch))
+  (let [doclets (get-doclets data-dir (:name branch))
+        raw-top-level (structurize doclets (:name branch))
         top-level (assoc raw-top-level
                          :classes (build-inheritance (:classes raw-top-level)))
         tree-data (generate-tree top-level)
         search-index (generate-search-index top-level)]
-    (doall (pre-render-top-level version top-level))
-    (pdata/add-top-level version top-level)
-    (vdata/add-version version
-                       (generate-string tree-data)
-                       (generate-string search-index))
-    (info "building" version "completed")))
+    (build-pages jdbc top-level)
+    (vdata/add-version jdbc (:name branch) (:commit branch) tree-data search-index))
+  (notifications/complete-building (:name branch)))
 
-(defn notify-slack
-  ([version] (notify-slack version (str "API reference generated for " version)))
-  ([version text] 
-   (if (not (empty? text))
-     (http/post "https://anychart-team.slack.com/services/hooks/incoming-webhook?token=P8Z59E0kpaOqTcOxner4P5jb"
-                {:form-params {:payload (generate-string {:text (str "http://" (config/reference-domain) " :" text)
-                                                          :channel "#notifications"
-                                                          :username "api-reference"})}}))))
-  
-(defn- build-branch [branch]
-  (let [version (:name branch)
-        commit (:commit branch)
-        saved-commit (vdata/get-hash version)]
-    (if-not (= commit saved-commit)
-      (do
-        (notify-slack "" (str "start building " version))
-        (info "building" version)
-        (move-media version)
-        (let [doclets (get-doclets version)
-              raw-top-level (structurize doclets version)
-              top-level (assoc raw-top-level
-                               :classes (build-inheritance (:classes raw-top-level)))
-              tree-data (generate-tree top-level)
-              search-index (generate-search-index top-level)]
-          (doall (pre-render-top-level version top-level))
-          (pdata/add-top-level version top-level)
-          (vdata/add-version version
-                             (generate-string tree-data)
-                             (generate-string search-index))
-          (vdata/update-hash version commit)
-          (notify-slack version)
-          (info "building" version "completed")
-          branch)))))
-
-(defn build-all []
-  (let [branches (git/update (fn [branch-name] (config/filter-branch branch-name)))
-        removed (versions/remove-unused-branches (map :name branches))]
-    (notify-slack "" "Start api update")
-    (if (seq removed)
-      (notify-slack "" (str "Removed versions:" (clojure.string/join " ," removed))))
-    (info "branches:" (map :name branches))
-    (doall (map build-branch branches))
-    (notify-slack "" "All versions are up to date")))
-
-;;(build "develop")
-
-;;(build-all)
-
-;;(build "DVF-1245_rework_radar_polar")
- 
+(defn build-all [jdbc notifier {:keys [show-branches git-ssh data-dir]}]
+  (notifications/start-building notifier)
+  (let [actual-braches (update-branches show-branches git-ssh data-dir)
+        removed-branches (remove-branches jdbc (map :name actual-branches))
+        branches (filter-for-rebuild jdbc actual-branches)]
+    (notifications/versions-for-build notifier branches)
+    (if (seq removed-branches)
+      (notifications/delete-branches notifier removed-branches))
+    (doall (map #(build-branch % jdbc notifier git-ssh data-dir)))
+    (notifications/complete-building notifier)))

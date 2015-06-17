@@ -30,7 +30,11 @@
                 (where [:= :hidden false]
                        [:= :id version-id]))))
 
-(defn versions [jdbc project-id]
+(defn delete-by-key [jdbc key]
+  (exec jdbc (-> (delete-from :versions)
+                 (where [:= :key key]))))
+
+(defn versions [jdbcd]
   (reverse
    (sort version-compare
          (map :key (query jdbc (-> (select :key)
@@ -49,7 +53,6 @@
 
 (defn default [jdbc]
   (first (versions jdbc)))
-
 
 (defn need-rebuild? [jdbc version-key commit]
   (nil? (one jdbc (-> (select :key)
