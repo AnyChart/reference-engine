@@ -29,7 +29,7 @@
   (let [current-branches (vdata/versions jdbc)
         removed-branches (filter #(some #{%} actual-branches) current-branches)]
     (if (seq removed-branches)
-      (doall (map #(vdata/delete-by-key %) removed-branches)))
+      (doall (map #(vdata/delete-by-key jdbc %) removed-branches)))
     removed-branches))
 
 (defn- filter-for-rebuild [jdbc branches]
