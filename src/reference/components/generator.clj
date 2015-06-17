@@ -1,5 +1,6 @@
 (ns reference.components.generator
-  (:require [com.stuartsierra.component :as component]))
+  (:require [com.stuartsierra.component :as component]
+            [reference.components.redis :as redisc]))
 
 (defn- generate-reference [comp]
   (println "generate reference"))
@@ -10,7 +11,7 @@
       (generate-reference comp))
     {:status :success}))
 
-(defrecord Worker [config jdbc redis notifier]
+(defrecord Generator [config jdbc redis notifier]
   component/Lifecycle
 
   (start [this]
@@ -22,5 +23,5 @@
     (redisc/delete-worker (:engine this))
     (dissoc this :engine)))
 
-(defn new-worker [config]
-  (map->Worker {:config config}))
+(defn new-generator [config]
+  (map->Generator {:config config}))
