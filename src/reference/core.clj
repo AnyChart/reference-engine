@@ -39,7 +39,7 @@
            :spec {:host "127.0.0.1" :port 6379 :db 0}}
    :generator {:show-branches true
                :git-ssh "/Users/alex/Work/anychart/playground-engine/keys/git"
-               :data-dir "/Users/alex/Work/anychart/reference/data"
+               :data-dir "/Users/alex/Work/anychart/reference-engine/data"
                :max-processes 8
                :jsdoc-bin "/usr/local/bin/jsdoc"
                :queue "reference-queue"

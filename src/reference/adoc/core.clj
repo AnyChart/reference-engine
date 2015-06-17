@@ -37,11 +37,12 @@
 
 (defn- build-media [jdbc version-id version-key data-dir])
 
-(defn- build-pages [jdbc version-id version-key top-level]
-  (pre-render-top-level jdbc version-id version-key top-level))
+(defn- build-pages [jdbc version-id version-key top-level docs playground]
+  (pre-render-top-level docs playground jdbc version-id version-key top-level))
 
-(defn- build-branch [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin]
-  (notifications/start-version-building (:name branch))
+(defn- build-branch
+  [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground]
+  (notifications/start-version-building notifier (:name branch))
   (let [doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
         raw-top-level (structurize doclets (:name branch))
         top-level (assoc raw-top-level
@@ -52,9 +53,9 @@
                                         (:name branch)
                                         (:commit branch)
                                         tree-data search-index)]
-      (build-pages jdbc version-id (:name branch) top-level)
+      (build-pages jdbc version-id (:name branch) top-level docs playground)
       (build-media jdbc version-id (:name branch) data-dir)))
-  (notifications/complete-version-building (:name branch)))
+  (notifications/complete-version-building notifier (:name branch)))
 
 (defn build-all
   [jdbc notifier
@@ -74,5 +75,6 @@
                                max-processes
                                jsdoc-bin
                                docs
-                               playground)))
+                               playground)
+                branches))
     (notifications/complete-building notifier)))
