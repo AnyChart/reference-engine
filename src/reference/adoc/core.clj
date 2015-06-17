@@ -36,21 +36,25 @@
 (defn- filter-for-rebuild [jdbc branches]
   (map :name (filter #(vdata/need-rebuild? jdbc (:name %) (:commit %)) branches)))
 
-(defn- build-media [jdbc data-dir branch])
+(defn- build-media [jdbc version-id version-key data-dir])
 
-(defn- build-pages [jdbc top-level])
+(defn- build-pages [jdbc version-id version-key top-level]
+  (pre-render-top-level jdbc version-id version-key top-level))
 
 (defn- build-branch [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin]
   (notifications/start-version-building (:name branch))
-  (build-media jdbc data-dir max-processes jsdoc-bin (:name branch))
-  (let [doclets (get-doclets data-dir (:name branch))
+  (let [doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
         raw-top-level (structurize doclets (:name branch))
         top-level (assoc raw-top-level
                          :classes (build-inheritance (:classes raw-top-level)))
         tree-data (generate-tree top-level)
         search-index (generate-search-index top-level)]
-    (build-pages jdbc top-level)
-    (vdata/add-version jdbc (:name branch) (:commit branch) tree-data search-index))
+    (let [version-id (vdata/add-version jdbc
+                                        (:name branch)
+                                        (:commit branch)
+                                        tree-data search-index)]
+      (build-pages jdbc version-id (:name branch) top-level)
+      (build-media jdbc version-id (:name branch) data-dir)))
   (notifications/complete-version-building (:name branch)))
 
 (defn build-all

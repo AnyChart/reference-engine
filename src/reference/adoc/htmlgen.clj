@@ -1,9 +1,7 @@
 (ns reference.adoc.htmlgen
   (:require [clostache.parser :refer [render]]
-            [reference.config :as config]
-            [clojure.java.io :refer [file resource]]
-            [clojure.java.shell :refer [sh]]
-            [taoensso.timbre :as timbre :refer [info]]))
+            [taoensso.timbre :as timbre :refer [info]]
+            [reference.data.pages :as pages]))
 
 (defn- fix-version [version data]
   (clojure.string/replace data
@@ -84,22 +82,26 @@
                    typedef-template
                    entry))
 
-(defn- save [version entry data]
-  (if data
-    (spit (str config/data-path "/versions-data/" version "-tmp/" (:full-name entry) ".html") data)))
-
-(defn pre-render-top-level [version top-level]
+(defn pre-render-top-level [version-id version-key top-level]
   (info "pre-render-top-level" version (count top-level))
-  (let [path (str config/data-path "versions-data/" version "-tmp")
-        prod-path (str config/data-path "versions-data/" version)]
-    (if (.exists (file path))
-      (sh "rm" "-rf" path))
-    (sh "mkdir" path)
-    (info "rendering into" path)
-    (doall (pmap #(save version % (render-class version %)) (:classes top-level)))
-    (doall (pmap #(save version % (render-namespace version %)) (:namespaces top-level)))
-    (doall (pmap #(save version % (render-typedef version %)) (:typedefs top-level)))
-    (doall (pmap #(save version % (render-enum version %)) (:enums top-level)))
-    (if (.exists (file prod-path))
-      (sh "rm" "-rf" prod-path))
-    (sh "mv" path prod-path)))
+  
+  (doall (pmap #(pages/add-page version-id
+                                "class"
+                                (:full-name %)
+                                (render-class version-key %))
+               (:classes top-level)))
+  (doall (pmap #(pages/add-page version-id
+                                "namespace"
+                                (:full-name %)
+                                (render-namespace version-key %))
+               (:namespaces top-level)))
+  (doall (pmap #(pages/add-page version-id
+                                "typedef"
+                                (:full-name %)
+                                (render-typedef version-key %))
+               (:typedefs top-level)))
+  (doall (pmap #(pages/add-page version-id
+                                "enum"
+                                (:full-name %)
+                                (render-enum version-key %))
+               (:enums top-level))))
