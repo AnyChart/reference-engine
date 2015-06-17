@@ -34,7 +34,8 @@
           :subname "//localhost:5432/reference_db"
           :classname "org.postgresql.Driver"
           :user "reference_user"
-          :password "pass"}
+          :password "pass"
+          :stringtype "unspecified"}
    :redis {:pool {}
            :spec {:host "127.0.0.1" :port 6379 :db 0}}
    :generator {:show-branches true

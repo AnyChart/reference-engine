@@ -97,25 +97,25 @@
   
   (doall (pmap #(pages/add-page jdbc
                                 version-id
-                                :class
+                                "class"
                                 (:full-name %)
                                 (render-class docs-domain playground-domain version-key %))
                (:classes top-level)))
   (doall (pmap #(pages/add-page jdbc
                                 version-id
-                                :namespace
+                                "namespace"
                                 (:full-name %)
                                 (render-namespace docs-domain playground-domain version-key %))
                (:namespaces top-level)))
   (doall (pmap #(pages/add-page jdbc
                                 version-id
-                                :typedef
+                                "typedef"
                                 (:full-name %)
                                 (render-typedef docs-domain playground-domain version-key %))
                (:typedefs top-level)))
   (doall (pmap #(pages/add-page jdbc
                                 version-id
-                                :enum
+                                "enum"
                                 (:full-name %)
                                 (render-enum docs-domain playground-domain version-key %))
                (:enums top-level))))
