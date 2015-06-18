@@ -31,7 +31,7 @@
   (notify notifier "api update completed"))
 
 (defn versions-for-build [notifier versions]
-  (notify notifier (str "start building " (clojure.string/join ", " versions))))
+  (notify notifier (str "build list: " (clojure.string/join ", " versions))))
 
 (defn start-version-building [notifier version]
   (notify notifier (str "start building " version)))

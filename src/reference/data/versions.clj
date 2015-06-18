@@ -61,3 +61,15 @@
                       (from :versions)
                       (where [:= :commit commit]
                              [:= :key version-key])))))
+
+(defn search-index [jdbc version-id]
+  (:search (one jdbc (-> (select :search)
+                         (from :versions)
+                         (where [:= :id version-id]
+                                [:= :hidden false])))))
+
+(defn tree-data [jdbc version-id]
+  (:tree (one jdbc (-> (select :tree)
+                         (from :versions)
+                         (where [:= :id version-id]
+                                [:= :hidden false])))))

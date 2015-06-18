@@ -10,6 +10,7 @@
 ;;   type varchar(100),
 ;;   version_id integer references versions(id),
 ;;   url varchar(255) not null,
+;;   full_name varchar(255),
 ;;   content text
 ;; )
 
@@ -23,4 +24,15 @@
   (insert! jdbc :pages {:url url
                         :type type
                         :content content
+                        :full_name url
                         :version_id version-id}))
+
+(defn page-exists? [jdbc version-id url]
+  (not (nil? (one jdbc (-> (select :id)
+                           (from :pages)
+                           (where [:= :url url]
+                                  [:= :version_id version-id]))))))
+
+(defn info [page]
+  {:full-name (:url page)
+   :kind (:type page)})
