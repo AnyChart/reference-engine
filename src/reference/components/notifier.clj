@@ -37,4 +37,4 @@
   (notify notifier (str "start building " version)))
 
 (defn complete-version-building [notifier version]
-  (notify notifier (str version "build completed")))
+  (notify notifier (str version " build completed")))
