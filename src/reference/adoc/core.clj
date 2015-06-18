@@ -65,7 +65,7 @@
   (let [actual-branches (update-branches show-branches git-ssh data-dir)
         removed-branches (remove-branches jdbc (map :name actual-branches))
         branches (filter-for-rebuild jdbc actual-branches)]
-    (notifications/versions-for-build notifier branches)
+    (notifications/versions-for-build notifier (map :name branches))
     (if (seq removed-branches)
       (notifications/delete-branches notifier removed-branches))
     (doall (map #(build-branch %

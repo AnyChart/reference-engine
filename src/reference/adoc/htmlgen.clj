@@ -79,7 +79,9 @@
 
 (defn- render-enum [docs-domain playground-domain version entry]
   (info "render-enum" version (:full-name entry))
-  (render-template version
+  (render-template docs-domain
+                   playground-domain
+                   version
                    enum-template
                    (assoc entry
                           :has-fields (not (empty? (:fields entry))))))

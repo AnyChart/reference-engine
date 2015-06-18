@@ -12,14 +12,29 @@
 (defn new-notifier [config]
   (map->Notifier {:config config}))
 
-(defn delete-branches [notifier branches])
+(defn- notify [notifier text]
+  (http/post (str "https://anychart-team.slack.com/services/hooks/incoming-webhook?token="
+                  (-> notifier :config :token))
+             {:form-params
+              {:payload (generate-string
+                         {:text (str (-> notifier :config :domain) " " text)
+                          :channel (-> notifier :config :channel)
+                          :username (-> notifier :config :username)})}}))
 
-(defn start-building [notifier])
+(defn delete-branches [notifier branches]
+  (notify notifier (str "branches deleted: " (clojure.string/join ", " branches))))
 
-(defn complete-building [notifier])
+(defn start-building [notifier]
+  (notify notifier "start api update"))
 
-(defn versions-for-build [notifier versions])
+(defn complete-building [notifier]
+  (notify notifier "api update completed"))
 
-(defn start-version-building [notifier version])
+(defn versions-for-build [notifier versions]
+  (notify notifier (str "start building " (clojure.string/join ", " versions))))
 
-(defn complete-version-building [notifier version])
+(defn start-version-building [notifier version]
+  (notify notifier (str "start building " version)))
+
+(defn complete-version-building [notifier version]
+  (notify notifier (str version "build completed")))
