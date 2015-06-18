@@ -6,6 +6,7 @@
             [clostache.parser :refer [render-resource]]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
+            [reference.components.redis :as redisca]
             [taoensso.timbre :as timbre :refer [info]]
             [cheshire.core :refer [generate-string]]))
 
@@ -55,7 +56,10 @@
                         :content (:content page)
                         :link #(str "/" (:key version) "/" %)}))
 
-(defn- request-update [request])
+(defn- request-update [request]
+  (redisca/enqueue (redis request)
+                   (-> request :component :config :reference-queue)
+                   "generate"))
 
 (defn- check-version-middleware [app]
   (fn [request]
@@ -78,8 +82,8 @@
 (defroutes app-routes
   (route/resources "/")
   (GET "/" [] show-default-version)
-  (GET "/_update_" [] request-update)
-  (POST "/_update_" [] request-update)
+  (GET "/_update_reference_" [] request-update)
+  (POST "/_update_reference_" [] request-update)
   (GET "/:version/" [] (check-version-middleware show-default-ns))
   (GET "/:version" [] (check-version-middleware show-default-ns))
   (GET "/:version/data/tree.json" [] (wrap-json-response (check-version-middleware
