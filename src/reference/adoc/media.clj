@@ -1,6 +1,5 @@
 (ns reference.adoc.media
-  (:require [reference.config :as config]
-            [reference.git :as git]
+  (:require [reference.git :as git]
             [taoensso.timbre :as timbre :refer [info]]
             [clojure.java.io :refer [file]]))
 
@@ -17,18 +16,18 @@
 (defn- dirname [path]
   (clojure.string/replace path #"[^/]+$" ""))
 
-(defn- move-file [base-path version path]
+(defn- move-file [base-path version path dest-path]
   (let [target-name (clojure.string/replace path #"_media/" "")
-        target-path (str config/static-path version "/" target-name)
+        target-path (str dest-path version "/" target-name)
         target-folder (dirname target-path)]
     (git/run-sh "mkdir" "-p" target-folder)
     (git/run-sh "cp" (str base-path path) target-path)))
 
-(defn move-media [version]
+(defn move-media [version src-path dest-path]
   (info "moving media for" version)
-  (let [base-path (str config/versions-path version "/")
+  (let [base-path (str src-path "/" version "/")
         files (get-all-static base-path)]
-    (doall (map #(move-file base-path version %) files))))
+    (doall (map #(move-file base-path version % dest-path) files))))
 
 (defn update-links [description version]
   (if-not (empty? description)

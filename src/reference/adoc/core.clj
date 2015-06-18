@@ -35,7 +35,8 @@
 (defn- filter-for-rebuild [jdbc branches]
   (filter #(vdata/need-rebuild? jdbc (:name %) (:commit %)) branches))
 
-(defn- build-media [jdbc version-id version-key data-dir])
+(defn- build-media [jdbc version-id version-key data-dir]
+  (move-media version-key (str data-dir "/versions/") (str data-dir "/versions-static/")))
 
 (defn- build-pages [jdbc version-id version-key top-level docs playground]
   (pre-render-top-level docs playground jdbc version-id version-key top-level))
