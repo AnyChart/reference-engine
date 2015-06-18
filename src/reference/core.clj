@@ -68,7 +68,8 @@
 
 (def stg-config (merge-with merge base-config
                        {:notifications {:domain "http://api.anychart.stg/"}}
-                       {:web {:debug false}}
+                       {:web {:debug false
+                              :port 8090}}
                        {:jdbc {:subname "//10.132.9.26:5432/api_stg"
                                :user "api_stg_user"
                                :password "fuckstg"}}
