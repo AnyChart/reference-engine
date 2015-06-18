@@ -1,12 +1,13 @@
 (ns reference.data.pages
   (:require [reference.components.jdbc :refer [query one insert! exec]]
-            [honeysql.helpers :refer :all]))
+            [honeysql.helpers :refer :all]
+            [honeysql.core :as sql]))
 
 ;; CREATE SEQUENCE page_id_seq;
 ;; CREATE TYPE page_type AS ENUM ('namespace', 'class', 'typedef', 'enum');
 ;; CREATE TABLE pages (
 ;;   id integer PRIMARY KEY DEFAULT nextval('page_id_seq'),
-;;   type page_type,
+;;   type varchar(100),
 ;;   version_id integer references versions(id),
 ;;   url varchar(255) not null,
 ;;   content text
