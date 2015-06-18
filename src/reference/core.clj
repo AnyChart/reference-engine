@@ -73,7 +73,7 @@
                        {:jdbc {:subname "//10.132.9.26:5432/api_stg"
                                :user "api_stg_user"
                                :password "fuckstg"}}
-                       {:redis {:spec {:host "10.132.9.26" :db 0}}}
+                       {:redis {:spec {:host "10.132.9.26" :db 1}}}
                        {:generator {:git-ssh "/apps/keys/git"
                                     :data-dir "/apps/reference-stg/data"}}))
 
