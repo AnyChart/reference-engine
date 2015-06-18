@@ -16,6 +16,25 @@
                            [:jdbc :redis])
    :generator (component/using (generator/new-generator (:generator config))
                                [:jdbc :redis :notifier])))
+
+(defn frontend-system [config]
+  (component/system-map
+   :jdbc  (jdbc/new-jdbc (:jdbc config))
+   :redis (redis/new-redis (:redis config))
+   :web   (component/using (web/new-web (:web config))
+                           [:jdbc :redis])))
+
+(defn generator-system [config]
+  (component/system-map
+   :notifier (notifier/new-notifier (:notifications config))
+   :jdbc  (jdbc/new-jdbc (:jdbc config))
+   :redis (redis/new-redis (:redis config))
+   :generator (component/using (generator/new-generator (:generator config))
+                               [:jdbc :redis :notifier])))
+
+(def frontend (frontend-system config))
+(def gen (generator-system config))
+
 ;; CREATE USER reference_user WITH PASSWORD 'pass';
 ;; CREATE DATABASE reference_db;
 ;; GRANT ALL PRIVILEGES ON DATABASE reference_db TO reference_user;
@@ -47,6 +66,16 @@
                :docs "http://docs.anychart.stg/"
                :playground "http://playground.anychart.stg"}})
 
+(def stg-config (merge-with merge base-config
+                       {:notifications {:domain "http://api.anychart.stg/"}}
+                       {:web {:debug false}}
+                       {:jdbc {:subname "//10.132.9.26:5432/api_stg"
+                               :user "api_stg_user"
+                               :password "fuckstg"}}
+                       {:redis {:spec {:host "10.132.9.26" :db 0}}}
+                       {:generator {:git-ssh "/apps/keys/git"
+                                    :data-dir "/apps/reference-stg/data"}}))
+
 (def config base-config)
 
 (def dev (dev-system config))
@@ -57,5 +86,9 @@
 (defn stop []
   (alter-var-root #'dev component/stop))
 
-(defn test-build []
-  (generator/generate-reference (:generator dev)))
+(defn -main
+  ([] (println "stg frontend|stg backend|com frontend|com backend ??"))
+  ([domain mode]
+   (cond
+     (and (= domain "stg") (= mode "frontend")) (component/start (frontend-system stg-config))
+     (and (= domain "stg") (= mode "backend")) (component/start (generator-system stg-config)))))
