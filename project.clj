@@ -1,8 +1,9 @@
-(defproject reference "2.0.0"
+(defproject reference "3.0.0"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [com.taoensso/carmine "2.9.0"]
                  [version-clj "0.1.0"]
+                 ;; general
+                 [com.stuartsierra/component "0.2.3"]
                  ;; templates
                  [de.ubercode.clostache/clostache "1.4.0"]
                  ;; web
@@ -11,11 +12,15 @@
                  [ring/ring-json "0.3.1"]
                  [ring/ring-core "1.3.1"]
                  [enlive "1.1.5"]
-                 ;; jgit
-                 [clj-jgit "0.8.2"]
                  ;; logging
-                 [com.taoensso/timbre "3.3.1"]]
+                 [com.taoensso/timbre "4.0.1"]
+                 ;; databases
+                 [com.taoensso/carmine "2.11.1"]
+                 [org.clojure/java.jdbc "0.3.6"]
+                 [postgresql/postgresql "8.4-702.jdbc4"]
+                 [clojure.jdbc/clojure.jdbc-c3p0 "0.3.2"]
+                 [honeysql "0.5.2"]]
   :plugins [[lein-cljsbuild "1.0.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
-  :main reference.handler)
+  :main reference.core)

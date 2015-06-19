@@ -1,49 +1,75 @@
 (ns reference.data.versions
-  (:require [taoensso.carmine :as car :refer (wcar)]
-            [version-clj.core :refer [version-compare]]))
+  (:require [reference.components.jdbc :refer [query one insert! exec]]
+            [version-clj.core :refer [version-compare]]
+            [honeysql.helpers :refer :all]
+            [cheshire.core :refer [generate-string]]))
 
-(def server-conn {:pool {} :spec {:host "127.0.0.1" :port 6379}})
-(defmacro wcar* [& body] `(car/wcar server-conn ~@body))
+;; CREATE SEQUENCE version_id_seq;
+;; CREATE TABLE versions (
+;;    id integer PRIMARY KEY DEFAULT nextval('version_id_seq'),
+;;    key varchar(255) not NULL,
+;;    commit varchar(40) not NULL,
+;;    hidden BOOLEAN DEFAULT FALSE,
+;;    tree TEXT,
+;;    search TEXT
+;; );
 
-(defn- redis-versions-key []
-  "ref-versions")
+(defn add-version [jdbc key commit tree search]
+  (:id (first (insert! jdbc :versions {:key key
+                                       :commit commit
+                                       :tree (generate-string tree)
+                                       :search (generate-string search)}))))
 
-(defn- redis-version-tree-key [version]
-  (str "ref-version-" version "-tree"))
+(defn version-by-key [jdbc key]
+  (one jdbc (-> (select :key :id)
+                (from :versions)
+                (where [:= :hidden false]
+                       [:= :key key]))))
 
-(defn- redis-version-search-key [version]
-  (str "ref-version-" version "-search"))
+(defn version-by-id [jdbc version-id]
+  (one jdbc (-> (select :key :id)
+                (from :versions)
+                (where [:= :hidden false]
+                       [:= :id version-id]))))
 
-(defn- redis-version-build-hash-key [version]
-  (str "ref-version-" version "-hash"))
+(defn delete-by-key [jdbc key]
+  (exec jdbc (-> (delete-from :versions)
+                 (where [:= :key key]))))
 
-(defn add-version [version tree-data search-data]
-  (wcar* (car/sadd (redis-versions-key) version)
-         (car/set (redis-version-tree-key version) tree-data)
-         (car/set (redis-version-search-key version) search-data)))
+(defn versions [jdbc]
+  (reverse
+   (sort version-compare
+         (map :key (query jdbc (-> (select :key)
+                                   (from :versions)
+                                   (where [:= :hidden false])))))))
 
-(defn remove-version [version]
-  (wcar* (car/srem (redis-versions-key) version)
-         (car/del (redis-version-tree-key version))
-         (car/del (redis-version-search-key version))))
+(defn outdated-versions-ids [jdbc actual-ids]
+  (map :id (query jdbc (-> (select :id)
+                           (from :versions)
+                           (where [:not [:in :id actual-ids]])))))
 
-(defn update-hash [version hash]
-  (wcar* (car/set (redis-version-build-hash-key version) hash)))
+(defn remove-versions [jdbc ids]
+  (if (seq ids)
+    (exec jdbc (-> (delete-from :versions)
+                   (where [:in :id ids])))))
 
-(defn get-hash [version]
-  (wcar* (car/get (redis-version-build-hash-key version))))
+(defn default [jdbc]
+  (first (versions jdbc)))
 
-(defn version-exists? [version]
-  (= 1 (wcar* (car/sismember (redis-versions-key) version))))
+(defn need-rebuild? [jdbc version-key commit]
+  (nil? (one jdbc (-> (select :key)
+                      (from :versions)
+                      (where [:= :commit commit]
+                             [:= :key version-key])))))
 
-(defn default-version []
-  (first (reverse (sort version-compare (wcar* (car/smembers (redis-versions-key)))))))
+(defn search-index [jdbc version-id]
+  (:search (one jdbc (-> (select :search)
+                         (from :versions)
+                         (where [:= :id version-id]
+                                [:= :hidden false])))))
 
-(defn all-versions []
-  (wcar* (car/smembers (redis-versions-key))))
-
-(defn tree-json [version]
-  (wcar* (car/get (redis-version-tree-key version))))
-
-(defn search-index [version]
-  (wcar* (car/get (redis-version-search-key version))))
+(defn tree-data [jdbc version-id]
+  (:tree (one jdbc (-> (select :tree)
+                         (from :versions)
+                         (where [:= :id version-id]
+                                [:= :hidden false])))))

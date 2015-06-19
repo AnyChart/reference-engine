@@ -26,3 +26,4 @@ keys/
 data/
 .repl-*/
 .module-cache/
+.travis/id_rsa
