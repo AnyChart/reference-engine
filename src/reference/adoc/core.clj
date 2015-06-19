@@ -10,7 +10,6 @@
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
             [reference.components.notifier :as notifications]
-            [reference.config :as config]
             [cheshire.core :refer [generate-string]]
             [org.httpkit.client :as http]
             [taoensso.timbre :as timbre :refer [info]]))
@@ -46,7 +45,7 @@
   (info "building" branch)
   (notifications/start-version-building notifier (:name branch))
   (let [doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
-        raw-top-level (structurize doclets (:name branch))
+        raw-top-level (structurize doclets data-dir (:name branch))
         top-level (assoc raw-top-level
                          :classes (build-inheritance (:classes raw-top-level)))
         tree-data (generate-tree top-level)

@@ -1,6 +1,5 @@
 (ns reference.adoc.structs
   (:require [taoensso.timbre :as timbre :refer [info]]
-            [reference.config :as config]
             [reference.adoc.media :refer [update-links]]))
 
 (def id-counter (atom 0))
@@ -283,9 +282,9 @@
                              (map #(create-function % doclets version base-path)
                                   (get-static-functions doclets namespace)))))
 
-(defn structurize [doclets version]
+(defn structurize [doclets data-path version]
   (info "structurize doclets")
-  (let [base-path (str config/adoc-tmp-path version)]
+  (let [base-path (str data-path "/versions-tmp/" version)]
     {:classes (map #(create-class % doclets version base-path)
                    (get-doclets-by-kind doclets "class"))
      :namespaces (map #(create-namespace % doclets version base-path)
