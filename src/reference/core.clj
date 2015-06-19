@@ -32,9 +32,6 @@
    :generator (component/using (generator/new-generator (:generator config))
                                [:jdbc :redis :notifier])))
 
-(def frontend (frontend-system config))
-(def gen (generator-system config))
-
 ;; CREATE USER reference_user WITH PASSWORD 'pass';
 ;; CREATE DATABASE reference_db;
 ;; GRANT ALL PRIVILEGES ON DATABASE reference_db TO reference_user;
