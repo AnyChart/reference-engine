@@ -36,6 +36,15 @@
   (exec jdbc (-> (delete-from :versions)
                  (where [:= :key key]))))
 
+(defn delete-by-id [jdbc id]
+  (exec jdbc (-> (delete-from :versions)
+                 (where [:= :id id]))))
+
+(defn version-ids [jdbc key]
+  (map :id (query jdbc (-> (select :id)
+                           (from :versions)
+                           (where [:= :key key])))))
+
 (defn versions [jdbc]
   (reverse
    (sort version-compare

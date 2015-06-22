@@ -24,11 +24,16 @@
       (doall (pmap #(git/checkout git-ssh repo-path % (str versions-path %)) branches))
       (git/get-hashes git-ssh versions-path branches))))
 
+(defn- remove-branch [jdbc branch-key]
+  (let [version-id (:id (vdata/version-by-key jdbc branch-key))]
+    (pdata/delete-version-pages jdbc version-id)
+    (vdata/delete-by-id jdbc version-id)))
+
 (defn- remove-branches [jdbc actual-branches]
   (let [current-branches (vdata/versions jdbc)
         removed-branches (filter #(some #{%} actual-branches) current-branches)]
     (if (seq removed-branches)
-      (doall (map #(vdata/delete-by-key jdbc %) removed-branches)))
+      (doall (map #(remove-branch jdbc %) removed-branches)))
     removed-branches))
 
 (defn- filter-for-rebuild [jdbc branches]
@@ -39,6 +44,14 @@
 
 (defn- build-pages [jdbc version-id version-key top-level docs playground]
   (pre-render-top-level docs playground jdbc version-id version-key top-level))
+
+(defn- remove-previous-versions [jdbc actual-id key]
+  (let [ids (vdata/version-ids jdbc key)
+        outdated-ids (filter #(not= actual-id %) ids)]
+    (doall (map (fn [vid]
+                  (pdata/delete-version-pages jdbc vid)
+                  (vdata/delete-by-id jdbc vid))
+                outdated-ids))))
 
 (defn- build-branch
   [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground]
@@ -55,7 +68,8 @@
                                         (:commit branch)
                                         tree-data search-index)]
       (build-pages jdbc version-id (:name branch) top-level docs playground)
-      (build-media jdbc version-id (:name branch) data-dir)))
+      (build-media jdbc version-id (:name branch) data-dir)
+      (remove-previous-versions jdbc version-id (:name branch))))
   (notifications/complete-version-building notifier (:name branch)))
 
 (defn build-all

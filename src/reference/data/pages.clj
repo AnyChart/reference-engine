@@ -20,6 +20,10 @@
                 (where [:= :version_id version-id]
                        [:= :url page-url]))))
 
+(defn delete-version-pages [jdbc version-id]
+  (exec jdbc (-> (delete-from :pages)
+                 (where [:= :version_id version-id]))))
+
 (defn add-page [jdbc version-id type url content]
   (insert! jdbc :pages {:url url
                         :type type
