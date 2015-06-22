@@ -32,7 +32,7 @@
 (defn- remove-branches [jdbc actual-branches]
   (info "actual branches" (vec actual-branches))
   (let [current-branches (vdata/versions jdbc)
-        removed-branches (filter #(some #{%} actual-branches) current-branches)]
+        removed-branches (filter #(not (some #{%} actual-branches)) current-branches)]
     (info "current branches" (vec current-branches))
     (info "removed branches" (vec removed-branches))
     (if (seq removed-branches)
