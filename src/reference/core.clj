@@ -45,7 +45,9 @@
    :web {:debug true
          :static 12
          :port 8080
-         :reference-queue "reference-queue"}
+         :reference-queue "reference-queue"
+         :docs "http://docs.anychart.stg/"
+         :playground "http://playground.anychart.stg"}
    :jdbc {:subprotocol "postgresql"
           :subname "//localhost:5432/reference_db"
           :classname "org.postgresql.Driver"
@@ -59,9 +61,7 @@
                :data-dir "/Users/alex/Work/anychart/reference-engine/data"
                :max-processes 8
                :jsdoc-bin "/usr/local/bin/jsdoc"
-               :queue "reference-queue"
-               :docs "http://docs.anychart.stg/"
-               :playground "http://playground.anychart.stg"}})
+               :queue "reference-queue"}})
 
 (def stg-config (merge-with merge base-config
                        {:notifications {:domain "http://api.anychart.stg/"}}

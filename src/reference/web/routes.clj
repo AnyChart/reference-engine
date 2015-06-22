@@ -8,7 +8,8 @@
             [reference.data.pages :as pdata]
             [reference.components.redis :as redisca]
             [taoensso.timbre :as timbre :refer [info]]
-            [cheshire.core :refer [generate-string]]))
+            [cheshire.core :refer [generate-string]]
+            [reference.web.data :as wdata]))
 
 (defn- static-version [request]
   (-> request :component :config :static))
@@ -39,8 +40,19 @@
       (redirect (str "/" (:key version) "/" page-url))
       (show-default-ns version request))))
 
+(defn- generate-page-content [version page request]
+  (if-let [cached-data (redisca/cached-data (redis request) (:id version) (:url page))]
+    cached-data
+    (let [data (wdata/render-entry (get-in request [:component :config :docs])
+                                   (get-in request [:component :config :playground])
+                                   (:key version)
+                                   (:type page)
+                                   (:content page))]
+      (redisca/cache (redis request) (:id version) (:url page) data)
+      data)))
+
 (defn- get-page-data [version page request]
-  (response {:content (:content page)
+  (response {:content (generate-page-content version page request)
              :info (pdata/info page)
              :version (:key version)
              :page (:url page)}))
@@ -53,7 +65,7 @@
                         :page (:url page)
                         :versions (vdata/versions (jdbc request))
                         :static-version "12"
-                        :content (:content page)
+                        :content (generate-page-content version page request)
                         :link #(str "/" (:key version) "/" %)}))
 
 (defn- request-update [request]

@@ -15,6 +15,14 @@
   (car/wcar (:config redis)
             (car-mq/enqueue queue message)))
 
+(defn cache [redis version-id url data]
+  (car/wcar (:config redis)
+            (car/setex (str "api:cache:" version-id ":url:" url) (* 60 60 24) data)))
+
+(defn cached-data [redis version-id url]
+  (car/wcar (:config redis)
+            (car/get (str "api:cache:" version-id ":url:" url))))
+
 (defn create-worker [redis queue handler]
   (car-mq/worker (:config redis) queue {:handler handler}))
 

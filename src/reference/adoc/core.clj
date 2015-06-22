@@ -2,7 +2,7 @@
   (:require [reference.adoc.adoc :refer [get-doclets]]
             [reference.adoc.structs :refer [structurize]]
             [reference.adoc.inheritance :refer [build-inheritance]]
-            [reference.adoc.htmlgen :refer [pre-render-top-level]]
+            [reference.adoc.saver :refer [save-entries]]
             [reference.adoc.tree :refer [generate-tree]]
             [reference.adoc.search :refer [generate-search-index]]
             [reference.adoc.media :refer [move-media]]
@@ -46,7 +46,7 @@
   (move-media version-key (str data-dir "/versions/") (str data-dir "/versions-static/")))
 
 (defn- build-pages [jdbc version-id version-key top-level docs playground]
-  (pre-render-top-level docs playground jdbc version-id version-key top-level))
+  (save-entries jdbc version-id version-key top-level))
 
 (defn- remove-previous-versions [jdbc actual-id key]
   (let [ids (vdata/version-ids jdbc key)
