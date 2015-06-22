@@ -30,8 +30,11 @@
     (vdata/delete-by-id jdbc version-id)))
 
 (defn- remove-branches [jdbc actual-branches]
+  (info "actual branches" actual-branches)
   (let [current-branches (vdata/versions jdbc)
         removed-branches (filter #(some #{%} actual-branches) current-branches)]
+    (info "current branches" current-branches)
+    (info "removed branches" removed-branches)
     (if (seq removed-branches)
       (doall (map #(remove-branch jdbc %) removed-branches)))
     removed-branches))
