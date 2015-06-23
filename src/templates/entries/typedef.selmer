@@ -1,0 +1,33 @@
+<h1><span>{typedef}</span> {{main.full-name}}</h1>
+<div class="description">
+    {{main.description|safe}}
+    {% listings-and-samples main %}
+</div>
+{% if main.has-types %}
+This type can contains one of the following types:
+<ul>
+  {% for t in main.type %}
+  <li>{% type-link t %}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% if main.has-properties %}
+<table class="typedef-fields">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for p in main.properties %}
+  <tr>
+    <td class="name">{{p.name}}</td>
+    <td class="value">{{p.type}}</td>
+    <td>{{p.description|safe}}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}

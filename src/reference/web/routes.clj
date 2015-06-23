@@ -41,7 +41,7 @@
       (show-default-ns version request))))
 
 (defn- generate-page-content [version page request]
-  (if-let [cached-data (redisca/cached-data (redis request) (:id version) (:url page))]
+  (if-let [cached-data false] ;;(redisca/cached-data (redis request) (:id version) (:url page))]
     cached-data
     (let [data (wdata/render-entry (get-in request [:component :config :docs])
                                    (get-in request [:component :config :playground])

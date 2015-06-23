@@ -1,0 +1,24 @@
+{% if entry.has-listings %}
+<div class="listings">
+    <strong>Code:</strong>
+    {% for l in entry.listings %}
+    <a class="btn" href="#listing-{{l.id}}"><i class="icon-code"></i> {{l.title}}</a>
+    {% endfor %}
+    {% for l in entry.listings %}
+    <div id="listing-{{id}}" class="code-listing" style="display:none">
+        <a class="close">x</a>
+        <h4>{{l.title}}</h4>
+        <div>{{l.code|safe}}</div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if entry.has-playground-samples %}
+<div class="playground">
+    <strong>Try it:</strong>
+    {% for s in entry.playground-samples %}
+    <a class="btn" target="_blank" href="{% playground %}{{s.file}}{% endplayground %}"><i class="icon-play"></i> {{s.title}}</a>
+    {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,28 @@
+<div class="const">
+  <h3 id="{{c.name}}">{{c.name}}</h3>
+  <div>
+    <ul class="overrides">
+      <li class="active"><a href="#{{c.name}}">{{c.name}}</a></li>
+    </ul>
+    <div class="overrides">
+        <div class="active">
+        {% if c.has-since %}
+        <div class="since">Since version {{c.since}}</div>
+        {% endif %}
+        <p>
+          {{c.description|safe}}
+          {% if c.has-detailed %}
+          <div class="detailed">
+            <a href="#{{c.name}}" class="btn"><i class="icon-info-circled"></i> Detailed description</a>
+            <div>
+              <a class="close">x</a>
+              <p>{{c.detailed|safe}}</p>
+            </div>
+          </div>
+          {% endif %}
+        </p>
+        {% listings-and-samples c %}
+      </div>
+    </div>
+  </div>
+</div>

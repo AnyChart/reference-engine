@@ -1,0 +1,24 @@
+<h1><span>class</span> {{main.full-name}}</h1>
+<div class="description">
+  {% if main.has-extends %}
+  <p>
+    Extends: {% for e in main.extends %}<a class="type-link" href="{% link e %}">{{e}}</a>{% endfor %}
+  </p>
+  {% endif %}
+  <p>{{main.description|safe}}</p>
+</div>
+
+{% if main.has-methods %}
+<h2>Methods</h2>
+{% for m in main.methods %}
+  {% include "templates/entries/method.selmer" %}
+{% endfor %}
+{% endif %}
+
+{% if main.has-inherited-methods %}
+<h2>Inherited methods</h2>
+{% for m in main.inherited-methods %}
+  {% include "templates/entries/method.selmer" %}
+{% endfor %}
+{% endif %}
+ 
