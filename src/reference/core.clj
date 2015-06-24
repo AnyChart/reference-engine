@@ -57,8 +57,8 @@
    :redis {:pool {}
            :spec {:host "127.0.0.1" :port 6379 :db 0}}
    :generator {:show-branches true
-               :git-ssh "/Users/alex/Work/anychart/playground-engine/keys/git"
-               :data-dir "/Users/alex/Work/anychart/reference-engine/data"
+               :git-ssh "/Users/alex/Work/anychart/reference-engine/keys/git"
+               :data-dir "data"
                :max-processes 8
                :jsdoc-bin "/usr/local/bin/jsdoc"
                :queue "reference-queue"}})
@@ -85,8 +85,13 @@
   (alter-var-root #'dev component/stop))
 
 (defn -main
-  ([] (println "stg frontend|stg backend|com frontend|com backend ??"))
+  ([] (println "dev keys-path|stg frontend|stg backend|com frontend|com backend ??"))
+  ([mode]
+   (if (= mode "dev")
+     (component/start (dev-system config))
+     (println "started at http://localhost:8080")))
   ([domain mode]
    (cond
+     (= domain "dev") (component/start (dev-system (assoc-in config [:generator :git-ssh] mode)))
      (and (= domain "stg") (= mode "frontend")) (component/start (frontend-system stg-config))
      (and (= domain "stg") (= mode "backend")) (component/start (generator-system stg-config)))))
