@@ -5,7 +5,6 @@
                  ;; general
                  [com.stuartsierra/component "0.2.3"]
                  ;; templates
-                 [de.ubercode.clostache/clostache "1.4.0"]
                  [selmer "0.8.2"]
                  ;; web
                  [http-kit "2.1.16"]

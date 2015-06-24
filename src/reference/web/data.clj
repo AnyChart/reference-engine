@@ -13,9 +13,9 @@
                              val (get-in context-map (map keyword path))
                              version (:version context-map)]
                          (if (.startsWith val "anychart")
-                           (str "<a class='type-link' href='/"
+                           (str "<a class='code-style' href='/"
                                 version "/" val "'>" val "</a>")
-                           val))))
+                           (str "<span class='code-style'>" val "</span>")))))
 
 (add-tag! :playground (fn [args context-map content]
                         (let [val (get-in content [:playground :content])

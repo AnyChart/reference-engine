@@ -1,64 +1,76 @@
-<div class="method">
-  <h3 id="{{m.name}}">{{m.name}}</h3>
-  {% if m.is-inherited %}
-      <span class="inherited">Inherited from {% type-link m.inherited-from %}</span>
-  {% endif %}
-  <div>
-    <ul class="overrides">
-    {% for o in m.overrides %}
-      <li><a href="#{{name}}">{{o.signature}}</a></li>
-    {% endfor %}
-    </ul>
-    <div class="overrides">
-    {% for o in m.overrides %}
-      <div>
-        {% if o.has-since %}
-        <div class="since">Since version {{o.since}}</div>
-        {% endif %}
-        <p>
-          {{o.description|safe}}
-          {% if o.has-detailed %}
-          <div class="detailed">
-            <a href="#{{o.name}}" class="btn"><i class="icon-info-circled"></i> Detailed description</a>
-            <div style="display:none">
-              <a class="close">x</a>
-              <p>{{o.detailed|safe}}</p>
+<div class="method-block">
+    <h3>{{m.name}}</h3>
+    <div class="panel-group">
+        {% for o in m.overrides %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse">{{o.signature}}
+                        {% if o.has-since %}
+                        <span class="pull-right">Since version {{o.since}}</span>
+                        {% endif %}
+                    </a>
+                </h4>
             </div>
-          </div>
-          {% endif %}
-        </p>
-        {% if o.has-params %}
-        <table class="params">
-          <thead>
-            <tr>
-              <th>Params</th>
-              <th>Type</th>
-              {% if o.has-params-defaults %}<th>Default</th>{% endif %}
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for p in o.params %}
-              <tr>
-                <td class="name code">{{p.name}}</td>
-                <td class="type"><i class="types">{% for t in p.types %}<i>{% type-link t %}</i>{% endfor %}</i></td>
-                {% if o.has-params-defaults %}<td class="val">{{p.default|safe}}</td>{% endif %}
-                <td class="description">{{p.description|safe}}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        {% endif %}
-        {% if o.has-returns %}
-        <div class="returns">
-          {% for r in o.returns %}
-          <span class="b">Returns:</span> <i class="types">{% for t in r.types %}<i>{% type-link t %}</i>{% endfor %}</i> {{r.description|safe}}
-          {% endfor %}
+            <div class="pannel-collapse collapse in">
+                <div class="small-group">
+                    {{o.description|safe}}
+                    {% if o.has-detailed %}
+                    <div class="collapse-group">
+                        <a data-toggle="collapse" aria-expanded="true">
+                            <i class="fa fa-info"></i>Detailed description
+                        </a>
+                        <div class="collapse-div collapse in" aria-expanded="true">
+                            <div class="collapse-content">
+                                {{o.defailed|safe}}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if o.has-params %}
+                <div class="small-group">
+                    <p><strong>Params:</strong></p>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                {% if o.has-params-defaults %}<th>Default</th>{% endif %}
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in o.params %}
+                            <tr>
+                                <td>{{p.name}}</td>
+                                <td>{% for t in p.types %}
+                                    {% if not forloop.first %}| {% endif %}
+                                    <a href="{% link t %}">{{t}}</a> 
+                                    {% if not forloop.last %} |{% endif %}
+                                    {% endfor %}
+                                </td>
+                                {% if o.has-params-defaults %}<td><pre class="prettyprint">{{p.default|safe}}</pre></td> {% endif %}
+                                <td><pre class="prettyprint">{{p.description|safe}}</pre></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+                {% if o.has-retuns %}
+                <div class="small-group">
+                    <p><strong>Returns:</strong></p>
+                    {% for r in o.returns %}
+                    {% for t in r.types %}
+                    <a class="code-style" href="{% link t %}">{{t}}</a>
+                    {% endfor %} - {{r.description|safe}}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% listings-and-samples o %}
+            </div>
         </div>
-        {% endif %}
-        {% listings-and-samples o %}
-      </div>
-    {% endfor %}
     </div>
-  </div>
+    {% endfor %}
 </div>

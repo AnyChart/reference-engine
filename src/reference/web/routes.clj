@@ -3,7 +3,7 @@
             [compojure.core :refer [routes defroutes GET POST]]
             [compojure.route :as route]
             [ring.util.response :refer [response redirect header]]
-            [clostache.parser :refer [render-resource]]
+            [selmer.parser :refer [render-file]]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
             [reference.components.redis :as redisca]
@@ -41,7 +41,7 @@
       (show-default-ns version request))))
 
 (defn- generate-page-content [version page request]
-  (if-let [cached-data (redisca/cached-data (redis request) (:id version) (:url page))]
+  (if-let [cached-data nil];;(redisca/cached-data (redis request) (:id version) (:url page))]
     cached-data
     (let [data (wdata/render-entry (get-in request [:component :config :docs])
                                    (get-in request [:component :config :playground])
@@ -58,15 +58,18 @@
              :page (:url page)}))
 
 (defn- show-page [version page request]
-  (render-resource "templates/app.mustache"
-                       {:version (:key version)
-                        :debug false
-                        :info (generate-string (pdata/info page))
-                        :page (:url page)
-                        :versions (vdata/versions (jdbc request))
-                        :static-version "12"
-                        :content (generate-page-content version page request)
-                        :link #(str "/" (:key version) "/" %)}))
+  (let [versions (vdata/versions (jdbc request))]
+    (render-file "templates/app.selmer"
+                 {:version (:key version)
+                  :is-last (= (:key version) (first versions))
+                  :last-version (first versions)
+                  :versions versions
+                  :debug false
+                  :info (generate-string (pdata/info page))
+                  :page (:url page)
+                  :static-version "12"
+                  :content (generate-page-content version page request)
+                  :link #(str "/" (:key version) "/" %)})))
 
 (defn- request-update [request]
   (redisca/enqueue (redis request)

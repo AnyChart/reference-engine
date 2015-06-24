@@ -226,6 +226,8 @@
     (assoc (parse-examples-and-listing base-path (parse-general func version) func)
            :kind :function
            :has-detailed (boolean (:value (first (get-tag func "detailed"))))
+           :category (:value (first (get-tag func "category")))
+           :has-category (boolean (:value (first (get-tag func "category"))))
            :detailed (:value (first (get-tag func "detailed")))
            :has-params (boolean (seq params))
            :has-params-defaults (function-has-params-defaults params)

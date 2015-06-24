@@ -23,6 +23,12 @@
                                      classes)))
     []))
 
+(defn- merge-methods [class]
+  (let [inherited (:inherited-methods class)
+        self (:methods class)]
+    (assoc (dissoc class :inherited-methods)
+           :methods (sort-by :name (reduce conj self inherited)))))
+
 (defn- build-class-inheritance [class classes]
   ;;(info "build-class-inheritance" (:full-name class) "from" (first (:extends class)))
   (let [class-methods (:methods class)
@@ -37,4 +43,4 @@
 
 (defn build-inheritance [classes]
   (info "build-inheritance")
-  (map #(build-class-inheritance % classes) classes))
+  (map merge-methods (map #(build-class-inheritance % classes) classes)))

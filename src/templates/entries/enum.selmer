@@ -1,26 +1,27 @@
-<h1><span>[enum]</span> {{main.full-name}}</h1>
-<div class="description">
-    {{main.description|safe}}
+<h1><span class="page-type">[enum]</span> {{main.full-name}}</h1>
+<div class="content-block">
+    <p>{{main.description|safe}}</p>
     {% listings-and-samples main %}
 </div>
-
 {% if main.has-fields %}
-<table class="enum-fields">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Value</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for f in main.fields %}
-    <tr>
-      <td class="name">{{f.name}}</td>
-      <td class="value">{{f.value}}</td>
-      <td>{{f.description|safe}}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+<div class="content-block">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in main.fields %}
+            <tr>
+                <td class="name">{{f.name}}</td>
+                <td class="code-style">{{f.value}}</td>
+                <td>{{f.description|safe}}</td>
+            </tr>
+            {% endfor %}}
+        </tbody>
+    </table>
+</div>
 {% endif %}

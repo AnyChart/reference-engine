@@ -1,24 +1,30 @@
-<h1><span>class</span> {{main.full-name}}</h1>
-<div class="description">
-  {% if main.has-extends %}
-  <p>
-    Extends: {% for e in main.extends %}<a class="type-link" href="{% link e %}">{{e}}</a>{% endfor %}
-  </p>
-  {% endif %}
-  <p>{{main.description|safe}}</p>
+<h1><span class="page-type">class</span> {{main.full-name}}</h1>
+<div class="content-block">
+    <p class="bottom-space">
+        {% if main.has-extends %}
+        Extends: {% for e in main.extends %}<a href="{% link e %}">{{e}}</a>{% endfor %}
+        {% endif %}
+    </p>
+    <p>{{main.description|safe}}</p>
+    {% if main.has-methods %}
+    <div class="content-block methods">
+        <h2>Methods Overview</h2>
+        <table class="table table-condensed">
+            <tbody>
+                <tr><td class="th" colspan="2"></td></tr>
+                {% for f in main.methods %}
+                <tr><td class="name"><a href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.description|safe}}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    {% if main.has-methods %}
+    <div class="content-block methods">
+        <h2>Methods Description</h2>
+        {% for m in main.methods %}
+        {% include "templates/entries/method.selmer" %}
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
-
-{% if main.has-methods %}
-<h2>Methods</h2>
-{% for m in main.methods %}
-  {% include "templates/entries/method.selmer" %}
-{% endfor %}
-{% endif %}
-
-{% if main.has-inherited-methods %}
-<h2>Inherited methods</h2>
-{% for m in main.inherited-methods %}
-  {% include "templates/entries/method.selmer" %}
-{% endfor %}
-{% endif %}
- 

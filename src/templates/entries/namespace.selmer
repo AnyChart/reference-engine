@@ -1,77 +1,92 @@
-  <h1><span>namespace</span> {{main.full-name}}</h1>
-  <div class="description">
-    {{main.description|safe}}
-    {% if main.has-constants %}  
-    <div class="group">
-      <h4>Constants:</h4>
-      <ul>
-        {% for c in main.constants %}
-        <li>
-          <a class="type-link" href="#{{c.name}}"><span>{{c.name}}</span></a></li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-
-    {% if main.has-functions %}
-    <div class="group">
-      <h4>Functions:</h4>
-      <ul>
-        {% for f in main.functions %}
-        <li>
-          <a class="type-link" href="#{{f.name}}"><span>{{f.name}}()</span></a></li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-
-    {% if main.has-enums %}
-    <div class="group">
-      <h4>Enums:</h4>
-      <ul>
-        {% for e in main.enums %}
-        <li>
-          <a class="type-link" href="{%link e %}"><span>{{e}}</span></a></li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-
-    {% if main.has-typedefs %}
-    <div class="group">
-      <h4>Typedefs:</h4>
-      <ul>
-        {% for t in main.typedefs %}
-        <li>
-          <a class="type-link" href="{% link t %}"><span>{{t}}</span></a></li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-
-    {% if main.has-classes %}
-    <div class="group">
-      <h4>Classes:</h4>
-      <ul>
-        {% for c in main.classes %}
-        <li>
-          <a class="type-link" href="{% link c %}"><span>{{c}}</span></a></li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
-  </div>
+<h1><span class="page-type">namespace</span> {{main.full-name}}</h1>
+<div class="content-block">
+    <p>{{main.description|safe}}</p>
+</div>
 
 {% if main.has-constants %}
-<h2>Constants</h2>
-{% for c in main.constants %}
-  {% include "templates/entries/constant.selmer" %}
-{% endfor %}
+<div class="content-block methods">
+    <h2>Constants Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr><td class="th empty" colspan="2"></td></tr>
+            {% for c in main.constants %}
+            <tr><td class="name"><a href="#{{c.name}}">{{c.name}}</a></td><td>{{c.description|safe}}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endif %}
 
 {% if main.has-functions %}
-<h2>Functions</h2>
-{% for f in main.functions %}
-  {% include "templates/entries/function.selmer" %}
-{% endfor %}
+<div class="content-block methods">
+    <h2>Functions Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr><td class="th empty" colspan="2"></td></tr>
+            {% for f in main.functions %}
+            <tr><td class="name"><a href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.description|safe}}.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if main.has-enums %}
+<div class="content-block methods">
+    <h2>Enums Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr><td class="th empty" colspan="2"></td></tr>
+            {% for enum in main.enums %}
+            <tr><td class="name"><a href="{% link enum %}">{{enum}}</a></td><td>TBA: ENUM DESCRIPTION</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if main.has-typedefs %}
+<div class="content-block methods">
+    <h2>Typedefs Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr><td class="th empty" colspan="2"></td></tr>
+            {% for t in main.typedefs %}
+            <tr><td class="name"><a href="{% link t %}">{{t}}</a></td><td>TBA: typedef description</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if main.has-classes %}
+<div class="content-block methods">
+    <h2>Classes Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr><td class="th empty" colspan="2"></td></tr>
+            {% for c in main.classes %}
+            <tr><td class="name"><a href="{% link c %}">{{c}}</a></td><td>TBA: CLASS DESCRIPTION</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if main.has-constants %}
+<div class="content-block methods">
+    <h2>Constants Description</h2>
+    {% for c in main.constants %}
+    {% include "templates/entries/constant.selmer" %}
+    {% endfor %}
+</div>    
+{% endif %}
+
+{% if main.has-functions %}
+<div class="content-block methods">
+    <h2>Functions Description</h2>
+    {% for f in main.functions %}
+    {% include "templates/entries/function.selmer" %}
+    {% endfor %}
+</div>
 {% endif %}

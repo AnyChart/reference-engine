@@ -15,10 +15,14 @@
 {% endif %}
 
 {% if entry.has-playground-samples %}
-<div class="playground">
-    <strong>Try it:</strong>
-    {% for s in entry.playground-samples %}
-    <a class="btn" target="_blank" href="{% playground %}{{s.file}}{% endplayground %}"><i class="icon-play"></i> {{s.title}}</a>
-    {% endfor %}
+<div class="small-group">
+    <p>
+        <strong>Try it:</strong>
+        <ul class="list list-dotted">
+            {% for s in entry.playground-samples %}
+            <li><a class="code-style" target="_blank" href="{% playground %}{{s.file}}{% endplayground %}">{{s.title}}</a></li>
+            {% endfor %}
+        </ul>
+    </p>
 </div>
 {% endif %}

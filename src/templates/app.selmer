@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="/i/anychart.ico" type="image/x-icon">
+        <title> AnyChart | API Reference</title>
+        <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="/lib/bootstrap-select.min.css"/>
+        <link rel="stylesheet" type="text/css" href="/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.css"/>
+        <link href="/css/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/lib/prettiffy/prettify-tomorrow.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    </head>
+    <body>
+        <div id="header">
+            <a class="navbar-brand" href="http://anychart.com/">
+                <img src="/i/AnyChart-light-empty.png" width="300" height="72" alt="AnyChart">
+                <div class="chart-row">
+                    <span class="chart-col green"></span>
+                    <span class="chart-col orange"></span>
+                    <span class="chart-col red"></span>
+                </div>
+            </a>
+            <a class="brand hidden-super-small"> API Reference</a>
+            <div class="pull-right helpers">
+                <select class="selectpicker versionselect"  data-width="auto">
+                    {% for v in versions %}
+                    <option{% ifequal v version %} selected{% endifequal %}>Version {{v}}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-muted questions">
+                    <a href="//support.anychart.com/" class="text-support"><i class="icon icon-ring icon-data"></i></a>
+                    <span class="hidden-super-small">
+                        Still have questions?<br/>
+                        <a href="http://anychart.com/support/"> Contact support</a></span>
+                </div>
+            </div>
+        </div>
+        <div id="menu-bar">
+            <a class="switcher" onclick="hideSideBar(true, true)"> <i class="fa fa-chevron-left"></i></a>
+            <div id="search-form">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group has-feedback">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control typeahead" id="search" data-provide="typeahead" placeholder="search for method">
+                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div id="tree-wrapper">
+                <div id="tree">
+                    <ul class="menu">
+                        <li id='0' class="pull-down">
+                            <a class="namespace" onclick="changeContent([0])"><i class="fa fa-chevron-down"></i> anychart </a>
+                            <div class="loader"><i class="fa fa-spinner fa-spin fa-pulse fa-2x fa-fw"></i> loading ... </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="footer">
+                <div id="footer-inner">
+                    <a href="https://www.facebook.com/AnyCharts" class="soc-network" target="_blank">
+                        <span class="soc-network-icon fb"><i class="icon icon-fb"></i></span>
+                    </a>
+                    <a href="https://twitter.com/AnyChart" class="soc-network" target="_blank">
+                        <span class="soc-network-icon tw"><i class="icon icon-tw"></i></span>
+                    </a>
+                    <a href="https://www.linkedin.com/company/386660" class="soc-network" target="_blank">
+                        <span class="soc-network-icon in"><i class="icon icon-in"></i></span>
+                    </a>
+                    <p> © 2015 AnyChart.Com All rights reserved.</p>
+                </div>
+            </div>
+            <div id="size-controller"></div>
+        </div>
+        <ol class="breadcrumb"></ol>
+        <a id="top" onclick='$("#content-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});'>
+            Top <i class="fa fa-arrow-up"></i></a>
+
+        {% if not is-last %}
+        <div id="warning" class="warning-version alert alert-warning fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <i class="fa fa-exclamation-triangle"></i> You are looking old product version {{version}}. See for actual information <a href="#">{{last-version}}</a>.
+        </div>
+        {% endif %}
+        <div id="content-wrapper">
+            <div id="content">
+                <div class="content-container">
+                    {{content|safe}}
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="/lib/jquery-2.1.3.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.js"></script>
+    <script src="/lib/bootstrap-select.js"></script>
+    <script src="/lib/bootstrap3-typeahead.min.js"></script>
+    <script src="/lib/prettiffy/prettify.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/main.js"></script>
+</html>
