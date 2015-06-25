@@ -4,7 +4,8 @@
             [taoensso.timbre :as timbre :refer [info]]))
 
 (add-tag! :link (fn [args context-map]
-                  (let [val (get context-map (keyword (first args)))
+                  (let [path (clojure.string/split (first args) #"\.")
+                        val (get-in context-map (map keyword path))
                         version (:version context-map)]
                     (str "/" version "/" val))))
 
