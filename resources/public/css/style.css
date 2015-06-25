@@ -408,7 +408,7 @@ a.switcher{
     font-size: 15px;
 }
 .content-block{
-    padding: 20px 0;
+    padding: 15px 0;
 }
 .content-block ul.list{
     margin-left: 20px;
@@ -432,6 +432,10 @@ a.switcher{
 }
 
 .content-block p{
+    padding: 0;
+    margin: 0;
+}
+.content-block .small-group:last-child{
     padding: 0;
     margin: 0;
 }
