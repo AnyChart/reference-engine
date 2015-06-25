@@ -43,11 +43,11 @@
                          (map #(generate-class-tree % struct) (:classes namespace))))}))
 
 (defn- is-top-level-ns [namespace]
-  (< (count (clojure.string/split (:full-name namespace) #"\."))
-     3))
+  (= (count (clojure.string/split (:full-name namespace) #"\."))
+     0))
 
 (defn- generate-ns-tree [namespace struct]
-  {:name (:full-name namespace)
+  {:name (:name namespace)
    :full-name (:full-name namespace)
    :kind :namespace
    :children (sort-by (juxt :kind :name)
@@ -64,12 +64,25 @@
          (not (is-top-level-ns ns))
          (not (= target-name "anychart")))))
 
-(defn- group-namespaces [top-level all-nses]
-  (let [children-nses (filter #(is-child-ns % top-level) all-nses)]
-    (assoc top-level :children (concat children-nses (:children top-level)))))
+(defn- get-parent-namespace-name [name]
+  (if (.contains name ".")
+    (subs name 0 (.lastIndexOf name "."))
+    nil))
+
+(defn- get-child-namespaces [ns all-nses]
+  (filter #(= (get-parent-namespace-name (:full-name %)) (:full-name ns)) all-nses))
+
+(defn- add-child-namespaces [ns all-nses]
+  (let [children (get-child-namespaces ns all-nses)]
+    (assoc ns :children (filter #(some? (:name %))
+                                (concat (:children ns)
+                                        (map #(add-child-namespaces % all-nses) children))))))
+
+(defn- structurize-namespaces [all-nses]
+  (let [root-namespaces (filter #(= (get-parent-namespace-name (:full-name %)) nil) all-nses)]
+    (map #(add-child-namespaces % all-nses) root-namespaces)))
 
 (defn generate-tree [struct]
   (info "generate-tree")
-  (let [nses (map #(generate-ns-tree % struct) (sort-by :full-name (:namespaces struct)))
-        tl-namespaces (filter is-top-level-ns nses)]
-    (map #(group-namespaces % nses) tl-namespaces)))
+  (let [nses (map #(generate-ns-tree % struct) (:namespaces struct))]
+    (structurize-namespaces nses)))

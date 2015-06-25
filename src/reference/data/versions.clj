@@ -2,7 +2,7 @@
   (:require [reference.components.jdbc :refer [query one insert! exec]]
             [version-clj.core :refer [version-compare]]
             [honeysql.helpers :refer :all]
-            [cheshire.core :refer [generate-string]]))
+            [cheshire.core :refer [generate-string parse-string]]))
 
 ;; CREATE SEQUENCE version_id_seq;
 ;; CREATE TABLE versions (
@@ -78,7 +78,8 @@
                                 [:= :hidden false])))))
 
 (defn tree-data [jdbc version-id]
-  (:tree (one jdbc (-> (select :tree)
-                         (from :versions)
-                         (where [:= :id version-id]
-                                [:= :hidden false])))))
+  (parse-string (:tree (one jdbc (-> (select :tree)
+                                     (from :versions)
+                                     (where [:= :id version-id]
+                                            [:= :hidden false]))))
+                true))

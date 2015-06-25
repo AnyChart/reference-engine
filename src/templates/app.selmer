@@ -52,10 +52,7 @@
             <div id="tree-wrapper">
                 <div id="tree">
                     <ul class="menu">
-                        <li id='0' class="pull-down">
-                            <a class="namespace" onclick="changeContent([0])"><i class="fa fa-chevron-down"></i> anychart </a>
-                            <div class="loader"><i class="fa fa-spinner fa-spin fa-pulse fa-2x fa-fw"></i> loading ... </div>
-                        </li>
+                        {% tree-view tree %}
                     </ul>
                 </div>
             </div>

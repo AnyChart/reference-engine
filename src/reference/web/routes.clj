@@ -61,6 +61,7 @@
   (let [versions (vdata/versions (jdbc request))]
     (render-file "templates/app.selmer"
                  {:version (:key version)
+                  :tree (vdata/tree-data (jdbc request) (:id version))
                   :is-last (= (:key version) (first versions))
                   :last-version (first versions)
                   :versions versions

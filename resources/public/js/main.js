@@ -29,11 +29,6 @@ $(function(){
         contentSize();
         $('.selectpicker').selectpicker();
         $('.typeahead').typeahead({source: getTypeAheadList(), autoSelect: true, items: 100, scrollHeight: 0});
-        var params = getHashParams();
-        window.setTimeout(function(){
-            if (params['tree']) changeContent(params['tree'].slice(0, -1).split('/'));
-            else changeContent([0]);
-        }, 1000);
     });
 });
 
