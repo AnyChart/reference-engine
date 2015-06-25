@@ -1,6 +1,6 @@
 <h1><span class="page-type">{typedef}</span> {{main.full-name}}</h1>
 <div class="content-block">
-    {{main.description|safe}}
+    <div class="small-group">{{main.description|safe}}</div>
     {% listings-and-samples main %}
 </div>
 
