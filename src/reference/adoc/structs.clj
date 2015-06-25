@@ -80,9 +80,21 @@
 (defn- get-tag [doclet tag]
   (filter #(= (:title %) tag) (:tags doclet)))
 
+(defn- get-short-description [entry version]
+  (parse-description
+   (if (seq (get-tag entry "shortDescription"))
+     (first (get-tag entry "shortDescription"))
+     (if (.contains (:description entry) ".")
+       (subs (:description entry) 0 (inc (.indexOf (:description entry) ".")))
+       (if (.contains (:description entry) "\n")
+         (subs (:description entry) 0 (.indexOf (:description entry) "\n"))
+         (:description entry))))
+   version))
+
 (defn- parse-general [entry version]
   {:name (:name entry)
    :description (parse-description (:description entry) version)
+   :short-description (get-short-description entry version)
    :has-description (not (empty? (:description entry)))
    :full-name (cleanup-name (:longname entry))
    :since (:since entry)})

@@ -48,11 +48,10 @@
                                     <td>{% for t in p.types %}
                                         {% if not forloop.first %}| {% endif %}
                                         <a href="{% link t %}">{{t}}</a> 
-                                        {% if not forloop.last %} |{% endif %}
                                         {% endfor %}
                                     </td>
                                     {% if f.has-params-defaults %}<td><pre class="prettyprint">{{p.default|safe}}</pre></td>{% endif %}
-                                    <td><pre class="prettyprint">{{p.description|safe}}</pre></td>
+                                    <td>{{p.description|safe}}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
