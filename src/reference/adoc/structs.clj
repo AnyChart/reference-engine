@@ -84,11 +84,13 @@
   (parse-description
    (if (seq (get-tag entry "shortDescription"))
      (first (get-tag entry "shortDescription"))
-     (if (.contains (:description entry) ".")
-       (subs (:description entry) 0 (inc (.indexOf (:description entry) ".")))
-       (if (.contains (:description entry) "\n")
-         (subs (:description entry) 0 (.indexOf (:description entry) "\n"))
-         (:description entry))))
+     (if (:description entry)
+       (if (.contains (:description entry) ".")
+         (subs (:description entry) 0 (inc (.indexOf (:description entry) ".")))
+         (if (.contains (:description entry) "\n")
+           (subs (:description entry) 0 (.indexOf (:description entry) "\n"))
+           (:description entry)))
+       ""))
    version))
 
 (defn- parse-general [entry version]
