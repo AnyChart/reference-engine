@@ -250,6 +250,10 @@
            :has-returns (boolean (seq (:returns func)))
            :returns (map parse-function-return (:returns func) version))))
 
+(defn- create-link-struct [entry version]
+  {:name (:longname entry)
+   :short-description (get-short-description entry version)})
+
 ;; class
 ;; - class
 ;; - enum
@@ -259,11 +263,12 @@
          :kind :class
          :extends (:augments class)
          :has-extends (boolean (seq (:augments class)))
-         :enums (sort (map :longname (get-enums doclets class)))
-         :classes (sort (map :longname
-                             (get-doclets-by-memberof-and-kind doclets
-                                                               namespace
-                                                               "class")))
+         :enums (sort-by :name (map #(create-link-struct % version)
+                                    (get-enums doclets class)))
+         :classes (sort-by :name (map #(create-link-struct % version)
+                                      (get-doclets-by-memberof-and-kind doclets
+                                                                        namespace
+                                                                        "class")))
          :methods (group-functions
                    (map #(create-function % doclets version base-path)
                         (get-functions doclets class)))))
@@ -278,12 +283,14 @@
 (defn- create-namespace [namespace doclets version base-path]
   (assoc (parse-general namespace version)
          :parent (:memberof namespace)
-         :typedefs (sort (map :longname (get-doclets-by-memberof-and-kind doclets
-                                                                          namespace
-                                                                          "typedef")))
-         :enums (sort (map :longname (get-enums doclets namespace)))
-         :classes (sort
-                   (map :longname
+         :typedefs (sort-by :name (map #(create-link-struct % version)
+                                       (get-doclets-by-memberof-and-kind doclets
+                                                                         namespace
+                                                                         "typedef")))
+         :enums (sort-by :name (map #(create-link-struct % version)
+                                    (get-enums doclets namespace)))
+         :classes (sort-by :name
+                   (map #(create-link-struct % version)
                         (apply concat
                                (map #(concat [%] (get-doclets-by-memberof-and-kind doclets
                                                                                    %
