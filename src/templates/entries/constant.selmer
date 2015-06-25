@@ -2,7 +2,7 @@
     <div class="panel-group">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4 class="panel-title">
+                <h4 class="panel-title" id="{{c.name}}">
                     <a data-toggle="collapse">
                         {{c.name}}
                         {% if c.has-since %}

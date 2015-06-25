@@ -1,5 +1,5 @@
 <div class="method-block">
-    <h3>{{f.name}}</h3>
+    <h3 id="{{f.name}}">{{f.name}}</h3>
     <div class="panel-group">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -47,7 +47,7 @@
                                     <td>{{p.name}}</td>
                                     <td>{% for t in p.types %}
                                         {% if not forloop.first %}| {% endif %}
-                                        <a href="{% link t %}">{{t}}</a> 
+                                        {% link-or-text t %} 
                                         {% endfor %}
                                     </td>
                                     {% if f.has-params-defaults %}<td><pre class="prettyprint">{{p.default|safe}}</pre></td>{% endif %}
@@ -63,7 +63,7 @@
                         <p><strong>Returns:</strong></p>
                         {% for r in f.returns %}
                           {% for t in r.types %}
-                          <a class="code-style" href="{% link t %}">{{t}}</a>
+                          {% type-link t %}
                           {% endfor %} - {{r.description|safe}}
                         {% endfor %}
                     </div>
