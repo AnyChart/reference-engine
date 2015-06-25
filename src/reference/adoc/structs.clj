@@ -139,13 +139,17 @@
            :listings listings
            :has-listings (boolean (seq listings)))))
 
+(defn- get-functions-group-short-description [methods]
+  (:short-description (first methods)))
+
 (defn- group-functions [functions]
   (if-not (empty? functions)
     (sort-by
      :name
      (map (fn [[name methods]]
             {:name name
-             :overrides methods})
+             :overrides methods
+             :short-description (get-functions-group-short-description methods)})
           (reduce (fn [res val]
                     (let [name (:name val)
                           group (get res name)

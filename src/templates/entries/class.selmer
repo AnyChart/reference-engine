@@ -6,25 +6,25 @@
         {% endif %}
     </p>
     <p>{{main.description|safe}}</p>
-    {% if main.has-methods %}
-    <div class="content-block methods">
-        <h2>Methods Overview</h2>
-        <table class="table table-condensed">
-            <tbody>
-                <tr><td class="th" colspan="2"></td></tr>
-                {% for f in main.methods %}
-                <tr><td class="name"><a href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.description|safe}}</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
-    {% if main.has-methods %}
-    <div class="content-block methods">
-        <h2>Methods Description</h2>
-        {% for m in main.methods %}
-        {% include "templates/entries/method.selmer" %}
-        {% endfor %}
-    </div>
-    {% endif %}
 </div>
+{% if main.has-methods %}
+<div class="content-block methods">
+    <h2>Methods Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr><td class="th" colspan="2"></td></tr>
+            {% for f in main.methods %}
+            <tr><td class="name"><a href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.short-description|safe}}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% if main.has-methods %}
+<div class="content-block methods">
+    <h2>Methods Description</h2>
+    {% for m in main.methods %}
+    {% include "templates/entries/method.selmer" %}
+    {% endfor %}
+</div>
+{% endif %}
