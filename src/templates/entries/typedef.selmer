@@ -29,7 +29,10 @@
             {% for p in main.properties %}
             <tr>
                 <td class="name">{{p.name}}</td>
-                <td class="code-style">{{p.type}}</td>
+                <td class="code-style">{% for t in p.type %}
+                                        {% if not forloop.first %}| {% endif %}
+                                        {% link-or-text t %} 
+                                        {% endfor %}</td>
                 <td>{{p.description|safe}}</td>
             </tr>
             {% endfor %}

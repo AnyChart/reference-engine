@@ -8,6 +8,15 @@
                         version (:version context-map)]
                     (str "/" version "/" val))))
 
+(add-tag! :link-or-text (fn [args context-map]
+                          (let [path (clojure.string/split (first args) #"\.")
+                                val (get-in context-map (map keyword path))
+                                version (:version context-map)]
+                            (if (.startsWith val "anychart")
+                              (str "<a href='/"
+                                   version "/" val "'>" val "</a>")
+                              val))))
+
 (add-tag! :type-link (fn [args context-map]
                        (let [path (clojure.string/split (first args) #"\.")
                              val (get-in context-map (map keyword path))

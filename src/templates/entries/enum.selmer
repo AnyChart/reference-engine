@@ -20,7 +20,7 @@
                 <td class="code-style">{{f.value}}</td>
                 <td>{{f.description|safe}}</td>
             </tr>
-            {% endfor %}}
+            {% endfor %}
         </tbody>
     </table>
 </div>
