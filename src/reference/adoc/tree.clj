@@ -75,9 +75,10 @@
 
 (defn- add-child-namespaces [ns all-nses]
   (let [children (get-child-namespaces ns all-nses)]
-    (assoc ns :children (filter #(some? (:name %))
-                                (concat (:children ns)
-                                        (map #(add-child-namespaces % all-nses) children))))))
+    (assoc ns :children (sort-by (juxt :kind :name)
+                                 (filter #(some? (:name %))
+                                         (concat (:children ns)
+                                                 (map #(add-child-namespaces % all-nses) children)))))))
 
 (defn- structurize-namespaces [all-nses]
   (let [root-namespaces (filter #(= (get-parent-namespace-name (:full-name %)) nil) all-nses)]

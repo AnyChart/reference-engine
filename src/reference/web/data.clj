@@ -15,7 +15,7 @@
                                 val (get-in context-map (map keyword path))
                                 version (:version context-map)]
                             (if (.startsWith val "anychart")
-                              (str "<a href='/"
+                              (str "<a class='type-link' href='/"
                                    version "/" val "'>" val "</a>")
                               val))))
 
@@ -24,7 +24,7 @@
                              val (get-in context-map (map keyword path))
                              version (:version context-map)]
                          (if (.startsWith val "anychart")
-                           (str "<a class='code-style' href='/"
+                           (str "<a class='type-link code-style' href='/"
                                 version "/" val "'>" val "</a>")
                            (str "<span class='code-style'>" val "</span>")))))
 

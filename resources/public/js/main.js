@@ -22,15 +22,23 @@ function loadPage(target, opt_add) {
     if (opt_add)
         window.history.pushState(null, null, target);
 
-    expandInTree(location.pathname);
+    expandInTree(target);
     
     $(".content-container").html('<div class="loader"><i class="fa fa-spinner fa-spin fa-pulse fa-2x fa-fw"></i> <span> loading ...</span> </div>');
 
     $.get(cleanedTarget + "/data", function(res) {
         $(".content-container").html(res.content);
+        fixLinks();
     });
 
     return false;
+}
+
+function fixLinks() {
+    $("#content a.type-link").click(function(e) {
+        if (e.ctrlKey || e.metaKey) return true;
+        return loadPage($(this).attr("href"));
+    });
 }
 
 (function() {
@@ -85,6 +93,7 @@ $(function() {
     });
 
     expandInTree(location.pathname);
+    fixLinks();
 });
 
 // --- olya's js

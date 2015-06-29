@@ -38,7 +38,7 @@
         <tbody>
             <tr><td class="th empty" colspan="2"></td></tr>
             {% for enum in main.enums %}
-            <tr><td class="name"><a href="{% link enum.name %}">{{enum.name}}</a></td><td>{{enum.short-description|safe}}</td></tr>
+            <tr><td class="name"><a class="type-link" href="{% link enum.name %}">{{enum.name}}</a></td><td>{{enum.short-description|safe}}</td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -52,7 +52,7 @@
         <tbody>
             <tr><td class="th empty" colspan="2"></td></tr>
             {% for t in main.typedefs %}
-            <tr><td class="name"><a href="{% link t.name %}">{{t.name}}</a></td><td>{{t.short-description|safe}}</td></tr>
+            <tr><td class="name"><a class="type-link" href="{% link t.name %}">{{t.name}}</a></td><td>{{t.short-description|safe}}</td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -66,7 +66,7 @@
         <tbody>
             <tr><td class="th empty" colspan="2"></td></tr>
             {% for c in main.classes %}
-            <tr><td class="name"><a href="{% link c.name %}">{{c.name}}</a></td><td>{{c.short-description|safe}}</td></tr>
+            <tr><td class="name"><a class="type-link" href="{% link c.name %}">{{c.name}}</a></td><td>{{c.short-description|safe}}</td></tr>
             {% endfor %}
         </tbody>
     </table>

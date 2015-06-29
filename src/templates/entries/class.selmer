@@ -2,7 +2,7 @@
 <div class="content-block">
     <p class="bottom-space">
         {% if main.has-extends %}
-        Extends: {% for e in main.extends %}<a href="{% link e %}">{{e}}</a>{% endfor %}
+        Extends: {% for e in main.extends %}<a class="type-link" href="{% link e %}">{{e}}</a>{% endfor %}
         {% endif %}
     </p>
     <p>{{main.description|safe}}</p>
