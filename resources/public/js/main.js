@@ -27,6 +27,23 @@ function scrollToEntry(entry) {
     }, 200);
 }
 
+function updateBreadcrumb(path) {
+    path = cleanupPath(path);
+    $("ol.breadcrumb").html('');
+    var parts = path.split(".");
+    for (var i = 0; i < parts.length; i++) {
+        var $el;
+        if (i < parts.length - 1) {
+            var url = parts.slice(0,i+1).join(".");
+            $el = $("<li><a href='/" + version + "/"+url+"'>" + parts[i] + "</a></li>");
+            $el.find("a").click(typeLinkClick);
+        }else {
+            $el = $("<li class='active'>"+parts[i]+"</li>");
+        }
+        $("ol.breadcrumb").append($el);
+    }
+}
+
 function loadPage(target, opt_add) {
     if (opt_add == undefined) opt_add = true;
     
@@ -50,17 +67,20 @@ function loadPage(target, opt_add) {
     $.get(cleanedTarget + "/data", function(res) {
         $(".content-container").html(res.content);
         $("#warning a").attr("href", "/" + $("#warning a").attr("data-last-version") + "/try/" + res.page);
+        updateBreadcrumb(res.page);
         fixLinks();
     });
 
     return false;
 }
 
+function typeLinkClick(e) {
+    if (e.ctrlKey || e.metaKey) return true;
+    return loadPage($(this).attr("href"));
+}
+
 function fixLinks() {
-    $("#content a.type-link").click(function(e) {
-        if (e.ctrlKey || e.metaKey) return true;
-        return loadPage($(this).attr("href"));
-    });
+    $("#content a.type-link").click(typeLinkClick);
     
 }
 
@@ -116,6 +136,7 @@ $(function() {
     });
 
     expandInTree(location.pathname);
+    updateBreadcrumb(getEntryFromUrl(location.pathname));
 
     // content links
     fixLinks();
