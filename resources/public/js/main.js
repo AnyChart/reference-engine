@@ -1,4 +1,25 @@
-function switchPage(target) {
+function loadPage(target) {
+    var cleanedTarget = target;
+    if (cleanedTarget.indexOf("#") != -1)
+        cleanedTarget = cleanedTarget.substr(0, cleanedTarget.indexOf("#"));
+
+    if (cleanedTarget == location.pathname) {
+        return target.indexOf("#") != -1;
+    }
+
+    if (typeof window.history == "undefined") {
+        return true;
+    }
+
+    window.history.pushState(null, null, target);
+
+    $(".content-container").html('<div class="loader"><i class="fa fa-spinner fa-spin fa-pulse fa-2x fa-fw"></i> <span> loading ...</span> </div>');
+
+    $.get(cleanedTarget + "/data", function(res) {
+        $(".content-container").html(res.content);
+    });
+
+    return false;
 }
 
 $(function() {
@@ -13,9 +34,12 @@ $(function() {
                 $(this).find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
             else
                 $(this).find("i").addClass("fa-chevron-right").removeClass("fa-chevron-down");
-            switchPage($(this).attr("href"));
-            return false;
+            return loadPage($(this).attr("href"));
         });
+    });
+    $("#tree li.item a").click(function(e) {
+        if (e.ctrlKey || e.metaKey) return true;
+        return loadPage($(this).attr("href"));
     });
 });
 
