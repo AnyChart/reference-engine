@@ -60,6 +60,7 @@ function fixLinks() {
         if (e.ctrlKey || e.metaKey) return true;
         return loadPage($(this).attr("href"));
     });
+    
 }
 
 (function() {
@@ -162,13 +163,13 @@ $(function(){
     prettyPrint();
     $(window).resize(function(){contentSize();});
     $(window).load(function(){
-        $("#content-wrapper").mCustomScrollbar({theme:"minimal-dark", scrollInertia: 0, callbacks:{ onScroll:function(){
-            checkTop(this);
-        }}});
-        $("#tree-wrapper").mCustomScrollbar({theme:"minimal-dark", scrollInertia: 0});
+        //$("#content-wrapper").mCustomScrollbar({theme:"minimal-dark", scrollInertia: 0, callbacks:{ onScroll:function(){
+        //    checkTop(this);
+        //}}});
+        //$("#tree-wrapper").mCustomScrollbar({theme:"minimal-dark", scrollInertia: 0});
         contentSize();
         
-        $('.typeahead').typeahead({source: getTypeAheadList(), autoSelect: true, items: 100, scrollHeight: 0});
+        //$('.typeahead').typeahead({source: getTypeAheadList(), autoSelect: true, items: 100, scrollHeight: 0});
     });
 });
 
