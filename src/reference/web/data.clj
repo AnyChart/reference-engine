@@ -59,7 +59,7 @@
   (fix-docs-links docs-domain
                   version
                   (clojure.string/replace data
-                                          #"\{@link ([^}]+)\}"
+                                          #"\{@link ([^\}]+)\}"
                                           (str "<a class='type-link' href='/" version "/$1'>$1</a>"))))
 
 (defn- render-template [docs-domain playground-domain version template entry]
