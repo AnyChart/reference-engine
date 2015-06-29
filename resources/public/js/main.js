@@ -6,6 +6,11 @@ function cleanupPath(target) {
     return target;
 }
 
+function getEntryFromUrl(path) {
+    path = cleanupPath(path);
+    return path.match("^/[^/]+/(.*)$")[1];
+}
+
 function loadPage(target, opt_add) {
     if (opt_add == undefined) opt_add = true;
     
@@ -94,6 +99,12 @@ $(function() {
 
     expandInTree(location.pathname);
     fixLinks();
+
+    // versions
+    $('.versionselect').on('change', function(){
+        location.href = "/" + $(this).find("option:selected").val() + "/try/" + getEntryFromUrl(location.pathname);
+    });
+
 });
 
 // --- olya's js
@@ -407,11 +418,3 @@ function uploadContent(id){
     }
     current_parent_id = id;
 }
-
-/**
-    изменить версию документации
-*/
-$('.versionselect').on('change', function(){
-    var selected = $(this).find("option:selected").val();
-    alert(selected);
-});

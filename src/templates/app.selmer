@@ -26,7 +26,7 @@
             <div class="pull-right helpers">
                 <select class="selectpicker versionselect"  data-width="auto">
                     {% for v in versions %}
-                    <option{% ifequal v version %} selected{% endifequal %}>Version {{v}}</option>
+                    <option{% ifequal v version %} selected{% endifequal %} value="{{v}}">Version {{v}}</option>
                     {% endfor %}
                 </select>
                 <div class="text-muted questions">
