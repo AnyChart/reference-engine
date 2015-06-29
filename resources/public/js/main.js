@@ -1,7 +1,15 @@
-function loadPage(target) {
-    var cleanedTarget = target;
-    if (cleanedTarget.indexOf("#") != -1)
-        cleanedTarget = cleanedTarget.substr(0, cleanedTarget.indexOf("#"));
+function cleanupPath(target) {
+    if (target.indexOf("http") != -1)
+        target = target.substr(target.indexOf("/", target.indexOf("//") + 2));
+    if (target.indexOf("#") != -1)
+        target = target.substr(0, target.indexOf("#"));
+    return target;
+}
+
+function loadPage(target, opt_add) {
+    if (opt_add == undefined) opt_add = true;
+    
+    var cleanedTarget = cleanupPath(target);
 
     if (cleanedTarget == location.pathname) {
         return target.indexOf("#") != -1;
@@ -11,8 +19,11 @@ function loadPage(target) {
         return true;
     }
 
-    window.history.pushState(null, null, target);
+    if (opt_add)
+        window.history.pushState(null, null, target);
 
+    expandInTree(location.pathname);
+    
     $(".content-container").html('<div class="loader"><i class="fa fa-spinner fa-spin fa-pulse fa-2x fa-fw"></i> <span> loading ...</span> </div>');
 
     $.get(cleanedTarget + "/data", function(res) {
@@ -20,6 +31,36 @@ function loadPage(target) {
     });
 
     return false;
+}
+
+(function() {
+    var ua = navigator.userAgent.toLowerCase();
+    var needIgnoreFirst = ua.indexOf("safari") != -1 && ua.indexOf("chrome") == -1;
+    var firstIgnored = false;
+
+    window.onpopstate = function(e) {
+        if (needIgnoreFirst && !firstIgnored) {
+            firstIgnored = true;
+            return;
+        }
+        loadPage(location.href, false);
+    };
+}());
+
+function expandInTree(path) {
+    path = cleanupPath(path);
+    $("#tree .active").removeClass("active");
+    var entry = path.match("^/[^/]+/(.*)$")[1];
+    if (entry) {
+        var parts = entry.split(".");
+        for (var i = 0; i < parts.length; i++) {
+            var path = parts.slice(0, (i+1)).join(".");
+            var $el = $("#tree li.group[x-data-name='" + path + "']");
+            $el.find(">ul").show();
+            $el.find(">a i").removeClass("fa-chevron-right").addClass("fa-chevron-down");
+            $el.addClass("active");
+        }
+    }
 }
 
 $(function() {
@@ -37,10 +78,13 @@ $(function() {
             return loadPage($(this).attr("href"));
         });
     });
+    
     $("#tree li.item a").click(function(e) {
         if (e.ctrlKey || e.metaKey) return true;
         return loadPage($(this).attr("href"));
     });
+
+    expandInTree(location.pathname);
 });
 
 // --- olya's js
