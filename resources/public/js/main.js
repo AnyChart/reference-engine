@@ -49,6 +49,7 @@ function loadPage(target, opt_add) {
 
     $.get(cleanedTarget + "/data", function(res) {
         $(".content-container").html(res.content);
+        $("#warning a").attr("href", "/" + $("#warning a").attr("data-last-version") + "/try/" + res.page);
         fixLinks();
     });
 

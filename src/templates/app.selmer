@@ -79,7 +79,7 @@
         {% if not is-last %}
         <div id="warning" class="warning-version alert alert-warning fade in">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <i class="fa fa-exclamation-triangle"></i> You are looking old product version {{version}}. See for actual information <a href="#">{{last-version}}</a>.
+            <i class="fa fa-exclamation-triangle"></i> You are looking old product version {{version}}. See for actual information <a data-last-version="{{last-version}}" href="/{{last-version}}/try/{{page}}">{{last-version}}</a>.
         </div>
         {% endif %}
         <div id="content-wrapper">
