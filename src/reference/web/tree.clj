@@ -3,6 +3,7 @@
 (defn- node-title [el]
   (case (:kind el)
     "function" (str (:name el) "()")
+    "method" (str (:name el) "()")
     "enum" (str "[" (:name el) "]")
     "typedef" (str "{" (:name el) "}")
     (:name el)))
