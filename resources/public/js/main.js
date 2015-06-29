@@ -1,3 +1,25 @@
+function switchPage(target) {
+}
+
+$(function() {
+
+    // tree
+    $("#tree li.group").each(function() {
+        var $ul = $(this).find(">ul");
+        $(this).find(">a").click(function() {
+            $ul.toggle();
+            if ($ul.is(":visible"))
+                $(this).find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
+            else
+                $(this).find("i").addClass("fa-chevron-right").removeClass("fa-chevron-down");
+            switchPage($(this).attr("href"));
+            return false;
+        });
+    });
+});
+
+// --- olya's js
+
 var resizable;
 var hiddenMenuSize = 30;
 var current_parent_id;

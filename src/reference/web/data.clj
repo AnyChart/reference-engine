@@ -1,7 +1,8 @@
 (ns reference.web.data
   (:require [selmer.parser :refer [render-file add-tag!]]
             [selmer.filters :refer [add-filter!]]
-            [taoensso.timbre :as timbre :refer [info]]))
+            [taoensso.timbre :as timbre :refer [info]]
+            [reference.web.tree :refer [tree-view]]))
 
 (add-tag! :link (fn [args context-map]
                   (let [path (clojure.string/split (first args) #"\.")
@@ -41,12 +42,6 @@
                                                  {:entry entry
                                                   :version (:version context-map)
                                                   :playground (:playground context-map)}))))
-
-(defn- tree-view [el version]
-  (if-let [children (seq (:children el))]
-    (str "<li class='pull-down'><a href='/" version "/" (:full-name el) "'><i class='fa fa chevron-right'></i>" (:name el)
-         "</a></li><ul>" (reduce str (map #(tree-view % version) children)) "</ul>")
-    (str "<li> <a href='/" version "/" (:full-name el) "'>" (:name el) "</a></li>")))
 
 (add-tag! :tree-view (fn [args context-map]
                        (let [entries (get context-map (keyword (first args)))]
