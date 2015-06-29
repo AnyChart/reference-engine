@@ -19,19 +19,20 @@
        methods))
 
 (defn- generate-enum-tree [enum-name struct]
-  (let [enum (get-obj-from-struct (:enums struct) enum-name)]
+  (println "generate enum" enum-name)
+  (let [enum (get-obj-from-struct (:enums struct) (:name enum-name))]
     {:name (:name enum)
      :full-name (:full-name enum)
      :kind :enum}))
 
 (defn- generate-typedef-tree [typedef-name struct]
-  (let [typedef (get-obj-from-struct (:typedefs struct) typedef-name)]
+  (let [typedef (get-obj-from-struct (:typedefs struct) (:name typedef-name))]
     {:name (:name typedef)
      :full-name (:full-name typedef)
      :kind :typedef}))
 
 (defn- generate-class-tree [class-name struct]
-  (let [classdef (get-obj-from-struct (:classes struct) class-name)]
+  (let [classdef (get-obj-from-struct (:classes struct) (:name class-name))]
     {:name (:name classdef)
      :full-name (:full-name classdef)
      :kind :class

@@ -6,7 +6,8 @@ $(function() {
     // tree
     $("#tree li.group").each(function() {
         var $ul = $(this).find(">ul");
-        $(this).find(">a").click(function() {
+        $(this).find(">a").click(function(e) {
+            if (e.ctrlKey || e.metaKey) return true;
             $ul.toggle();
             if ($ul.is(":visible"))
                 $(this).find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
