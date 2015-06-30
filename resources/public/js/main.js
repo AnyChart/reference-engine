@@ -47,7 +47,10 @@
 
     function loadPage(target, opt_add) {
         if (opt_add == undefined) opt_add = true;
-        
+
+        if (target.indexOf("#") == 0) {
+            target = location.pathname + target;
+        }
         var cleanedTarget = cleanupPath(target);
 
         if (cleanedTarget == location.pathname) {

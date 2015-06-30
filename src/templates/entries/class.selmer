@@ -14,7 +14,7 @@
         <tbody>
             <tr><td class="th" colspan="2"></td></tr>
             {% for f in main.methods %}
-            <tr><td class="name"><a href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.short-description|safe}}</td></tr>
+            <tr><td class="name"><a class="type-link" href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.short-description|safe}}</td></tr>
             {% endfor %}
         </tbody>
     </table>

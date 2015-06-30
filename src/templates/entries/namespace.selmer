@@ -10,7 +10,7 @@
         <tbody>
             <tr><td class="th empty" colspan="2"></td></tr>
             {% for c in main.constants %}
-            <tr><td class="name"><a href="#{{c.name}}">{{c.name}}</a></td><td>{{c.short-description|safe}}</td></tr>
+            <tr><td class="name"><a class="type-link" href="#{{c.name}}">{{c.name}}</a></td><td>{{c.short-description|safe}}</td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -24,7 +24,7 @@
         <tbody>
             <tr><td class="th empty" colspan="2"></td></tr>
             {% for f in main.functions %}
-            <tr><td class="name"><a href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.short-description|safe}}</td></tr>
+            <tr><td class="name"><a class="type-link" href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.short-description|safe}}</td></tr>
             {% endfor %}
         </tbody>
     </table>
