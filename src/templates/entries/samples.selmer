@@ -1,17 +1,18 @@
 {% if entry.has-listings %}
-<div class="listings">
-    <strong>Code:</strong>
-    {% for l in entry.listings %}
-    <a class="btn" href="#listing-{{l.id}}"><i class="icon-code"></i> {{l.title}}</a>
-    {% endfor %}
-    {% for l in entry.listings %}
-    <div id="listing-{{id}}" class="code-listing" style="display:none">
-        <a class="close">x</a>
-        <h4>{{l.title}}</h4>
-        <div>{{l.code|safe}}</div>
+{% for l in entry.listings %}
+<div class="small-group">
+    <div class="collapse-group">
+        <a data-toggle="collapse" href="#listing-{{l.id}}">
+            <i class="fa fa-code"></i> {{l.title}}
+        </a>
+        <div id="listing-{{l.id}}" class="collapse collapse-div">
+            <div class="collapse-content">
+                <pre class="prettyprint linenums:1">{{l.code|safe}}</pre>
+            </div>
+        </div>
     </div>
-    {% endfor %}
 </div>
+{% endfor %}
 {% endif %}
 
 {% if entry.has-playground-samples %}
