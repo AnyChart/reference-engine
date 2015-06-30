@@ -68,13 +68,20 @@
         expandInTree(target);
         
         $(".content-container").html('<div class="loader"><i class="fa fa-spinner fa-spin fa-pulse fa-2x fa-fw"></i> <span> loading ...</span> </div>');
+        $("#content-wrapper").mCustomScrollbar('destroy');
 
         $.get(cleanedTarget + "/data", function(res) {
-            $(".content-container").html(res.content);
+
+            $("#content-wrapper").html('<div id="content"><div class="content-container">'+res.content+'</div></div>');
+            
+            updateContentScrolling();
+            
             $("#warning a").attr("href", "/" + $("#warning a").attr("data-last-version") + "/try/" + res.page);
             updateBreadcrumb(res.page);
             fixLinks();
             fixListings();
+            if (target.indexOf("#") != -1)
+                highlightInPage(target.substr(target.indexOf("#") + 1));
         });
 
         return false;
@@ -97,6 +104,11 @@
         $(".content-container .active").removeClass("active");
         var entry = getEntryFromUrl(location.pathname);
         doExpandInTree(entry, target);
+
+        setTimeout(function() {
+            $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + target), {scrollInertia: 700});
+        }, 100);
+        $("#" + target).parent().addClass("active");
     }
 
     function doExpandInTree(entry, opt_hash) {
@@ -125,7 +137,17 @@
             doExpandInTree(entry);
     }
 
+    var scrollSettings = {scrollInertia: 0, theme: "minimal-dark"};
+
+    function updateContentScrolling() {
+        $("#content-wrapper").mCustomScrollbar(scrollSettings);
+    }
+
     $(function() {
+
+        // scrolling
+        updateContentScrolling();
+        $("#tree-wrapper").mCustomScrollbar(scrollSettings);
 
         // tree
         $("#tree li.group").each(function() {
