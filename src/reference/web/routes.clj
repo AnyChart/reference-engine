@@ -26,6 +26,13 @@
 (defn- show-default-ns [version request]
   (redirect (str "/" (:key version) "/anychart")))
 
+(defn- redirect-latest [request]
+  (redirect (str "/" (vdata/default (jdbc request)) "/anychart")))
+
+(defn- redirect-latest-page [request]
+  (let [page (get-in request [:route-params :page])]
+    (redirect (str "/" (vdata/default (jdbc request)) "/" page))))
+
 (defn- search-data [version request]
   (-> (response (vdata/search-index (jdbc request) (:id version)))
       (header "Content-Type" "application/json")))
@@ -100,6 +107,8 @@
   (GET "/" [] show-default-version)
   (GET "/_update_reference_" [] request-update)
   (POST "/_update_reference_" [] request-update)
+  (GET "/latest/" [] redirect-latest)
+  (GET "/latest" [] redirect-latest)
   (GET "/:version/" [] (check-version-middleware show-default-ns))
   (GET "/:version" [] (check-version-middleware show-default-ns))
   (GET "/:version/data/tree.json" [] (wrap-json-response (check-version-middleware
@@ -108,6 +117,7 @@
                                                             search-data)))
   (GET "/:version/try/:page" [] (check-version-middleware try-show-page))
   (GET "/:version/:page/data" [] (wrap-json-response (check-page-middleware get-page-data)))
+  (GET "/latest/:page" [] redirect-latest-page)
   (GET "/:version/:page" [] (check-page-middleware show-page)))
 
 (def app (routes app-routes))
