@@ -143,8 +143,16 @@
     var scrollSettings = {scrollInertia: 0, theme: "minimal-dark"};
 
     function updateContentScrolling() {
-        $("#content-wrapper").mCustomScrollbar(scrollSettings);
-    }
+        $("#content-wrapper").mCustomScrollbar(
+            $.extend(scrollSettings,
+                     { callbacks: {
+                         onScroll: function() {
+                             if (this.mcs.top < 0 - window.innerHeight){
+                                 $('#top').fadeIn();
+                             } else{
+                                 $('#top').fadeOut();
+                             }
+                         }}}))}
 
     $(function() {
 
@@ -248,14 +256,6 @@ $(function(){
         //$('.typeahead').typeahead({source: getTypeAheadList(), autoSelect: true, items: 100, scrollHeight: 0});
     });
 });
-
-function checkTop(el){
-    if (el.mcs.top < 0 - window.innerHeight){
-        $('#top').fadeIn();
-    } else{
-        $('#top').fadeOut();
-    }
-}
 
 function contentSize(){
     if (window.innerWidth < 992) {hideSideBar(true, false)}
