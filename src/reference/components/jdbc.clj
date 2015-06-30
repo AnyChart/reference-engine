@@ -52,7 +52,6 @@
   (map->JDBC {:config config}))
 
 (defn sql [q]
-  (println (sql/format q :quoting :ansi))
   (sql/format q :quoting :ansi))
 
 (defn query [jdbc q]
