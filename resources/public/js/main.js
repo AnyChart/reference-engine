@@ -177,6 +177,9 @@
         // content links
         fixLinks();
         fixListings();
+        if (location.hash) {
+            $("#content-wrapper").mCustomScrollbar("scrollTo", $(location.hash));
+        }
 
         // versions
         $('.versionselect').on('change', function(){
@@ -300,40 +303,4 @@ function hideSideBar(flag, animate){
         $('a.switcher .fa').attr('class', 'fa fa-chevron-left');
         $('#size-controller').css('cursor', 'col-resize');
     }
-}
-
-function changeContent(ids){
-    var hash = '';
-    location.hash = hash + 'tree=';
-    for (var i = 0; i < ids.length; i++){
-        var $treeItem = $('li#' + ids[i]);
-        hash += ids[i] + '/';
-        var contentType = setTreeContent(ids[i]);
-        $treeItem.addClass('active');
-        if (contentType == 'method') updateContent(ids[i], ids[i-1]);
-        else if (contentType == 'page' && ids.length == i + 1) updateContent(null, ids[i]);
-    }
-    location.hash = 'tree=' + hash + '&';
-}
-
-function makeContentActive(ids){
-    $('#tree li').removeClass('active');
-    var hash = '';
-    location.hash = hash + 'tree=';
-    for (var i = 0; i < ids.length; i++){
-        var $treeItem = $('li#' + ids[i]);
-        hash += ids[i] + '/';
-        $treeItem.addClass('active');
-    }
-
-    var $methodBlock = $('#method_' + ids[ids.length - 1]);
-    if (!$methodBlock.hasClass('active')) $methodBlock.addClass('selected');
-    $('.method-block').removeClass('active');
-    $methodBlock.addClass('active');
-
-    window.setTimeout(function(){
-        $("#content-wrapper").mCustomScrollbar('scrollTo', $methodBlock,
-                                               {scrollInertia: 700});
-    }, 200);
-    location.hash = 'tree=' + hash + '&';
 }
