@@ -46,8 +46,8 @@
          :static 12
          :port 8080
          :reference-queue "reference-queue"
-         :docs "http://docs.anychart.stg/"
-         :playground "http://playground.anychart.stg"}
+         :docs "docs.anychart.stg"
+         :playground "playground.anychart.stg"}
    :jdbc {:subprotocol "postgresql"
           :subname "//localhost:5432/reference_db"
           :classname "org.postgresql.Driver"

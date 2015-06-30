@@ -32,7 +32,7 @@
                         (let [val (get-in content [:playground :content])
                               version (:version context-map)
                               playground (:playground context-map)]
-                          (str playground "/api/"
+                          (str "//" playground "/api/"
                                version (clojure.string/trim val) "-plain")))
           :endplayground)
 
