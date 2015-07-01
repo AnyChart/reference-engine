@@ -19,8 +19,8 @@
 
 (defn- generate-namespace-search-index [namespace]
   (assoc (generate-entry-search-index namespace)
-         :functions (map :name (:functions class))
-         :constants (map :name (:constants class))))
+         :functions (map :name (:functions namespace))
+         :constants (map :name (:constants namespace))))
 
 (defn generate-search-index [top-level]
   {:enums (map generate-enum-search-index (:enums top-level))
