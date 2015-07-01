@@ -254,7 +254,7 @@
                 var $res = $("<ul></ul>");
                 if (!entries.length) return null;
                 for (var i = 0; i < entries.length; i++) {
-                    var $el = $("<li>" + prefix + entries[i]["name"] + postfix + "</li>");
+                    var $el = $("<li>" + prefix + entries[i]["full-name"] + postfix + "</li>");
                     for (var j = 0; j < childKeys.length; j++) {
                         if (entries[i][childKeys[j]].length) {
                             var $ul = $("<ul></ul>");
