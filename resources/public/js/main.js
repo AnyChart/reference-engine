@@ -193,8 +193,7 @@
         $('.versionselect').on('change', function(){
             location.href = "/" + $(this).find("option:selected").val() + "/try/" + getEntryFromUrl(location.pathname);
         });
-        $('.selectpicker').selectpicker();
-
+        
         // resize
         $("#size-controller").on("mousedown", function(e) {
 
@@ -218,6 +217,82 @@
             $("body").on("mousemove", mouseMove);
             
             return false;
+        });
+
+        // search
+        
+        $.get("/"+version+"/data/search.json", function(data) {
+
+            var contains = function(str, target) {
+                return str.toLowerCase().indexOf(target.toLowerCase()) != -1;
+            }
+
+            var filterEntries = function(entries, name, childKeys) {
+                var res = [];
+                for (var i = 0; i < entries.length; i++) {
+                    var filteredFields = {};
+                    var hasFields = false;
+                    for (var j = 0; j < childKeys.length; j++) {
+                        var items = $.grep(entries[i][childKeys[j]], function(val) {
+                            return val.indexOf(name) != -1;
+                        });
+                        filteredFields[childKeys[j]] = items;
+                        hasFields = hasFields || items.length;
+                    }
+                    if (entries[i].name.indexOf(name) != -1 || hasFields) {
+                        var entry = {"full-name": entries[i]["full-name"], "name": entries[i].name};
+                        for (var j = 0; j < childKeys.length; j++) {
+                            entry[childKeys[j]] = filteredFields[childKeys[j]];
+                        }
+                        res.push(entry);
+                    }
+                }
+                return res;
+            }
+
+            var searchResults = function(entries, prefix, postfix, childKeys) {
+                var $res = $("<ul></ul>");
+                if (!entries.length) return null;
+                for (var i = 0; i < entries.length; i++) {
+                    var $el = $("<li>" + prefix + entries[i]["name"] + postfix + "</li>");
+                    for (var j = 0; j < childKeys.length; j++) {
+                        if (entries[i][childKeys[j]].length) {
+                            var $ul = $("<ul></ul>");
+                            for (var k = 0; k < entries[i][childKeys[j]].length; k++) {
+                                $ul.append("<li>" + entries[i][childKeys[j]][k] + "</li>");
+                            }
+                            $el.append($ul);
+                        }
+                    }
+                    $res.append($el);
+                }
+                return $res;
+            }
+
+            function searchFor(query) {
+                if (!query.length) {
+                    $("#search-results").hide();
+                    return;
+                }
+                $("#search-results").show();
+                var $namespaces = searchResults(filterEntries(data.namespaces, query, ["constants", "functions"]),
+                                               "", "", ["constants", "functions"]);
+                var $classes = searchResults(filterEntries(data.classes, query, ["methods"]),
+                                            "", "", ["methods"]);
+                var $typedefs = searchResults(filterEntries(data.typedefs, query, ["properties"]),
+                                             "{", "}", ["properties"]);
+                var $enums = searchResults(filterEntries(data.enums, query, ["fields"]),
+                                           "[", "]", ["fields"]);
+                $("#search-results").html("");
+                $("#search-results").append($namespaces);
+                $("#search-results").append($classes);
+                $("#search-results").append($typedefs);
+                $("#search-results").append($enums);
+            }
+            
+            $("#search").keyup(function() {
+                searchFor($(this).val());
+            });
         });
 
         // history api

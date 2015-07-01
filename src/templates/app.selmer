@@ -44,7 +44,8 @@
                 <form class="form-horizontal" role="form">
                     <div class="form-group has-feedback">
                         <div class="col-sm-12">
-                            <input type="text" class="form-control typeahead" id="search" data-provide="typeahead" placeholder="search for method">
+                            <input type="text" class="form-control" id="search" placeholder="search" autocomplete="off">
+                            <div id="search-results" style="background-color: white;"></div>
                             <span class="glyphicon glyphicon-search form-control-feedback"></span>
                         </div>
                     </div>
