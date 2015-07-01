@@ -239,7 +239,7 @@
                         filteredFields[childKeys[j]] = items;
                         hasFields = hasFields || items.length;
                     }
-                    if (entries[i].name.indexOf(name) != -1 || hasFields) {
+                    if (entries[i].name.toLowerCase().indexOf(name.toLowerCase()) != -1 || hasFields) {
                         var entry = {"full-name": entries[i]["full-name"], "name": entries[i].name};
                         for (var j = 0; j < childKeys.length; j++) {
                             entry[childKeys[j]] = filteredFields[childKeys[j]];
