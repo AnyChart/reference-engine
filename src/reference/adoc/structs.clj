@@ -228,7 +228,8 @@
 (defn- parse-function-param [param version]
   {:types (get-in param [:type :names])
    :description (parse-param-description (:description param) version)
-   :name (clojure.string/replace (:name param) #"^opt_" "")
+   :name (if (:name param)
+           (clojure.string/replace (:name param) #"^opt_" ""))
    :default (parse-param-default param)})
 
 (defn- function-has-params-defaults [params]

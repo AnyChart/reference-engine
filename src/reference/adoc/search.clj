@@ -1,38 +1,29 @@
 (ns reference.adoc.search
   (:require [taoensso.timbre :as timbre :refer [info]]))
 
-(defn- add-simple-members [container members]
-  (reduce conj #{} (map (fn [member]
-                          (str (:full-name container)
-                               "#"
-                               (:name member)))
-                        members)))
+(defn- generate-entry-search-index [entry]
+  {:full-name (:full-name entry)
+   :name (:name entry)})
 
-(defn- add-methods [class methods]
-  (map #(str (:full-name class) "#" (:name %)) methods))
+(defn- generate-enum-search-index [enum]
+  (assoc (generate-entry-search-index enum)
+         :fields (map :name (:fields enum))))
 
-(defn- build-index-from-class [class]
-  (concat #{(:full-name class)}
-          (add-methods class (:methods class))
-          (add-methods class (:inherited-methods class))))
+(defn- generate-typedef-search-index [typedef]
+  (assoc (generate-entry-search-index typedef)
+         :properties (map :name (:properties typedef))))
 
-(defn- build-index-from-typedef [typedef]
-  (:full-name typedef))
+(defn- generate-class-search-index [class]
+  (assoc (generate-entry-search-index class)
+         :methods (map :name (:methods class))))
 
-(defn- build-index-from-enum [enum]
-  (concat #{(:full-name enum)}
-          (map #(str (:full-name enum) "#" (:name %))
-               (:fields enum))))
+(defn- generate-namespace-search-index [namespace]
+  (assoc (generate-entry-search-index namespace)
+         :functions (map :name (:functions class))
+         :constants (map :name (:constants class))))
 
-(defn- build-index-from-ns [namespace]
-  (concat #{(:full-name namespace)}
-          (add-simple-members namespace (:constants namespace))
-          (add-simple-members namespace (:functions namespace))))
-
-(defn generate-search-index [struct]
-  (info "building search index")
-  (concat 
-   (apply concat (map build-index-from-ns (:namespaces struct)))
-   (apply concat (map build-index-from-class (:classes struct)))
-   (concat (map build-index-from-typedef (:typedefs struct)))
-   (concat (apply concat (map build-index-from-enum (:enums struct))))))
+(defn generate-search-index [top-level]
+  {:enums (map generate-enum-search-index (:enums top-level))
+   :typedefs (map generate-typedef-search-index (:typedefs top-level))
+   :classes (map generate-class-search-index (:classes top-level))
+   :namespaces (map generate-namespace-search-index (:namespaces top-level))})
