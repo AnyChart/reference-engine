@@ -6,6 +6,7 @@
             [reference.adoc.tree :refer [generate-tree]]
             [reference.adoc.search :refer [generate-search-index]]
             [reference.adoc.media :refer [move-media]]
+            [reference.adoc.categories :refer [build-class-categories build-namespace-categories]]
             [reference.git :as git]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
@@ -62,8 +63,13 @@
   (notifications/start-version-building notifier (:name branch))
   (let [doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
         raw-top-level (structurize doclets data-dir (:name branch))
-        top-level (assoc raw-top-level
-                         :classes (build-inheritance (:classes raw-top-level)))
+        inh-top-level (assoc raw-top-level
+                             :classes (build-inheritance (:classes raw-top-level)))
+        top-level (assoc inh-top-level
+                         :namespaces (doall (map build-namespace-categories
+                                                 (:namespaces inh-top-level)))
+                         :classes (doall (map build-class-categories
+                                              (:classes inh-top-level))))
         tree-data (generate-tree top-level)
         search-index (generate-search-index top-level)]
     (let [version-id (vdata/add-version jdbc
