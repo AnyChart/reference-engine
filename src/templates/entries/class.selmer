@@ -12,10 +12,20 @@
     <h2>Methods Overview</h2>
     <table class="table table-condensed">
         <tbody>
+            {% if main.has-categories %}
+            {% for c in main.categories %}
+            <tr><td class="th empty" colspan="2">{{c.name}}</td></tr>
+            {% for f in c.members %}
+            <tr><td class="name"><a class="type-link" href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.short-description|safe}}</td></tr>
+            {% endfor %}
+            {% endfor %}
+            {% endif %}
+            {% if not main.has-categories %}
             <tr><td class="th" colspan="2"></td></tr>
             {% for f in main.methods %}
             <tr><td class="name"><a class="type-link" href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.short-description|safe}}</td></tr>
             {% endfor %}
+            {% endif %}
         </tbody>
     </table>
 </div>
