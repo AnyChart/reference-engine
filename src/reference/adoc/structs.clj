@@ -284,6 +284,7 @@
 ;; - const
 ;; - static function
 (defn- create-namespace [namespace doclets version base-path]
+  (info "namespace:" (:longname namespace))
   (assoc (parse-general namespace version)
          :parent (:memberof namespace)
          :typedefs (sort-by :name (map #(create-link-struct % version)
@@ -308,13 +309,23 @@
                              (map #(create-function % doclets version base-path)
                                   (get-static-functions doclets namespace)))))
 
+(defn- get-unique-namespaces [doclets]
+  (let [namespaces (get-doclets-by-kind doclets "namespace")]
+    (reduce (fn [res ns]
+              (if (some #(= (:longname %)
+                            (:longname ns))
+                        res)
+                res
+                (conj res ns)))
+            [] namespaces)))
+
 (defn structurize [doclets data-path version]
   (info "structurize doclets")
   (let [base-path (str data-path "/versions-tmp/" version)]
     {:classes (map #(create-class % doclets version base-path)
                    (get-doclets-by-kind doclets "class"))
      :namespaces (map #(create-namespace % doclets version base-path)
-                      (get-doclets-by-kind doclets "namespace"))
+                      (get-unique-namespaces doclets))
      :typedefs (map #(create-typedef % doclets version base-path)
                     (get-doclets-by-kind doclets "typedef"))
      :enums (let [enums (map #(create-enum % doclets version base-path)
