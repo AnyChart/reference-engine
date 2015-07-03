@@ -139,8 +139,23 @@
         if (entry)
             doExpandInTree(entry);
     }
-
-    var scrollSettings = {scrollInertia: 0, theme: "minimal-dark"};
+    var scrollAmount = 80;
+    var scrollKeyAmount = 100;
+    var isMacLike = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i)?true:false;
+    if (isMacLike) scrollAmount = 2;
+    if (isMacLike) scrollKeyAmount = 15;
+    var scrollSettings = {
+        scrollInertia: 0,
+        theme: "minimal-dark",
+        mouseWheel: {
+            enable: true,
+            scrollAmount: scrollAmount
+        },
+        keyboard: {
+            enable: true,
+            scrollAmount: scrollKeyAmount,
+            scrollType: 'stepless'
+        }};
 
     function updateContentScrolling() {
         $("#content-wrapper").mCustomScrollbar(
