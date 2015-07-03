@@ -268,10 +268,6 @@
          :has-extends (boolean (seq (:augments class)))
          :enums (sort-by :name (map #(create-link-struct % version)
                                     (get-enums doclets class)))
-         :classes (sort-by :name (map #(create-link-struct % version)
-                                      (get-doclets-by-memberof-and-kind doclets
-                                                                        namespace
-                                                                        "class")))
          :methods (group-functions
                    (map #(create-function % doclets version base-path)
                         (get-functions doclets class)))))
@@ -284,7 +280,6 @@
 ;; - const
 ;; - static function
 (defn- create-namespace [namespace doclets version base-path]
-  (info "namespace:" (:longname namespace))
   (assoc (parse-general namespace version)
          :parent (:memberof namespace)
          :typedefs (sort-by :name (map #(create-link-struct % version)
@@ -294,14 +289,19 @@
          :enums (sort-by :name (map #(create-link-struct % version)
                                     (get-enums doclets namespace)))
          :classes (sort-by :name
-                   (map #(create-link-struct % version)
-                        (apply concat
-                               (map #(concat [%] (get-doclets-by-memberof-and-kind doclets
-                                                                                   %
-                                                                                   "class"))
-                                    (get-doclets-by-memberof-and-kind doclets
-                                                                      namespace
-                                                                      "class")))))
+                           (map #(create-link-struct % version)
+                                (apply concat
+                                       (map #(concat [%]
+                                                     (map (fn [c]
+                                                            (assoc c :name
+                                                                   (str (:name %) "." (:name c))))
+                                                          (get-doclets-by-memberof-and-kind
+                                                           doclets
+                                                           %
+                                                           "class")))
+                                            (get-doclets-by-memberof-and-kind doclets
+                                                                              namespace
+                                                                              "class")))))
          :constants (sort-by :name
                              (map #(create-constant % doclets version base-path)
                                   (get-static-members doclets namespace)))

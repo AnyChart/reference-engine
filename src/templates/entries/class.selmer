@@ -7,10 +7,11 @@
     </p>
     <p>{{main.description|safe}}</p>
 </div>
+
 {% if main.has-methods %}
 <div class="content-block methods">
     <h2>Methods Overview</h2>
-    <table class="table table-condensed">
+    <table class="table table-condensed"> 
         <tbody>
             {% if main.has-categories %}
             {% for c in main.categories %}
