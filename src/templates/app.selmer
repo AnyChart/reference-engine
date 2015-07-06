@@ -14,6 +14,35 @@
         <script type="text/javascript">var version="{{version}}";</script>
     </head>
     <body>
+        <div id="search-results-new">
+        <!-- TODO: максимыльная высота до конца странице, если результатов больше, появляется скролл-->
+            <ul>
+                <li class="group-name">Constants</li>
+                <li class="item">Constant1</li>
+                <li class="item">Constant2</li>
+                <li class="item">Constant3</li>
+                <li class="item">Constant4</li>
+                <li class="item">Constant5</li>
+                <li class="group-name">Methods</li>
+                <li class="item">metod1()</li>
+                <li class="item">metod2()</li>
+                <li class="item">metod3()</li>
+                <li class="item">metod4()</li>
+                <li class="group-name">Enum</li>
+                <li class="item">enum1</li>
+                <li class="item">enum2</li>
+                <li class="group-name">Typedefes</li>
+                <li class="item">typedef1.typedef1</li>
+                <li class="item">typedef2</li>
+                <li class="item">typedef3</li>
+                <li class="item">typedef4</li>
+                <li class="group-name">Classes</li>
+                <li class="item">class1</li>
+                <li class="item">class2</li>
+                <li class="item">class3</li>
+                <li class="item">class4</li>
+            </ul>
+        </div>
         <div id="header">
             <a class="navbar-brand" href="http://anychart.com/">
                 <img src="/i/AnyChart-light-empty.png" width="300" height="72" alt="AnyChart">
