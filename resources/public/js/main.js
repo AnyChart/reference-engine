@@ -329,9 +329,9 @@
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i];
                     if (item.multiple)
-                        $res.append("<li>" + prefix + item.name + postfix + "</li>");
+                        $res.append("<li>" + prefix + item.name + postfix + "</a></li>");
                     else
-                        $res.append("<li>" + prefix + item["full-name"] + postfix + "</li>");
+                        $res.append("<li><a href='/" + version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
                 }
             }
 
