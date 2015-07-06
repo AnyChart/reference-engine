@@ -14,7 +14,7 @@
         <script type="text/javascript">var version="{{version}}";</script>
     </head>
     <body>
-        <div id="search-results-new">
+        <div id="search-results-new" style="display:none">
         <!-- TODO: максимыльная высота до конца странице, если результатов больше, появляется скролл-->
             <ul>
                 <li class="group-name">Constants</li>
