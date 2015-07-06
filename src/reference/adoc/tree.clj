@@ -19,7 +19,6 @@
        methods))
 
 (defn- generate-enum-tree [enum-name struct]
-  (println "generate enum" enum-name)
   (let [enum (get-obj-from-struct (:enums struct) (:name enum-name))]
     {:name (:name enum)
      :full-name (:full-name enum)

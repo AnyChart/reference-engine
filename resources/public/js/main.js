@@ -246,67 +246,112 @@
                 return str.toLowerCase().indexOf(target.toLowerCase()) != -1;
             }
 
-            var filterEntries = function(entries, name, childKeys) {
+            var searchForConstants = function(str) {
+                var res = [];
+                for (var i = 0; i < data.namespaces.length; i++) {
+                    var ns = data.namespaces[i];
+                    for (var j = 0; j < ns.constants.length; j++) {
+                        var c = ns.constants[j];
+                        if (contains(c.name, str)) {
+                            res.push(c);
+                        }
+                    }
+                }
+                return res;
+            }
+
+            var searchForGrouped = function(str, container, key) {
+                var res = [];
+                for (var i = 0; i < data[container].length; i++) {
+                    var c = data[container][i];
+                    for (var j = 0; j < c[key].length; j++) {
+                        var m = c[key][j];
+                        if (contains(m.name, str)) {
+                            res.push(m);
+                        }
+                    }
+                }
+                var actual = [];
+                for (var i = 0; i < res.length; i++) {
+                    var item = res[i];
+                    var multiple = false;
+                    for (var j = 0; j < actual.length; j++) {
+                        if (actual[j].name == item.name) {
+                            multiple = true;
+                            actual[j].multiple = true;
+                            break;
+                        }
+                    }
+                    if (!multiple)
+                        actual.push(item);
+                }
+                return actual;
+            }
+
+            var filterEntries = function(str, entries, type) {
                 var res = [];
                 for (var i = 0; i < entries.length; i++) {
-                    var filteredFields = {};
-                    var hasFields = false;
-                    for (var j = 0; j < childKeys.length; j++) {
-                        var items = $.grep(entries[i][childKeys[j]], function(val) {
-                            return val.indexOf(name) != -1;
-                        });
-                        filteredFields[childKeys[j]] = items;
-                        hasFields = hasFields || items.length;
-                    }
-                    if (entries[i].name.toLowerCase().indexOf(name.toLowerCase()) != -1 || hasFields) {
-                        var entry = {"full-name": entries[i]["full-name"], "name": entries[i].name};
-                        for (var j = 0; j < childKeys.length; j++) {
-                            entry[childKeys[j]] = filteredFields[childKeys[j]];
-                        }
+                    var entry = entries[i];
+                    if (contains(entry.name, str)) {
                         res.push(entry);
                     }
                 }
                 return res;
             }
 
-            var searchResults = function(entries, prefix, postfix, childKeys) {
-                var $res = $("<ul></ul>");
-                if (!entries.length) return null;
-                for (var i = 0; i < entries.length; i++) {
-                    var $el = $("<li>" + prefix + entries[i]["full-name"] + postfix + "</li>");
-                    for (var j = 0; j < childKeys.length; j++) {
-                        if (entries[i][childKeys[j]].length) {
-                            var $ul = $("<ul></ul>");
-                            for (var k = 0; k < entries[i][childKeys[j]].length; k++) {
-                                $ul.append("<li>" + entries[i][childKeys[j]][k] + "</li>");
-                            }
-                            $el.append($ul);
-                        }
-                    }
-                    $res.append($el);
+            var searchForMethods = function(str) {
+                return searchForGrouped(str, "classes", "methods");
+            }
+
+            var searchForFunctions = function(str) {
+                return searchForGrouped(str, "namespaces", "functions");
+            }
+
+            var searchForNamespaces = function(str) {
+                return filterEntries(str, data.namespaces, "namespace");
+            }
+
+            var searchForClasses = function(str) {
+                return filterEntries(str, data.classes, "class");
+            }
+
+            var searchForEnums = function(str) {
+                return filterEntries(str, data.enums, "enum");
+            }
+
+            var searchForTypedefs = function(str) {
+                return filterEntries(str, data.typedefs, "typedef");
+            }
+
+            var addToResults = function($res, items, prefix, postfix, title) {
+                if (!items.length) return;
+                $res.append("<li class='group-name'>" + title +"</li>");
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    if (item.multiple)
+                        $res.append("<li>" + prefix + item.name + postfix + "</li>");
+                    else
+                        $res.append("<li>" + prefix + item["full-name"] + postfix + "</li>");
                 }
-                return $res;
             }
 
             function searchFor(query) {
-                if (!query.length) {
-                    $("#search-results").hide();
+                if (query.length < 3) {
+                    $("#search-results-new").hide();
                     return;
                 }
-                $("#search-results").show();
-                var $namespaces = searchResults(filterEntries(data.namespaces, query, ["constants", "functions"]),
-                                               "", "", ["constants", "functions"]);
-                var $classes = searchResults(filterEntries(data.classes, query, ["methods"]),
-                                            "", "", ["methods"]);
-                var $typedefs = searchResults(filterEntries(data.typedefs, query, ["properties"]),
-                                             "{", "}", ["properties"]);
-                var $enums = searchResults(filterEntries(data.enums, query, ["fields"]),
-                                           "[", "]", ["fields"]);
-                $("#search-results").html("");
-                $("#search-results").append($namespaces);
-                $("#search-results").append($classes);
-                $("#search-results").append($typedefs);
-                $("#search-results").append($enums);
+                var $res = $("<ul></ul>");
+                addToResults($res, searchForConstants(query), "", "", "Constants");
+                addToResults($res, searchForFunctions(query), "", "()", "Functions");
+                addToResults($res, searchForMethods(query), "", "()", "Methods");
+                addToResults($res, searchForNamespaces(query), "", "", "Namespaces");
+                addToResults($res, searchForEnums(query), "[", "]", "Enums");
+                addToResults($res, searchForTypedefs(query), "{", "}", "Typedefs");
+                addToResults($res, searchForClasses(query), "", "", "Classes");
+                
+                $("#search-results-new").show();
+                $("#search-results-new").html("");
+                $("#search-results-new").append($res);
             }
             
             $("#search").keyup(function() {

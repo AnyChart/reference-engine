@@ -5,22 +5,25 @@
   {:full-name (:full-name entry)
    :name (:name entry)})
 
+(defn- generate-method-search-index [method class-name]
+  {:full-name (str class-name "." (:name method))
+   :name (:name method)})
+
 (defn- generate-enum-search-index [enum]
-  (assoc (generate-entry-search-index enum)
-         :fields (map :name (:fields enum))))
+  (generate-entry-search-index enum))
 
 (defn- generate-typedef-search-index [typedef]
-  (assoc (generate-entry-search-index typedef)
-         :properties (map :name (:properties typedef))))
+  (generate-entry-search-index typedef))
 
 (defn- generate-class-search-index [class]
   (assoc (generate-entry-search-index class)
-         :methods (map :name (:methods class))))
+         :methods (map #(generate-method-search-index % (:full-name class))
+                       (:methods class))))
 
 (defn- generate-namespace-search-index [namespace]
   (assoc (generate-entry-search-index namespace)
-         :functions (map :name (:functions namespace))
-         :constants (map :name (:constants namespace))))
+         :functions (map generate-entry-search-index (:functions namespace))
+         :constants (map generate-entry-search-index (:constants namespace))))
 
 (defn generate-search-index [top-level]
   {:enums (map generate-enum-search-index (:enums top-level))
