@@ -6,8 +6,8 @@
                 <h4 class="panel-title">
                     <a data-toggle="collapse" >
                         {{f.signature}}
-                        {% if c.has-since %}
-                        <span class="pull-right">Since version {{c.since}}</span>
+                        {% if f.has-since %}
+                        <span class="pull-right">Since version {{f.since}}</span>
                         {% endif %}
                     </a>
                 </h4>
