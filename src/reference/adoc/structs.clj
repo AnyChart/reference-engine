@@ -21,6 +21,11 @@
                   (= longname (:memberof %)))
             doclets)))
 
+(defn- get-doclet-by-fullname-and-kind [doclets fullname kind]
+  (first (filter #(and (= kind (:kind %))
+                       (= fullname (:longname %)))
+                 doclets)))
+
 (defn- is-static [entry]
   (= (:scope entry) "static"))
 
@@ -97,7 +102,8 @@
    :short-description (get-short-description entry version)
    :has-description (not (empty? (:description entry)))
    :full-name (cleanup-name (:longname entry))
-   :since (:since entry)})
+   :since (:since entry)
+   :has-since (some? (:since entry))})
 
 (defn- get-example-link [base-path doclet file]
   (let [folder (clojure.string/replace (get-in doclet [:meta :path])
@@ -258,19 +264,23 @@
    :short-description (get-short-description entry version)})
 
 ;; class
-;; - class
 ;; - enum
 ;; - function (non-static!)
 (defn- create-class [class doclets version base-path]
-  (assoc (parse-general class version)
-         :kind :class
-         :extends (:augments class)
-         :has-extends (boolean (seq (:augments class)))
-         :enums (sort-by :name (map #(create-link-struct % version)
-                                    (get-enums doclets class)))
-         :methods (group-functions
-                   (map #(create-function % doclets version base-path)
-                        (get-functions doclets class)))))
+  (let [parent (get-doclet-by-fullname-and-kind doclets (:memberof class) "class")]
+    (assoc (parse-general class version)
+           :name (if parent
+                   (str (:name parent) "." (:name class))
+                   (:name class))
+           :parent (:memberof class)
+           :kind :class
+           :extends (:augments class)
+           :has-extends (boolean (seq (:augments class)))
+           :enums (sort-by :name (map #(create-link-struct % version)
+                                      (get-enums doclets class)))
+           :methods (group-functions
+                     (map #(create-function % doclets version base-path)
+                          (get-functions doclets class))))))
 
 ;; namespace:
 ;; - namespace
@@ -292,13 +302,10 @@
                            (map #(create-link-struct % version)
                                 (apply concat
                                        (map #(concat [%]
-                                                     (map (fn [c]
-                                                            (assoc c :name
-                                                                   (str (:name %) "." (:name c))))
-                                                          (get-doclets-by-memberof-and-kind
-                                                           doclets
-                                                           %
-                                                           "class")))
+                                                     (get-doclets-by-memberof-and-kind
+                                                      doclets
+                                                      %
+                                                      "class"))
                                             (get-doclets-by-memberof-and-kind doclets
                                                                               namespace
                                                                               "class")))))
@@ -318,6 +325,8 @@
                 res
                 (conj res ns)))
             [] namespaces)))
+
+(defn- fix-class-names [class classes])
 
 (defn structurize [doclets data-path version]
   (info "structurize doclets")
