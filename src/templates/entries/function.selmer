@@ -23,7 +23,7 @@
                             </a>
                             <div class="collapse-div collapse in" aria-expanded="true">
                                 <div class="collapse-content">
-                                    {{f.detailed|safe}}
+                                    {{f.deailed|safe}}
                                 </div>
                             </div>
                         </div>
