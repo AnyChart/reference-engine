@@ -18,12 +18,12 @@
                         <p>{{f.description|safe}}</p>
                         {% if f.has-detailed %}
                         <div class="collapse-group">
-                            <a data-toggle="collapse" aria-expanded="true">
-                                <i class="fa fa-info"></i>Detailed description
+                            <a data-toggle="collapse" aria-expanded="true" href="#detailed-{{f.name}}-{{forloop.counter}}">
+                                <i class="fa fa-info"></i> Detailed description
                             </a>
-                            <div class="collapse-div collapse in" aria-expanded="true">
+                            <div id="detailed-{{f.name}}-{{forloop.counter}}" class="collapse-div collapse" aria-expanded="false">
                                 <div class="collapse-content">
-                                    {{f.deailed|safe}}
+                                    {{f.detailed|safe}}
                                 </div>
                             </div>
                         </div>
