@@ -1,17 +1,11 @@
 language: clojure
 lein: lein2
-node_js:
-  - "0.10"
 branches:
   only:
   - new-master
   - staging
 services:
   - redis-server
-install:
- - gem install compass
-before_script:
- - compass compile
 script: lein2 uberjar
 before_install:
 - openssl aes-256-cbc -K $encrypted_ca052cba0f72_key -iv $encrypted_ca052cba0f72_iv -in id_rsa.enc -out ./.travis/id_rsa -d

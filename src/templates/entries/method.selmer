@@ -58,7 +58,7 @@
                         </table>
                     </div>
                     {% endif %}
-                    {% if o.has-retuns %}
+                    {% if o.returns %}
                     <div class="small-group">
                         <p><strong>Returns:</strong></p>
                         {% for r in o.returns %}
