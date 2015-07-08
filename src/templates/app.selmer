@@ -78,7 +78,7 @@
             <div id="size-controller"></div>
         </div>
         <ol class="breadcrumb"></ol>
-        <a id="top" onclick='$("#content-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});'>
+        <a id="top-page-content" onclick='$("#content-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});'>
             Top <i class="fa fa-arrow-up"></i></a>
 
         {% if not is-last %}

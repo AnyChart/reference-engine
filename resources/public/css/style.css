@@ -354,7 +354,7 @@ a.switcher{
     top: 60px;
     left: 300px;
 }
-#top{
+#top-page-content{
     position: fixed;
     z-index: 6;
     top: 60px;
@@ -363,7 +363,7 @@ a.switcher{
     right: 15px;
     display: none;
 }
-#top:hover{text-decoration: none; color: #79ACD3}
+#top-page-content:hover{text-decoration: none; color: #79ACD3}
 
 .loader{
     display: block;
