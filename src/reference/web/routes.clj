@@ -58,14 +58,20 @@
       (redisca/cache (redis request) (:id version) (:url page) data)
       data)))
 
+(defn- get-page-title [version page info]
+  (str (:url page) " " (:kind info) " | version " (:key version) " | AnyChart API Reference"))
+
 (defn- get-page-data [version page request]
-  (response {:content (generate-page-content version page request)
-             :info (pdata/info page)
-             :version (:key version)
-             :page (:url page)}))
+  (let [info (pdata/info page)]
+    (response {:content (generate-page-content version page request)
+               :info info
+               :version (:key version)
+               :page (:url page)
+               :title (get-page-title version page info)})))
 
 (defn- show-page [version page request]
-  (let [versions (vdata/versions (jdbc request))]
+  (let [versions (vdata/versions (jdbc request))
+        info (pdata/info page)]
     (render-file "templates/app.selmer"
                  {:version (:key version)
                   :tree (vdata/tree-data (jdbc request) (:id version))
@@ -73,11 +79,12 @@
                   :last-version (first versions)
                   :versions versions
                   :debug false
-                  :info (generate-string (pdata/info page))
+                  :info (generate-string info)
                   :page (:url page)
                   :static-version "12"
                   :content (generate-page-content version page request)
-                  :link #(str "/" (:key version) "/" %)})))
+                  :link #(str "/" (:key version) "/" %)
+                  :title (get-page-title version page info)})))
 
 (defn- request-update [request]
   (redisca/enqueue (redis request)

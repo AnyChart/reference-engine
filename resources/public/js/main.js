@@ -75,6 +75,8 @@
 
         $.get(cleanedTarget + "/data", function(res) {
 
+            document.title = res.title;
+
             $("#content-wrapper").html('<div id="content"><div class="content-container">'+res.content+'</div></div>');
             
             updateContentScrolling();

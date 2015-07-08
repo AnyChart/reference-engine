@@ -20,7 +20,6 @@
                  [postgresql/postgresql "8.4-702.jdbc4"]
                  [clojure.jdbc/clojure.jdbc-c3p0 "0.3.2"]
                  [honeysql "0.5.2"]]
-  :plugins [[lein-cljsbuild "1.0.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
   :main reference.core)
