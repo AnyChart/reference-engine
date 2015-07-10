@@ -40,6 +40,7 @@
                                   (let [entry (get context-map (keyword (first args)))]
                                     (render-file "templates/entries/samples.selmer"
                                                  {:entry entry
+                                                  :show-samples (:show-samples context-map)
                                                   :version (:version context-map)
                                                   :playground (:playground context-map)}))))
 
@@ -62,15 +63,16 @@
                                           #"\{@link ([^\}]+)\}"
                                           (str "<a class='type-link' href='/" version "/$1'>$1</a>"))))
 
-(defn- render-template [docs-domain playground-domain version template entry]
+(defn- render-template [docs-domain playground-domain version-key show-samples template entry]
   (fix-links docs-domain
-             version
+             version-key
              (render-file template
                           {:main entry
-                           :version version
+                           :version version-key
+                           :show-samples true
                            :playground playground-domain})))
 
-(defn render-entry [docs-domain playground-domain version entry-type entry]
-  (render-template docs-domain playground-domain version
+(defn render-entry [docs-domain playground-domain version-key show-samples entry-type entry]
+  (render-template docs-domain playground-domain version-key show-samples
                    (str "templates/entries/" entry-type ".selmer")
                    entry))

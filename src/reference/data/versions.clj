@@ -11,17 +11,19 @@
 ;;    commit varchar(40) not NULL,
 ;;    hidden BOOLEAN DEFAULT FALSE,
 ;;    tree TEXT,
-;;    search TEXT
+;;    search TEXT,
+;;    show_samples BOOLEAN DEFAULT TRUE
 ;; );
 
-(defn add-version [jdbc key commit tree search]
+(defn add-version [jdbc key commit tree search show-samples]
   (:id (first (insert! jdbc :versions {:key key
                                        :commit commit
+                                       :show_samples show-samples
                                        :tree (generate-string tree)
                                        :search (generate-string search)}))))
 
 (defn version-by-key [jdbc key]
-  (one jdbc (-> (select :key :id)
+  (one jdbc (-> (select :key :id :show-samples)
                 (from :versions)
                 (where [:= :hidden false]
                        [:= :key key]))))

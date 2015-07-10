@@ -53,6 +53,7 @@
     (let [data (wdata/render-entry (get-in request [:component :config :docs])
                                    (get-in request [:component :config :playground])
                                    (:key version)
+                                   (:show_samples version)
                                    (:type page)
                                    (:content page))]
       (redisca/cache (redis request) (:id version) (:url page) data)

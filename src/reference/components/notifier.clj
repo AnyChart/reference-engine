@@ -38,3 +38,6 @@
 
 (defn complete-version-building [notifier version]
   (notify notifier (str version " build completed")))
+
+(defn build-failed [notifier version]
+  (notify notifier (str version " build FAILED")))

@@ -15,6 +15,7 @@
 {% endfor %}
 {% endif %}
 
+{% if show-samples %}
 {% if entry.has-playground-samples %}
 <div class="small-group">
     <p>
@@ -26,4 +27,5 @@
         </ul>
     </p>
 </div>
+{% endif %}
 {% endif %}
