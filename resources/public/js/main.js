@@ -46,6 +46,8 @@
     }
 
     function loadPage(target, opt_add) {
+        $("#search-results-new").hide();
+        
         if (opt_add == undefined) opt_add = true;
 
         if (target.indexOf("#") == 0) {
@@ -281,7 +283,10 @@
                         if (actual[j].name == item.name) {
                             multiple = true;
                             actual[j].multiple = true;
-                            break;
+                            if (!actual[j].group)
+                                actual[j].group = [actual[j], item];
+                            else
+                                actual[j].group.push(item);
                         }
                     }
                     if (!multiple)
@@ -325,15 +330,44 @@
                 return filterEntries(str, data.typedefs, "typedef");
             }
 
+            var showGroupedResult = function(item, prefix, postfix) {
+                $("ol.breadcrumb li").remove();
+                $("ol.breadcrumb").append("<li class='active'>Search results for " + item.name + "</li>");
+                $("#search-results-new").hide();
+                $("#content-wrapper").mCustomScrollbar('destroy');
+                var $res = $("<ul></ul>");
+                for (var i = 0; i < item.group.length; i++) {
+                    var entry = item.group[i];
+                    $res.append("<li><a class='item-link' href='/" + version + "/" + entry.link + "'>" + prefix + entry["full-name"] + postfix + "</a></li>");
+                }
+
+                $res.find("a").click(typeLinkClick);
+                $("#content-wrapper").html('<div id="content"><div class="content-container"></div></div>');
+                $("#content .content-container").append($res);
+                updateContentScrolling();
+            }
+
             var addToResults = function($res, items, prefix, postfix, title) {
                 if (!items.length) return;
                 $res.append("<li class='group-name'>" + title +"</li>");
+
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i];
-                    if (item.multiple)
-                        $res.append("<li>" + prefix + item.name + postfix + "</a></li>");
-                    else
-                        $res.append("<li><a href='/" + version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
+                    if (item.multiple) {
+                        (function(item) {
+                            var $link = $("<li><a class='group-link' href='#'>" + prefix + item.name + postfix + " <span>"+ item.group.length +" matches</span></a></li>");
+                            $link.find("a").click(function() {
+                                showGroupedResult(item, prefix, postfix);
+                                return false;
+                            });
+                            $res.append($link);
+                        })(item);
+                    }
+                }
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    if (!item.multiple)
+                        $res.append("<li><a class='item-link' href='/" + version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
                 }
             }
 
@@ -350,6 +384,7 @@
                 addToResults($res, searchForEnums(query), "[", "]", "Enums");
                 addToResults($res, searchForTypedefs(query), "{", "}", "Typedefs");
                 addToResults($res, searchForClasses(query), "", "", "Classes");
+                $res.find("a.item-link").click(typeLinkClick);
                 
                 $("#search-results-new").show();
                 $("#search-results-new").html("");
