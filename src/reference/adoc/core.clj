@@ -90,7 +90,10 @@
           (build-media jdbc version-id (:name branch) data-dir)
           (remove-previous-versions jdbc version-id (:name branch))))
       (notifications/complete-version-building notifier (:name branch)))
-    (catch Exception e (notifications/build-failed notifier (:name branch)))))
+    (catch Exception e
+      (do (error e)
+          (error (.getMessage e))
+          (notifications/build-failed notifier (:name branch))))))
 
 (defn build-all
   [jdbc notifier
