@@ -80,6 +80,8 @@
             document.title = res.title;
 
             $("#content-wrapper").html('<div id="content"><div class="content-container">'+res.content+'</div></div>');
+
+            page = res.page;
             
             updateContentScrolling();
             
@@ -166,16 +168,57 @@
     })();
 
     function updateContentScrolling() {
+
+        var isTopVisible = false;
+
+        var checkScrollToTop = function(top) {
+            if (top < 0) {
+                if (!isTopVisible) {
+                    $('#top-page-content').fadeIn();
+                    isTopVisible = true;
+                }
+            } else {
+                if (isTopVisible) {
+                    $('#top-page-content').fadeOut();
+                    isTopVisible = false;
+                }
+            }
+        }
+
+        var findFirstVisible = function() {
+            // we need nearest to 100px
+            var minDistance = Number.MAX_VALUE;
+            var $minEl = null;
+            var d = $("div.content-block.methods h3").each(function() {
+                var $el = $(this);
+                var distance = Math.abs($el.offset().top - 100);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    $minEl = $el;
+                }
+            });
+            return $minEl.attr("id");
+        }
+
+        var currentVisible = null;
+        var onContentScroll = function() {
+            checkScrollToTop(this.mcs.top);
+            var el = findFirstVisible();
+            if (el != currentVisible) {
+                currentVisible = el;
+                var link = "/" + version + "/" + page + "#" + el;
+                doExpandInTree(page, el);
+                highlightInPage(el);
+                
+            }
+            //console.log(this.mcs.top, window.innerHeight);
+        }
+        
         $("#content-wrapper").mCustomScrollbar(
             $.extend(scrollSettings,
                      { callbacks: {
-                         onScroll: function() {
-                             if (this.mcs.top < 0 - window.innerHeight){
-                                 $('#top').fadeIn();
-                             } else{
-                                 $('#top').fadeOut();
-                             }
-                         }}}))}
+                         onScroll: onContentScroll }}));
+    }
 
     $(function() {
 

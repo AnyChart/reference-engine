@@ -11,7 +11,10 @@
         <link href="/css/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/lib/prettiffy/prettify-tomorrow.css"/>
         <link rel="stylesheet" type="text/css" href="/css/style.css"/>
-        <script type="text/javascript">var version="{{version}}";</script>
+        <script type="text/javascript">
+         var version="{{version}}";
+         var page="{{page}}";
+        </script>
     </head>
     <body>
         <div id="search-results-new" style="display:none">
