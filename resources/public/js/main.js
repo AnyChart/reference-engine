@@ -109,14 +109,19 @@
         prettyPrint();
     }
 
-    function highlightInPage(target) {
+    function highlightInPage(target, opt_expand, opt_scroll) {
+        var expand = opt_expand == undefined ? true : opt_expand;
+        var scroll = opt_scroll == undefined ? true : opt_scroll;
         $(".content-container .active").removeClass("active");
-        var entry = getEntryFromUrl(location.pathname);
-        doExpandInTree(entry, target);
-
-        setTimeout(function() {
-            $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + target), {scrollInertia: 700});
-        }, 100);
+        if (expand) {
+            var entry = getEntryFromUrl(location.pathname);
+            doExpandInTree(entry, target);
+        }
+        if (scroll) {
+            setTimeout(function() {
+                $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + target), {scrollInertia: 700});
+            }, 100);
+        }
         $("#" + target).parent().addClass("active");
     }
 
@@ -208,7 +213,7 @@
                 currentVisible = el;
                 var link = "/" + version + "/" + page + "#" + el;
                 doExpandInTree(page, el);
-                highlightInPage(el);
+                highlightInPage(el, false, false);
                 
             }
             //console.log(this.mcs.top, window.innerHeight);
