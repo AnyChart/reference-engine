@@ -12,7 +12,7 @@
                     </a>
                 </h4>
             </div>
-            <div class="pannel-collapse collapse{% if forloop.first %} in{% endif %}" id="accordion-{{m.name}}-{{forloop.counter}}">
+            <div class="pannel-collapse collapse{% if forloop.last %} in{% endif %}" id="accordion-{{m.name}}-{{forloop.counter}}">
                 <div class="panel-body">
                     <div class="small-group">
                         {{o.description|safe}}
