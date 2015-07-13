@@ -122,6 +122,7 @@
             }, 100);
         }
         $("#" + target).parent().addClass("active");
+        location.hash = target;
     }
 
     function doExpandInTree(entry, opt_hash) {
