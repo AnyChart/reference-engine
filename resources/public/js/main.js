@@ -226,6 +226,7 @@
         updateContentScrolling();
         $("#tree-wrapper").mCustomScrollbar(scrollSettings);
 
+
         // tree
         $("#tree li.group").each(function() {
             var $ul = $(this).find(">ul");
@@ -483,6 +484,7 @@ function contentSize(){
         $('#content-wrapper').css('width', window.innerWidth - 300).css('margin-left', 300);
         $('.breadcrumb').css('left', $('#menu-bar').width());
     }
+    $('#search-results-new').css('max-height', window.innerHeight - 145)
 }
 
 function hideSideBar(flag, animate){

@@ -18,7 +18,6 @@
     </head>
     <body>
         <div id="search-results-new" style="display:none">
-            <!-- TODO: максимыльная высота до конца странице, если результатов больше, появляется скролл-->
         </div>
         <div id="header">
             <a class="navbar-brand" href="http://anychart.com/">
