@@ -47,7 +47,7 @@
 
     function loadPage(target, opt_add) {
         $("#search-results-new").hide();
-        
+
         if (opt_add == undefined) opt_add = true;
 
         if (target.indexOf("#") == 0) {
@@ -58,9 +58,8 @@
         if (cleanedTarget == location.pathname) {
             if (target.indexOf("#") != -1) {
                 highlightInPage(target.substr(target.indexOf("#")+1));
-                return false;
             }
-            return true;
+            return false;
         }
 
         if (typeof window.history == "undefined") {
