@@ -28,6 +28,15 @@
         }, 200);
     }
 
+    function scrollTreeToEntry(entry, opt_hash) {
+        var sel = entry + (opt_hash ? ("#" + opt_hash) : "");
+        
+        var $target = $("#tree li[x-data-name='" + sel + "']");
+        window.setTimeout(function(){
+            $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.offset().top - 120, {scrollInertia: 700});
+        }, 200);
+    }
+
     function updateBreadcrumb(path) {
         path = cleanupPath(path);
         $("ol.breadcrumb").html('');
@@ -45,7 +54,7 @@
         }
     }
 
-    function loadPage(target, opt_add) {
+    function loadPage(target, opt_add, opt_scrollTree) {
         $("#search-results-new").hide();
 
         if (opt_add == undefined) opt_add = true;
@@ -70,6 +79,9 @@
             window.history.pushState(null, null, target);
 
         expandInTree(target);
+
+        if (opt_scrollTree)
+            scrollTreeToEntry(cleanedTarget, hash);
         
         $(".content-container").html('<div class="loader"><i class="fa fa-spinner fa-spin fa-pulse fa-2x fa-fw"></i> <span> loading ...</span> </div>');
         $("#content-wrapper").mCustomScrollbar('destroy');
@@ -88,8 +100,12 @@
             updateBreadcrumb(res.page);
             fixLinks();
             fixListings();
-            if (target.indexOf("#") != -1)
-                highlightInPage(target.substr(target.indexOf("#") + 1));
+
+            var hash = null;
+            if (target.indexOf("#") != -1) {
+                hash = target.substr(target.indexOf("#") + 1);
+                highlightInPage(hash);
+            }
         });
 
         return false;
@@ -100,8 +116,13 @@
         return loadPage($(this).attr("href"));
     }
 
+    function typeLinkClickWithTreeScroll(e) {
+        if (e.ctrlKey || e.metaKey) return true;
+        return loadPage($(this).attr("href"), true, true);
+    }
+
     function fixLinks() {
-        $("#content a.type-link").click(typeLinkClick);
+        $("#content a.type-link").click(typeLinkClickWithTreeScroll);
     }
 
     function fixListings() {
@@ -132,7 +153,7 @@
         
         for (var i = 0; i < parts.length; i++) {
             var path = parts.slice(0, (i+1)).join(".");
-            var $el = $("#tree li.group[x-data-name='" + path + "']");
+            var $el = $("#tree li[x-data-name='" + path + "']");
             $el.find(">ul").show();
             $el.find(">a i").removeClass("fa-chevron-right").addClass("fa-chevron-down");
             $el.addClass("active");
@@ -202,14 +223,14 @@
                     $minEl = $el;
                 }
             });
-            return $minEl.attr("id");
+            return $minEl ? $minEl.attr("id") : null;
         }
 
         var currentVisible = null;
         var onContentScroll = function() {
             checkScrollToTop(this.mcs.top);
             var el = findFirstVisible();
-            if (el != currentVisible) {
+            if (el && el != currentVisible) {
                 currentVisible = el;
                 var link = "/" + version + "/" + page + "#" + el;
                 doExpandInTree(page, el);
@@ -229,7 +250,6 @@
         // scrolling
         updateContentScrolling();
         $("#tree-wrapper").mCustomScrollbar(scrollSettings);
-
 
         // tree
         $("#tree li.group").each(function() {
@@ -252,7 +272,8 @@
 
         expandInTree(location.pathname);
         updateBreadcrumb(getEntryFromUrl(location.pathname));
-
+        scrollTreeToEntry(page, location.hash ? location.hash.substr(1) : null);
+        
         // content links
         fixLinks();
         fixListings();
