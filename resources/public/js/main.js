@@ -438,8 +438,26 @@
                 $("#search-results-new").html("");
                 $("#search-results-new").append($res);
             }
+
+            $("#search-results-new").click(function(e) {
+                e.stopPropagation();
+            });
+            $("html").click(function() {
+                $("#search-results-new").hide();
+            });
+            $("#search").click(function() {
+                return false;
+            });
+            $("#search").focus(function() {
+                searchFor($(this).val());
+            });
             
-            $("#search").keyup(function() {
+            $("#search").keyup(function(e) {
+                if (e.keyCode == 27) { //esc
+                    $("#search-results-new").hide();
+                    $("#search").val('');
+                    return;
+                }
                 searchFor($(this).val());
             });
         });
