@@ -216,7 +216,6 @@
                 highlightInPage(el, false, false);
                 
             }
-            //console.log(this.mcs.top, window.innerHeight);
         }
         
         $("#content-wrapper").mCustomScrollbar(
@@ -339,7 +338,7 @@
                         }
                     }
                     if (!multiple)
-                        actual.push(item);
+                        actual.push($.extend({}, item));
                 }
                 return actual;
             }
