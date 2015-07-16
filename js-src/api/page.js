@@ -53,3 +53,7 @@ api.page.highlight = function(target, opt_expand, opt_scroll) {
     $("#" + target).parent().addClass("active");
     location.hash = target;
 };
+
+
+api.page.load = function(target, opt_add, opt_scrollTree) {
+};

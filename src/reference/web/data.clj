@@ -1,8 +1,11 @@
 (ns reference.web.data
-  (:require [selmer.parser :refer [render-file add-tag!]]
+  (:require [selmer.parser :refer [render-file add-tag! render]]
             [selmer.filters :refer [add-filter!]]
             [taoensso.timbre :as timbre :refer [info]]
             [reference.web.tree :refer [tree-view]]))
+
+(defn- escape-str [str]
+  (render "{{val}}" {:val str}))
 
 (add-tag! :link (fn [args context-map]
                   (let [path (clojure.string/split (first args) #"\.")
@@ -12,7 +15,7 @@
 
 (add-tag! :link-or-text (fn [args context-map]
                           (let [path (clojure.string/split (first args) #"\.")
-                                val (get-in context-map (map keyword path))
+                                val (escape-str (get-in context-map (map keyword path)))
                                 version (:version context-map)]
                             (if (.startsWith val "anychart")
                               (str "<a class='type-link' href='/"
@@ -21,7 +24,7 @@
 
 (add-tag! :type-link (fn [args context-map]
                        (let [path (clojure.string/split (first args) #"\.")
-                             val (get-in context-map (map keyword path))
+                             val (escape-str (get-in context-map (map keyword path)))
                              version (:version context-map)]
                          (if (.startsWith val "anychart")
                            (str "<a class='type-link code-style' href='/"
