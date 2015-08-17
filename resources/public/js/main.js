@@ -1,57 +1,22 @@
 (function() {
     function cleanupPath(target) {
-        if (target.indexOf("http") != -1)
-            target = target.substr(target.indexOf("/", target.indexOf("//") + 2));
-        if (target.indexOf("#") != -1)
-            target = target.substr(0, target.indexOf("#"));
-        return target;
+        
     }
 
     function getEntryFromUrl(path) {
-        path = cleanupPath(path);
-        return path.match("^/[^/]+/(.*)$")[1];
+        
     }
 
     function scrollToEntry(entry) {
-        $('.method-block').removeClass('active');
-        $('#' + entry).addClass('active');
-        window.setTimeout(function(){
-            $("#content").css('min-height', $("#content").height());
-            $("#content-wrapper").mCustomScrollbar('scrollTo', $('#' + entry), {scrollInertia: 700});
-            $('.panel').on('hide.bs.collapse', function (e) {
-                var $methodBlock = $(this).parent().parent();
-                if ($methodBlock.hasClass('selected')) {
-                    e.preventDefault();
-                    $methodBlock.removeClass('selected');
-                }
-            });
-        }, 200);
+        
     }
 
     function scrollTreeToEntry(entry, opt_hash) {
-        var sel = entry + (opt_hash ? ("#" + opt_hash) : "");
         
-        var $target = $("#tree li[x-data-name='" + sel + "']");
-        window.setTimeout(function(){
-            $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.offset().top - 120, {scrollInertia: 700});
-        }, 200);
     }
 
     function updateBreadcrumb(path) {
-        path = cleanupPath(path);
-        $("ol.breadcrumb").html('');
-        var parts = path.split(".");
-        for (var i = 0; i < parts.length; i++) {
-            var $el;
-            if (i < parts.length - 1) {
-                var url = parts.slice(0,i+1).join(".");
-                $el = $("<li><a href='/" + version + "/"+url+"'>" + parts[i] + "</a></li>");
-                $el.find("a").click(typeLinkClick);
-            }else {
-                $el = $("<li class='active'>"+parts[i]+"</li>");
-            }
-            $("ol.breadcrumb").append($el);
-        }
+        
     }
 
     function loadPage(target, opt_add, opt_scrollTree) {
@@ -122,76 +87,25 @@
     }
 
     function fixLinks() {
-        $("#content a.type-link").click(typeLinkClickWithTreeScroll);
     }
 
     function fixListings() {
-        prettyPrint();
+        
     }
 
     function highlightInPage(target, opt_expand, opt_scroll) {
-        var expand = opt_expand == undefined ? true : opt_expand;
-        var scroll = opt_scroll == undefined ? true : opt_scroll;
-        $(".content-container .active").removeClass("active");
-        if (expand) {
-            var entry = getEntryFromUrl(location.pathname);
-            doExpandInTree(entry, target);
-        }
-        if (scroll) {
-            setTimeout(function() {
-                $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + target), {scrollInertia: 700});
-            }, 100);
-        }
-        $("#" + target).parent().addClass("active");
-        location.hash = target;
+        
     }
 
     function doExpandInTree(entry, opt_hash) {
-        $("#tree .active").removeClass("active");
         
-        var parts = entry.split(".");
-        
-        for (var i = 0; i < parts.length; i++) {
-            var path = parts.slice(0, (i+1)).join(".");
-            var $el = $("#tree li[x-data-name='" + path + "']");
-            $el.find(">ul").show();
-            $el.find(">a i").removeClass("fa-chevron-right").addClass("fa-chevron-down");
-            $el.addClass("active");
-        }
-
-        if (opt_hash) {
-            var $el = $("#tree li.item[x-data-name='" + entry + "#" + opt_hash + "']");
-            $el.addClass("active");
-        }
     }
 
     function expandInTree(path) {
-        path = cleanupPath(path);
-        var entry = path.match("^/[^/]+/(.*)$")[1];
-        if (entry)
-            doExpandInTree(entry);
+       
     }
     
-    var scrollSettings = (function() {
-        var scrollAmount = 80;
-        var scrollKeyAmount = 100;
-        if (navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i)) {
-            scrollAmount = 2;
-            scrollKeyAmount = 15;
-        }
-        return {
-            scrollInertia: 0,
-            theme: "minimal-dark",
-            mouseWheel: {
-                enable: true,
-                scrollAmount: scrollAmount
-            },
-            keyboard: {
-                enable: true,
-                scrollAmount: scrollKeyAmount,
-                scrollType: 'stepless'
-            }};
-    })();
+    
 
     function updateContentScrolling() {
 
@@ -247,70 +161,7 @@
 
     $(function() {
 
-        // scrolling
-        updateContentScrolling();
-        $("#tree-wrapper").mCustomScrollbar(scrollSettings);
-
-        // tree
-        $("#tree li.group").each(function() {
-            var $ul = $(this).find(">ul");
-            $(this).find(">a").click(function(e) {
-                if (e.ctrlKey || e.metaKey) return true;
-                $ul.toggle();
-                if ($ul.is(":visible"))
-                    $(this).find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
-                else
-                    $(this).find("i").addClass("fa-chevron-right").removeClass("fa-chevron-down");
-                return loadPage($(this).attr("href"));
-            });
-        });
-        
-        $("#tree li.item a").click(function(e) {
-            if (e.ctrlKey || e.metaKey) return true;
-            return loadPage($(this).attr("href"));
-        });
-
-        expandInTree(location.pathname);
-        updateBreadcrumb(getEntryFromUrl(location.pathname));
-        scrollTreeToEntry(page, location.hash ? location.hash.substr(1) : null);
-        
-        // content links
-        fixLinks();
-        fixListings();
-        if (location.hash) {
-            $("#content-wrapper").mCustomScrollbar("scrollTo", $(location.hash));
-        }
-
-        // versions
-        $('.versionselect').on('change', function(){
-            location.href = "/" + $(this).find("option:selected").val() + "/try/" + getEntryFromUrl(location.pathname);
-        });
-        
-        // resize
-        $("#size-controller").on("mousedown", function(e) {
-
-            var mouseUp = function(e) {
-                $("body").off("mouseup", mouseUp);
-                $("body").off("mousemove", mouseMove);
-            }
-
-            var mouseMove = function(e) {
-                if (e.pageX > 250 &&  e.pageX < window.innerWidth - 300) {
-                    $('#menu-bar').css('width', e.pageX);
-                    $('#content-wrapper')
-                        .css('margin-left', e.pageX)
-                        .css('width', window.innerWidth - e.pageX);
-                    $('.breadcrumb').css('left', $('#menu-bar').width());
-                }
-                return false;
-            }
-            
-            $("body").on("mouseup", mouseUp);
-            $("body").on("mousemove", mouseMove);
-            
-            return false;
-        });
-
+       
         // search
         
         $.get("/"+version+"/data/search.json", function(data) {

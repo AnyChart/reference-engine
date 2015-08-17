@@ -1,0 +1,2 @@
+#!/bin/bash
+closure-compiler --js_output_file resources/public/js/reference.min.js --compilation_level SIMPLE `find ./js-src/ -name '*.js'`

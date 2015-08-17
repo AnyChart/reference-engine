@@ -569,7 +569,7 @@ pre.prettyprint ol{
 .collapse-group{
     margin-top: 10px;
 }
-.collapse-group a{
+.collapse-group > a{
     font-size: 14px;
     background: #FCFCFC;
     border: 1px solid #ddd;
