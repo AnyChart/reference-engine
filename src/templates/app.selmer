@@ -20,7 +20,7 @@
         <div id="search-results-new" style="display:none">
         </div>
         <div id="header">
-            <a class="navbar-brand" href="http://anychart.com/">
+            <a class="navbar-brand" href="//anychart.com/">
                 <img src="/i/AnyChart-light-empty.png" width="300" height="72" alt="AnyChart">
                 <div class="chart-row">
                     <span class="chart-col green"></span>
@@ -103,5 +103,5 @@
     <script src="/lib/bootstrap-select.js"></script>
     <script src="/lib/bootstrap3-typeahead.min.js"></script>
     <script src="/lib/prettiffy/prettify.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/main.js"></script>
+    <script src="/js/reference.min.js"></script>
 </html>

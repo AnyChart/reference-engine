@@ -18,7 +18,7 @@ $(function() {
     api.search.init();
 
     api.tree.expand(location.pathname);
-    api.breadcrumb.update(api.utils.getEntryFromUrl(location.pathname));
+    api.breadcrumb.update(api.utils.getEntryFromURL(location.pathname));
 
     api.tree.scrollToEntry(page, location.hash ? location.hash.substr(1) : null);
 

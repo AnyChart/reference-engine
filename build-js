@@ -1,2 +1,3 @@
 #!/bin/bash
-closure-compiler --js_output_file resources/public/js/reference.min.js --compilation_level SIMPLE `find ./js-src/ -name '*.js'`
+closure-compiler --js_output_file resources/public/js/reference.min.js --compilation_level SIMPLE --formatting PRETTY_PRINT `find ./js-src/ -name '*.js'`
+echo build

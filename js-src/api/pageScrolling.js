@@ -6,13 +6,13 @@ goog.require('api.tree');
  * @private
  * @type {boolean} 
  */
-api.pageSrolling.isTopVisible_ = false;
+api.pageScrolling.isTopVisible_ = false;
 
 /**
  * @private
  * @type {Array}
  */
-api.pageSrolling.currentVisible_ = null;
+api.pageScrolling.currentVisible_ = null;
 
 /** 
  * @private
@@ -56,8 +56,8 @@ api.pageScrolling.getFirstVisible_ = function() {
 api.pageScrolling.onContentScroll_ = function() {
     api.pageScrolling.checkTopVisible_(this.mcs.top);
     var el = api.pageScrolling.getFirstVisible_();
-    if (el && el != api.pageSrolling.currentVisible_) {
-        api.pageSrolling.currentVisible_ = el;
+    if (el && el != api.pageScrolling.currentVisible_) {
+        api.pageScrolling.currentVisible_ = el;
         var link = "/" + version + "/" + page + "#" + el;
         api.tree.expand(page, el);
         api.page.highlight(el, false, false);

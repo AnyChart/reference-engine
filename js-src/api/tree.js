@@ -1,6 +1,7 @@
 goog.provide("api.tree");
 
 goog.require("api.config");
+goog.require("api.utils");
 
 /**
  * @param {string} entry
@@ -43,10 +44,10 @@ api.tree.expand_ = function(entry, opt_hash) {
  * @param {string} path
  */
 api.tree.expand = function(path) {
-    path = cleanupPath(path);
-    var entry = path.match("^/[^/]+/(.*)$")[1];
+    path = api.utils.cleanupPath(path);
+    var entry = path.match("^/[^/]+/(.*)$");
     if (entry)
-        api.tree.expand_(entry);
+        api.tree.expand_(entry[1]);
 };
 
 /**
