@@ -47,11 +47,11 @@ api.page.highlight = function(target, opt_expand, opt_scroll) {
     var scroll = opt_scroll == undefined ? true : opt_scroll;
     $(".content-container .active").removeClass("active");
     if (expand) {
-        var entry = api.utils.getEntryFromUrl(location.pathname);
+        var entry = api.utils.getEntryFromURL(location.pathname);
         api.tree.expand(entry, target);
     }
     if (scroll)
-        api.pageScrolling.highlightScroll(taget);
+        api.pageScrolling.highlightScroll(target);
     
     $("#" + target).parent().addClass("active");
     location.hash = target;
@@ -68,7 +68,7 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
     var hash;
     if (target.indexOf("#") != -1)
         hash = target.substr(target.indexOf("#") + 1);
-
+    
     if (cleanedTarget == location.pathname) {
         if (hash)
             api.page.highlight(target.substr(target.indexOf("#") + 1));
