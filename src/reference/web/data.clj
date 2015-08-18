@@ -11,7 +11,9 @@
                   (let [path (clojure.string/split (first args) #"\.")
                         val (get-in context-map (map keyword path))
                         version (:version context-map)]
-                    (str "/" version "/" val))))
+                    (if (.contains val "://")
+                      val
+                      (str "/" version "/" val)))))
 
 (add-tag! :link-or-text (fn [args context-map]
                           (let [path (clojure.string/split (first args) #"\.")
@@ -59,12 +61,19 @@
                           #"\{docs:([^\}]+)\}([^\{]+)\{docs\}"
                           (str "<a href='//" docs-domain "/" version "/$1'>$2</a>")))
 
-(defn- fix-links [docs-domain version data]
+(defn- fix-web-links [docs-domain version data]
   (fix-docs-links docs-domain
                   version
                   (clojure.string/replace data
                                           #"\{@link ([^\}]+)\}"
-                                          (str "<a class='type-link' href='/" version "/$1'>$1</a>"))))
+                                          (str "<a class='type-link' href='$1'>$1</a>"))))
+
+(defn- fix-links [docs-domain version data]
+  (fix-web-links docs-domain
+                 version
+                 (clojure.string/replace data
+                                         #"\{@link (anychart[^\}]+)\}"
+                                         (str "<a class='type-link' href='/" version "/$1'>$1</a>"))))
 
 (defn- render-template [docs-domain playground-domain version-key show-samples template entry]
   (fix-links docs-domain
