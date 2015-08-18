@@ -35,6 +35,6 @@
   (if-not (empty? description)
     (-> description
         (clojure.string/replace #"_media/" "/")
-        (clojure.string/replace #"src='/" (str "src='/i/" version "/"))
-        (clojure.string/replace #"src=\"/" (str "src=\"/i/" version "/")))
+        (clojure.string/replace #"src='/" (str "src='/si/" version "/"))
+        (clojure.string/replace #"src=\"/" (str "src=\"/si/" version "/")))
     ""))
