@@ -7,6 +7,7 @@ goog.require("api.breadcrumb");
 goog.require("api.utils");
 goog.require("api.pageScrolling");
 goog.require("api.search");
+goog.require("api.history");
 
 $(function() {
     api.versions.init();
@@ -24,4 +25,6 @@ $(function() {
 
     if (location.hash)
         api.pageScrolling.scrollTo(location.hash);
+
+    api.history.init();
 });;

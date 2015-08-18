@@ -1,5 +1,4 @@
 goog.provide('api.pageScrolling');
-goog.require('api.page');
 goog.require('api.tree');
 
 /** 
@@ -81,4 +80,10 @@ api.pageScrolling.update = function() {
  */
 api.pageScrolling.scrollTo = function(entry) {
     $("#content-wrapper").mCustomScrollbar("scrollTo", $(entry));
+};
+
+/**
+ */
+api.pageScrolling.destroy = function() {
+    $("#content-wrapper").mCustomScrollbar('destroy');
 };

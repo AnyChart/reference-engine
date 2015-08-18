@@ -21,3 +21,11 @@ api.breadcrumb.update = function(path) {
         $("ol.breadcrumb").append($el);
     }
 };
+
+/**
+ * @param {string} query
+ */
+api.breadcrumb.showSearch = function(query) {
+    $("ol.breadcrumb li").remove();
+    $("ol.breadcrumb").append("<li class='active'>Search results for " + query + "</li>");
+};

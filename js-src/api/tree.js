@@ -11,6 +11,7 @@ api.tree.scrollToEntry = function(entry, opt_hash) {
     var sel = entry + (opt_hash ? ("#" + opt_hash) : "");
     
     var $target = $("#tree li[x-data-name='" + sel + "']");
+    console.log($target);
     window.setTimeout(function(){
         $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.offset().top - 120, {scrollInertia: 700});
     }, 200);
@@ -49,6 +50,15 @@ api.tree.expand = function(path) {
     if (entry)
         api.tree.expand_(entry[1]);
 };
+
+/** */
+api.tree.disableScrolling = function() {
+    $("#tree-wrapper").mCustomScrollbar("disable", true);
+};
+
+/** */
+api.tree.updateScrolling = function() {
+};$("#tree-wrapper").mCustomScrollbar("update");
 
 /**
  */
