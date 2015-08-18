@@ -1,5 +1,8 @@
 goog.provide("api.search");
 
+goog.require("api.config");
+
+
 /** 
  * @private
  * @type {Object}
@@ -119,7 +122,7 @@ api.search.findMethods_ = function(str) {
  * @param {string} str
  * @return {Array}
  */
-api.search.findFunctions = function(str) {
+api.search.findFunctions_ = function(str) {
     return api.search.findGrouped_(str, "namespaces", "functions");
 };
 
@@ -172,7 +175,7 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
     var $res = $("<ul></ul>");
     for (var i = 0; i < item.group.length; i++) {
         var entry = item.group[i];
-        $res.append("<li><a class='item-link' href='/" + version + "/" + entry.link + "'>" + prefix + entry["full-name"] + postfix + "</a></li>");
+        $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["full-name"] + postfix + "</a></li>");
     }
 
     api.page.showSearchResults($res);
@@ -206,8 +209,16 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         if (!item.multiple)
-            $res.append("<li><a class='item-link' href='/" + version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
+            $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
     }
+};
+
+/**
+ * @private
+ * @param {Object} $res
+ */
+api.search.showEmpty_ = function($res) {
+    $res.append("<li>No results found</li>");
 };
 
 /** 
@@ -229,6 +240,8 @@ api.search.search_ = function(query) {
     api.search.addToResults_($res, api.search.findTypedefs_(query), "{", "}", "Typedefs");
     api.search.addToResults_($res, api.search.findClasses_(query), "", "", "Classes");
     $res.find("a.item-link").click(api.links.typeLinkClick);
+
+    if (!$res.find("a").length) api.search.showEmpty_($res);
     
     $("#search-results-new").show();
     $("#search-results-new").html("");
@@ -264,6 +277,6 @@ api.search.onLoad_ = function(data) {
     });
 };
 
-api.search.init = function(version) {
-    $.get("/" + version + "/data/search.json", api.search.onLoad_);
+api.search.init = function() {
+    $.get("/" + api.config.version + "/data/search.json", api.search.onLoad_);
 };

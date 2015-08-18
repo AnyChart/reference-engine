@@ -9,7 +9,10 @@ goog.require("api.pageScrolling");
 goog.require("api.search");
 goog.require("api.history");
 
-$(function() {
+api.core.init = function(version, page) {
+    api.config.version = version;
+    api.config.page = page;
+    
     api.versions.init();
     api.resize.init();
     api.page.fixLinks();
@@ -27,4 +30,4 @@ $(function() {
         api.pageScrolling.scrollTo(location.hash);
 
     api.history.init();
-});;
+};

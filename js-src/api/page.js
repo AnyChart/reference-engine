@@ -47,14 +47,12 @@ api.page.highlight = function(target, opt_expand, opt_scroll) {
     var scroll = opt_scroll == undefined ? true : opt_scroll;
     $(".content-container .active").removeClass("active");
     if (expand) {
-        var entry = getEntryFromUrl(location.pathname);
-        doExpandInTree(entry, target);
+        var entry = api.utils.getEntryFromUrl(location.pathname);
+        api.tree.expand(entry, target);
     }
-    if (scroll) {
-        setTimeout(function() {
-            $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + target), {scrollInertia: 700});
-        }, 100);
-    }
+    if (scroll)
+        api.pageScrolling.highlightScroll(taget);
+    
     $("#" + target).parent().addClass("active");
     location.hash = target;
 };
@@ -95,7 +93,7 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
         document.title = res.title;
         $("#content-wrapper").html('<div id="content"><div class="content-container">'+res.content+'</div></div>');
 
-        page = res.page;
+        api.config.page = res.page;
 
         api.pageScrolling.update();
 

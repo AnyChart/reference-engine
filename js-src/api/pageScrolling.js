@@ -58,7 +58,7 @@ api.pageScrolling.onContentScroll_ = function() {
     if (el && el != api.pageScrolling.currentVisible_) {
         api.pageScrolling.currentVisible_ = el;
         var link = "/" + version + "/" + page + "#" + el;
-        api.tree.expand(page, el);
+        api.tree.expand(api.config.page, el);
         api.page.highlight(el, false, false);
     }
 };
@@ -80,6 +80,16 @@ api.pageScrolling.update = function() {
  */
 api.pageScrolling.scrollTo = function(entry) {
     $("#content-wrapper").mCustomScrollbar("scrollTo", $(entry));
+};
+
+/** 
+ * @param {string} entry
+ */
+api.pageScrolling.highlightScroll = function(entry) {
+    setTimeout(function() {
+        $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
+                                               {scrollInertia: 700});
+    }, 100);
 };
 
 /**

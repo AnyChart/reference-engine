@@ -1,5 +1,8 @@
 goog.provide("api.config");
 
+api.config.version = null;
+api.config.page = null;
+
 api.config.scrollSettings = (function() {
     var scrollAmount = 80;
     var scrollKeyAmount = 100;

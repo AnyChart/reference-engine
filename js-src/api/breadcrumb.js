@@ -13,7 +13,7 @@ api.breadcrumb.update = function(path) {
         var $el;
         if (i < parts.length - 1) {
             var url = parts.slice(0,i+1).join(".");
-            $el = $("<li><a href='/" + version + "/"+url+"'>" + parts[i] + "</a></li>");
+            $el = $("<li><a href='/" + api.config.version + "/"+url+"'>" + parts[i] + "</a></li>");
             $el.find("a").click(api.links.typeLinkClickWithScroll);
         }else {
             $el = $("<li class='active'>"+parts[i]+"</li>");

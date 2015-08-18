@@ -11,7 +11,7 @@ api.tree.scrollToEntry = function(entry, opt_hash) {
     var sel = entry + (opt_hash ? ("#" + opt_hash) : "");
     
     var $target = $("#tree li[x-data-name='" + sel + "']");
-    console.log($target);
+    
     window.setTimeout(function(){
         $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.offset().top - 120, {scrollInertia: 700});
     }, 200);
