@@ -31,9 +31,8 @@
 
 (defn update-links [description version]
   (if-not (empty? description)
-    (clojure.string/replace
-     (clojure.string/replace
-      (clojure.string/replace description #"_media/" "")
-      #"src='/" (str "src='/" version "/"))
-     #"src=\"/" (str "src=\"/" version "/"))
+    (-> description
+        (clojure.string/replace #"_media/" "/")
+        (clojure.string/replace #"src='/" (str "src='/i/" version "/"))
+        (clojure.string/replace #"src=\"/" (str "src=\"/i/" version "/")))
     ""))
