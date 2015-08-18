@@ -1,18 +1,17 @@
 goog.provide('api.pageScrolling');
-goog.require('api.page');
 goog.require('api.tree');
 
 /** 
  * @private
  * @type {boolean} 
  */
-api.pageSrolling.isTopVisible_ = false;
+api.pageScrolling.isTopVisible_ = false;
 
 /**
  * @private
  * @type {Array}
  */
-api.pageSrolling.currentVisible_ = null;
+api.pageScrolling.currentVisible_ = null;
 
 /** 
  * @private
@@ -56,10 +55,10 @@ api.pageScrolling.getFirstVisible_ = function() {
 api.pageScrolling.onContentScroll_ = function() {
     api.pageScrolling.checkTopVisible_(this.mcs.top);
     var el = api.pageScrolling.getFirstVisible_();
-    if (el && el != api.pageSrolling.currentVisible_) {
-        api.pageSrolling.currentVisible_ = el;
+    if (el && el != api.pageScrolling.currentVisible_) {
+        api.pageScrolling.currentVisible_ = el;
         var link = "/" + version + "/" + page + "#" + el;
-        api.tree.expand(page, el);
+        api.tree.expand(api.config.page, el);
         api.page.highlight(el, false, false);
     }
 };
@@ -81,4 +80,20 @@ api.pageScrolling.update = function() {
  */
 api.pageScrolling.scrollTo = function(entry) {
     $("#content-wrapper").mCustomScrollbar("scrollTo", $(entry));
+};
+
+/** 
+ * @param {string} entry
+ */
+api.pageScrolling.highlightScroll = function(entry) {
+    setTimeout(function() {
+        $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
+                                               {scrollInertia: 700});
+    }, 100);
+};
+
+/**
+ */
+api.pageScrolling.destroy = function() {
+    $("#content-wrapper").mCustomScrollbar('destroy');
 };

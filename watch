@@ -1,0 +1,2 @@
+#!/bin/bash
+fswatch -o -r js-src | xargs -n1 -I{} ./build-js

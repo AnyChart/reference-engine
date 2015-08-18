@@ -7,8 +7,12 @@ goog.require("api.breadcrumb");
 goog.require("api.utils");
 goog.require("api.pageScrolling");
 goog.require("api.search");
+goog.require("api.history");
 
-$(function() {
+api.core.init = function(version, page) {
+    api.config.version = version;
+    api.config.page = page;
+    
     api.versions.init();
     api.resize.init();
     api.page.fixLinks();
@@ -18,10 +22,12 @@ $(function() {
     api.search.init();
 
     api.tree.expand(location.pathname);
-    api.breadcrumb.update(api.utils.getEntryFromUrl(location.pathname));
+    api.breadcrumb.update(api.utils.getEntryFromURL(location.pathname));
 
     api.tree.scrollToEntry(page, location.hash ? location.hash.substr(1) : null);
 
     if (location.hash)
         api.pageScrolling.scrollTo(location.hash);
-});;
+
+    api.history.init();
+};

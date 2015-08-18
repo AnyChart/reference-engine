@@ -11,16 +11,12 @@
         <link href="/css/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/lib/prettiffy/prettify-tomorrow.css"/>
         <link rel="stylesheet" type="text/css" href="/css/style.css"/>
-        <script type="text/javascript">
-         var version="{{version}}";
-         var page="{{page}}";
-        </script>
     </head>
     <body>
         <div id="search-results-new" style="display:none">
         </div>
         <div id="header">
-            <a class="navbar-brand" href="http://anychart.com/">
+            <a class="navbar-brand" href="//anychart.com/">
                 <img src="/i/AnyChart-light-empty.png" width="300" height="72" alt="AnyChart">
                 <div class="chart-row">
                     <span class="chart-col green"></span>
@@ -103,5 +99,8 @@
     <script src="/lib/bootstrap-select.js"></script>
     <script src="/lib/bootstrap3-typeahead.min.js"></script>
     <script src="/lib/prettiffy/prettify.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/main.js"></script>
+    <script src="/js/reference.min.js"></script>
+    <script>
+     api.core.init("{{version}}", "{{page}}");
+    </script>
 </html>
