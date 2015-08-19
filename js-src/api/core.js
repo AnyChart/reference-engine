@@ -21,7 +21,7 @@ api.core.init = function(version, page) {
     api.pageScrolling.update();
     api.search.init();
 
-    api.tree.expand(location.pathname);
+    api.tree.expand(location.pathname, location.hash);
     api.breadcrumb.update(api.utils.getEntryFromURL(location.pathname));
 
     api.tree.scrollToEntry(page, location.hash ? location.hash.substr(1) : null);

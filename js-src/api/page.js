@@ -52,9 +52,10 @@ api.page.highlight = function(target, opt_expand, opt_scroll) {
     }
     if (scroll)
         api.pageScrolling.highlightScroll(target);
+    else
+        location.hash = target;
     
     $("#" + target).parent().addClass("active");
-    location.hash = target;
 };
 
 
@@ -72,6 +73,7 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
     if (cleanedTarget == location.pathname) {
         if (hash)
             api.page.highlight(target.substr(target.indexOf("#") + 1));
+        api.tree.expand(target, hash ? "#" + hash : undefined);
         return false;
     }
 
@@ -114,10 +116,10 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
  * @param {Object} $results
  */
 api.page.showSearchResults = function($results) {
-    $results.find("a").click(api.links.typeLinkClick);
     api.pageScrolling.destroy();
 
     $("#content-wrapper").html('<div id="content"><div class="content-container"></div></div>');
     $("#content .content-container").append($results);
+    $("#content .content-container a").click(api.links.typeLinkClickWithScroll);
     api.pageScrolling.update();
 };

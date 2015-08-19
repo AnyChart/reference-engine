@@ -11,10 +11,11 @@ api.tree.scrollToEntry = function(entry, opt_hash) {
     var sel = entry + (opt_hash ? ("#" + opt_hash) : "");
     
     var $target = $("#tree li[x-data-name='" + sel + "']");
-    
-    window.setTimeout(function(){
-        $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.offset().top - 120, {scrollInertia: 700});
-    }, 200);
+    if ($target.length) {
+        window.setTimeout(function(){
+            $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.offset().top - 120, {scrollInertia: 700});
+        }, 200);
+    }
 };
 
 /**
@@ -34,7 +35,6 @@ api.tree.expand_ = function(entry, opt_hash) {
         $el.find(">a i").removeClass("fa-chevron-right").addClass("fa-chevron-down");
         $el.addClass("active");
     }
-
     if (opt_hash) {
         var $el = $("#tree li.item[x-data-name='" + entry + "#" + opt_hash + "']");
         $el.addClass("active");
@@ -43,12 +43,14 @@ api.tree.expand_ = function(entry, opt_hash) {
 
 /** 
  * @param {string} path
+ * @param {string=} opt_hash
  */
-api.tree.expand = function(path) {
+api.tree.expand = function(path, opt_hash) {
     path = api.utils.cleanupPath(path);
     var entry = path.match("^/[^/]+/(.*)$");
+    
     if (entry)
-        api.tree.expand_(entry[1]);
+        api.tree.expand_(entry[1], opt_hash ? opt_hash.substr(1) : undefined);
 };
 
 /** */
