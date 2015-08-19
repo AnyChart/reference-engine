@@ -103,7 +103,6 @@ api.pageScrolling.highlightScroll = function(entry) {
     setTimeout(function() {
         $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
                                                {scrollInertia: 700});
-        location.hash = entry.substr(entry.indexOf("#") + 1);
     }, 100);
 };
 
