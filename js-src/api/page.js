@@ -41,18 +41,21 @@ api.page.fixListings = function() {
  * @param {string} target
  * @param {boolean=} opt_expand
  * @param {boolean=} opt_scroll
+ * @param {boolean=} opt_addHash
  */
-api.page.highlight = function(target, opt_expand, opt_scroll) {
+api.page.highlight = function(target, opt_expand, opt_scroll, opt_addHash) {
     var expand = opt_expand == undefined ? true : opt_expand;
     var scroll = opt_scroll == undefined ? true : opt_scroll;
+    var addHash = opt_addHash == undefined ? false : opt_addHash;
     $(".content-container .active").removeClass("active");
     if (expand) {
         var entry = api.utils.getEntryFromURL(location.pathname);
         api.tree.expand(entry, target);
     }
+    
     if (scroll)
         api.pageScrolling.highlightScroll(target);
-    else
+    else if (addHash)
         location.hash = target;
     
     $("#" + target).parent().addClass("active");

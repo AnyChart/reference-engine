@@ -68,7 +68,7 @@ api.pageScrolling.onContentScroll_ = function() {
             api.pageScrolling.currentVisible_ = el;
             var link = "/" + version + "/" + page + "#" + el;
             api.tree.expand(location.pathname, "#" + el);
-            api.page.highlight(el, false, false);
+            api.page.highlight(el, false, false, true);
         }
     }else {
         api.pageScrolling.currentVisible_ = null;
