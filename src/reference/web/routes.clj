@@ -120,6 +120,7 @@
   (POST "/_update_reference_" [] request-update)
   (GET "/latest/" [] redirect-latest)
   (GET "/latest" [] redirect-latest)
+  (GET "/latest/:page" [] redirect-latest-page)
   (GET "/:version/" [] (check-version-middleware show-default-ns))
   (GET "/:version" [] (check-version-middleware show-default-ns))
   (GET "/:version/data/tree.json" [] (wrap-json-response (check-version-middleware

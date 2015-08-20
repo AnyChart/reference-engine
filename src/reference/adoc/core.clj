@@ -7,7 +7,7 @@
             [reference.adoc.tree :refer [generate-tree]]
             [reference.adoc.search :refer [generate-search-index]]
             [reference.adoc.media :refer [move-media]]
-            [reference.adoc.categories :refer [build-class-categories build-namespace-categories]]
+            [reference.adoc.categories :refer [parse-categories-order build-class-categories build-namespace-categories]]
             [reference.git :as git]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
@@ -69,18 +69,22 @@
     (do
       (info "building" branch)
       (notifications/start-version-building notifier (:name branch))
-      (let [doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
+      (let [categories-order (parse-categories-order data-dir (:name branch))
+            doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
             raw-top-level (structurize doclets data-dir (:name branch))
             inh-top-level (assoc raw-top-level
                                  :classes (build-inheritance (:classes raw-top-level)))
             top-level (assoc inh-top-level
-                             :namespaces (doall (map build-namespace-categories
+                             :namespaces (doall (map #(build-namespace-categories
+                                                       % categories-order)
                                                      (:namespaces inh-top-level)))
-                             :classes (doall (map build-class-categories
+                             :classes (doall (map #(build-class-categories
+                                                    % categories-order)
                                                   (:classes inh-top-level))))
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level)
             config (get-version-config data-dir (:name branch))]
+        (info "categories order:" categories-order)
         (let [version-id (vdata/add-version jdbc
                                             (:name branch)
                                             (:commit branch)
