@@ -87,8 +87,8 @@
 
 (defn- get-short-description [entry version]
   (parse-description
-   (if (seq (get-tag entry "shortDescription"))
-     (first (get-tag entry "shortDescription"))
+   (if (seq (get-tag entry "shortdescription"))
+     (:text (first (get-tag entry "shortdescription")))
      (if (:description entry)
        (if (.contains (:description entry) "\n")
          (subs (:description entry) 0 (.indexOf (:description entry) "\n"))
@@ -96,10 +96,14 @@
        ""))
    version))
 
+(defn- has-short-description [entry]
+  (boolean (seq (get-tag entry "shortdescription"))))
+
 (defn- parse-general [entry version]
   {:name (:name entry)
    :description (parse-description (:description entry) version)
    :short-description (get-short-description entry version)
+   :has-short-description (has-short-description entry)
    :has-description (not (empty? (:description entry)))
    :full-name (cleanup-name (:longname entry))
    :since (:since entry)
@@ -144,7 +148,9 @@
            :has-listings (boolean (seq listings)))))
 
 (defn- get-functions-group-short-description [methods]
-  (:short-description (first methods)))
+  (if-let [method (first (filter #(:has-short-description %) methods))]
+    (:short-description method)
+    (:short-description (first methods))))
 
 (defn- group-functions [functions]
   (if-not (empty? functions)
