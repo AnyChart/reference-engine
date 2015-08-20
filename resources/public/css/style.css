@@ -353,6 +353,24 @@ a.switcher{
     font-size: 24px;
     color: #929292;
 }
+#content .landing h2{
+    margin: 20px 0 15px 0;
+}
+#content .landing p{
+    margin: 0;
+}
+#content .landing ul{
+    margin: 0 0 0 20px;
+}
+img.img-in-context{
+    float: left;
+    display: block;
+    margin: 10px 0;
+    width: 440px;
+    max-width: 100%;
+    background: #fff;
+    border: 1px solid #e9e9e9;
+}
 .breadcrumb{
     border-radius: 0;
     background: #F8F8F8;
@@ -390,20 +408,55 @@ a.switcher{
 .loader span{
      vertical-align: middle;
 }
-.warning-version{
-    position: fixed;
-    z-index: 6;
-    top: 105px;
+.alert-default{
     line-height: 18px;
-    width: 270px;
     padding: 10px;
-    right: 20px;
     color: #323c44;
     -webkit-box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.5);
     box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.5);
     border-radius: 2px;
     background: #fff;
     border: 1px solid #e9e9e9;
+}
+.alert-default-inline{
+    float: right;
+    width: 165px;
+    display: inline-block;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    margin-left: 30px;
+}
+.alert-default.visible-xs{
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+.alert-default-inline h4{
+    text-align: right;
+}
+.alert-default-inline li{
+    text-align: right;
+}
+.alert-default-inline a, .alert-with-columns a{
+    font-size: 13px;
+    color:#929292;
+}
+.alert-with-columns{
+    -webkit-column-count: 3; /* Chrome, Safari, Opera */
+    -moz-column-count: 3; /* Firefox */
+    column-count: 3;
+    -webkit-column-gap: 20px; /* Chrome, Safari, Opera */
+    -moz-column-gap: 20px; /* Firefox */
+    column-gap: 20px;
+}
+.warning-version{
+    position: fixed;
+    z-index: 6;
+    top: 105px;
+    right: 20px;
+    width: 270px;
+}
+.alert-padding{
+    padding: 20px 30px 30px;
 }
 .warning-version .fa{color: #ff6c00;}
 .warning-version a{
@@ -459,6 +512,7 @@ a.switcher{
 }
 .content-block ul.list{
     margin-left: 20px;
+    margin-top: 10px;
 }
 .content-block.methods .table>tbody>tr>td{
     font-size: 14px;
@@ -488,6 +542,10 @@ a.switcher{
 }
 .content-block p.bottom-space{
     margin: 0 0 10px 0;
+}
+div.space{
+    margin: 0 0 10px 0;
+    clear: left;
 }
 
 .method-block{
@@ -519,7 +577,13 @@ a.switcher{
     border-color: #2078BB;
 }
 
-
+.try-it-sample{
+    padding: 5px 15px 0 15px;
+    margin: 5px 30px 10px 0;
+    float: left;
+    border: 1px solid #ddd;
+    display: inline-block;
+}
 .panel-heading {
     padding: 0;
 }
