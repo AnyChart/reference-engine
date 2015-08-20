@@ -1,0 +1,7 @@
+<!doctype html>
+
+<body>
+    {% for v in versions %}
+    <div>{{v}}</div>
+    {% endfor %}
+</body>

@@ -20,6 +20,9 @@
 (defn- redis [request]
   (-> request :component :redis))
 
+(defn- show-landing [request]
+  (render-file "templates/landing.selmer" {:versions (vdata/versions (jdbc request))}))
+
 (defn- show-default-version [request]
   (redirect (str "/" (vdata/default (jdbc request)) "/anychart")))
 
@@ -112,7 +115,7 @@
 
 (defroutes app-routes
   (route/resources "/")
-  (GET "/" [] show-default-version)
+  (GET "/" [] show-landing)
   (GET "/_update_reference_" [] request-update)
   (POST "/_update_reference_" [] request-update)
   (GET "/latest/" [] redirect-latest)
