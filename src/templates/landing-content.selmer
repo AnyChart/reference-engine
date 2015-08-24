@@ -1,76 +1,83 @@
-<div class="alert alert-default alert-default-inline alert-padding hidden-xs">
-    <h4>Versions List</h4>
-    <ul class="list list-unstyled">
-        {% for v in versions %}
-        <li><a href="/{{v}}/anychart">{{v}}</a></li>
-        {% endfor %}
-    </ul>
-</div>
-
-<h1>API Reference</h1>
-
-<div class="alert alert-default alert-padding visible-xs">
-    <h4>Versions List</h4>
-    <ul class="list list-unstyled alert-with-columns">
-        {% for v in versions %}
-        <li><a href="/{{v}}/anychart">{{v}}</a></li>
-        {% endfor %}
-    </ul>
-</div>
-<p>AnyChart API Reference is a tool for fast search of methods, classes, functions and constants in anychart namespace.
-    <p> It contains a description and usage samples of all methods in products:
-        <ul class="list list-dotted">
-            <li><a class="type-link" href="/develop/anychart#cartesian">Charts</a></li>
-            <li><a class="type-link" href="/develop/anychart#map">Maps</a></li>
-            <li><a class="type-link" href="/develop/anychart#bar">Gantt</a></li>
-            <li><a class="type-link" href="/develop/anychart#column">Gauges</a></li>
-            <li><a class="type-link" href="/develop/anychart#financial">Tables (layout instrument)</a></li>
-            <li><a class="type-link" href="/develop/anychart#line">General drawing tool (graphics)</a></li>
+<div class="landing">
+    <div class="alert alert-default alert-default-inline alert-padding hidden-xs">
+        <h4>Versions List</h4>
+        <ul class="list list-unstyled">
+            {% for v in versions %}
+            <li><a href="/{{v}}/anychart">{{v}}</a></li>
+            {% endfor %}
         </ul>
+    </div>
 
-        <h2>How to Use</h2>
-        <p> There are a few special things about this reference.</p>
-        <p> <strong>First</strong> of all we are proud to tell that we have at least one example of usage for each method. A links for this samples look like: </p>
-        <div class="try-it-sample">
-            <div class="small-group">
-                <p><strong>Try it:</strong>
-                    <ul class="list list-dotted">
-                        <li><a class="code-style" target="_blank" href="//playground.anychart.stg/api/develop/Users/olga/work/git_repositories/reference-engine//core/anychart.core.Chart.title1-plain">Usage sample</a></li>
-                    </ul>
+    <h1>API Reference</h1>
+
+    <div class="alert alert-default alert-padding visible-xs">
+        <h4>Versions List</h4>
+        <ul class="list list-unstyled alert-with-columns">
+            {% for v in versions %}
+            <li><a href="/{{v}}/anychart">{{v}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <p>AnyChart API Reference is a tool for fast search of methods, classes, functions and constants in anychart namespace.
+        <p> It contains a description and usage samples of all methods in products:
+            <ul class="list list-dotted">
+                <li><a class="type-link" href="/develop/anychart#cartesian">Charts</a></li>
+                <li><a class="type-link" href="/develop/anychart#map">Maps</a></li>
+                <li><a class="type-link" href="/develop/anychart#bar">Gantt</a></li>
+                <li><a class="type-link" href="/develop/anychart#column">Gauges</a></li>
+                <li><a class="type-link" href="/develop/anychart#financial">Tables (layout instrument)</a></li>
+                <li><a class="type-link" href="/develop/anychart#line">General drawing tool (graphics)</a></li>
+            </ul>
+
+            <h2>How to Use</h2>
+            <p> There are a few special things about this reference.</p>
+            <p> <strong>First</strong> of all we are proud to tell that we have at least one example of usage for each method. A links for this samples look like: </p>
+            <div class="try-it-sample">
+                <div class="small-group">
+                    <p><strong>Try it:</strong>
+                        <ul class="list list-dotted">
+                            <li><a class="code-style" target="_blank" href="//playground.anychart.stg/api/develop/Users/olga/work/git_repositories/reference-engine//core/anychart.core.Chart.title1-plain">Usage sample</a></li>
+                        </ul>
+                </div>
             </div>
-        </div>
-        
-        <div style="clear: left"></div>
-        <p> This sample will appear in playground we made specially to provide comfortable and quick working
-            with AnyChart Documentation and this API Reference.</p>
-        <img src="/i/playground_preview.jpg" class='img-in-context'/>
+            
+            <div style="clear: left"></div>
+            <p> This sample will appear in playground we made specially to provide comfortable and quick working
+                with AnyChart Documentation and this API Reference.</p>
+            <img src="/i/playground_preview.jpg" class='img-in-context'/>
 
-        <div class="space"></div>
-        <p> <strong>Second</strong> note is about denotations in tree. There are some difference between nodes:  </p>
-        <ul class="list list-dotted">
-            <li>namespaces - are written in low case, example: <a class="type-link" href="/develop/anychart">#anychart</a> </li>
-            <li>ClassNames - are written in camel case, example: <a class="type-link" href="/develop/anychart.SignalEvent">#SignalEvent</a> </li>
-            <li>CONSTANTS - are written in upper case, example: <a class="type-link" href="/develop/anychart#VERSION">#VERSION</a>  </li>
-            <li>methods() - are written in low case and parentheses are added, example: <a class="type-link" href="/develop/anychart#area">#area()</a> </li>
-            <li>[Enums] - are written in square brackets, example: <a class="type-link" href="/develop/anychart.enums.Anchor">[Anchor]</a> </li>
-            <li>{Typedefs} - are written in curly braces, example: <a class="type-link" href="/anychart.graphics.vector.Fill">{Fill}</a> </li>
-        </ul>
+            <div class="space"></div>
+            <p> <strong>Second</strong> note is about denotations in tree. There are some difference between nodes:  </p>
+            <ul class="list list-dotted">
+                <li>namespaces - are written in low case, example: <a class="type-link" href="/develop/anychart">#anychart</a> </li>
+                <li>ClassNames - are written in camel case, example: <a class="type-link" href="/develop/anychart.SignalEvent">#SignalEvent</a> </li>
+                <li>CONSTANTS - are written in upper case, example: <a class="type-link" href="/develop/anychart#VERSION">#VERSION</a>  </li>
+                <li>methods() - are written in low case and parentheses are added, example: <a class="type-link" href="/develop/anychart#area">#area()</a> </li>
+                <li>[Enums] - are written in square brackets, example: <a class="type-link" href="/develop/anychart.enums.Anchor">[Anchor]</a> </li>
+                <li>{Typedefs} - are written in curly braces, example: <a class="type-link" href="/anychart.graphics.vector.Fill">{Fill}</a> </li>
+            </ul>
 
-        <div class="space"></div>
-        <p> <strong>Third</strong> note is about search usage.
-            <p>For convenience we used type ahead in our search input, and as soon as some name of methods are really common ('fill' - is really good sample of that),
-                we added the number of repetition in the search results, written with light grey color
-                (by clicking on it the list of all this methods will be shown)
-                <p> We also separated search by result types: functions and methods go first, then enums, typedefs and classes follow.</p>
-                <img src="/i/search_preview.jpg" class='img-in-context'/>
+            <div class="space"></div>
+            <p> <strong>Third</strong> note is about search usage.
+                <p>For convenience we used type ahead in our search input, and as soon as some name of methods are really common ('fill' - is really good sample of that),
+                    we added the number of repetition in the search results, written with light grey color
+                    (by clicking on it the list of all this methods will be shown)
+                    <p> We also separated search by result types: functions and methods go first, then enums, typedefs and classes follow.</p>
+                    <img src="/i/search_preview.jpg" class='img-in-context'/>
 
-                <div class="space"></div>
-                <p> <strong>Forth</strong> note is about overrides. </p>
-                <p style="color: red"> Рома объяснит вам это здесь </p>
-                
+                    <div class="space"></div>
+                    <p> <strong>Forth</strong> note is about overrides. </p>
+                    <p style="color: red"> Рома объяснит вам это здесь </p>
+                    
 
-                <h2>How to Contribute</h2>
-                <p style="color: red"> Это тоже напишет Рома.</p>
+                    <h2>How to Contribute</h2>
+                    <p style="color: red"> Это тоже напишет Рома.</p>
 
-                <h2>How to Start</h2>
-                <p style="color: red"> И это тоже напишет Рома.</p>
+                    <h2>How to Start</h2>
+                    <p style="color: red"> И это тоже напишет Рома.</p>
+                </p>
+            </p>
+                    </p>
+        </p>
+    </p>
+</div>

@@ -362,6 +362,10 @@ a.switcher{
 #content .landing ul{
     margin: 0 0 0 20px;
 }
+#content .landing .alert {
+    position: relative;
+    z-index: 9999999;
+}
 img.img-in-context{
     float: left;
     display: block;
