@@ -21,12 +21,12 @@
     <p>AnyChart API Reference is a tool for fast search of methods, classes, functions and constants in anychart namespace.
         <p> It contains a description and usage samples of all methods in products:
             <ul class="list list-dotted">
-                <li><a class="type-link" href="/develop/anychart#cartesian">Charts</a></li>
-                <li><a class="type-link" href="/develop/anychart#map">Maps</a></li>
-                <li><a class="type-link" href="/develop/anychart#bar">Gantt</a></li>
-                <li><a class="type-link" href="/develop/anychart#column">Gauges</a></li>
-                <li><a class="type-link" href="/develop/anychart#financial">Tables (layout instrument)</a></li>
-                <li><a class="type-link" href="/develop/anychart#line">General drawing tool (graphics)</a></li>
+                <li><a class="type-link" href="/{{version}}/anychart#cartesian">Charts</a></li>
+                <li><a class="type-link" href="/{{version}}/anychart#map">Maps</a></li>
+                <li><a class="type-link" href="/{{version}}/anychart#bar">Gantt</a></li>
+                <li><a class="type-link" href="/{{version}}/anychart#column">Gauges</a></li>
+                <li><a class="type-link" href="/{{version}}/anychart#financial">Tables (layout instrument)</a></li>
+                <li><a class="type-link" href="/{{version}}/anychart#line">General drawing tool (graphics)</a></li>
             </ul>
 
             <h2>How to Use</h2>

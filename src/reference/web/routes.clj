@@ -24,7 +24,8 @@
   (let [versions (vdata/versions (jdbc request))
         version-key (first versions)]
         (response {:content (render-file "templates/landing-content.selmer"
-                                         {:versions versions})
+                                         {:versions versions
+                                          :version version-key})
                    :info {}
                    :version version-key
                    :page ""
@@ -44,7 +45,8 @@
                   :page ""
                   :static-version "12"
                   :content (render-file "templates/landing-content.selmer"
-                                        {:versions versions})
+                                        {:versions versions
+                                         :version (:key version)})
                   :link #(str "/" (:key version) "/" %)
                   :title "AnyChart API Reference"})))
 
