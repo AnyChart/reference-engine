@@ -961,3 +961,8 @@ a.soc-network:hover .soc-network-icon.in {
 }
 
 .in-content{display: none}
+code {
+    white-space: pre-wrap;
+    word-break: break-all;
+    word-wrap: break-word;
+}
