@@ -263,7 +263,9 @@ a.switcher{
     cursor: pointer;
     padding: 1px 5px 3px;
     border-radius: 3px;
-    width: 100%;
+    min-width: 100%;
+    /* width: 100%; */
+    
     display: inline-block;
     margin-left: -5px;
 }
