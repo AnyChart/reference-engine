@@ -18,5 +18,6 @@ api.utils.cleanupPath = function(target) {
  */
 api.utils.getEntryFromURL = function(path) {
     path = api.utils.cleanupPath(path);
+    if (path == "/") return "";
     return path.match("^/[^/]+/(.*)$")[1];
 };

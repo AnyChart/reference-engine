@@ -70,10 +70,12 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
     var cleanedTarget = api.utils.cleanupPath(target);
 
     var hash;
-    if (target.indexOf("#") != -1)
+    if (target.indexOf("#") != -1 && target.indexOf("#") != target.length - 1)
         hash = target.substr(target.indexOf("#") + 1);
+
+    var prev = "/" + api.config.version + "/" + api.config.page;
     
-    if (cleanedTarget == location.pathname) {
+    if (cleanedTarget == prev) {
         if (hash)
             api.page.highlight(target.substr(target.indexOf("#") + 1));
         api.tree.expand(target, hash ? "#" + hash : undefined);
@@ -93,6 +95,9 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
     $(".content-container").html('<div class="loader"><i class="fa fa-spinner fa-spin fa-pulse fa-2x fa-fw"></i> <span> loading ...</span> </div>');
 
     api.pageScrolling.destroy();
+
+    if (cleanedTarget == "/")
+        cleanedTarget = "/" + api.config.version + "/landing";
 
     $.get(cleanedTarget + "/data", function(res) {
         document.title = res.title;

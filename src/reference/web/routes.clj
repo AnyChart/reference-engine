@@ -20,8 +20,33 @@
 (defn- redis [request]
   (-> request :component :redis))
 
+(defn- landing-content [request]
+  (let [versions (vdata/versions (jdbc request))
+        version-key (first versions)]
+        (response {:content (render-file "templates/landing-content.selmer"
+                                         {:versions versions})
+                   :info {}
+                   :version version-key
+                   :page ""
+                   :title "AnyChart API Reference"})))
+
 (defn- show-landing [request]
-  (render-file "templates/landing.selmer" {:versions (vdata/versions (jdbc request))}))
+  (let [versions (vdata/versions (jdbc request))
+        version (vdata/version-by-key (jdbc request) (first versions))]
+    (render-file "templates/app.selmer"
+                 {:version (:key version)
+                  :tree (vdata/tree-data (jdbc request) (:id version))
+                  :is-last true
+                  :last-version (first versions)
+                  :versions versions
+                  :debug false
+                  :info (generate-string {})
+                  :page ""
+                  :static-version "12"
+                  :content (render-file "templates/landing-content.selmer"
+                                        {:versions versions})
+                  :link #(str "/" (:key version) "/" %)
+                  :title "AnyChart API Reference"})))
 
 (defn- show-default-version [request]
   (redirect (str "/" (vdata/default (jdbc request)) "/anychart")))
@@ -121,6 +146,7 @@
   (GET "/latest/" [] redirect-latest)
   (GET "/latest" [] redirect-latest)
   (GET "/latest/:page" [] redirect-latest-page)
+  (GET "/:version/landing/data" [] landing-content)
   (GET "/:version/" [] (check-version-middleware show-default-ns))
   (GET "/:version" [] (check-version-middleware show-default-ns))
   (GET "/:version/data/tree.json" [] (wrap-json-response (check-version-middleware

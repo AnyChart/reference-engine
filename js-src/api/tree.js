@@ -46,7 +46,13 @@ api.tree.expand_ = function(entry, opt_hash) {
  * @param {string=} opt_hash
  */
 api.tree.expand = function(path, opt_hash) {
+    
     path = api.utils.cleanupPath(path);
+    if (path == "/") {
+        $("#tree .active").removeClass("active");
+        $("#tree-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});
+        return;
+    }
     var entry = path.match("^/[^/]+/(.*)$");
     
     if (entry)

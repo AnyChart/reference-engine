@@ -2,12 +2,21 @@ goog.provide("api.breadcrumb");
 goog.require("api.utils");
 goog.require("api.links");
 
+/** @private */
+api.breadcrumb.landing_ = function() {
+    $("ol.breadcrumb").append("<li class='active'>home</li>");
+};
+
 /** 
  * @param {string} path
  */
 api.breadcrumb.update = function(path) {
     path = api.utils.cleanupPath(path);
+    
     $("ol.breadcrumb").html('');
+    if (path == "")
+        return api.breadcrumb.landing_();
+    
     var parts = path.split(".");
     for (var i = 0; i < parts.length; i++) {
         var $el;
