@@ -11,7 +11,7 @@ api.resize.hiddenMenuSize_ = 30;
  * @private
  * @type {Number}
  */
-api.resize.visibileMenuSize_ = 300;
+api.resize.visibleMenuSize_ = 300;
 
 /** 
  * @private
@@ -91,7 +91,7 @@ api.resize.showSidebar_ = function(animate) {
     api.resize.sidebarVisible_ = true;
 
     var w = api.resize.visibleMenuSize_;
-
+    
     if (animate){
         $('#menu-bar').animate({width: w}, w);
         $('#content-wrapper').animate({marginLeft: w, width: window.innerWidth - w}, w);

@@ -65,7 +65,8 @@ api.tree.disableScrolling = function() {
 
 /** */
 api.tree.updateScrolling = function() {
-};$("#tree-wrapper").mCustomScrollbar("update");
+    $("#tree-wrapper").mCustomScrollbar("update");
+};
 
 /**
  */

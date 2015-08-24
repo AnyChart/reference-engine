@@ -40,7 +40,7 @@
             </div>
         </div>
         <div id="menu-bar">
-            <a class="switcher" onclick="hideSideBar(true, true)"> <i class="fa fa-chevron-left"></i></a>
+            <a class="switcher"> <i class="fa fa-chevron-left"></i></a>
             <div id="search-form">
                 <form class="form-horizontal" role="form">
                     <div class="form-group has-feedback">
