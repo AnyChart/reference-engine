@@ -330,7 +330,7 @@ a.switcher{
 #content{
     background: #fff;
     color: #323c44;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: normal;
     position: relative;
 }
@@ -347,7 +347,7 @@ a.switcher{
     column-gap: 30px;
 }
 #content h1{
-    margin: 0 0 10px 0;
+    margin: 0 0 20px 0;
     font-size: 26px;
 }
 #content h2{
