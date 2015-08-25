@@ -77,12 +77,14 @@ api.tree.init = function() {
         var $ul = $(this).find(">ul");
         $(this).find(">a").click(function(e) {
             if (e.ctrlKey || e.metaKey) return true;
-            $ul.toggle();
-            if ($ul.is(":visible"))
-                $(this).find("i").addClass("fa-chevron-down").removeClass("fa-chevron-right");
-            else
+            if ($ul.is(":visible")) {
                 $(this).find("i").addClass("fa-chevron-right").removeClass("fa-chevron-down");
-            return api.page.load($(this).attr("href"));
+                $ul.hide();
+            }else {
+                $ul.show();
+                return api.page.load($(this).attr("href"));
+            }
+            return false;
         });
     });
     

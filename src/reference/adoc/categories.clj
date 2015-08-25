@@ -3,23 +3,23 @@
             [clojure.java.io :refer [file]]))
 
 (defn- get-method-category [method]
-  (set (doall (reduce (fn [res override]
-                        (if (:has-category override)
-                          (conj res (:category override))
-                          res)) [] (:overrides method)))))
+  (doall (reduce (fn [res override]
+                   (if (:has-category override)
+                     (conj res (:category override))
+                     res)) #{} (:overrides method))))
 
 (defn- get-class-categories [methods]
-  (set (doall (reduce (fn [res method]
-                        (let [categories (filter some? (map get-method-category method))]
-                          (concat res categories)))
-                      [] methods))))
+  (doall (reduce (fn [res method]
+                   (let [categories (filter some? (map get-method-category method))]
+                     (concat res categories)))
+                 #{} methods)))
 
 (defn- get-namespace-categories [functions]
-  (set (doall (reduce (fn [res func]
-                        (if (:has-category func)
-                          (conj res (:category func))
-                          res))
-                      [] functions))))
+  (doall (reduce (fn [res func]
+                   (if (:has-category func)
+                     (conj res (:category func))
+                     res))
+                 #{} functions)))
 
 (defn- categorize-namespace-functions [members]
   (doall (map (fn [[k v]] v)
@@ -55,9 +55,24 @@
                    [] grouped-members))))
 
 (defn- update-class-methods-categories [categories]
-  (map find-category-short-descriptions categories))
+  (doall (map find-category-short-descriptions categories)))
 
-(defn- categorize-class-methods [methods]
+(defn- add-overrides-categories [overrides]
+  (let [categories (reduce (fn [res override]
+                             (if (:has-category override)
+                               (conj res (:category override))
+                               res))
+                           #{} overrides)]
+    (if-let [category (first categories)]
+      (doall (map #(if (:has-category %)
+                     %
+                     (assoc %
+                            :has-category true
+                            :category category))
+                  overrides))
+      overrides)))
+
+(defn- categorize-class-methods [class]
   (update-class-methods-categories
    (doall (map (fn [[k v]] v)
                (reduce (fn [res method]
@@ -70,9 +85,9 @@
                                             (assoc data :members
                                                    (conj (:members data) override)))))
                                  res
-                                 (:overrides method)))
+                                 (add-overrides-categories (:overrides method))))
                        {}
-                       methods)))))
+                       (:methods class))))))
 
 (defn- get-categories-order [config]
   (let [raw (clojure.string/split-lines config)
@@ -100,13 +115,17 @@
        (sort-by (juxt :index :name)
                 (map #(assoc % :index (get sorting (:name %) 999999)) categories))))
 
+(defn- sort-members [categories]
+  (map #(assoc % :members (sort-by :name (:members %))) categories))
+
 (defn build-class-categories [class sorting]
   (let [categories (get-class-categories (:methods class))
         has-categories (boolean (seq categories))]
     (assoc class
            :categories (if has-categories
-                         (-> (categorize-class-methods (:methods class))
-                             (sort-categories sorting)))
+                         (-> (categorize-class-methods class)
+                             (sort-categories sorting)
+                             (sort-members)))
            :has-categories has-categories)))
 
 (defn build-namespace-categories [namespace sorting]
@@ -115,5 +134,6 @@
     (assoc namespace
            :categories (if has-categories
                          (-> (categorize-namespace-functions (:functions namespace))
-                             (sort-categories sorting)))
+                             (sort-categories sorting)
+                             (sort-members)))
            :has-categories has-categories)))
