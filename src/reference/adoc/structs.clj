@@ -258,7 +258,7 @@
            :has-detailed (boolean (:value (first (get-tag func "detailed"))))
            :category (:value (first (get-tag func "category")))
            :has-category (boolean (:value (first (get-tag func "category"))))
-           :detailed (:value (first (get-tag func "detailed")))
+           :detailed (parse-description (:value (first (get-tag func "detailed"))) version)
            :has-params (boolean (seq params))
            :has-params-defaults (function-has-params-defaults params)
            :params params

@@ -178,6 +178,8 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
         $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["full-name"] + postfix + "</a></li>");
     }
 
+    api.config.page = null;
+
     api.page.showSearchResults($res);
 };
 
