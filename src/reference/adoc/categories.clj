@@ -2,6 +2,8 @@
   (:require [taoensso.timbre :as timbre :refer [info]]
             [clojure.java.io :refer [file]]))
 
+(def uncategorized "Miscellaneous")
+
 (defn- assoc-category-id [category]
   (if (:name category)
     (assoc category :id (-> (:name category)
@@ -34,7 +36,7 @@
               (reduce (fn [res member]
                         (let [category (if (:has-category member)
                                          (:category member)
-                                         "Other")
+                                         uncategorized)
                               data (get res category {:name category :members []})]
                           (if (some #(= (:name %) (:name member)) (:members data))
                             res
@@ -87,7 +89,7 @@
                          (reduce (fn [res override]
                                    (let [category (if (:has-category override)
                                                     (:category override)
-                                                    "Other")
+                                                   uncategorized)
                                          data (get res category {:name category :members []})]
                                      (assoc res category
                                             (assoc data :members
@@ -117,7 +119,7 @@
   (-> (if (.exists (file (str data-dir "/versions/" branch "/categories")))
         (get-categories-order (slurp (str data-dir "/versions/" branch "/categories")))
         {})
-      (assoc "Other" 9999999)))
+      (assoc uncategorized 9999999)))
 
 (defn- sort-categories [categories sorting]
   (map #(dissoc % :index)

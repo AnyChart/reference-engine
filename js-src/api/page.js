@@ -87,12 +87,12 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
     
     if (cleanedTarget == prev) {
         if (hash && hash.startsWith("category-")) {
-            api.page.highlightCategory(target.substr(target.indexOf("#") + 1));
+            api.page.highlightCategory(hash);
             return false;
         }
         
         if (hash)
-            api.page.highlight(target.substr(target.indexOf("#") + 1));
+            api.page.highlight(hash);
         api.tree.expand(target, hash ? "#" + hash : undefined);
         return false;
     }
