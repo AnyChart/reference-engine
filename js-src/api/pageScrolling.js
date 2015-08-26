@@ -67,13 +67,15 @@ api.pageScrolling.onContentScroll_ = function() {
         if (el != api.pageScrolling.currentVisible_) {
             api.pageScrolling.currentVisible_ = el;
             var link = "/" + version + "/" + page + "#" + el;
+            api.history.lock = true;
             api.tree.expand(location.pathname, "#" + el);
             api.page.highlight(el, false, false, true);
         }
     }else {
         api.pageScrolling.currentVisible_ = null;
         api.tree.expand(location.pathname);
-        location.hash = "";
+        api.history.lock = true;
+        api.history.setHash("");
     }
 };
 
@@ -93,7 +95,7 @@ api.pageScrolling.update = function() {
  * @param {string} entry
  */
 api.pageScrolling.scrollTo = function(entry) {
-    $("#content-wrapper").mCustomScrollbar("scrollTo", $(entry));
+    $("#content-wrapper").mCustomScrollbar("scrollTo", $(entry), {callbacks: false});
 };
 
 /** 
@@ -102,7 +104,8 @@ api.pageScrolling.scrollTo = function(entry) {
 api.pageScrolling.highlightScroll = function(entry) {
     setTimeout(function() {
         $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
-                                               {scrollInertia: 700});
+                                               {scrollInertia: 700,
+                                                callbacks: false});
     }, 100);
 };
 

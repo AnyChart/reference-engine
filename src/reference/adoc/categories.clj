@@ -2,6 +2,14 @@
   (:require [taoensso.timbre :as timbre :refer [info]]
             [clojure.java.io :refer [file]]))
 
+(defn- assoc-category-id [category]
+  (if (:name category)
+    (assoc category :id (-> (:name category)
+                            (clojure.string/replace #" " "-")
+                            (clojure.string/replace #"/" "-")
+                            (.toLowerCase)))
+    category))
+
 (defn- get-method-category [method]
   (doall (reduce (fn [res override]
                    (if (:has-category override)
@@ -106,9 +114,10 @@
 
 (defn parse-categories-order [data-dir branch]
   (info "categories file path" (str data-dir "/versions/" branch "/categories"))
-  (if (.exists (file (str data-dir "/versions/" branch "/categories")))
-    (get-categories-order (slurp (str data-dir "/versions/" branch "/categories")))
-    {}))
+  (-> (if (.exists (file (str data-dir "/versions/" branch "/categories")))
+        (get-categories-order (slurp (str data-dir "/versions/" branch "/categories")))
+        {})
+      (assoc "Uncategorized" 9999999)))
 
 (defn- sort-categories [categories sorting]
   (map #(dissoc % :index)
@@ -118,6 +127,9 @@
 (defn- sort-members [categories]
   (map #(assoc % :members (sort-by :name (:members %))) categories))
 
+(defn- assoc-categories-id [categories]
+  (doall (map assoc-category-id categories)))
+
 (defn build-class-categories [class sorting]
   (let [categories (get-class-categories (:methods class))
         has-categories (boolean (seq categories))]
@@ -125,7 +137,8 @@
            :categories (if has-categories
                          (-> (categorize-class-methods class)
                              (sort-categories sorting)
-                             (sort-members)))
+                             (sort-members)
+                             (assoc-categories-id)))
            :has-categories has-categories)))
 
 (defn build-namespace-categories [namespace sorting]
@@ -135,5 +148,6 @@
            :categories (if has-categories
                          (-> (categorize-namespace-functions (:functions namespace))
                              (sort-categories sorting)
-                             (sort-members)))
+                             (sort-members)
+                             (assoc-categories-id)))
            :has-categories has-categories)))

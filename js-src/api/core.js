@@ -27,7 +27,7 @@ api.core.init = function(version, page) {
     api.tree.scrollToEntry(page, location.hash ? location.hash.substr(1) : null);
 
     if (location.hash)
-        api.pageScrolling.scrollTo(location.hash);
+        api.page.highlightOnLoad(location.hash.substr(1));
 
     api.history.init();
 };

@@ -56,15 +56,25 @@ api.page.highlight = function(target, opt_expand, opt_scroll, opt_addHash) {
     if (scroll)
         api.pageScrolling.highlightScroll(target);
     else if (addHash)
-        location.hash = target;
+        api.history.setHash(target);
     
     $("#" + target).parent().addClass("active");
+};
+
+api.page.highlightOnLoad = function(target) {
+    api.pageScrolling.highlightScroll(target);
+     $("#" + target).parent().addClass("active");
+};
+
+api.page.highlightCategory = function(target) {
+    api.pageScrolling.highlightScroll(target);
+    api.history.setHash(target);
 };
 
 
 api.page.load = function(target, opt_add, opt_scrollTree) {
     api.search.hide();
-
+    
     if (opt_add == undefined) opt_add = true;
     if (target.indexOf("#") == 0) target = location.pathname + target;
     var cleanedTarget = api.utils.cleanupPath(target);
@@ -76,6 +86,11 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
     var prev = "/" + api.config.version + "/" + api.config.page;
     
     if (cleanedTarget == prev) {
+        if (hash && hash.startsWith("category-")) {
+            api.page.highlightCategory(target.substr(target.indexOf("#") + 1));
+            return false;
+        }
+        
         if (hash)
             api.page.highlight(target.substr(target.indexOf("#") + 1));
         api.tree.expand(target, hash ? "#" + hash : undefined);
