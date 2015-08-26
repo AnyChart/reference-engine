@@ -34,7 +34,7 @@
               (reduce (fn [res member]
                         (let [category (if (:has-category member)
                                          (:category member)
-                                         "Uncategorized")
+                                         "Other")
                               data (get res category {:name category :members []})]
                           (if (some #(= (:name %) (:name member)) (:members data))
                             res
@@ -87,7 +87,7 @@
                          (reduce (fn [res override]
                                    (let [category (if (:has-category override)
                                                     (:category override)
-                                                    "Uncategorized")
+                                                    "Other")
                                          data (get res category {:name category :members []})]
                                      (assoc res category
                                             (assoc data :members
@@ -117,7 +117,7 @@
   (-> (if (.exists (file (str data-dir "/versions/" branch "/categories")))
         (get-categories-order (slurp (str data-dir "/versions/" branch "/categories")))
         {})
-      (assoc "Uncategorized" 9999999)))
+      (assoc "Other" 9999999)))
 
 (defn- sort-categories [categories sorting]
   (map #(dissoc % :index)
