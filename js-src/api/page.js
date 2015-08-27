@@ -58,7 +58,10 @@ api.page.highlight = function(target, opt_expand, opt_scroll, opt_addHash) {
     else if (addHash)
         api.history.setHash(target);
     
-    $("#" + target).parent().addClass("active");
+    if ($("#" + target).parent().hasClass("panel-heading"))
+        $("#" + target).parent().parent().parent().parent().addClass("active");
+    else
+        $("#" + target).parent().addClass("active");
 };
 
 api.page.highlightOnLoad = function(target) {

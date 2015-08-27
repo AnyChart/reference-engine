@@ -39,7 +39,7 @@ api.pageScrolling.checkTopVisible_ = function(top) {
 api.pageScrolling.getFirstVisible_ = function(top) {
     var minDistance = Number.MAX_VALUE;
     var $minEl = null;
-    var d = $("div.content-block.methods h3").each(function() {
+    var d = $("div.content-block.methods h3,div.content-block.methods h4").each(function() {
         var $el = $(this);
         var distance = Math.abs($el.offset().top - 100);
         if (distance < minDistance) {
@@ -48,7 +48,7 @@ api.pageScrolling.getFirstVisible_ = function(top) {
         }
     });
     if ($minEl) {
-        var $first = $("div.content-block.methods h3").first();
+        var $first = $("div.content-block.methods h3,div.content-block.methods h4").first();
         if ($first.position().top == $minEl.position().top) {
             if (- top + $("#content-wrapper").height() - 40 < $first.position().top)
                 return null;
