@@ -1,4 +1,5 @@
 <h1><span class="page-type">class</span> {{main.full-name}}</h1>
+<a id="github-edit" href="{% edit-link %}"><i></i>Improve this Doc</a>
 <div class="content-block">
     <p class="bottom-space">
         {% if main.has-extends %}

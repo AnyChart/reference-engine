@@ -4,6 +4,17 @@
 
 (def id-counter (atom 0))
 
+(defn- get-relative-path [doclet base-path]
+  (let [fname (-> doclet :meta :filename)
+        path (-> doclet :meta :path)
+        full-path (str path "/" fname)]
+    (if full-path
+      (clojure.string/replace
+       (clojure.string/replace full-path
+                               (clojure.string/re-quote-replacement base-path)
+                               "")
+       #"adoc\.js" "adoc"))))
+
 (defn- parse-description [description version]
   (update-links description version))
 
@@ -176,6 +187,7 @@
 
 (defn- create-typedef [typedef doclets version base-path]
   (assoc (parse-examples-and-listing base-path (parse-general typedef version) typedef)
+         :file (get-relative-path typedef base-path)
          :kind :typedef
          :properties (sort-by :name
                               (map #(create-typedef-property % version)
@@ -194,6 +206,7 @@
 
 (defn- create-enum [enum doclets version base-path]
   (assoc (parse-examples-and-listing base-path (parse-general enum version) enum)
+         :file (get-relative-path enum base-path)
          :kind :enum
          :linked (if (and (= (get-in enum [:meta :code :type]) "MemberExpression")
                           (get-in enum [:meta :code :value]))
@@ -276,6 +289,7 @@
 (defn- create-class [class doclets version base-path]
   (let [parent (get-doclet-by-fullname-and-kind doclets (:memberof class) "class")]
     (assoc (parse-general class version)
+           :file (get-relative-path class base-path)
            :name (if parent
                    (str (:name parent) "." (:name class))
                    (:name class))
@@ -298,6 +312,7 @@
 ;; - static function
 (defn- create-namespace [namespace doclets version base-path]
   (assoc (parse-general namespace version)
+         :file (get-relative-path namespace base-path)
          :parent (:memberof namespace)
          :typedefs (sort-by :name (map #(create-link-struct % version)
                                        (get-doclets-by-memberof-and-kind doclets

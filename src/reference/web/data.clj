@@ -15,6 +15,11 @@
                       val
                       (str "/" version "/" val)))))
 
+(add-tag! :edit-link (fn [args context-map]
+                       (let [version (:version context-map)
+                             path (-> context-map :main :file)]
+                         (str "https://github.com/AnyChart/api-reference/edit/" version path ".adoc"))))
+
 (add-tag! :link-or-text (fn [args context-map]
                           (let [path (clojure.string/split (first args) #"\.")
                                 val (escape-str (get-in context-map (map keyword path)))
