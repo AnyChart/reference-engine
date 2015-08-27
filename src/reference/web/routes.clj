@@ -115,8 +115,7 @@
                   :static-version "12"
                   :content (generate-page-content version page request)
                   :link #(str "/" (:key version) "/" %)
-                  :title (get-page-title version page info)
-                  :edit-link (get-edit-link version page)})))
+                  :title (get-page-title version page info)})))
 
 (defn- request-update [request]
   (redisca/enqueue (redis request)
