@@ -119,6 +119,9 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
 
     $.get(cleanedTarget + "/data", function(res) {
         document.title = res.title;
+        $("meta[property='og\\:title']").attr("content", res.title);
+        $("meta[property='og\\:url']").attr("content", res.url);
+        
         $("#content-wrapper").html('<div id="content"><div class="content-container">'+res.content+'</div></div>');
 
         api.config.page = res.page;

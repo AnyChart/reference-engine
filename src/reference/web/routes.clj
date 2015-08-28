@@ -31,6 +31,7 @@
                    :info {}
                    :version version-key
                    :page ""
+                   :url "https://api.anychart.com/"
                    :title "AnyChart API Reference"})))
 
 (defn- show-sitemap [request]
@@ -43,6 +44,7 @@
     (render-file "templates/app.selmer"
                  {:version (:key version)
                   :tree (vdata/tree-data (jdbc request) (:id version))
+                  :url "https://api.anychart.com/"
                   :is-last true
                   :last-version (first versions)
                   :versions versions
@@ -105,7 +107,8 @@
                :info info
                :version (:key version)
                :page (:url page)
-               :title (get-page-title version page info)})))
+               :title (get-page-title version page info)
+               :url (str "https://api.anychart.com/" (:key version) "/" (:url page))})))
 
 (defn- show-page [version page request]
   (let [versions (vdata/versions (jdbc request))
@@ -116,6 +119,7 @@
                   :is-last (= (:key version) (first versions))
                   :last-version (first versions)
                   :versions versions
+                  :url (str "https://api.anychart.com/" (:key version) "/" (:url page))
                   :debug false
                   :info (generate-string info)
                   :page (:url page)
