@@ -143,6 +143,7 @@
 (defroutes app-routes
   (route/resources "/")
   (GET "/" [] show-landing)
+  (GET "/sitemap" [] show-sitemap)
   (GET "/_update_reference_" [] request-update)
   (POST "/_update_reference_" [] request-update)
   (GET "/latest/" [] redirect-latest)

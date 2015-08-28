@@ -11,6 +11,7 @@
             [reference.git :as git]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
+            [reference.data.sitemap :as sitemap]
             [reference.components.notifier :as notifications]
             [cheshire.core :refer [generate-string]]
             [org.httpkit.client :as http]
@@ -29,6 +30,7 @@
 (defn- remove-branch [jdbc branch-key]
   (let [version-id (:id (vdata/version-by-key jdbc branch-key))]
     (pdata/delete-version-pages jdbc version-id)
+    (sitemap/remove-by-version jdbc version-id)
     (vdata/delete-by-id jdbc version-id)))
 
 (defn- remove-branches [jdbc actual-branches]
@@ -55,6 +57,7 @@
         outdated-ids (filter #(not= actual-id %) ids)]
     (doall (map (fn [vid]
                   (pdata/delete-version-pages jdbc vid)
+                  (sitemap/remove-by-version jdbc vid)
                   (vdata/delete-by-id jdbc vid))
                 outdated-ids))))
 
@@ -92,6 +95,7 @@
                                             (:samples config))]
           (build-pages jdbc version-id (:name branch) top-level docs playground)
           (build-media jdbc version-id (:name branch) data-dir)
+          (sitemap/update-sitemap jdbc version-id top-level)
           (remove-previous-versions jdbc version-id (:name branch))))
       (notifications/complete-version-building notifier (:name branch)))
     (catch Exception e

@@ -54,6 +54,13 @@
                                    (from :versions)
                                    (where [:= :hidden false])))))))
 
+(defn versions-full-info [jdbc]
+  (reverse
+   (sort version-compare
+         (query jdbc (-> (select :key)
+                         (from :versions)
+                         (where [:= :hidden false]))))))
+
 (defn outdated-versions-ids [jdbc actual-ids]
   (map :id (query jdbc (-> (select :id)
                            (from :versions)

@@ -58,7 +58,7 @@
            :spec {:host "127.0.0.1" :port 6379 :db 0}}
    :generator {:show-branches true
                :git-ssh "/Users/alex/Work/anychart/reference-engine/keys/git"
-               :data-dir "data"
+               :data-dir (.getAbsolutePath (clojure.java.io/file "data"))
                :max-processes 8
                :jsdoc-bin "/usr/local/bin/jsdoc"
                :queue "reference-queue"}})

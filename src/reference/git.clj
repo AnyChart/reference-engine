@@ -5,6 +5,14 @@
 (defn run-sh [& command]
   (apply sh command))
 
+(defn file-last-commit-date [base-path path]
+  (with-sh-dir base-path
+    (let [res (sh "git" "--no-pager" "log" "-1" "--format=%ct" "--" (str base-path path))]
+      (-> res
+          :out
+          (clojure.string/trim)
+          read-string))))
+
 (defn- run-git [git-ssh path & command]
   (with-sh-env {:GIT_SSH git-ssh}
     (with-sh-dir path

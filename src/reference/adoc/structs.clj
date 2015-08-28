@@ -1,6 +1,7 @@
 (ns reference.adoc.structs
   (:require [taoensso.timbre :as timbre :refer [info]]
-            [reference.adoc.media :refer [update-links]]))
+            [reference.adoc.media :refer [update-links]]
+            [reference.git :refer [file-last-commit-date]]))
 
 (def id-counter (atom 0))
 
@@ -14,6 +15,13 @@
                                (clojure.string/re-quote-replacement base-path)
                                "")
        #"adoc\.js" "adoc"))))
+
+(defn- get-last-modified [cache path base-path]
+  (if (contains? @cache path)
+    (get @cache path)
+    (let [last-modified (file-last-commit-date base-path path)]
+      (swap! cache assoc path last-modified)
+      last-modified)))
 
 (defn- parse-description [description version]
   (update-links description version))
@@ -185,16 +193,18 @@
   (assoc (parse-general prop version)
          :type (get-in prop [:type :names])))
 
-(defn- create-typedef [typedef doclets version base-path]
-  (assoc (parse-examples-and-listing base-path (parse-general typedef version) typedef)
-         :file (get-relative-path typedef base-path)
-         :kind :typedef
-         :properties (sort-by :name
-                              (map #(create-typedef-property % version)
-                                   (:properties typedef)))
-         :has-properties (not (empty? (:properties typedef)))
-         :type (get-in typedef [:type :names])
-         :has-types (> (count (get-in typedef [:type :names])) 1)))
+(defn- create-typedef [typedef doclets version base-path last-mod-cache]
+  (let [path (get-relative-path typedef base-path)]
+    (assoc (parse-examples-and-listing base-path (parse-general typedef version) typedef)
+           :file path
+           :last-modified (get-last-modified last-mod-cache path base-path)
+           :kind :typedef
+           :properties (sort-by :name
+                                (map #(create-typedef-property % version)
+                                     (:properties typedef)))
+           :has-properties (not (empty? (:properties typedef)))
+           :type (get-in typedef [:type :names])
+           :has-types (> (count (get-in typedef [:type :names])) 1))))
 
 (defn- create-enum-field [doclet version]
   (assoc (parse-general doclet version)
@@ -204,15 +214,17 @@
   (sort-by :name
            (map #(create-enum-field % version) (get-static-members doclets enum))))
 
-(defn- create-enum [enum doclets version base-path]
-  (assoc (parse-examples-and-listing base-path (parse-general enum version) enum)
-         :file (get-relative-path enum base-path)
-         :kind :enum
-         :linked (if (and (= (get-in enum [:meta :code :type]) "MemberExpression")
-                          (get-in enum [:meta :code :value]))
-                   (get-in enum [:meta :code :value])
-                   false)
-         :fields (get-enum-fields enum doclets version)))
+(defn- create-enum [enum doclets version base-path last-mod-cache]
+  (let [path (get-relative-path enum base-path)]
+    (assoc (parse-examples-and-listing base-path (parse-general enum version) enum)
+           :file path
+           :last-modified (get-last-modified last-mod-cache path base-path)
+           :kind :enum
+           :linked (if (and (= (get-in enum [:meta :code :type]) "MemberExpression")
+                            (get-in enum [:meta :code :value]))
+                     (get-in enum [:meta :code :value])
+                     false)
+           :fields (get-enum-fields enum doclets version))))
 
 (defn- check-enum-link [enum enums]
   (if (:linked enum)
@@ -286,10 +298,12 @@
 ;; class
 ;; - enum
 ;; - function (non-static!)
-(defn- create-class [class doclets version base-path]
-  (let [parent (get-doclet-by-fullname-and-kind doclets (:memberof class) "class")]
+(defn- create-class [class doclets version base-path last-mod-cache]
+  (let [parent (get-doclet-by-fullname-and-kind doclets (:memberof class) "class")
+        path (get-relative-path class base-path)]
     (assoc (parse-general class version)
-           :file (get-relative-path class base-path)
+           :file path
+           :last-modified (get-last-modified last-mod-cache path base-path)
            :name (if parent
                    (str (:name parent) "." (:name class))
                    (:name class))
@@ -310,33 +324,35 @@
 ;; - class
 ;; - const
 ;; - static function
-(defn- create-namespace [namespace doclets version base-path]
-  (assoc (parse-general namespace version)
-         :file (get-relative-path namespace base-path)
-         :parent (:memberof namespace)
-         :typedefs (sort-by :name (map #(create-link-struct % version)
-                                       (get-doclets-by-memberof-and-kind doclets
-                                                                         namespace
-                                                                         "typedef")))
-         :enums (sort-by :name (map #(create-link-struct % version)
-                                    (get-enums doclets namespace)))
-         :classes (sort-by :name
-                           (map #(create-link-struct % version)
-                                (apply concat
-                                       (map #(concat [%]
-                                                     (get-doclets-by-memberof-and-kind
-                                                      doclets
-                                                      %
-                                                      "class"))
-                                            (get-doclets-by-memberof-and-kind doclets
-                                                                              namespace
-                                                                              "class")))))
-         :constants (sort-by :name
-                             (map #(create-constant % doclets version base-path)
-                                  (get-static-members doclets namespace)))
-         :functions (sort-by :name
-                             (map #(create-function % doclets version base-path)
-                                  (get-static-functions doclets namespace)))))
+(defn- create-namespace [namespace doclets version base-path last-mod-cache]
+  (let [path (get-relative-path namespace base-path)]
+    (assoc (parse-general namespace version)
+           :file path
+           :last-modified (get-last-modified last-mod-cache path base-path)
+           :parent (:memberof namespace)
+           :typedefs (sort-by :name (map #(create-link-struct % version)
+                                         (get-doclets-by-memberof-and-kind doclets
+                                                                           namespace
+                                                                           "typedef")))
+           :enums (sort-by :name (map #(create-link-struct % version)
+                                      (get-enums doclets namespace)))
+           :classes (sort-by :name
+                             (map #(create-link-struct % version)
+                                  (apply concat
+                                         (map #(concat [%]
+                                                       (get-doclets-by-memberof-and-kind
+                                                        doclets
+                                                        %
+                                                        "class"))
+                                              (get-doclets-by-memberof-and-kind doclets
+                                                                                namespace
+                                                                                "class")))))
+           :constants (sort-by :name
+                               (map #(create-constant % doclets version base-path)
+                                    (get-static-members doclets namespace)))
+           :functions (sort-by :name
+                               (map #(create-function % doclets version base-path)
+                                    (get-static-functions doclets namespace))))))
 
 (defn- get-unique-namespaces [doclets]
   (let [namespaces (get-doclets-by-kind doclets "namespace")]
@@ -352,14 +368,15 @@
 
 (defn structurize [doclets data-path version]
   (info "structurize doclets")
-  (let [base-path (str data-path "/versions-tmp/" version)]
-    {:classes (map #(create-class % doclets version base-path)
+  (let [base-path (str data-path "/versions-tmp/" version)
+        last-mod-cache (atom {})]
+    {:classes (map #(create-class % doclets version base-path last-mod-cache)
                    (get-doclets-by-kind doclets "class"))
-     :namespaces (map #(create-namespace % doclets version base-path)
+     :namespaces (map #(create-namespace % doclets version base-path last-mod-cache)
                       (get-unique-namespaces doclets))
-     :typedefs (map #(create-typedef % doclets version base-path)
+     :typedefs (map #(create-typedef % doclets version base-path last-mod-cache)
                     (get-doclets-by-kind doclets "typedef"))
-     :enums (let [enums (map #(create-enum % doclets version base-path)
+     :enums (let [enums (map #(create-enum % doclets version base-path last-mod-cache)
                              (filter #(and (= "member" (:kind %))
                                            (:isEnum %)) doclets))]
               (map #(check-enum-link % enums) enums))}))
