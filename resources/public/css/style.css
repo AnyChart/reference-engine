@@ -966,3 +966,14 @@ code {
     word-break: break-all;
     word-wrap: break-word;
 }
+
+.content-footer hr {
+    margin-bottom: 5px;
+}
+
+.content-footer {
+    margin-left: 40px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    color: #cdcdcd;
+}

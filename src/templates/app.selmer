@@ -91,6 +91,9 @@
                     {{content|safe}}
                 </div>
             </div>
+            {% if footer %}
+            <div class="content-footer"><hr /><i class="fa fa-info"></i> {{footer|safe}}</div>
+            {% endif %}
         </div>
     </body>
     <script src="/lib/jquery-2.1.3.min.js"></script>

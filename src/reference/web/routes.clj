@@ -7,6 +7,7 @@
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
             [reference.data.sitemap :as sdata]
+            [reference.data.seo :as seo]
             [reference.components.redis :as redisca]
             [taoensso.timbre :as timbre :refer [info]]
             [cheshire.core :refer [generate-string]]
@@ -49,6 +50,7 @@
                   :info (generate-string {})
                   :page ""
                   :static-version "12"
+                  :footer (seo/random-entry)
                   :content (render-file "templates/landing-content.selmer"
                                         {:versions versions
                                          :version (:key version)})
@@ -117,6 +119,7 @@
                   :debug false
                   :info (generate-string info)
                   :page (:url page)
+                  :footer (seo/random-entry)
                   :static-version "12"
                   :content (generate-page-content version page request)
                   :link #(str "/" (:key version) "/" %)
