@@ -24,7 +24,7 @@
                     <span class="chart-col red"></span>
                 </div>
             </a>
-            <a class="brand hidden-super-small"> API Reference</a>
+            <a class="brand hidden-super-small" href="/"> API Reference</a>
             <div class="pull-right helpers">
                 <select class="selectpicker versionselect" data-width="125px">
                     {% for v in versions %}
