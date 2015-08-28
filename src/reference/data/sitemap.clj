@@ -58,7 +58,7 @@
 
 (defn- landing-entry []
   {:tag :url
-   :content [{:tag :log :content ["https://api.anychart.com/"]}]})
+   :content [{:tag :loc :content ["https://api.anychart.com/"]}]})
 
 (defn generate-sitemap [jdbc]
   (with-out-str
