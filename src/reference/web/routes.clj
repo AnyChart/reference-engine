@@ -31,6 +31,8 @@
                    :page ""
                    :title "AnyChart API Reference"})))
 
+(defn- show-sitemap [request])
+
 (defn- show-landing [request]
   (let [versions (vdata/versions (jdbc request))
         version (vdata/version-by-key (jdbc request) (first versions))]
