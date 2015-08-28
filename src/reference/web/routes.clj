@@ -2,10 +2,11 @@
   (:require [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [compojure.core :refer [routes defroutes GET POST]]
             [compojure.route :as route]
-            [ring.util.response :refer [response redirect header]]
+            [ring.util.response :refer [response redirect header content-type]]
             [selmer.parser :refer [render-file]]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
+            [reference.data.sitemap :as sdata]
             [reference.components.redis :as redisca]
             [taoensso.timbre :as timbre :refer [info]]
             [cheshire.core :refer [generate-string]]
@@ -31,7 +32,9 @@
                    :page ""
                    :title "AnyChart API Reference"})))
 
-(defn- show-sitemap [request])
+(defn- show-sitemap [request]
+  (-> (response (sdata/generate-sitemap (jdbc request)))
+      (content-type "text/xml")))
 
 (defn- show-landing [request]
   (let [versions (vdata/versions (jdbc request))

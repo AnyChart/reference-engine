@@ -3,7 +3,8 @@
             [reference.data.versions :as vdata]
             [honeysql.helpers :refer :all]
             [honeysql.core :as sql]
-            [clojure.xml :refer [emit]]
+            [clojure.xml :refer [emit emit-element]]
+            [clj-time.core :as t]
             [clj-time.coerce :as c]
             [clj-time.format :as f]))
 
@@ -12,6 +13,8 @@
 ;;  version_id integer references versions(id),
 ;;  last_modified bigint
 ;; );
+
+(def formatter (f/formatter "YYYY-MM-dd'T'hh:mm:ss'Z'"))
 
 (defn remove-by-version [jdbc version-id]
   (exec jdbc (-> (delete-from :sitemap)
@@ -35,21 +38,32 @@
                   (from :sitemap)
                   (where [:= :version_id version-id]))))
 
+(defn- get-priority [idx]
+  (cond
+    (> idx 5) 0.1
+    :else (- 0.6 (/ idx 10))))
+
 (defn- generate-version-sitemap [jdbc idx version]
-  (let [priority (cond
-                   (< idx 5) 0.1
-                   :else (- 0.6 (/ idx 10)))]
+  (let [priority (get-priority idx)
+        entries (version-entries jdbc (:id version))]
     (map (fn [entry]
            {:tag :url
             :content [{:tag :loc :content
                        [(str "https://api.anychart.com/" (:key version) "/"
                              (:page_url entry))]}
-                      {:tag :priority :content [priority]}
-                      {:tag :lastmod :content [c/from-long (:last_modified entry)]}]})
-         (version-entries jdbc (:id version)))))
+                      {:tag :priority :content [(format "%.1f" priority)]}
+                      {:tag :lastmod :content [(f/unparse formatter
+                                                          (c/from-long (* 1000 (:last_modified entry))))]}]})
+         entries)))
+
+(defn- landing-entry []
+  {:tag :url
+   :content [{:tag :log :content ["https://api.anychart.com/"]}]})
 
 (defn generate-sitemap [jdbc]
-  (emit {:tag :urlset :attrs {:xmlns "http://www.sitemaps.org/schemas/sitemap/0.9"}
-         :content (apply concat (map-indexed (fn [idx val]
-                                               (generate-version-sitemap jdbc idx val))
-                                             vdata/versions-full-info))}))
+  (with-out-str
+    (emit {:tag :urlset :attrs {:xmlns "http://www.sitemaps.org/schemas/sitemap/0.9"}
+           :content (conj (apply concat (map-indexed (fn [idx val]
+                                                       (generate-version-sitemap jdbc idx val))
+                                                     (vdata/versions-full-info jdbc)))
+                          (landing-entry))})))

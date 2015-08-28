@@ -56,8 +56,8 @@
 
 (defn versions-full-info [jdbc]
   (reverse
-   (sort version-compare
-         (query jdbc (-> (select :key)
+   (sort #(version-compare (:key %1) (:key %2))
+         (query jdbc (-> (select :id :key)
                          (from :versions)
                          (where [:= :hidden false]))))))
 
