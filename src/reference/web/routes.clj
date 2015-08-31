@@ -1,6 +1,6 @@
 (ns reference.web.routes
   (:require [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
-            [compojure.core :refer [routes defroutes GET POST]]
+            [compojure.core :refer [routes defroutes GET POST ANY]]
             [compojure.route :as route]
             [ring.util.response :refer [response redirect header content-type]]
             [selmer.parser :refer [render-file]]
