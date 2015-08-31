@@ -17,7 +17,7 @@ api.pageScrolling.currentVisible_ = null;
  * @private
  * @param {number} top
  */
-api.pageScrolling.checkTopVisible_ = function(top) {
+api.pageScrolling.checkTopVisible = function(top) {
     if (top < 0) {
         if (!api.pageScrolling.isTopVisible_) {
             $('#top-page-content').fadeIn();
@@ -39,7 +39,7 @@ api.pageScrolling.checkTopVisible_ = function(top) {
 api.pageScrolling.getFirstVisible_ = function(top) {
     var minDistance = Number.MAX_VALUE;
     var $minEl = null;
-    var d = $("div.content-block.methods h3,div.content-block.methods h4").each(function() {
+    var d = $("div.content-block.methods h3,div.content-block.methods .const-block h4").each(function() {
         var $el = $(this);
         var distance = Math.abs($el.offset().top - 100);
         if (distance < minDistance) {
@@ -47,6 +47,7 @@ api.pageScrolling.getFirstVisible_ = function(top) {
             $minEl = $el;
         }
     });
+    
     if ($minEl) {
         var $first = $("div.content-block.methods h3,div.content-block.methods h4").first();
         if ($first.position().top == $minEl.position().top) {
@@ -61,7 +62,7 @@ api.pageScrolling.getFirstVisible_ = function(top) {
  * @private
  */
 api.pageScrolling.onContentScroll_ = function() {
-    api.pageScrolling.checkTopVisible_(this.mcs.top);
+    api.pageScrolling.checkTopVisible(this.mcs.top);
     var el = api.pageScrolling.getFirstVisible_(this.mcs.top);
     if (el) {
         if (el != api.pageScrolling.currentVisible_) {
@@ -74,7 +75,6 @@ api.pageScrolling.onContentScroll_ = function() {
     }else {
         api.pageScrolling.currentVisible_ = null;
         api.tree.expand(location.pathname);
-        api.history.lock = true;
         api.history.setHash("");
     }
 };
@@ -96,6 +96,7 @@ api.pageScrolling.update = function() {
  */
 api.pageScrolling.scrollTo = function(entry) {
     $("#content-wrapper").mCustomScrollbar("scrollTo", $(entry), {callbacks: false});
+    api.pageScrolling.checkTopVisible(-100);
 };
 
 /** 
@@ -106,6 +107,7 @@ api.pageScrolling.highlightScroll = function(entry) {
         $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
                                                {scrollInertia: 700,
                                                 callbacks: false});
+        api.pageScrolling.checkTopVisible(-100);
     }, 100);
 };
 
@@ -113,4 +115,13 @@ api.pageScrolling.highlightScroll = function(entry) {
  */
 api.pageScrolling.destroy = function() {
     $("#content-wrapper").mCustomScrollbar('destroy');
+};
+
+
+api.pageScrolling.init = function() {
+    $("#top-page-content").click(function() {
+        $("#content-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});
+        api.tree.scrollToEntry(api.config.page);
+        return false;
+    });
 };

@@ -17,6 +17,6 @@ api.history.init = function() {
             firstIgnored = true;
             return;
         }
-        api.page.load(location.href, false);
+        api.page.load(location.href, false, true);
     };
 };

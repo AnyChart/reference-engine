@@ -81,23 +81,31 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
     if (opt_add == undefined) opt_add = true;
     if (target.indexOf("#") == 0) target = location.pathname + target;
     var cleanedTarget = api.utils.cleanupPath(target);
-
+    
     var hash;
     if (target.indexOf("#") != -1 && target.indexOf("#") != target.length - 1)
         hash = target.substr(target.indexOf("#") + 1);
 
     var prev = "/" + api.config.version + "/" + api.config.page;
-    
+
     if (cleanedTarget == prev) {
         if (hash && hash.startsWith("category-")) {
             api.page.highlightCategory(hash);
+            api.history.setHash(hash);
             return false;
         }
         
-        if (hash)
+        if (hash) {
             api.page.highlight(hash);
+            api.history.setHash(hash);
+        }
         api.tree.expand(target, hash ? "#" + hash : undefined);
+        api.tree.scrollToEntry(target, hash);
         return false;
+    }
+
+    if (cleanedTarget.split("/").length > 1) {
+        cleanedTarget = cleanedTarget.split("/")[2];
     }
 
     if (typeof window.history == "undefined") return true;
@@ -105,7 +113,7 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
     if (opt_add)
         window.history.pushState(null, null, target);
 
-    api.tree.expand(target);
+    api.tree.expand(target, hash);
 
     if (opt_scrollTree)
         api.tree.scrollToEntry(cleanedTarget, hash);
@@ -133,12 +141,26 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
         api.breadcrumb.update(res.page);
         api.page.fixLinks();
         api.page.fixListings();
+        api.page.fixAccordionLinks();
 
         if (hash)
             api.page.highlight(hash);
     });
 
     return false;
+};
+
+api.page.fixAccordionLinks = function() {
+    $(".method-block").each(function() {
+        var id = $(this).find("h3").attr("id");
+        $(this).find(".panel-title a[data-toggle='collapse']").click(function() {
+            api.page.scrollToEntry(id);
+            api.page.highlight(id, false, false, false);
+            api.history.setHash(id);
+            api.tree.expand(location.pathname, "#" + id);
+            api.tree.scrollToEntry(api.config.page, id);
+        });
+    });;
 };
 
 /** 

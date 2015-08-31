@@ -8,12 +8,14 @@ goog.require("api.utils");
  * @param {string=} opt_hash
  */
 api.tree.scrollToEntry = function(entry, opt_hash) {
-    var sel = entry + (opt_hash ? ("#" + opt_hash) : "");
-    
+    var sel = entry;
+    if (opt_hash)
+        sel += opt_hash.indexOf("#") == -1 ? ("#" + opt_hash) : opt_hash;
+
     var $target = $("#tree li[x-data-name='" + sel + "']");
     if ($target.length) {
         window.setTimeout(function(){
-            $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.offset().top - 120, {scrollInertia: 700});
+            $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.get(0).offsetTop - 20, {scrollInertia: 700});
         }, 200);
     }
 };
@@ -39,6 +41,8 @@ api.tree.expand_ = function(entry, opt_hash) {
         var $el = $("#tree li.item[x-data-name='" + entry + "#" + opt_hash + "']");
         $el.addClass("active");
     }
+
+    api.tree.updateScrolling();
 };
 
 /** 
@@ -53,9 +57,13 @@ api.tree.expand = function(path, opt_hash) {
         return;
     }
     var entry = path.match("^/[^/]+/(.*)$");
+
+    var hash;
+    if (opt_hash)
+        hash = opt_hash.indexOf("#") != -1 ? opt_hash.substr(1) : opt_hash;
     
     if (entry)
-        api.tree.expand_(entry[1], opt_hash ? opt_hash.substr(1) : undefined);
+        api.tree.expand_(entry[1], hash);
 };
 
 /** */
