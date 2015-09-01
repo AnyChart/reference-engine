@@ -87,7 +87,8 @@
                        {:redis {:spec {:host "10.132.9.26" :db 1}}}
                        {:generator {:show-branches false
                                     :git-ssh "/apps/keys/git"
-                                    :data-dir "/apps/reference-prod/data"}}))
+                                    :data-dir "/apps/reference-prod/data"
+                                    :queue "reference-queue-prod"}}))
 
 (def config base-config)
 
