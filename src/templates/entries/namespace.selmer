@@ -1,5 +1,8 @@
-<h1><span class="page-type">namespace</span> {{main.full-name}}</h1>
-<a id="github-edit" href="{% edit-link %}"><i></i>Improve this Doc</a>
+<h1><span class="page-type">namespace</span> {{main.full-name}}
+    <a class="btn btn-default btn-small github-fork pull-right" id="github-edit" href="{% edit-link %}">
+        <span><i class="fa fa-code-fork"></i></span> Improve this Doc
+    </a>
+</h1>
 <div class="content-block">
     <p>{{main.description|safe}}</p>
 </div>

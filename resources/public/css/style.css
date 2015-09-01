@@ -31,6 +31,62 @@ a:focus {
     outline: none;
     outline-offset: 0;
 }
+a.btn.github-fork{
+    color: #444444;
+    background-color: #f3f3f3;
+    -webkit-box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-color: #f3f3f3;
+    white-space: nowrap;
+    padding: 3px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 2px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+a.btn.btn-small{
+    padding: 2px 8px;
+    font-size: 12px;
+}
+a.btn.pull-right{
+    float: right;
+}
+a.btn.github-fork.after-text{
+    clear: both;
+    margin-top: 10px;
+}
+a.btn.github-fork:hover{
+    color: #444444;
+    background-color: #dadada;
+    border-color: #d4d4d4;
+}
+a.github-fork span .fa{
+    font-size: 20px;
+    position: relative;
+    top: 2px;
+}
+a.github-fork.btn-small span .fa{
+    font-size: 16px;
+    position: relative;
+    top: 2px;
+}
+p.important{
+    font-size: 16px;
+    line-height: 18px;
+}
 .list-udashed {
     padding-left: 15px;
     list-style: none;
@@ -355,19 +411,6 @@ a.switcher{
     font-size: 24px;
     color: #929292;
 }
-#content .landing h2{
-    margin: 20px 0 15px 0;
-}
-#content .landing p{
-    margin: 0;
-}
-#content .landing ul{
-    margin: 0 0 0 20px;
-}
-#content .landing .alert {
-    position: relative;
-    z-index: 9999999;
-}
 img.img-in-context{
     float: left;
     display: block;
@@ -546,7 +589,7 @@ img.img-in-context{
     padding: 0;
     margin: 0;
 }
-.content-block p.bottom-space{
+p.bottom-space{
     margin: 0 0 10px 0;
 }
 div.space{

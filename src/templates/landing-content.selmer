@@ -1,72 +1,55 @@
 <link rel="stylesheet" type="text/css" href="/css/landing.css"/>
-<div class="landing">
-    <div class="alert alert-default alert-default-inline alert-padding hidden-xs versions-main">
-        <h5>Versions</h5>
-        <ul class="list list-unstyled">
-            {% for v in versions %}
-            <li><a href="/{{v}}/anychart">{{v}}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
-
     <h1>API Reference</h1>
 
-    <p>AnyChart API Reference - is a place where you can find detailed description for each namespace, class, method or property provided by AnyChart products.</p>
+    <p class='important'>AnyChart API Reference - is a place where you can find detailed description for each namespace, class, method or property provided by AnyChart products.</p>
 
     <div class="products-list">
-        <a href="/products/anychart/" class="item product AnyChart active">
+        <a href="//anychart.com/products/anychart/" class="item product AnyChart active">
             <span class="product-icon"><i class="icon icon-share-o"></i></span>
             <span class="product-title">AnyChart</span>
         </a>
-        <a href="/products/anystock/" class="item product AnyStock active">
+        <a href="//anychart.com/products/anystock/" class="item product AnyStock active">
             <span class="product-icon"><i class="icon icon-settings"></i></span>
             <span class="product-title">AnyStock</span>
         </a>
-        <a href="/products/anymap/" class="item product AnyMap active">
+        <a href="//anychart.com/products/anymap/" class="item product AnyMap active">
             <span class="product-icon"><i class="icon icon-compass"></i></span>
             <span class="product-title">AnyMap</span>
         </a>
-        <a href="/products/anygantt/" class="item product AnyGantt active">
+        <a href="//anychart.com/products/anygantt/" class="item product AnyGantt active">
             <span class="product-icon"><i class="icon icon-contact"></i></span>
             <span class="product-title">AnyGantt</span>
         </a>
     </div>
 
-    <h2>API Reference Features</h2>
+    <h2 class='bottom-line'>API Reference Features</h2>
 
-    <div class="feature feature-left">
+    <div class="feature">
+        <img src="/i/method_overload.png"/ class='img-in-context'>
         <h4>Methods Overloads</h4>
-
-        <p><img src="/i/method_overload.png"/>We are trying to reduce as much as possible amount of code, necessary for charts creation. For this purpose, each method might accept different set of parameters which change methods capability.
+        <p>We are trying to reduce as much as possible amount of code, necessary for charts creation. For this purpose, each method might accept different set of parameters which change methods capability.
             We call it <em>Methods Overloads</em>. You can find list of overloads with his parameters set in the head section of each method description. We also provide at least one Live Sample for each method overload.</p>
+        <div class="clearfix"></div>
     </div>
-    <div style="clear: left"></div>
-    <div class="feature feature-left">
+    <div class="feature">
+        <img src="/i/playground_preview.jpg" class='img-in-context'/>
         <h4>Live samples</h4>
-
-        <p><img src="/i/playground_preview.jpg"/>AnyChart products provides over million methods, functions and properties. To simplify understanding and visual perception of our products, we provide at least by one Live Sample for each function, method and property via AnyChart Playground.
+        <p>AnyChart products provides over million methods, functions and properties. To simplify understanding and visual perception of our products, we provide at least by one Live Sample for each function, method and property via AnyChart Playground.
             This is really costs much time and care, but we believe, that making our products easy to use, we make the first step good fellowship with our users.</p>
+        <div class="clearfix"></div>
     </div>
-    <div style="clear: left"></div>
-    <div class="feature feature-left">
+
+    <div class="feature ">
+        <img src="/i/search_preview.jpg" class='img-in-context'/>
         <h4>Search</h4>
-
-        <p><img src="/i/search_preview.jpg"/>Our search engine helps you to fine whenever you need as fast as possible. The search result is groped by categories, functions and methods come first, then enums, typedefs and classes follow.
+        <p>Our search engine helps you to fine whenever you need as fast as possible. The search result is groped by categories, functions and methods come first, then enums, typedefs and classes follow.
             As soon as some name of methods are really common ('fill' - is really good example), we added the number of repetition in the search results, click on it to see full list of matched methods.</p>
+        <div class="clearfix"></div>
     </div>
-    <div style="clear: left"></div>
-    <h2>How to contribute</h2>
-    Если вы хотите помочь нам сделать нашу документацию еще лучше, допро пожаловать на наш репозиторий на github, чув
-    We hope API Reference will help you work with our products. If you found a misprint or you can provide better usage sample, fell free to fork our repo on gihtub.We will glade to see any suggestions.
-    <br><br><a class="github-button" href="https://github.com/AnyChart/ACDVF-api-docs/fork" data-style="mega" aria-label="Fork AnyChart/ACDVF-api-docs on GitHub">Fork</a>
-    <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
 
-    <div class="alert alert-default alert-padding visible-xs">
-        <h4>Versions List</h4>
-        <ul class="list list-unstyled alert-with-columns">
-            {% for v in versions %}
-            <li><a href="/{{v}}/anychart">{{v}}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
+
+    <h2 class='bottom-line'>How to contribute</h2>
+    <p>We hope API Reference will help you work with our products. If you found a misprint or you can provide better usage sample, fell free to fork our repo on gihtub.We will glade to see any suggestions.
+    <div> <a class="btn btn-default github-fork after-text" href="https://github.com/AnyChart/ACDVF-api-docs/fork"><span><i class="fa fa-github"></i></span> Fork</a></div>
+
+
