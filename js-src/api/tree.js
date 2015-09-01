@@ -3,6 +3,8 @@ goog.provide("api.tree");
 goog.require("api.config");
 goog.require("api.utils");
 
+api.tree.currentActive_ = null;
+
 /**
  * @param {string} entry
  * @param {string=} opt_hash
@@ -27,6 +29,7 @@ api.tree.scrollToEntry = function(entry, opt_hash) {
  */
 api.tree.expand_ = function(entry, opt_hash) {
     $("#tree .active").removeClass("active");
+    $("#tree .scroll-active").removeClass("scroll-active");
     
     var parts = entry.split(".");
     
@@ -40,6 +43,7 @@ api.tree.expand_ = function(entry, opt_hash) {
     if (opt_hash) {
         var $el = $("#tree li.item[x-data-name='" + entry + "#" + opt_hash + "']");
         $el.addClass("active");
+        api.tree.currentActive_ = opt_hash;
     }
 
     api.tree.updateScrolling();
@@ -53,6 +57,7 @@ api.tree.expand = function(path, opt_hash) {
     path = api.utils.cleanupPath(path);
     if (path == "/") {
         $("#tree .active").removeClass("active");
+        $("#tree .scroll-active").removeClass("scroll-active");
         $("#tree-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});
         return;
     }
@@ -64,6 +69,25 @@ api.tree.expand = function(path, opt_hash) {
     
     if (entry)
         api.tree.expand_(entry[1], hash);
+};
+
+api.tree.unhighight = function() {
+    $("#tree .active").removeClass("active");
+    $("#tree .scroll-active").removeClass("scroll-active");
+};
+
+api.tree.scrollHighlight = function(hash) {
+    if (!hash || hash.length == 1) return;
+    if (hash == api.tree.currentActive_) return;
+    api.tree.currentActive_ = null;
+    if (hash.indexOf("#") != -1)
+        hash = hash.substr(1);
+    var path = api.config.page;
+    $("#tree .scroll-active").removeClass("scroll-active");
+    var $item = $("#tree li[x-data-name='" + path + "']");
+    $item.find(">ul>li.active").removeClass("active");
+    var $el = $("#tree li.item[x-data-name='" + path + "#" + hash + "']");
+    $el.addClass("scroll-active");
 };
 
 /** */
@@ -83,16 +107,21 @@ api.tree.init = function() {
 
     $("#tree li.group").each(function() {
         var $ul = $(this).find(">ul");
-        $(this).find(">a").click(function(e) {
-            if (e.ctrlKey || e.metaKey) return true;
+        
+        $(this).find(">a i").click(function() {
             if ($ul.is(":visible")) {
-                $(this).find("i").addClass("fa-chevron-right").removeClass("fa-chevron-down");
+                $(this).addClass("fa-chevron-right").removeClass("fa-chevron-down");
                 $ul.hide();
             }else {
+                $(this).addClass("fa-chevron-down").removeClass("fa-chevron-right");
                 $ul.show();
-                return api.page.load($(this).attr("href"));
             }
             return false;
+        });
+        
+        $(this).find(">a").click(function(e) {
+            if (e.ctrlKey || e.metaKey) return true;
+            return api.page.load($(this).attr("href"));
         });
     });
     

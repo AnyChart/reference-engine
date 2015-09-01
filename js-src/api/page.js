@@ -37,6 +37,23 @@ api.page.fixListings = function() {
     prettyPrint();
 };
 
+api.page.currentActive_ = null;
+
+api.page.scrollHighlight = function(target) {
+    if (target == api.page.currentActive_)
+        return;
+    api.page.currentActive_ = null;
+    $(".content-container .active").removeClass("active");
+    $(".content-container .scroll-active").removeClass("scroll-active");
+
+    api.history.setHash(target);
+    
+    if ($("#" + target).parent().hasClass("panel-heading"))
+        $("#" + target).parent().parent().parent().parent().addClass("scroll-active");
+    else
+        $("#" + target).parent().addClass("scroll-active");
+};
+
 /**
  * @param {string} target
  * @param {boolean=} opt_expand
@@ -48,10 +65,12 @@ api.page.highlight = function(target, opt_expand, opt_scroll, opt_addHash) {
     var scroll = opt_scroll == undefined ? true : opt_scroll;
     var addHash = opt_addHash == undefined ? false : opt_addHash;
     $(".content-container .active").removeClass("active");
+    $(".content-container .scroll-active").removeClass("scroll-active");
     if (expand) {
         var entry = api.utils.getEntryFromURL(location.pathname);
         api.tree.expand(entry, target);
     }
+    api.page.currentActive_ = target;
     
     if (scroll)
         api.pageScrolling.highlightScroll(target);
@@ -65,6 +84,7 @@ api.page.highlight = function(target, opt_expand, opt_scroll, opt_addHash) {
 };
 
 api.page.highlightOnLoad = function(target) {
+    api.page.currentActive_ = target;
     api.pageScrolling.highlightScroll(target);
      $("#" + target).parent().addClass("active");
 };
@@ -104,7 +124,7 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
         return false;
     }
 
-    if (cleanedTarget.split("/").length > 1) {
+    if (cleanedTarget.split("/").length > 2) {
         cleanedTarget = cleanedTarget.split("/")[2];
     }
 
@@ -153,14 +173,20 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
 api.page.fixAccordionLinks = function() {
     $(".method-block").each(function() {
         var id = $(this).find("h3").attr("id");
-        $(this).find(".panel-title a[data-toggle='collapse']").click(function() {
+        $(this).find(".panel-title a[data-toggle='collapse']").click(function(e) {
             api.page.scrollToEntry(id);
             api.page.highlight(id, false, false, false);
             api.history.setHash(id);
             api.tree.expand(location.pathname, "#" + id);
             api.tree.scrollToEntry(api.config.page, id);
+            e.stopPropagation();
         });
     });;
+
+    $('.panel-heading a').on('click',function(e){
+        if($(this).parents('.panel').children('.panel-collapse').hasClass('in'))
+            e.stopPropagation();
+    });
 };
 
 /** 

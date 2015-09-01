@@ -313,7 +313,15 @@ a.switcher{
     background: #2485d0;
     text-shadow: none;
 }
+#tree ul.menu li.scroll-active {
+    background: #ddd;
+    color: #545f69;
+    text-shadow: none;
+}
 #tree ul.menu li.active span.light{
+    color: #2485d0;
+}
+#tree ul.menu li.scroll-active span.light{
     color: #2485d0;
 }
 #tree ul.menu li span.light{
@@ -578,6 +586,10 @@ div.space{
     background: #2485d0;
     border-radius: 0;
     border-color: #2078BB;
+}
+.method-block.scroll-active .panel-default > .panel-heading a {
+    background: #ddd;
+    сolor: #545f69;
 }
 .method-block.active .panel-default {
     border-color: #2078BB;

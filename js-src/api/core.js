@@ -32,4 +32,9 @@ api.core.init = function(version, page) {
     api.history.init();
     api.page.fixAccordionLinks();
     api.pageScrolling.init();
+
+    if (page == "") {
+        api.tree.expand("/latest/anychart");
+        api.tree.unhighight();
+    }
 };
