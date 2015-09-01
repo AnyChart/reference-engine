@@ -1,0 +1,31 @@
+<h1><span class="page-type">[enum]</span> {{main.full-name}}
+    <a class="btn btn-default btn-small github-fork pull-right" id="github-edit" href="{% edit-link %}">
+        <span><i class="fa fa-code-fork"></i></span> Improve this Doc
+    </a>
+</h1>
+<div class="content-block">
+    <div class="small-group">{{main.description|safe}}</div>
+    {% listings-and-samples main %}
+</div>
+{% if main.has-fields %}
+<div class="content-block">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in main.fields %}
+            <tr>
+                <td class="name">{{f.name}}</td>
+                <td class="code-style">{{f.value}}</td>
+                <td>{{f.description|safe}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}

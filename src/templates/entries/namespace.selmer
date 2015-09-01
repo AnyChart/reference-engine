@@ -1,0 +1,108 @@
+<h1><span class="page-type">namespace</span> {{main.full-name}}
+    <a class="btn btn-default btn-small github-fork pull-right" id="github-edit" href="{% edit-link %}">
+        <span><i class="fa fa-code-fork"></i></span> Improve this Doc
+    </a>
+</h1>
+<div class="content-block">
+    <p>{{main.description|safe}}</p>
+</div>
+
+{% if main.has-constants %}
+<div class="content-block methods">
+    <h2>Constants Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr><td class="th empty" colspan="2"></td></tr>
+            {% for c in main.constants %}
+            <tr><td class="name"><a class="type-link" href="#{{c.name}}">{{c.name}}</a></td><td>{{c.short-description|safe}}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if main.has-functions %}
+<div class="content-block methods">
+    <h2>Functions Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            {% if main.has-categories %}
+            {% for c in main.categories %}
+            <tr><td class="th empty" colspan="2"><a class="category type-link" id="category-{{c.id}}" href="#category-{{c.id}}">{{c.name}}</a></td></tr>
+            {% for f in c.members %}
+            <tr><td class="name"><a class="type-link" href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.short-description|safe}}</td></tr>
+            {% endfor %}
+            {% endfor %}
+            {% endif %}
+            {% if not main.has-categories %}
+            
+            <tr><td class="th empty" colspan="2"></td></tr>
+            {% for f in main.functions %}
+            <tr><td class="name"><a class="type-link" href="#{{f.name}}">{{f.name}}()</a></td><td>{{f.short-description|safe}}</td></tr>
+            {% endfor %}
+            
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if main.has-enums %}
+<div class="content-block methods">
+    <h2>Enums Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr><td class="th empty" colspan="2"></td></tr>
+            {% for enum in main.enums %}
+            <tr><td class="name"><a class="type-link" href="{% link enum.name %}">{{enum.name}}</a></td><td>{{enum.short-description|safe}}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if main.has-typedefs %}
+<div class="content-block methods">
+    <h2>Typedefs Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr><td class="th empty" colspan="2"></td></tr>
+            {% for t in main.typedefs %}
+            <tr><td class="name"><a class="type-link" href="{% link t.name %}">{{t.name}}</a></td><td>{{t.short-description|safe}}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if main.has-classes %}
+<div class="content-block methods">
+    <h2>Classes Overview</h2>
+    <table class="table table-condensed">
+        <tbody>
+            <tr><td class="th empty" colspan="2"></td></tr>
+            {% for c in main.classes %}
+            <tr><td class="name"><a class="type-link" href="{% link c.name %}">{{c.name}}</a></td><td>{{c.short-description|safe}}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if main.has-constants %}
+<div class="content-block methods">
+    <h2>Constants Description</h2>
+    {% for c in main.constants %}
+    {% include "templates/entries/constant.selmer" %}
+    {% endfor %}
+</div>    
+{% endif %}
+
+{% if main.has-functions %}
+<div class="content-block methods">
+    <h2>Functions Description</h2>
+    {% for f in main.functions %}
+    {% include "templates/entries/function.selmer" %}
+    {% endfor %}
+</div>
+{% endif %}

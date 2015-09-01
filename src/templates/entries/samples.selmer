@@ -1,0 +1,31 @@
+{% if entry.has-listings %}
+{% for l in entry.listings %}
+<div class="small-group">
+    <div class="collapse-group">
+        <a data-toggle="collapse" href="#listing-{{l.id}}">
+            <i class="fa fa-code"></i> {{l.title}}
+        </a>
+        <div id="listing-{{l.id}}" class="collapse collapse-div">
+            <div class="collapse-content">
+                <pre class="prettyprint linenums:1">{{l.code|safe}}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if show-samples %}
+{% if entry.has-playground-samples %}
+<div class="small-group">
+    <p>
+        <strong>Try it:</strong>
+        <ul class="list list-dotted">
+            {% for s in entry.playground-samples %}
+            <li><a class="code-style" target="_blank" href="{% playground %}{{s.file}}{% endplayground %}">{{s.title}}</a></li>
+            {% endfor %}
+        </ul>
+    </p>
+</div>
+{% endif %}
+{% endif %}
