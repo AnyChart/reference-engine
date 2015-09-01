@@ -74,6 +74,21 @@
                        {:generator {:git-ssh "/apps/keys/git"
                                     :data-dir "/apps/reference-stg/data"}}))
 
+(def prod-config (merge-with merge base-config
+                       {:notifications {:domain "http://api.anychart.com/"}}
+                       {:web {:debug false
+                              :port 8091
+                              :reference-queue "reference-queue-prod"
+                              :docs "docs.anychart.com"
+                              :playground "playground.anychart.com"}}
+                       {:jdbc {:subname "//10.132.9.26:5432/api_prod"
+                               :user "api_prod_user"
+                               :password "fuckprod"}}
+                       {:redis {:spec {:host "10.132.9.26" :db 31}}}
+                       {:generator {:show-branches false
+                                    :git-ssh "/apps/keys/git"
+                                    :data-dir "/apps/reference-prod/data"}}))
+
 (def config base-config)
 
 (def dev (dev-system config))
@@ -94,4 +109,6 @@
    (cond
      (= domain "dev") (component/start (dev-system (assoc-in config [:generator :git-ssh] mode)))
      (and (= domain "stg") (= mode "frontend")) (component/start (frontend-system stg-config))
-     (and (= domain "stg") (= mode "backend")) (component/start (generator-system stg-config)))))
+     (and (= domain "stg") (= mode "backend")) (component/start (generator-system stg-config))
+     (and (= domain "com") (= mode "frontend")) (component/start (frontend-system prod-config))
+     (and (= domain "com") (= mode "backend")) (component/start (generator-system prod-config)))))
