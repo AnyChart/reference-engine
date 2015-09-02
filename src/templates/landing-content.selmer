@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="/css/landing.css"/>
+<div class='landing-page'>
     <h1>API Reference</h1>
 
     <p class='important'>AnyChart API Reference - is a place where you can find detailed description for each namespace, class, method or property provided by AnyChart products.</p>
@@ -51,5 +51,5 @@
     <h2 class='bottom-line'>How to contribute</h2>
     <p>We hope API Reference will help you work with our products. If you found a misprint or you can provide better usage sample, fell free to fork our repo on gihtub.We will glade to see any suggestions.
     <div> <a class="btn btn-default github-fork after-text" href="https://github.com/AnyChart/ACDVF-api-docs/fork"><span><i class="fa fa-github"></i></span> Fork</a></div>
-
+</div>
 

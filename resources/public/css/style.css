@@ -411,6 +411,13 @@ a.switcher{
     font-size: 24px;
     color: #929292;
 }
+#content h2.bottom-line{
+    padding: 30px 0 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    clear: both;
+    display: block;
+}
 img.img-in-context{
     float: left;
     display: block;
@@ -1023,4 +1030,86 @@ code {
 
 .category.type-link {
     color: #323c44;
+}
+.products-list {
+    margin-top: 20px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.products-list a {
+    width: 100px;
+    display: inline-block;
+    color: #929292;
+    text-decoration: none;
+}
+.products-list a .product-icon {
+    font-size: 50px;
+    display: block;
+}
+a.product.AnyChart:focus,
+a.product.AnyChart:hover {
+    color: #1c75ba;
+}
+a.product.AnyStock:focus,
+a.product.AnyStock:hover {
+    color: #ff8207;
+}
+a.product.AnyMap:focus,
+a.product.AnyMap:hover {
+    color: #f0402e;
+}
+a.product.AnyGantt:focus,
+a.product.AnyGantt:hover {
+    color: #2cc264;
+}
+
+.landing-page .versions-main {
+    height: 100vh;
+    padding: 0;
+    margin: 0 0 0 30px;
+    width: 85px;
+    border: none;
+    border-left: 1px solid rgb(233, 233, 233);
+}
+
+.landing-page .versions-main h5 {
+    text-align: center;
+    padding: 10px 0 0 0;
+    margin: 0;
+}
+
+.landing-page .versions-main ul {
+    text-align: center;
+    padding: 10px 0 0 0;
+    margin: 0 !important;
+
+}
+
+.landing-page .versions-main li {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+.landing-page .versions-main li a {
+    font-size: 12px;
+}
+
+.landing-page .feature{
+    clear: both;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.landing-page .feature img {
+    width: 250px;
+    float: left;
+    border: 1px solid #e9e9e9;
+    margin: 0 20px 5px 0;
+}
+
+
+.landing-page .feature h4 {
+    text-align: left;
 }
