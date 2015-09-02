@@ -3,7 +3,11 @@
 (def entries
   ["AnyChart - HTML5 charts help you to understand any data"
    "AnyChart - JavaSript charts is a trusted solution for data visualization"
-   "AnyStock main purpose is to display financial JavaSript charts"
+   "AnyChart - JavaSript charts for web and mobile"
+   "AnyChart - The most comprehensive JavaScript charting library"
+   "AnyChart - Create interactive HTML5 charts easily for your web projects"
+   "IE 6? Latest Chrome? Mobile browsers? AnyChart just works everywhere!"
+   "AnyStock's main purpose is to display financial JavaSript charts"
    "AnyMap is a robust interactive Javascript/HTML5 maps library"])
 
 (defn random-entry []
