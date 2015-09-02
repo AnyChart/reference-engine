@@ -2,7 +2,7 @@
 
 (def entries
   ["AnyChart - HTML5 charts help you to understand any data"
-   "<a href="http://wwww.anychart.com/products/anychart/overview/">AnyChart</a> - JavaSript charts is a trusted solution for data visualization"
+   "<a href='http://wwww.anychart.com/products/anychart/overview/'>AnyChart</a> - JavaSript charts is a trusted solution for data visualization"
    "AnyChart - JavaSript charts for web and mobile"
    "AnyChart - The most comprehensive JavaScript charting library"
    "AnyChart - Create interactive HTML5 charts easily for your web projects"
