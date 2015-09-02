@@ -86,7 +86,10 @@ api.page.highlight = function(target, opt_expand, opt_scroll, opt_addHash) {
 api.page.highlightOnLoad = function(target) {
     api.page.currentActive_ = target;
     api.pageScrolling.highlightScroll(target);
-     $("#" + target).parent().addClass("active");
+    if ($("#" + target).parent().hasClass("panel-heading"))
+        $("#" + target).parent().parent().parent().parent().addClass("active");
+    else
+        $("#" + target).parent().addClass("active");
 };
 
 api.page.highlightCategory = function(target) {
@@ -175,19 +178,30 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
 api.page.fixAccordionLinks = function() {
     $(".method-block").each(function() {
         var id = $(this).find("h3").attr("id");
+        var $block = $(this);
+        if (id == undefined) {
+            id = $(this).find("h4.panel-title").attr("id");
+        }
+        
         $(this).find(".panel-title a[data-toggle='collapse']").click(function(e) {
+            
             api.page.scrollToEntry(id);
             api.page.highlight(id, false, false, false);
             api.history.setHash(id);
             api.tree.expand(location.pathname, "#" + id);
             api.tree.scrollToEntry(api.config.page, id);
-            e.stopPropagation();
-        });
-    });;
 
-    $('.panel-heading a').on('click',function(e){
-        if($(this).parents('.panel').children('.panel-collapse').hasClass('in'))
-            e.stopPropagation();
+            if ($block.find(".pannel-collapse.collapse").length > 1) {
+                var href = $(this).attr("href");
+                var $target = $("div" + href);
+                if (!$target.hasClass("in")) {
+                    $block.find(".pannel-collapse.collapse.in").collapse('hide');
+                    $target.collapse('show');
+                }
+            }
+            
+            return false;
+        });
     });
 };
 
