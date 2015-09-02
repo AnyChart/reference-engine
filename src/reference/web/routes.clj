@@ -29,6 +29,8 @@
                                          {:versions versions
                                           :version version-key})
                    :info {}
+                   :keywords "anychart api reference, js charts, javascript charts, html5 charts, ajax charts, plots, line charts, bar charts, pie charts, js maps, javascript gantt charts, js dashboard"
+                   :description "AnyChart HTML5 charts for for web and mobile - API reference"
                    :version version-key
                    :page ""
                    :url "https://api.anychart.com/"
@@ -57,7 +59,7 @@
                                         {:versions versions
                                          :version (:key version)})
                   :link #(str "/" (:key version) "/" %)
-                  :title "AnyChart API Reference"})))
+                  :title "AnyChart JavaScript charts API Reference"})))
 
 (defn- show-default-version [request]
   (redirect (str "/" (vdata/default (jdbc request)) "/anychart")))
@@ -99,7 +101,7 @@
       data)))
 
 (defn- get-page-title [version page info]
-  (str (:url page) " " (:kind info) " | version " (:key version) " | AnyChart API Reference"))
+  (str (:url page) " " (:kind info) " - AnyChart JavaScript charts API Reference ver. " (:key version)))
 
 (defn- get-page-data [version page request]
   (let [info (pdata/info page)]
@@ -107,6 +109,8 @@
                :info info
                :version (:key version)
                :page (:url page)
+               :keywords (str (:url page) " " (:kind info) ", anychart api reference, js charts, javascript charts, html5 charts, ajax charts, plots, line charts, bar charts, pie charts, js maps, javascript gantt charts, js dashboard")
+               :description (str "AnyChart HTML5 charts for for web and mobile - API reference for " (:url page) " " (:kind info))
                :title (get-page-title version page info)
                :url (str "https://api.anychart.com/" (:key version) "/" (:url page))})))
 
@@ -123,6 +127,7 @@
                   :debug false
                   :info (generate-string info)
                   :page (:url page)
+                  :page-name (str (:url page) " " (:kind info))
                   :footer (seo/random-entry)
                   :static-version "12"
                   :content (generate-page-content version page request)
