@@ -1,7 +1,7 @@
 <div class='landing-page'>
     <h1>API Reference</h1>
 
-    <p class='important'>AnyChart API Reference - is a place where you can find detailed description for each namespace, class, method or property provided by AnyChart products.</p>
+    <p class='important'>AnyChart API Reference is a place where you can find detailed description of each namespace, class, method or property, along with ready-to-try the samples.</p>
 
     <div class="products-list">
         <a href="//anychart.com/products/anychart/" class="item product AnyChart active">
@@ -25,31 +25,25 @@
     <h2 class='bottom-line'>API Reference Features</h2>
 
     <div class="feature">
-        <img src="/i/method_overload.png"/ class='img-in-context'>
-        <h4>Methods Overloads</h4>
-        <p>We are trying to reduce as much as possible amount of code, necessary for charts creation. For this purpose, each method might accept different set of parameters which change methods capability.
-            We call it <em>Methods Overloads</em>. You can find list of overloads with his parameters set in the head section of each method description. We also provide at least one Live Sample for each method overload.</p>
+        <img src="/i/method_overload.png" class='img-in-context'>
+        <h4>Methods Overloading</h4>
+        <p>We are trying to reduce the amount of code necessary for charts creation as much as possible. In order to achieve this, each method may accept different set of parameters which change its functionality, and this is called <em>method overloading</em>. You can find list of overloads each method has, with all its parameters in the head section of each method description. We provide at least one Live Sample for each overload, this sample can be launched it in the <a href="//playground.anychart.com">AnyChart Playground</a> and you will instantly see what it does.</p>
         <div class="clearfix"></div>
     </div>
     <div class="feature">
         <img src="/i/playground_preview.jpg" class='img-in-context'/>
         <h4>Live samples</h4>
-        <p>AnyChart products provides over million methods, functions and properties. To simplify understanding and visual perception of our products, we provide at least by one Live Sample for each function, method and property via AnyChart Playground.
-            This is really costs much time and care, but we believe, that making our products easy to use, we make the first step good fellowship with our users.</p>
+        <p>AnyChart has thousands of methods, namespaces, enums and properties. To ease the process of understanding and give you a clear perception them, we provide at least one <em>Live Sample</em> for each function, method or property in <a href="//playground.anychart.com">AnyChart Playground</a>. Yes, creating so many samples takes a lot of time and requires thoroughness, but we strive to be the best and make your learning curve less steep, and we believe that the ability to try everything with your own hands is one of the most potent ways of learning.</p>
         <div class="clearfix"></div>
     </div>
 
     <div class="feature ">
         <img src="/i/search_preview.jpg" class='img-in-context'/>
         <h4>Search</h4>
-        <p>Our search engine helps you to fine whenever you need as fast as possible. The search result is groped by categories, functions and methods come first, then enums, typedefs and classes follow.
-            As soon as some name of methods are really common ('fill' - is really good example), we added the number of repetition in the search results, click on it to see full list of matched methods.</p>
+        <p>AnyChart API Search helps you to find everything you need as fast as possible. The search results are grouped in categories, functions and methods come first, then enums, typedefs and then classes follow. Some names are really common ('fill' is a good example of that), we added a number of repetitions in a search result, click on this number to see the full list of methods matching your query.</p>
         <div class="clearfix"></div>
     </div>
-
-
     <h2 class='bottom-line'>How to contribute</h2>
-    <p>We hope API Reference will help you work with our products. If you found a misprint or you can provide better usage sample, fell free to fork our repo on gihtub.We will glade to see any suggestions.
-    <div> <a class="btn btn-default github-fork after-text" href="https://github.com/AnyChart/ACDVF-api-docs/fork"><span><i class="fa fa-github"></i></span> Fork</a></div>
+    <p>We hope API Reference helps you in your development process. If you want to help us back: please report errors, typos and suggest better samples, to do so either fork and create a pull request or create an issue in <a href="https://github.com/AnyChart/api-reference" target="_blank">AnyChart API repo on GitHub</a>. We will be very happy to hear out everything you have to say and consider your suggestions.</p>
 </div>
 

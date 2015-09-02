@@ -69,8 +69,10 @@ api.pageScrolling.onContentScroll_ = function() {
             api.pageScrolling.currentVisible_ = el;
             var link = "/" + version + "/" + page + "#" + el;
             api.history.lock = true;
-            api.tree.expand(location.pathname, "#" + el);
-            api.page.highlight(el, false, false, true);
+            //api.tree.expand(location.pathname, "#" + el);
+            //api.page.highlight(el, false, false, true);
+            api.page.scrollHighlight(el);
+            api.tree.scrollHighlight(el);
         }
     }else {
         api.pageScrolling.currentVisible_ = null;
@@ -104,6 +106,7 @@ api.pageScrolling.scrollTo = function(entry) {
  */
 api.pageScrolling.highlightScroll = function(entry) {
     setTimeout(function() {
+        api.page.currentActive_ = entry;
         $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
                                                {scrollInertia: 700,
                                                 callbacks: false});
