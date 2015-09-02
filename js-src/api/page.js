@@ -191,7 +191,7 @@ api.page.fixAccordionLinks = function() {
             api.tree.expand(location.pathname, "#" + id);
             api.tree.scrollToEntry(api.config.page, id);
 
-            if ($block.find(".pannel-collapse.collapse.in").length > 1) {
+            if ($block.find(".pannel-collapse.collapse").length > 1) {
                 var href = $(this).attr("href");
                 var $target = $("div" + href);
                 if (!$target.hasClass("in")) {
