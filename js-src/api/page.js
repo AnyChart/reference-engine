@@ -149,6 +149,8 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
         document.title = res.title;
         $("meta[property='og\\:title']").attr("content", res.title);
         $("meta[property='og\\:url']").attr("content", res.url);
+        $("meta[name='keywords']").attr("content", res.keywords);
+        $("meta[name='description']").attr("content", res.description);
         
         $("#content-wrapper").html('<div id="content"><div class="content-container">'+res.content+'</div></div>');
 
