@@ -39,5 +39,7 @@ api.core.init = function(version, page) {
 };
 
 $(window).load(function() {
-    api.history.init();
+    setTimeout(function() {
+        api.history.init();
+    }, 100);
 });
