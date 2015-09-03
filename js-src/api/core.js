@@ -29,7 +29,6 @@ api.core.init = function(version, page) {
     if (location.hash)
         api.page.highlightOnLoad(location.hash.substr(1));
 
-    api.history.init();
     api.page.fixAccordionLinks();
     api.pageScrolling.init();
 
@@ -38,3 +37,7 @@ api.core.init = function(version, page) {
         api.tree.unhighight();
     }
 };
+
+$.load(function() {
+    api.history.init();
+});
