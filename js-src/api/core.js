@@ -38,6 +38,6 @@ api.core.init = function(version, page) {
     }
 };
 
-$.load(function() {
+$(window).load(function() {
     api.history.init();
 });
