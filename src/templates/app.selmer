@@ -11,6 +11,7 @@
         <meta property="og:image" content="https://cdn.anychart.com/images/features-laptop.png" />
         <meta property="og:site_name" content="AnyChart"/>
         <meta property="og:locale" content="en_US" />
+        <meta property="og:description" content="AnyChart HTML5 charts for for web and mobile - API reference{% if page-name %} for {{page-name}}{% endif %}" />
         <meta name="keywords" content="{% if page-name %}{{page-name}}, {% endif %}anychart api reference, js charts, javascript charts, html5 charts, ajax charts, plots, line charts, bar charts, pie charts, js maps, javascript gantt charts, js dashboard" />
         <meta name="description" content="AnyChart HTML5 charts for for web and mobile - API reference{% if page-name %} for {{page-name}}{% endif %}" />
         
