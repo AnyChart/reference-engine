@@ -13,16 +13,17 @@
    :jdbc  (jdbc/new-jdbc (:jdbc config))
    :redis (redis/new-redis (:redis config))
    :web   (component/using (web/new-web (:web config))
-                           [:jdbc :redis])
+                           [:jdbc :redis :notifier])
    :generator (component/using (generator/new-generator (:generator config))
                                [:jdbc :redis :notifier])))
 
 (defn frontend-system [config]
   (component/system-map
+   :notifier (notifier/new-notifier (:notifications config))
    :jdbc  (jdbc/new-jdbc (:jdbc config))
    :redis (redis/new-redis (:redis config))
    :web   (component/using (web/new-web (:web config))
-                           [:jdbc :redis])))
+                           [:jdbc :redis :notifier])))
 
 (defn generator-system [config]
   (component/system-map

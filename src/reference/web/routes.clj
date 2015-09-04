@@ -2,6 +2,7 @@
   (:require [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [compojure.core :refer [routes defroutes GET POST ANY]]
             [compojure.route :as route]
+            [ring.util.request :refer [request-url]]
             [ring.util.response :refer [response redirect header content-type]]
             [selmer.parser :refer [render-file]]
             [reference.data.versions :as vdata]
@@ -9,6 +10,7 @@
             [reference.data.sitemap :as sdata]
             [reference.data.seo :as seo]
             [reference.components.redis :as redisca]
+            [reference.components.notifier :refer [notify-404]]
             [taoensso.timbre :as timbre :refer [info]]
             [cheshire.core :refer [generate-string]]
             [reference.web.data :as wdata]))
@@ -21,6 +23,13 @@
 
 (defn- redis [request]
   (-> request :component :redis))
+
+(defn- notifier [request]
+  (-> request :component :notifier))
+
+(defn- page-404 [request]
+  (notify-404 (notifier request) (request-url request))
+  (route/not-found "page not found"))
 
 (defn- landing-content [request]
   (let [versions (vdata/versions (jdbc request))
@@ -145,7 +154,7 @@
           version (vdata/version-by-key (jdbc request) version-key)]
       (if version
         (app version request)
-        (route/not-found "version not found")))))
+        (page-404 request)))))
 
 (defn- check-page-middleware [app]
   (fn [request]
@@ -155,7 +164,7 @@
           page (pdata/page-by-url (jdbc request) (:id version) page-url)]
       (if (and version page)
         (app version page request)
-        (route/not-found "page not found")))))
+        (page-404 request)))))
 
 (defroutes app-routes
   (route/resources "/")
