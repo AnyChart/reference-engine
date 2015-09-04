@@ -25,7 +25,7 @@
   (-> request :component :redis))
 
 (defn- notifier [request]
-  (-> request :components :notifier))
+  (-> request :component :notifier))
 
 (defn- page-404 [request]
   (notify-404 (notifier request) (request-url request))
@@ -164,7 +164,7 @@
           page (pdata/page-by-url (jdbc request) (:id version) page-url)]
       (if (and version page)
         (app version page request)
-        (page-404)))))
+        (page-404 request)))))
 
 (defroutes app-routes
   (route/resources "/")
