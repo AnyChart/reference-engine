@@ -41,3 +41,12 @@
 
 (defn build-failed [notifier version]
   (notify notifier (str version " build FAILED")))
+
+(defn notify-404 [notifier path]
+  (http/post (str "https://anychart-team.slack.com/services/hooks/incoming-webhook?token="
+                  (-> notifier :config :token))
+             {:form-params
+              {:payload (generate-string
+                         {:text (str (-> notifier :config :domain) " 404: " path)
+                          :channel "#api-404-errors"
+                          :username (-> notifier :config :username)})}}))
