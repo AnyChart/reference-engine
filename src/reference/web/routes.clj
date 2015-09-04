@@ -28,7 +28,9 @@
   (-> request :component :notifier))
 
 (defn- page-404 [request]
-  (notify-404 (notifier request) (request-url request))
+  (if-let [referrer (get-in request [:headers "referer"])]
+    (notify-404 (notifier request) (str (request-url request) " from " referrer))
+    (notify-404 (notifier request) (request-url request)))
   (route/not-found "page not found"))
 
 (defn- landing-content [request]
