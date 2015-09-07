@@ -21,7 +21,6 @@ after_success:
 - chmod 600 ~/.ssh/known_hosts
 - chmod 600 .travis/id_rsa
 - chmod 600 .travis/id_rsa_prod
-- ssh-add .travis/$KEY
 - scp -i .travis/$KEY target/reference-3.0.0-standalone.jar root@$FRONTEND:/apps/$APP/reference-3.0.0-standalone.jar
 - scp -i .travis/id_rsa target/reference-3.0.0-standalone.jar root@104.131.17.78:/apps/$APP/reference-3.0.0-standalone.jar
 - ssh root@$FRONTEND "sudo supervisorctl restart $APP"
