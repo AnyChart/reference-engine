@@ -29,3 +29,4 @@ data/
 .travis/id_rsa
 .idea/
 id_rsa_prod
+secrets.tar
