@@ -17,13 +17,15 @@ after_success:
 - if [ "$TRAVIS_BRANCH" == "staging" ]; then export FRONTEND="104.236.66.244"; fi
 - if [ "$TRAVIS_BRANCH" == "master" ]; then export KEY="id_rsa_prod"; fi
 - if [ "$TRAVIS_BRANCH" == "staging" ]; then export KEY="id_rsa"; fi
+- if [ "$TRAVIS_BRANCH" == "master" ]; then export USER="apps"; fi
+- if [ "$TRAVIS_BRANCH" == "staging" ]; then export USER="root"; fi
 - cp .travis/known_hosts ~/.ssh/known_hosts
 - chmod 600 ~/.ssh/known_hosts
 - chmod 600 .travis/id_rsa
 - chmod 600 .travis/id_rsa_prod
 - scp -i .travis/$KEY target/reference-3.0.0-standalone.jar root@$FRONTEND:/apps/$APP/reference-3.0.0-standalone.jar
 - scp -i .travis/id_rsa target/reference-3.0.0-standalone.jar root@104.131.17.78:/apps/$APP/reference-3.0.0-standalone.jar
-- ssh root@$FRONTEND "sudo supervisorctl restart $APP"
+- ssh $USER@$FRONTEND "sudo supervisorctl restart $APP"
 - ssh root@104.131.17.78 "supervisorctl restart $APP"
 notifications:
   slack: anychart-team:sJRPhNn8Ur8yVdhvhgp6EbDM
