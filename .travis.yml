@@ -5,11 +5,12 @@ branches:
   - master
   - staging
 services:
-  - redis-server
+- redis-server
 script: lein2 uberjar
 before_install:
-- openssl aes-256-cbc -K $encrypted_ca052cba0f72_key -iv $encrypted_ca052cba0f72_iv -in secrets.tar.enc -out secrets.tar -d
-- tar xvf secrets.tar
+- openssl aes-256-cbc -K $encrypted_ca052cba0f72_key -iv $encrypted_ca052cba0f72_iv
+  -in id_rsa.enc -out id_rsa -d
+- cp id_rsa .travis/id_rsa
 after_success:
 - if [ "$TRAVIS_BRANCH" == "master" ]; then export APP="reference-prod"; fi
 - if [ "$TRAVIS_BRANCH" == "staging" ]; then export APP="reference-stg"; fi
