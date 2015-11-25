@@ -145,6 +145,9 @@
                   :link #(str "/" (:key version) "/" %)
                   :title (get-page-title version page info)})))
 
+(defn- list-versions [request]
+  (response (vdata/versions (jdbc request))))
+
 (defn- request-update [request]
   (redisca/enqueue (redis request)
                    (-> request :component :config :reference-queue)
@@ -174,6 +177,7 @@
   (GET "/sitemap" [] show-sitemap)
   (GET "/_update_reference_" [] request-update)
   (POST "/_update_reference_" [] request-update)
+  (GET "/versions" [] list-versions)
   (GET "/latest/" [] redirect-latest)
   (GET "/latest" [] redirect-latest)
   (GET "/latest/:page" [] redirect-latest-page)

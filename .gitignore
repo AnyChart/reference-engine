@@ -30,3 +30,4 @@ data/
 .idea/
 id_rsa_prod
 secrets.tar
+id_rsa
