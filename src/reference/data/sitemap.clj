@@ -30,8 +30,9 @@
                         (map #(create-sitemap-entry % version-id) (:classes entries))
                         (map #(create-sitemap-entry % version-id) (:enums entries))
                         (map #(create-sitemap-entry % version-id) (:typedefs entries)))]
-    (exec jdbc (-> (insert-into :sitemap)
-                   (values entries)))))
+    (if (seq entries)
+      (exec jdbc (-> (insert-into :sitemap)
+                     (values entries))))))
 
 (defn- version-entries [jdbc version-id]
   (query jdbc (-> (select :page_url :last_modified)

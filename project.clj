@@ -13,6 +13,8 @@
                  [ring/ring-json "0.3.1"]
                  [ring/ring-core "1.3.1"]
                  [enlive "1.1.5"]
+                 ;; claypoole
+                 [com.climate/claypoole "1.1.0"]
                  ;; logging
                  [com.taoensso/timbre "4.0.1"]
                  ;; databases
