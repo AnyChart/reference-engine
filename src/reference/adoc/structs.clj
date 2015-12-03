@@ -1,7 +1,8 @@
 (ns reference.adoc.structs
   (:require [taoensso.timbre :as timbre :refer [info]]
             [reference.adoc.media :refer [update-links]]
-            [reference.git :refer [file-last-commit-date]]))
+            [reference.git :refer [file-last-commit-date]]
+            [clojure.string :refer [blank?]]))
 
 (def id-counter (atom 0))
 
@@ -123,10 +124,10 @@
    :description (parse-description (:description entry) version)
    :short-description (get-short-description entry version)
    :has-short-description (has-short-description entry)
-   :has-description (not (empty? (:description entry)))
+   :has-description (not (blank? (:description entry)))
    :full-name (cleanup-name (:longname entry))
    :since (:since entry)
-   :has-since (some? (:since entry))})
+   :has-since (blank? (:since entry))})
 
 (defn- get-example-link [base-path doclet file]
   (let [folder (clojure.string/replace (get-in doclet [:meta :path])
@@ -152,7 +153,7 @@
 (defn- parse-listing [listing]
   (let [title (last (re-find #"(?s)^([^\n]*)\n" listing))]
     {:id (swap! id-counter inc)
-     :title (if (empty? title)
+     :title (if (blank? title)
               "Example"
               title)
      :code (last (re-find #"(?s)^[^\n]*\n(.*)" listing))}))
