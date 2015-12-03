@@ -15,10 +15,7 @@
             [reference.components.notifier :as notifications]
             [cheshire.core :refer [generate-string]]
             [org.httpkit.client :as http]
-            [com.climate.claypoole :as cp]
             [taoensso.timbre :as timbre :refer [info error]]))
-
-(def ^:private pool (cp/threadpool 16))
 
 (defn- update-branches [show-branches git-ssh data-dir]
   (let [repo-path (str data-dir "/repo/")
@@ -27,8 +24,8 @@
     (let [branches (if show-branches
                      (git/actual-branches git-ssh repo-path)
                      (git/version-branches git-ssh repo-path))]
-      (cp/upmap pool #(git/checkout git-ssh repo-path % (str versions-path %))
-                branches)
+      (doall (pmap #(git/checkout git-ssh repo-path % (str versions-path %))
+                   branches))
       (git/get-hashes git-ssh versions-path branches))))
 
 (defn- remove-branch [jdbc branch-key]
@@ -126,14 +123,14 @@
     (notifications/versions-for-build notifier (map :name branches))
     (if (seq removed-branches)
       (notifications/delete-branches notifier removed-branches))
-    (doall (cp/upmap pool #(build-branch %
-                                         jdbc
-                                         notifier
-                                         git-ssh
-                                         data-dir
-                                         max-processes
-                                         jsdoc-bin
-                                         docs
-                                         playground)
-                     branches))
+    (doall (map #(build-branch %
+                               jdbc
+                               notifier
+                               git-ssh
+                               data-dir
+                               max-processes
+                               jsdoc-bin
+                               docs
+                               playground)
+                branches))
     (notifications/complete-building notifier)))
