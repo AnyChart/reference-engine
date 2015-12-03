@@ -150,17 +150,23 @@
 (defn- parse-examples [base-path doclet examples]
   (map #(parse-example base-path doclet %) examples))
 
-(defn- parse-listing [listing]
-  (let [title (last (re-find #"(?s)^([^\n]*)\n" listing))]
+(defn- listing-has-title? [listing comment]
+  (not (re-find #"(?m)^\s*\* @listing\s*$" comment)))
+
+(defn- parse-listing [listing comment]
+  (if (listing-has-title? listing comment)
+    (let [title (last (re-find #"(?s)^([^\n]*)\n" listing))]
+      {:id (swap! id-counter inc)
+       :title title
+       :code (last (re-find #"(?s)^[^\n]*\n(.*)" listing))})
     {:id (swap! id-counter inc)
-     :title (if (blank? title)
-              "Example"
-              title)
-     :code (last (re-find #"(?s)^[^\n]*\n(.*)" listing))}))
+     :title "Example"
+     :code listing}))
 
 (defn- parse-examples-and-listing [base-path entry doclet]
   (let [samples (parse-examples base-path doclet (:examples doclet))
-        listings (map parse-listing (map :value (get-tag doclet "listing")))]
+        listings (map #(parse-listing % (:comment doclet))
+                      (map :value (get-tag doclet "listing")))]
     (assoc entry
            :playground-samples samples
            :has-playground-samples (boolean (seq samples))
