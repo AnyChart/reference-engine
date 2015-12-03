@@ -250,8 +250,7 @@
 
 (defn- parse-param-description [description version]
   (if description
-    (clojure.string/replace (parse-description description version)
-                            #"\s*\[[^\]]*\]\s*" "")))
+    (parse-description description version)))
 
 (defn- convert-code-to-list [code]
   (let [lines (clojure.string/split-lines code)]
@@ -260,21 +259,55 @@
       (str "<ul>" (reduce str (map #(str "<li>" % "</li>") lines)) "</ul>")))
   code)
 
-(defn- get-param-default [param]
-  (if (and (:description param)
-           ;;(re-find #"^opt_" (:name param))
-           (re-find #"\s*\[[^\]]*\]\s*" (:description param)))
-    (last (re-find #"^\[([^\]]*)\]" (:description param)))))
+(defn- reduce-to-param-default [description]
+  (info "parse param description: " description)
+  (reduce (fn [res c]
+            (let [c (str c)]
+              (cond
+                (and (nil? (:state res)) (clojure.string/blank? (str c))) res
+                
+                (and (nil? (:state res)) (= c "["))
+                (assoc res
+                       :state :start-default
+                       :cnt 1
+                       :default ""
+                       :description "")
+                
+                (and (= (:state res) :start-default) (= c "]"))
+                (if (= (:cnt res) 1)
+                  (assoc res :state :end-default)
+                  (-> res
+                      (update :default str c)
+                      (update :cnt dec)))
 
-(defn- parse-param-default [param]
-  (get-param-default param))
+                (and (= (:state res) :start-default) (= c "["))
+                (-> res
+                    (update :default str c)
+                    (update :cnt inc))
+
+                (= (:state res) :start-default) (update res :default str c)
+
+                :else (update res :description str c))))
+          {:state nil :default "" :description ""}
+          description))
+
+(defn- param-has-default? [param]
+  (and (:description param)
+       (re-find #"\s*\[[^\]]*\]\s*" (:description param))))
 
 (defn- parse-function-param [param version]
-  {:types (get-in param [:type :names])
-   :description (parse-param-description (:description param) version)
-   :name (if (:name param)
-           (clojure.string/replace (:name param) #"^opt_" ""))
-   :default (parse-param-default param)})
+  (if (param-has-default? param)
+    (let [d (reduce-to-param-default (:description param))]
+      (info d)
+      {:types (get-in param [:type :names])
+       :description (parse-param-description (:description d) version)
+       :name (if (:name param)
+               (clojure.string/replace (:name param) #"^opt_" ""))
+       :default (:default d)})
+    {:types (get-in param [:type :names])
+     :description (parse-param-description (:description param) version)
+     :name (if (:name param)
+             (clojure.string/replace (:name param) #"^opt_" ""))}))
 
 (defn- function-has-params-defaults [params]
   (boolean (some #(:default %) params)))
