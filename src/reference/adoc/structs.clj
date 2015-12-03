@@ -251,7 +251,7 @@
 (defn- parse-param-description [description version]
   (if description
     (clojure.string/replace (parse-description description version)
-                            #"\s*\[[^\]]+\]\s*" "")))
+                            #"\s*\[[^\]]*\]\s*" "")))
 
 (defn- convert-code-to-list [code]
   (let [lines (clojure.string/split-lines code)]
@@ -263,8 +263,8 @@
 (defn- get-param-default [param]
   (if (and (:description param)
            ;;(re-find #"^opt_" (:name param))
-           (re-find #"\s*\[[^\]]+\]\s*" (:description param)))
-    (last (re-find #"^\[([^\]]+)\]" (:description param)))))
+           (re-find #"\s*\[[^\]]*\]\s*" (:description param)))
+    (last (re-find #"^\[([^\]]*)\]" (:description param)))))
 
 (defn- parse-param-default [param]
   (get-param-default param))
