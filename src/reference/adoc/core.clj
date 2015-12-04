@@ -24,7 +24,8 @@
     (let [branches (if show-branches
                      (git/actual-branches git-ssh repo-path)
                      (git/version-branches git-ssh repo-path))]
-      (doall (pmap #(git/checkout git-ssh repo-path % (str versions-path %)) branches))
+      (doall (pmap #(git/checkout git-ssh repo-path % (str versions-path %))
+                   branches))
       (git/get-hashes git-ssh versions-path branches))))
 
 (defn- remove-branch [jdbc branch-key]
@@ -66,7 +67,7 @@
     (read-string (slurp (str data-dir "/versions/" version-key "/.api-config.edn")))
     {:samples true}))
 
-(defn- build-branch
+(defn build-branch
   [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground]
   (try
     (do
@@ -102,6 +103,15 @@
       (do (error e)
           (error (.getMessage e))
           (notifications/build-failed notifier (:name branch))))))
+
+(defn- build-experiments [dev]
+  (build-branch {:name "experiments" :commit (System/currentTimeMillis)}
+                (-> dev :generator :jdbc)
+                (-> dev :generator :notifier)
+                (-> dev :generator :config :git-ssh)
+                (-> dev :generator :config :data-dir)
+                (-> dev :generator :config :max-processes)
+                (-> dev :generator :config :jsdoc-bin) "" ""))
 
 (defn build-all
   [jdbc notifier

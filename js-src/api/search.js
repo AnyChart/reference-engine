@@ -26,8 +26,10 @@ api.search.hide = function() {
  * @param {string} str
  * @param {string} target
  */
-api.search.match_ = function(str, target) {
-    return str.toLowerCase().indexOf(target.toLowerCase()) != -1;
+api.search.match_ = function(name, fullName, target) {
+    if (target.indexOf(".") == -1)
+        return name.toLowerCase().indexOf(target.toLowerCase()) != -1;
+    return fullName.toLowerCase().indexOf(target.toLowerCase()) != -1;
 };
 
 /**
@@ -42,7 +44,7 @@ api.search.findConstants_ = function(str) {
         var ns = data.namespaces[i];
         for (var j = 0; j < ns.constants.length; j++) {
             var c = ns.constants[j];
-            if (api.search.match_(c.name, str)) {
+            if (api.search.match_(c.name, c["full-name"], str)) {
                 res.push(c);
             }
         }
@@ -65,7 +67,7 @@ api.search.findGrouped_ = function(str, container, key) {
         var c = data[container][i];
         for (var j = 0; j < c[key].length; j++) {
             var m = c[key][j];
-            if (contains(m.name, str)) {
+            if (contains(m.name, m["full-name"], str)) {
                 res.push(m);
             }
         }
@@ -101,7 +103,7 @@ api.search.filter_ = function(str, entries, type) {
     var res = [];
     for (var i = 0; i < entries.length; i++) {
         var entry = entries[i];
-        if (api.search.match_(entry.name, str)) {
+        if (api.search.match_(entry["name"], entry["full-name"], str)) {
             res.push(entry);
         }
     }
@@ -228,7 +230,7 @@ api.search.showEmpty_ = function($res) {
  * @param {string} query
  */
 api.search.search_ = function(query) {
-    if (query.length < 3) {
+    if (query.length < 2) {
         api.search.hide();
         return;
     }

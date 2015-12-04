@@ -5,6 +5,7 @@ branches:
   only:
   - master
   - staging
+sudo: false
 services:
 - redis-server
 script: lein2 uberjar

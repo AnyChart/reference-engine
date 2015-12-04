@@ -62,9 +62,10 @@
                          (where [:= :hidden false]))))))
 
 (defn outdated-versions-ids [jdbc actual-ids]
-  (map :id (query jdbc (-> (select :id)
-                           (from :versions)
-                           (where [:not [:in :id actual-ids]])))))
+  (if (seq actual-ids)
+    (map :id (query jdbc (-> (select :id)
+                             (from :versions)
+                             (where [:not [:in :id actual-ids]]))))))
 
 (defn remove-versions [jdbc ids]
   (if (seq ids)
