@@ -127,7 +127,7 @@
    :has-description (not (blank? (:description entry)))
    :full-name (cleanup-name (:longname entry))
    :since (:since entry)
-   :has-since (blank? (:since entry))})
+   :has-since (not (blank? (:since entry)))})
 
 (defn- get-example-link [base-path doclet file]
   (let [folder (clojure.string/replace (get-in doclet [:meta :path])
@@ -260,7 +260,6 @@
   code)
 
 (defn- reduce-to-param-default [description]
-  (info "parse param description: " description)
   (reduce (fn [res c]
             (let [c (str c)]
               (cond
