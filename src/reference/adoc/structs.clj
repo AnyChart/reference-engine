@@ -292,7 +292,7 @@
 
 (defn- param-has-default? [param]
   (and (:description param)
-       (re-find #"\s*\[[^\]]*\]\s*" (:description param))))
+       (re-find #"^\s*\[[^\]]*\]\s*" (:description param))))
 
 (defn- parse-function-param [param version]
   (if (param-has-default? param)
