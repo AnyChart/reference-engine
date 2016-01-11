@@ -1,11 +1,13 @@
 (ns reference.git
   (:require [clojure.java.shell :refer [sh with-sh-env with-sh-dir]]
-            [clojure.string :refer [split]]))
+            [clojure.string :refer [split]]
+            [taoensso.timbre :as timbre :refer [info error]]))
 
 (defn run-sh [& command]
   (apply sh command))
 
 (defn file-last-commit-date [base-path path]
+  (info "last commit date for " (str base-path path))
   (with-sh-dir base-path
     (let [res (sh "git" "--no-pager" "log" "-1" "--format=%ct" "--" (str base-path path))]
       (-> res
