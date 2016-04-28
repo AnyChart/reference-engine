@@ -28,6 +28,7 @@ data/
 .module-cache/
 .travis/id_rsa
 .idea/
+reference.iml
 id_rsa_prod
 secrets.tar
 id_rsa
