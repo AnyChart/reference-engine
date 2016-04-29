@@ -54,9 +54,9 @@
                (split (run-git git-ssh path "branch" "-r") #"\n"))))
 
 (defn version-branches [git-ssh path]
-  (map (fn [s] (re-find #"\d\.\d\.\d" s))
+  (map (fn [s] (re-find #"\d+\.\d+\.\d+" s))
        (filter (fn [s] (and (not (.contains s "->"))
-                            (re-matches #"[ ]+origin/\d\.\d\.\d" s)))
+                            (re-matches #"[ ]+origin/\d+\.\d+\.\d+" s)))
                (split (run-git git-ssh path "branch" "-r") #"\n"))))
 
 (defn get-hashes [git-ssh base-path branches]
