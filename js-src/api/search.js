@@ -337,17 +337,22 @@ api.search.init = function() {
     });
 
     var timeout = null;
+    var query = "";
     $("#search").keyup(function(e) {
         if (e.keyCode == 27) { //esc
             api.search.hide();
             $("#search").val('');
         }else {
-            if(timeout !== null) {
-                window.clearTimeout(timeout);
+            var newQuery = $("#search").val();
+            if (newQuery != query) {
+                query = newQuery;
+                if (timeout !== null) {
+                    window.clearTimeout(timeout);
+                }
+                timeout = window.setTimeout(function(){
+                    api.search.makeSearchReq(query);
+                }, 250);
             }
-            timeout = window.setTimeout(function(){
-                api.search.makeSearchReq($("#search").val());
-            }, 250);
         }
     });
 };
