@@ -16,11 +16,13 @@
                  ;; logging
                  [com.taoensso/timbre "4.0.1"]
                  ;; databases
+                 [mpg "1.0.0"]
                  [com.taoensso/carmine "2.11.1"]
-                 [org.clojure/java.jdbc "0.3.6"]
-                 [postgresql/postgresql "8.4-702.jdbc4"]
+                 [org.clojure/java.jdbc "0.6.0-rc2"]
+                 [org.postgresql/postgresql "9.4.1208"]
                  [clojure.jdbc/clojure.jdbc-c3p0 "0.3.2"]
-                 [honeysql "0.5.2"]]
+                 [honeysql "0.6.3"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
+  :plugins [[lein-ancient "0.6.10"]]
   :main reference.core)

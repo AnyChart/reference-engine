@@ -11,6 +11,7 @@
             [reference.git :as git]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
+            [reference.data.search :as search-data]
             [reference.data.sitemap :as sitemap]
             [reference.components.notifier :as notifications]
             [cheshire.core :refer [generate-string]]
@@ -133,4 +134,6 @@
                                docs
                                playground)
                 branches))
+    (notifications/start-database-refresh notifier)
+    (search-data/refresh jdbc)
     (notifications/complete-building notifier)))

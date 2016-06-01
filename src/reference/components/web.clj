@@ -1,6 +1,8 @@
 (ns reference.components.web
   (:require [com.stuartsierra.component :as component]
             [org.httpkit.server :as server]
+            [ring.middleware.params :refer [wrap-params]]
+            [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [taoensso.timbre :as timbre :refer [info]]
             [reference.web.routes :refer [app]]))
@@ -12,7 +14,9 @@
 (defn- create-web-app [component]
   (wrap-json-response
    (wrap-json-body
-    (component-middleware component #'app)
+     (wrap-params
+       (wrap-keyword-params
+         (component-middleware component #'app)))
     {:keywords? true})))
 
 (defrecord Web [config web-server jdbc redis]

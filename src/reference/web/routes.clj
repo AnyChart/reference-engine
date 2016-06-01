@@ -7,6 +7,7 @@
             [selmer.parser :refer [render-file]]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
+            [reference.data.search :as search-data]
             [reference.data.sitemap :as sdata]
             [reference.data.seo :as seo]
             [reference.components.redis :as redisca]
@@ -156,6 +157,13 @@
                    (-> request :component :config :reference-queue)
                    "generate"))
 
+(defn- search [version request]
+  (let [q (-> request :params :q)
+        data (if (> (.indexOf q ".") -1 )
+               (response (search-data/search-by-full-name (jdbc request) (:id version) q ))
+               (response (search-data/search (jdbc request) (:id version) q)))]
+    (-> data (header "Content-Type" "application/json"))))
+
 (defn- check-version-middleware [app]
   (fn [request]
     (let [version-key (-> request :route-params :version)
@@ -191,6 +199,7 @@
                                                           tree-data)))
   (GET "/:version/data/search.json" [] (wrap-json-response (check-version-middleware
                                                             search-data)))
+  (GET "/:version/search.json" [] (wrap-json-response (check-version-middleware search)))
   (GET "/:version/try/:page" [] (check-version-middleware try-show-page))
   (GET "/:version/:page/data" [] (wrap-json-response (check-page-middleware get-page-data)))
   (GET "/latest/:page" [] redirect-latest-page)

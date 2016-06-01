@@ -23,7 +23,7 @@ jsdoc
 resources/keys/
 keys/
 .repl/
-data/
+/data
 .repl-*/
 .module-cache/
 .travis/id_rsa

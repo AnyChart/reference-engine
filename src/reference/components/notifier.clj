@@ -27,6 +27,9 @@
 (defn start-building [notifier]
   (notify notifier "start api update"))
 
+(defn start-database-refresh [notifier]
+  (notify notifier "start database refresh"))
+
 (defn complete-building [notifier]
   (notify notifier "api update completed"))
 

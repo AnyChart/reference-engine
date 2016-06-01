@@ -52,6 +52,32 @@ api.search.findConstants_ = function(str) {
     return res;
 };
 
+/**
+ * @private
+ * @param {Array} res
+ * @return {Array}
+ */
+api.search.setMultiple_ = function(res){
+    var actual = [];
+    for (var i = 0; i < res.length; i++) {
+        var item = res[i];
+        var multiple = false;
+        for (var j = 0; j < actual.length; j++) {
+            if (actual[j].name == item.name) {
+                multiple = true;
+                actual[j].multiple = true;
+                if (!actual[j].group)
+                    actual[j].group = [actual[j], item];
+                else
+                    actual[j].group.push(item);
+            }
+        }
+        if (!multiple)
+            actual.push($.extend({}, item));
+    }
+    return actual;
+};
+
 /** 
  * @private
  * @param {string} str
@@ -72,24 +98,7 @@ api.search.findGrouped_ = function(str, container, key) {
             }
         }
     }
-    var actual = [];
-    for (var i = 0; i < res.length; i++) {
-        var item = res[i];
-        var multiple = false;
-        for (var j = 0; j < actual.length; j++) {
-            if (actual[j].name == item.name) {
-                multiple = true;
-                actual[j].multiple = true;
-                if (!actual[j].group)
-                    actual[j].group = [actual[j], item];
-                else
-                    actual[j].group.push(item);
-            }
-        }
-        if (!multiple)
-            actual.push($.extend({}, item));
-    }
-    return actual;
+    return api.search.setMultiple_(res);
 };
 
 /**
@@ -177,7 +186,7 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
     var $res = $("<ul></ul>");
     for (var i = 0; i < item.group.length; i++) {
         var entry = item.group[i];
-        $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["full-name"] + postfix + "</a></li>");
+        $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["full_name"] + postfix + "</a></li>");
     }
 
     api.config.page = null;
@@ -213,7 +222,7 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         if (!item.multiple)
-            $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
+            $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full_name"] + postfix + "</a></li>");
     }
 };
 
@@ -254,11 +263,65 @@ api.search.search_ = function(query) {
 
 /**
  * @private
- * @param {Object} data
+ * @param {Array} data
+ * @param {string} query
  */
-api.search.onLoad_ = function(data) {
+api.search.onDataLoad_ = function(data, query){
     api.search.data_ = data;
+    var constants = [];
+    var functions = [];
+    var methods = [];
+    var namespaces = [];
+    var enums = [];
+    var classes = [];
+    var typedefs = [];
+    for(var i = 0; i < data.length; i++){
+        var item = data[i];
+        switch(item.type){
+            case "method" : methods.push(item); break;
+            case "function" : functions.push(item); break;
+            case "class" : classes.push(item); break;
+            case "typedef": typedefs.push(item); break;
+            case "enum": enums.push(item); break;
+            case "namespace": namespaces.push(item); break;
+            case "constant": constants.push(item); break;
+        }
+    }
+    methods = api.search.setMultiple_(methods);
+    functions = api.search.setMultiple_(functions);
 
+    var $res = $("<ul></ul>");
+    api.search.addToResults_($res, constants, "", "", "Constants");
+    api.search.addToResults_($res, functions, "", "()", "Functions");
+    api.search.addToResults_($res, methods, "", "()", "Methods");
+    api.search.addToResults_($res, namespaces, "", "", "Namespaces");
+    api.search.addToResults_($res, enums, "[", "]", "Enums");
+    api.search.addToResults_($res, typedefs, "{", "}", "Typedefs");
+    api.search.addToResults_($res, classes, "", "", "Classes");
+    $res.find("a.item-link").click(api.links.typeLinkClick);
+
+    if (!$res.find("a").length) api.search.showEmpty_($res);
+
+    $("#search-results-new").show();
+    $("#search-results-new").html("");
+    $("#search-results-new").append($res);
+};
+
+/**
+ * @private
+ * @param {string} query
+ */
+api.search.makeSearchReq = function(query){
+    if (query.length < 2) {
+        api.search.hide();
+        return;
+    }
+    $.get("/" + api.config.version + "/search.json?q=" + query, function(data){
+        api.search.onDataLoad_(data, query);
+    });
+};
+
+api.search.init = function() {
     $("#search-results-new").click(function(e) {
         e.stopPropagation();
     });
@@ -268,19 +331,24 @@ api.search.onLoad_ = function(data) {
         return false;
     });
     $("#search").focus(function() {
-        api.search.search_($(this).val());
+        if( $(this).val() != ''){
+            $("#search-results-new").show();
+        }
     });
-    
+
+    var timeout = null;
     $("#search").keyup(function(e) {
         if (e.keyCode == 27) { //esc
             api.search.hide();
             $("#search").val('');
         }else {
-            api.search.search_($(this).val());
+            if(timeout !== null) {
+                window.clearTimeout(timeout);
+            }
+            timeout = window.setTimeout(function(){
+                api.search.makeSearchReq($("#search").val());
+            }, 250);
         }
     });
 };
 
-api.search.init = function() {
-    $.get("/" + api.config.version + "/data/search.json", api.search.onLoad_);
-};

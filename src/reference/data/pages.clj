@@ -2,7 +2,8 @@
   (:require [reference.components.jdbc :refer [query one insert! exec]]
             [honeysql.helpers :refer :all]
             [honeysql.core :as sql]
-            [cheshire.core :refer [generate-string parse-string]]))
+            [cheshire.core :refer [generate-string parse-string]]
+            [mpg.util :as u]))
 
 ;; CREATE SEQUENCE page_id_seq;
 ;; CREATE TYPE page_type AS ENUM ('namespace', 'class', 'typedef', 'enum');
@@ -12,7 +13,7 @@
 ;;   version_id integer references versions(id),
 ;;   url varchar(255) not null,
 ;;   full_name varchar(255),
-;;   content text
+;;   content jsonb
 ;; )
 
 (defn page-by-url [jdbc version-id page-url]
@@ -21,7 +22,7 @@
                           (where [:= :version_id version-id]
                                  [:= :url page-url])))]
     (if (some? res)
-      (assoc res :content (parse-string (:content res) true)))))
+        (assoc res :content (parse-string (-> res :content .getValue) true)))))
 
 (defn delete-version-pages [jdbc version-id]
   (exec jdbc (-> (delete-from :pages)
@@ -30,7 +31,7 @@
 (defn add-page [jdbc version-id type url content]
   (insert! jdbc :pages {:url url
                         :type type
-                        :content (generate-string content)
+                        :content (u/pg-json content)
                         :full_name url
                         :version_id version-id}))
 
