@@ -159,9 +159,7 @@
 
 (defn- search [version request]
   (let [q (-> request :params :q)
-        data (if (> (.indexOf q ".") -1 )
-               (response (search-data/search-by-full-name (jdbc request) (:id version) q ))
-               (response (search-data/search (jdbc request) (:id version) q)))]
+        data (response (search-data/search (jdbc request) (:id version) q))]
     (-> data (header "Content-Type" "application/json"))))
 
 (defn- check-version-middleware [app]

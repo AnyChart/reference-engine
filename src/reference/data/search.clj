@@ -8,22 +8,16 @@
 
 (defn search [jdbc version-id q]
   (let [match (str "%" q "%")]
-    (query jdbc (-> (select :*)
+    (query jdbc (-> (select :type :name :full_name :link)
+                    (modifiers :distinct)
                     (from :search_table)
                     (where [:and
                             [:= :version_id version-id]
                             [:or [:ilike :name match]
+                             [:ilike :full_name match]
                              [:ilike :short_description match]
                              [:ilike :description match]
                              [:ilike :detailed match]]])))))
-
-(defn search-by-full-name [jdbc version-id q]
-  (let [match (str "%" q "%")]
-    (query jdbc (-> (select :*)
-                    (from :search_table)
-                    (where [:and
-                            [:= :version_id version-id]
-                            [:ilike :full_name match]])))))
 
 (defn refresh [jdbc]
   (clj-jdbc/execute! (:conn jdbc) ["REFRESH MATERIALIZED VIEW search_table"]))
