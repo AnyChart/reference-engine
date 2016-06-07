@@ -55,7 +55,7 @@ FROM
   (select json_array_elements ((json -> 'overrides') :: json) as json, full_name, version_id, type FROM
   (select json_array_elements ((content -> 'methods') :: json) as json, full_name, version_id, 'method'::TEXT as type
    from pages
-      where type = 'class' and full_name = 'anychart.core.Chart') AS data) as data2
+      where type = 'class') AS data) as data2
 UNION ALL
 SELECT
   version_id,
