@@ -22,7 +22,7 @@
   "Converts the given value to a PG JSON object"
   [value]
   (doto (PGobject.)
-    (.setType "json")
+    (.setType "jsonb")
     (.setValue (generate-string value))))
 
 (defn page-by-url [jdbc version-id page-url]
