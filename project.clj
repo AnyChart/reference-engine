@@ -16,7 +16,7 @@
                  ;; logging
                  [com.taoensso/timbre "4.0.1"]
                  ;; databases
-                 f;[mpg "1.0.0"]
+                 ;[mpg "1.0.0"]
                  [com.taoensso/carmine "2.11.1"]
                  [org.clojure/java.jdbc "0.6.1"]
                  [org.postgresql/postgresql "9.4.1208.jre7"]
