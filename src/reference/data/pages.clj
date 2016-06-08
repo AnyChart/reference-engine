@@ -1,9 +1,11 @@
 (ns reference.data.pages
+  (:import [org.postgresql.util PGobject])
   (:require [reference.components.jdbc :refer [query one insert! exec]]
             [honeysql.helpers :refer :all]
             [honeysql.core :as sql]
             [cheshire.core :refer [generate-string parse-string]]
-            [mpg.util :as u]))
+            ;[mpg.util :as u]
+            ))
 
 ;; CREATE SEQUENCE page_id_seq;
 ;; CREATE TYPE page_type AS ENUM ('namespace', 'class', 'typedef', 'enum');
@@ -15,6 +17,13 @@
 ;;   full_name varchar(255),
 ;;   content jsonb
 ;; )
+
+(defn pg-json
+  "Converts the given value to a PG JSON object"
+  [value]
+  (doto (PGobject.)
+    (.setType "json")
+    (.setValue (generate-string value))))
 
 (defn page-by-url [jdbc version-id page-url]
   (let [res (one jdbc (-> (select :*)
@@ -31,7 +40,7 @@
 (defn add-page [jdbc version-id type url content]
   (insert! jdbc :pages {:url url
                         :type type
-                        :content (u/pg-json content)
+                        :content (pg-json content)
                         :full_name url
                         :version_id version-id}))
 
