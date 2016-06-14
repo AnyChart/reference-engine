@@ -134,6 +134,8 @@
                                docs
                                playground)
                 branches))
-    (notifications/start-database-refresh notifier)
-    (search-data/refresh jdbc)
+    (when (or (not-empty removed-branches)
+              (not-empty branches))
+      (notifications/start-database-refresh notifier)
+      (search-data/refresh jdbc))
     (notifications/complete-building notifier)))
