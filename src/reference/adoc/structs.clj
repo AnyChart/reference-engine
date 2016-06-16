@@ -315,8 +315,8 @@
   (str name "(" (clojure.string/join ", " (map :name params)) ")"))
 
 (defn- create-function [func doclets version base-path]
-  (let [params (map parse-function-param (:params func) version)
-        returns (map parse-function-return (:returns func) version)]
+  (let [params (map #(parse-function-param % version) (:params func))
+        returns (map #(parse-function-return % version) (:returns func))]
     (assoc (parse-examples-and-listing base-path (parse-general func version) func)
            :kind :function
            :has-detailed (boolean (:value (first (get-tag func "detailed"))))
