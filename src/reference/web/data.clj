@@ -23,20 +23,22 @@
 (add-tag! :link-or-text (fn [args context-map]
                           (let [path (clojure.string/split (first args) #"\.")
                                 val (escape-str (get-in context-map (map keyword path)))
-                                version (:version context-map)]
-                            (if (.startsWith val "anychart")
-                              (str "<a class='type-link' href='/"
-                                   version "/" val "'>" val "</a>")
-                              val))))
+                                version (:version context-map)
+                                replaced-links (clojure.string/replace val
+                                                                       #"anychart[\w\.]+"
+                                                                       #(str "<a class='type-link' href='/"
+                                                                             version "/" %1 "'>" %1 "</a>"))]
+                            replaced-links)))
 
 (add-tag! :type-link (fn [args context-map]
                        (let [path (clojure.string/split (first args) #"\.")
                              val (escape-str (get-in context-map (map keyword path)))
-                             version (:version context-map)]
-                         (if (.startsWith val "anychart")
-                           (str "<a class='type-link code-style' href='/"
-                                version "/" val "'>" val "</a>")
-                           (str "<span class='code-style'>" val "</span>")))))
+                             version (:version context-map)
+                             replaced-links (clojure.string/replace val
+                                                                    #"anychart[\w\.]+"
+                                                                    #(str "<a class='type-link code-style' href='/"
+                                                                          version "/" %1 "'>" %1 "</a>"))]
+                         (str "<span class='code-style'>" replaced-links "</span>"))))
 
 (add-tag! :playground (fn [args context-map content]
                         (let [val (get-in content [:playground :content])
