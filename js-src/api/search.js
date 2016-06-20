@@ -3,7 +3,7 @@ goog.provide("api.search");
 goog.require("api.config");
 
 
-/** 
+/**
  * @private
  * @type {Object}
  */
@@ -78,7 +78,7 @@ api.search.setMultiple_ = function(res){
     return actual;
 };
 
-/** 
+/**
  * @private
  * @param {string} str
  * @param {string} container
@@ -120,7 +120,7 @@ api.search.filter_ = function(str, entries, type) {
 };
 
 /**
- * @private 
+ * @private
  * @param {string} str
  * @return {Array}
  */
@@ -173,7 +173,7 @@ api.search.findTypedefs_ = function(str) {
     return api.search.filter_(str, api.search.data_.typedefs, "typedef");
 };
 
-/** 
+/**
  * @private
  * @param {Object} item
  * @param {string} prefix
@@ -181,12 +181,12 @@ api.search.findTypedefs_ = function(str) {
  */
 api.search.showGrouped_ = function(item, prefix, postfix) {
     api.breadcrumb.showSearch(item.name);
-    
+
     $("#search-results-new").hide();
     var $res = $("<ul></ul>");
     for (var i = 0; i < item.group.length; i++) {
         var entry = item.group[i];
-        $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["full_name"] + postfix + "</a></li>");
+        $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["full-name"] + postfix + "</a></li>");
     }
 
     api.config.page = null;
@@ -222,7 +222,7 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         if (!item.multiple)
-            $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full_name"] + postfix + "</a></li>");
+            $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
     }
 };
 
@@ -234,7 +234,7 @@ api.search.showEmpty_ = function($res) {
     $res.append("<li>No results found</li>");
 };
 
-/** 
+/**
  * @private
  * @param {string} query
  */
@@ -255,7 +255,7 @@ api.search.search_ = function(query) {
     $res.find("a.item-link").click(api.links.typeLinkClick);
 
     if (!$res.find("a").length) api.search.showEmpty_($res);
-    
+
     $("#search-results-new").show();
     $("#search-results-new").html("");
     $("#search-results-new").append($res);
@@ -321,12 +321,12 @@ api.search.makeSearchReq = function(query){
     });
 };
 
-api.search.init = function() {
+api.search.init_ = function() {
     $("#search-results-new").click(function(e) {
         e.stopPropagation();
     });
     $("html").click(api.search.hide);
-    
+
     $("#search").click(function() {
         return false;
     });
@@ -355,5 +355,42 @@ api.search.init = function() {
             }
         }
     });
+};
+
+/**
+ * ========================== Old searching ===============================
+ */
+
+/**
+ * @private
+ * @param {Object} data
+ */
+api.search.onLoad_ = function(data) {
+    api.search.data_ = data;
+
+    $("#search-results-new").click(function(e) {
+        e.stopPropagation();
+    });
+    $("html").click(api.search.hide);
+
+    $("#search").click(function() {
+        return false;
+    });
+    $("#search").focus(function() {
+        api.search.search_($(this).val());
+    });
+
+    $("#search").keyup(function(e) {
+        if (e.keyCode == 27) { //esc
+            api.search.hide();
+            $("#search").val('');
+        }else {
+            api.search.search_($(this).val());
+        }
+    });
+};
+
+api.search.init = function() {
+    $.get("/" + api.config.version + "/data/search.json", api.search.onLoad_);
 };
 
