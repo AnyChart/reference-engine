@@ -28,8 +28,8 @@ api.search.hide = function() {
  */
 api.search.match_ = function(name, fullName, target) {
     if (target.indexOf(".") == -1)
-        return name.toLowerCase().indexOf(target.toLowerCase()) != -1;
-    return fullName.toLowerCase().indexOf(target.toLowerCase()) != -1;
+        return name.toLowerCase().indexOf(target.toLowerCase()) != -1 && fullName.indexOf(".Base.") == -1;
+    return fullName.toLowerCase().indexOf(target.toLowerCase()) != -1 && fullName.indexOf(".Base.") == -1;
 };
 
 /**
