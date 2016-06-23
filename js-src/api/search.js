@@ -184,6 +184,11 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
 
     $("#search-results-new").hide();
     var $res = $("<ul></ul>");
+    item.group.sort(function(a, b){
+        if(a["full-name"] < b["full-name"]) return -1;
+        if(a["full-name"] > b["full-name"]) return 1;
+        return 0;
+    });
     for (var i = 0; i < item.group.length; i++) {
         var entry = item.group[i];
         $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["full-name"] + postfix + "</a></li>");
