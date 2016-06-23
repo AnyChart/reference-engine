@@ -32,7 +32,7 @@ api.core.init = function(version, page) {
     api.page.fixAccordionLinks();
     api.pageScrolling.init();
 
-    if (page == "") {
+    if (page == "" || page.indexOf("?entry=") > -1) {
         api.tree.expand("/latest/anychart");
         api.tree.unhighight();
     }

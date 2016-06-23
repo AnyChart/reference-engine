@@ -79,9 +79,6 @@
 (defn- show-default-version [request]
   (redirect (str "/" (vdata/default (jdbc request)) "/anychart")))
 
-(defn- show-default-ns [version request]
-  (redirect (str "/" (:key version) "/anychart")))
-
 (defn- redirect-latest [request]
   (redirect (str "/" (vdata/default (jdbc request)) "/anychart")))
 
@@ -115,8 +112,9 @@
       (redisca/cache (redis request) (:id version) (:url page) data)
       data)))
 
-(defn- get-page-title [version page info]
-  (str (:url page) " " (:kind info) " - AnyChart JavaScript charts API Reference ver. " (:key version)))
+(defn- get-page-title
+  ([version prefix] (str prefix " - AnyChart JavaScript charts API Reference ver. " (:key version)))
+  ([version page info] (get-page-title version (str (:url page) " " (:kind info)))))
 
 (defn- get-page-data [version page request]
   (let [info (pdata/info page)]
@@ -148,6 +146,26 @@
                   :content (generate-page-content version page request)
                   :link #(str "/" (:key version) "/" %)
                   :title (get-page-title version page info)})))
+
+(defn- show-default-ns [version request]
+  (if-let [search (-> request :params :entry)]
+    (let [versions (vdata/versions (jdbc request))]
+      (render-file "templates/app.selmer"
+                   {:version (:key version)
+                    :tree (vdata/tree-data (jdbc request) (:id version))
+                    :is-last (= (:key version) (first versions))
+                    :last-version (first versions)
+                    :versions versions
+                    :url (str "https://api.anychart.com/" (:key version) "/?entry=" search)
+                    :debug false
+                    :page  (str "/?entry=" search)
+                    :page-name (str "Search results for " search)
+                    :footer (seo/random-entry)
+                    :static-version "12"
+                    :content ""
+                    :link #(str "/" (:key version) "/" %)
+                    :title  (get-page-title version "Search results")}))
+    (redirect (str "/" (:key version) "/anychart"))))
 
 (defn- list-versions [request]
   (response (vdata/versions (jdbc request))))

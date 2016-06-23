@@ -180,6 +180,7 @@ api.search.findTypedefs_ = function(str) {
  * @param {string} postfix
  */
 api.search.showGrouped_ = function(item, prefix, postfix) {
+    api.history.setHashSearch(item.name);
     api.breadcrumb.showSearch(item.name);
 
     $("#search-results-new").hide();
@@ -393,6 +394,31 @@ api.search.onLoad_ = function(data) {
             api.search.search_($(this).val());
         }
     });
+    api.search.setSearchPage();
+};
+
+api.search.setSearchPage = function(){
+    var data = api.search.data_;
+    var searchArr = /entry=([^&]+)/.exec(window.location.href);
+    if (searchArr && searchArr.length >= 2) {
+        var searchString = searchArr[1];
+        $("#search").val(searchString);
+        api.search.search_(searchString);
+
+        var container = "classes";
+        var key = "methods";
+        var res = [];
+        for (var i = 0; i < data[container].length; i++) {
+            var c = data[container][i];
+            for (var j = 0; j < c[key].length; j++) {
+                var m = c[key][j];
+                if (m.name == searchString && m["full-name"].indexOf(".Base.") == -1) {
+                    res.push(m);
+                }
+            }
+        }
+        api.search.showGrouped_({name: searchString, group: res}, "", "()");
+    }
 };
 
 api.search.init = function() {
