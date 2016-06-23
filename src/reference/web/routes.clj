@@ -94,12 +94,6 @@
   (-> (response (vdata/tree-data (jdbc request) (:id version)))
       (header "Content-Type" "application/json")))
 
-(defn- try-show-page [version request]
-  (let [page-url (get-in request [:route-params :page])]
-    (if (pdata/page-exists? (jdbc request) (:id version) page-url)
-      (redirect (str "/" (:key version) "/" page-url))
-      (show-default-ns version request))))
-
 (defn- generate-page-content [version page request]
   (if-let [cached-data nil];;(redisca/cached-data (redis request) (:id version) (:url page))]
     cached-data
@@ -166,6 +160,12 @@
                     :link #(str "/" (:key version) "/" %)
                     :title  (get-page-title version "Search results")}))
     (redirect (str "/" (:key version) "/anychart"))))
+
+(defn- try-show-page [version request]
+  (let [page-url (get-in request [:route-params :page])]
+    (if (pdata/page-exists? (jdbc request) (:id version) page-url)
+      (redirect (str "/" (:key version) "/" page-url))
+      (show-default-ns version request))))
 
 (defn- list-versions [request]
   (response (vdata/versions (jdbc request))))
