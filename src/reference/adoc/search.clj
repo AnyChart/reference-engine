@@ -6,7 +6,7 @@
    :link (:full-name entry)
    :name (:name entry)})
 
-(defn- generate-function-search-index [fn ns-name]
+(defn- generate-function-or-constant-search-index [fn ns-name]
   {:full-name (:full-name fn)
    :link (str ns-name "#" (:name fn))
    :name (:name fn)})
@@ -29,9 +29,10 @@
 
 (defn- generate-namespace-search-index [namespace]
   (assoc (generate-entry-search-index namespace)
-         :functions (map #(generate-function-search-index % (:full-name namespace))
+         :functions (map #(generate-function-or-constant-search-index % (:full-name namespace))
                          (:functions namespace))
-         :constants (map generate-entry-search-index (:constants namespace))))
+         :constants (map #(generate-function-or-constant-search-index % (:full-name namespace))
+                         (:constants namespace))))
 
 (defn generate-search-index [top-level]
   {:enums (map generate-enum-search-index (:enums top-level))
