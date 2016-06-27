@@ -21,6 +21,14 @@ api.search.hide = function() {
     $("#search-results-new").hide();
 };
 
+api.search.notBaseContain = function(name, fullName) {
+    var names = fullName.split(".");
+    if (name.charAt(0) == name.toLowerCase().charAt(0)) {
+        names.pop();
+    }
+    return names.join(".").indexOf("Base") == -1;
+};
+
 /**
  * @private
  * @param {string} str
@@ -28,8 +36,8 @@ api.search.hide = function() {
  */
 api.search.match_ = function(name, fullName, target) {
     if (target.indexOf(".") == -1)
-        return name.toLowerCase().indexOf(target.toLowerCase()) != -1 && fullName.indexOf(".Base.") == -1;
-    return fullName.toLowerCase().indexOf(target.toLowerCase()) != -1 && fullName.indexOf(".Base.") == -1;
+        return name.toLowerCase().indexOf(target.toLowerCase()) != -1 && api.search.notBaseContain(name, fullName);
+    return fullName.toLowerCase().indexOf(target.toLowerCase()) != -1 && api.search.notBaseContain(name, fullName);
 };
 
 /**
@@ -412,7 +420,7 @@ api.search.setSearchPage = function(){
             var c = data[container][i];
             for (var j = 0; j < c[key].length; j++) {
                 var m = c[key][j];
-                if (m.name == searchString && m["full-name"].indexOf(".Base.") == -1) {
+                if (m.name == searchString && api.search.notBaseContain(m.name, m["full-name"])) {
                     res.push(m);
                 }
             }
