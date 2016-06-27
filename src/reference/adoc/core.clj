@@ -35,14 +35,18 @@
     (sitemap/remove-by-version jdbc version-id)
     (vdata/delete-by-id jdbc version-id)))
 
-(defn- remove-branches [jdbc actual-branches]
+(defn- remove-branches [jdbc actual-branches data-dir]
   (info "actual branches" (vec actual-branches))
   (let [current-branches (vdata/versions jdbc)
         removed-branches (filter #(not (some #{%} actual-branches)) current-branches)]
     (info "current branches" (vec current-branches))
     (info "removed branches" (vec removed-branches))
     (if (seq removed-branches)
-      (doall (map #(remove-branch jdbc %) removed-branches)))
+      (doseq [branch-key removed-branches]
+        (remove-branch jdbc branch-key)
+        (git/run-sh "rm" "-rf" (str data-dir "/versions/" branch-key))
+        (git/run-sh "rm" "-rf" (str data-dir "/versions-static/" branch-key))
+        (git/run-sh "rm" "-rf" (str data-dir "/versions-tmp/" branch-key))))
     removed-branches))
 
 (defn- filter-for-rebuild [jdbc branches]
@@ -119,7 +123,7 @@
    {:keys [show-branches git-ssh data-dir max-processes jsdoc-bin docs playground]}]
   (notifications/start-building notifier)
   (let [actual-branches (update-branches show-branches git-ssh data-dir)
-        removed-branches (remove-branches jdbc (map :name actual-branches))
+        removed-branches (remove-branches jdbc (map :name actual-branches) data-dir)
         branches (filter-for-rebuild jdbc actual-branches)]
     (notifications/versions-for-build notifier (map :name branches))
     (if (seq removed-branches)
