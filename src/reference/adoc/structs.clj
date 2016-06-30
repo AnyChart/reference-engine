@@ -213,13 +213,13 @@
            :type (get-in typedef [:type :names])
            :has-types (> (count (get-in typedef [:type :names])) 1))))
 
-(defn- create-enum-field [doclet version]
-  (assoc (parse-general doclet version)
+(defn- create-enum-field [doclet version base-path]
+  (assoc (parse-examples-and-listing base-path (parse-general doclet version) doclet)
          :value (get-in doclet [:meta :code :value])))
 
-(defn- get-enum-fields [enum doclets version]
+(defn- get-enum-fields [enum doclets version base-path]
   (sort-by :name
-           (map #(create-enum-field % version) (get-static-members doclets enum))))
+           (map #(create-enum-field % version base-path) (get-static-members doclets enum))))
 
 (defn- create-enum [enum doclets version base-path last-mod-cache]
   (let [path (get-relative-path enum base-path)]
@@ -231,7 +231,7 @@
                             (get-in enum [:meta :code :value]))
                      (get-in enum [:meta :code :value])
                      false)
-           :fields (get-enum-fields enum doclets version))))
+           :fields (get-enum-fields enum doclets version base-path))))
 
 (defn- check-enum-link [enum enums]
   (if (:linked enum)
@@ -340,7 +340,7 @@
 (defn- create-class [class doclets version base-path last-mod-cache]
   (let [parent (get-doclet-by-fullname-and-kind doclets (:memberof class) "class")
         path (get-relative-path class base-path)]
-    (assoc (parse-general class version)
+    (assoc (parse-examples-and-listing base-path (parse-general class version) class)
            :file path
            :last-modified (get-last-modified last-mod-cache path base-path)
            :name (if parent

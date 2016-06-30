@@ -10,6 +10,7 @@
         {% endif %}
     </p>
     <p>{{main.description|safe}}</p>
+    {% listings-and-samples main %}
 </div>
 
 {% if main.has-methods %}

@@ -22,7 +22,7 @@
             <tr>
                 <td class="name">{{f.name}}</td>
                 <td class="code-style">{{f.value}}</td>
-                <td>{{f.description|safe}}</td>
+                <td>{{f.description|safe}}<br>{% listings-and-samples f %}</td>
             </tr>
             {% endfor %}
         </tbody>
