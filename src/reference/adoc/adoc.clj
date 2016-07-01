@@ -41,16 +41,20 @@
   (doall (map (fn [path] (sh "cp" path (str path ".js")))
               (get-all-files-by-ext jsdoc-path "adoc"))))
 
+(defn- ignored? [doclet]
+  (some (fn [tag] (= (:originalTitle tag) "ignoreDoc")) (:tags doclet)))
+
 (defn get-doclets [data-dir max-groups jsdoc-bin version]
   (info "get-doclets" version jsdoc-bin)
   (let [src-path (str data-dir "/versions/" version)
         jsdoc-path (str data-dir "/versions-tmp/" version)]
     (convert-to-jsdoc src-path jsdoc-path)
-    (filter #(and (:name %)
-                  (not (or (= (:access %) "private")
-                           (= (:access %) "protected")
-                           (= (:access %) "inner")))
-                  (not (:undocumented %))
-                  (not (:inherited %))
-                  (not (some (fn [tag] (= (:originalTitle tag) "ignoreDoc")) (:tags %))))
-            (get-jsdoc max-groups jsdoc-bin jsdoc-path))))
+    (let [jsdocs (get-jsdoc max-groups jsdoc-bin jsdoc-path)
+          doclets  (filter #(and (:name %)
+                                (not (or (= (:access %) "private")
+                                         (= (:access %) "protected")
+                                         (= (:access %) "inner")))
+                                (not (:undocumented %))
+                                (not (:inherited %))
+                                (not (ignored? %))) jsdocs)]
+          doclets)))

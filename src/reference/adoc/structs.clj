@@ -334,6 +334,12 @@
   {:name (:longname entry)
    :short-description (get-short-description entry version)})
 
+(defn- get-all-members [doclets class]
+  (filter #(and (= (:kind %) "member")
+                (= (:longname class) (:memberof %))
+                (not (is-static %)))
+          doclets))
+
 ;; class
 ;; - enum
 ;; - function (non-static!)
@@ -354,7 +360,8 @@
                                       (get-enums doclets class)))
            :methods (group-functions
                      (map #(create-function % doclets version base-path)
-                          (get-functions doclets class))))))
+                          (get-functions doclets class)))
+           :all-members (get-all-members doclets class))))
 
 ;; namespace:
 ;; - namespace

@@ -27,7 +27,7 @@
   (let [inherited (:inherited-methods class)
         self (:methods class)]
     (assoc (dissoc class :inherited-methods)
-           :methods (sort-by :name (reduce conj self inherited)))))
+           :methods (sort-by :name (concat self inherited)))))
 
 (defn- build-class-inheritance [class classes]
   ;;(info "build-class-inheritance" (:full-name class) "from" (first (:extends class)))
@@ -38,8 +38,14 @@
                             nil
                             parent-class-base-name)
         parent-class (class-by-name parent-class-name classes)
-        parent-class-methods (get-inherited-methods parent-class class-methods-names classes)]
-    (assoc class :inherited-methods (sort-by :name parent-class-methods))))
+        parent-class-methods (get-inherited-methods parent-class class-methods-names classes)
+        ;remove inherited ignored methods
+        filtered-parent-class-methods (filter
+                                        (fn [m] (some #(= (:name m) (:name %)) (:all-members class)))
+                                        parent-class-methods)]
+    (-> class
+        (assoc :inherited-methods (sort-by :name filtered-parent-class-methods))
+        (dissoc :all-members))))
 
 (defn build-inheritance [classes]
   (info "build-inheritance")
