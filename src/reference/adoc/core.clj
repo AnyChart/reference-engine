@@ -45,9 +45,7 @@
     (if (seq removed-branches)
       (doseq [branch-key removed-branches]
         (remove-branch jdbc branch-key)
-        (git/run-sh "rm" "-rf" (str data-dir "/versions/" branch-key))
-        (git/run-sh "rm" "-rf" (str data-dir "/versions-static/" branch-key))
-        (git/run-sh "rm" "-rf" (str data-dir "/versions-tmp/" branch-key))))
+        (git/run-sh "rm" "-rf" (str data-dir "/versions-static/" branch-key))))
     removed-branches))
 
 (defn- filter-for-rebuild [jdbc branches]
