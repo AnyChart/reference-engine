@@ -5,6 +5,7 @@
                  ;; general
                  [com.stuartsierra/component "0.2.3"]
                  [clj-time "0.11.0"]
+                 [me.raynes/fs "1.4.6"]
                  ;; templates
                  [selmer "0.8.2"]
                  ;; web

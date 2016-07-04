@@ -14,6 +14,7 @@
             [reference.data.search :as search-data]
             [reference.data.sitemap :as sitemap]
             [reference.components.notifier :as notifications]
+            [me.raynes.fs :as fs]
             [cheshire.core :refer [generate-string]]
             [org.httpkit.client :as http]
             [taoensso.timbre :as timbre :refer [info error]]))
@@ -122,6 +123,8 @@
   [jdbc notifier
    {:keys [show-branches git-ssh data-dir max-processes jsdoc-bin docs playground]}]
   (notifications/start-building notifier)
+  (fs/mkdirs (str data-dir "/versions/"))
+  (fs/mkdirs (str data-dir "/versions-tmp/"))
   (let [actual-branches (update-branches show-branches git-ssh data-dir)
         removed-branches (remove-branches jdbc (map :name actual-branches) data-dir)
         branches (filter-for-rebuild jdbc actual-branches)]
@@ -142,4 +145,6 @@
     ;          (not-empty branches))
     ;  (notifications/start-database-refresh notifier)
     ;  (search-data/refresh jdbc))
+    (fs/delete-dir (str data-dir "/versions/"))
+    (fs/delete-dir (str data-dir "/versions-tmp/"))
     (notifications/complete-building notifier)))
