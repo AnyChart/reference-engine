@@ -18,7 +18,8 @@
 (add-tag! :edit-link (fn [args context-map]
                        (let [version (:version context-map)
                              path (-> context-map :main :file)]
-                         (str "https://github.com/AnyChart/api-reference/edit/" version path))))
+                         ;(str "https://github.com/AnyChart/api-reference/edit/" version path)
+                         "https://github.com/AnyChart/api.anychart.com")))
 
 (add-tag! :link-or-text (fn [args context-map]
                           (let [path (clojure.string/split (first args) #"\.")
