@@ -241,8 +241,15 @@
       enum)
     enum))
 
-(defn- create-constant [const doclets version base-path]
-  (parse-examples-and-listing base-path (parse-general const version) const))
+(defn constant-type [const]
+  (when-let [text (:text (first (get-tag const "define")))]
+    (when-let [[_ type] (re-find #"\{(.*)\}" text)]
+      type)))
+
+(defn create-constant [const doclets version base-path]
+  (parse-examples-and-listing base-path
+                              (assoc (parse-general const version) :type (constant-type const))
+                              const))
 
 (defn- parse-function-return [ret version]
   {:types (get-in ret [:type :names])

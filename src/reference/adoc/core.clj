@@ -7,6 +7,7 @@
             [reference.adoc.tree :refer [generate-tree]]
             [reference.adoc.search :refer [generate-search-index]]
             [reference.adoc.media :refer [move-media]]
+            [reference.adoc.typescript :as ts]
             [reference.adoc.categories :refer [parse-categories-order build-class-categories build-namespace-categories]]
             [reference.git :as git]
             [reference.data.versions :as vdata]
@@ -101,6 +102,7 @@
           (build-pages jdbc version-id (:name branch) top-level docs playground)
           (build-media jdbc version-id (:name branch) data-dir)
           (sitemap/update-sitemap jdbc version-id top-level)
+          (ts/generate-ts-declarations data-dir (:name branch) top-level)
           (remove-previous-versions jdbc version-id (:name branch))))
       (notifications/complete-version-building notifier (:name branch)))
     (catch Exception e
