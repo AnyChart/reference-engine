@@ -42,7 +42,8 @@
   {:notifications {:token "P8Z59E0kpaOqTcOxner4P5jb"
                    :channel "#notifications-local"
                    :username "reference-engine"
-                   :domain "http://localhost/"}
+                   :domain "http://localhost/"
+                   :prefix "local"}
    :web {:debug true
          :static 12
          :port 8080
@@ -66,7 +67,8 @@
 
 (def stg-config (merge-with merge base-config
                             {:notifications {:domain "http://api.anychart.stg/"
-                                             :channel "#notifications-staging"}}
+                                             :channel "#notifications-staging"
+                                             :prefix "stg"}}
                             {:web {:debug false
                                    :port 8090}}
                             {:jdbc {:subname "//10.132.9.26:5432/api_stg"
@@ -78,7 +80,8 @@
 
 (def prod-config (merge-with merge base-config
                              {:notifications {:domain "http://api.anychart.com/"
-                                              :channel "#notifications-prod"}}
+                                              :channel "#notifications-prod"
+                                              :prefix "prod"}}
                              {:web {:debug false
                                     :port 8091
                                     :reference-queue "reference-queue-prod"

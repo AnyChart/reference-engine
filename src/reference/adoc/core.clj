@@ -73,11 +73,11 @@
     {:samples true}))
 
 (defn build-branch
-  [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground]
+  [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground queue-index]
   (try
     (do
       (info "building" branch)
-      (notifications/start-version-building notifier (:name branch))
+      (notifications/start-version-building notifier (:name branch) queue-index)
       (let [categories-order (parse-categories-order data-dir (:name branch))
             doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
             raw-top-level (structurize doclets data-dir (:name branch))
@@ -104,47 +104,50 @@
           (sitemap/update-sitemap jdbc version-id top-level)
           (ts/generate-ts-declarations data-dir (:name branch) top-level)
           (remove-previous-versions jdbc version-id (:name branch))))
-      (notifications/complete-version-building notifier (:name branch)))
+      (notifications/complete-version-building notifier (:name branch) queue-index)
+      true)
     (catch Exception e
       (do (error e)
           (error (.getMessage e))
-          (notifications/build-failed notifier (:name branch))))))
+          (notifications/build-failed notifier (:name branch) queue-index)
+          nil))))
 
-(defn- build-experiments [dev]
-  (build-branch {:name "experiments" :commit (System/currentTimeMillis)}
-                (-> dev :generator :jdbc)
-                (-> dev :generator :notifier)
-                (-> dev :generator :config :git-ssh)
-                (-> dev :generator :config :data-dir)
-                (-> dev :generator :config :max-processes)
-                (-> dev :generator :config :jsdoc-bin) "" ""))
+;(defn- build-experiments [dev]
+;  (build-branch {:name "experiments" :commit (System/currentTimeMillis)}
+;                (-> dev :generator :jdbc)
+;                (-> dev :generator :notifier)
+;                (-> dev :generator :config :git-ssh)
+;                (-> dev :generator :config :data-dir)
+;                (-> dev :generator :config :max-processes)
+;                (-> dev :generator :config :jsdoc-bin) "" ""))
 
 (defn build-all
   [jdbc notifier
-   {:keys [show-branches git-ssh data-dir max-processes jsdoc-bin docs playground]}]
-  (notifications/start-building notifier)
+   {:keys [show-branches git-ssh data-dir max-processes jsdoc-bin docs playground]} queue-index]
   (fs/mkdirs (str data-dir "/versions/"))
   (fs/mkdirs (str data-dir "/versions-tmp/"))
   (let [actual-branches (update-branches show-branches git-ssh data-dir)
         removed-branches (remove-branches jdbc (map :name actual-branches) data-dir)
-        branches (filter-for-rebuild jdbc actual-branches)]
-    (notifications/versions-for-build notifier (map :name branches))
-    (if (seq removed-branches)
-      (notifications/delete-branches notifier removed-branches))
-    (doall (map #(build-branch %
-                               jdbc
-                               notifier
-                               git-ssh
-                               data-dir
-                               max-processes
-                               jsdoc-bin
-                               docs
-                               playground)
-                branches))
-    ;(when (or (not-empty removed-branches)
-    ;          (not-empty branches))
-    ;  (notifications/start-database-refresh notifier)
-    ;  (search-data/refresh jdbc))
-    (fs/delete-dir (str data-dir "/versions/"))
-    (fs/delete-dir (str data-dir "/versions-tmp/"))
-    (notifications/complete-building notifier)))
+        branches (filter-for-rebuild jdbc actual-branches)
+        branch-names (map :name branches)]
+    (notifications/start-building notifier branch-names removed-branches queue-index)
+    (let [result (doall (map #(build-branch %
+                                            jdbc
+                                            notifier
+                                            git-ssh
+                                            data-dir
+                                            max-processes
+                                            jsdoc-bin
+                                            docs
+                                            playground
+                                            queue-index)
+                                 branches))]
+      ;(when (or (not-empty removed-branches)
+      ;          (not-empty branches))
+      ;  (notifications/start-database-refresh notifier)
+      ;  (search-data/refresh jdbc))
+      (fs/delete-dir (str data-dir "/versions/"))
+      (fs/delete-dir (str data-dir "/versions-tmp/"))
+      (if (some nil? result)
+        (notifications/complete-building-with-errors notifier branch-names queue-index)
+        (notifications/complete-building notifier branch-names removed-branches queue-index)))))

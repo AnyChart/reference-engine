@@ -6,7 +6,8 @@
 (defn generate-reference [comp]
   (gen/build-all (:jdbc comp)
                  (:notifier comp)
-                 (:config comp))
+                 (:config comp)
+                 (swap! (:queue-index (:config comp)) inc))
   (println "generate reference"))
 
 (defn- message-processor [comp]
@@ -28,4 +29,4 @@
     (dissoc this :engine)))
 
 (defn new-generator [config]
-  (map->Generator {:config config}))
+  (map->Generator {:config (assoc config :queue-index (atom 0))}))

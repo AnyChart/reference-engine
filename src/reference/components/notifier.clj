@@ -12,6 +12,9 @@
 (defn new-notifier [config]
   (map->Notifier {:config config}))
 
+(defn- domain [notifier] (-> notifier :config :domain))
+(defn- prefix [notifier] (-> notifier :config :prefix))
+
 (defn- notify [notifier text]
   (http/post (str "https://anychart-team.slack.com/services/hooks/incoming-webhook?token="
                   (-> notifier :config :token))
@@ -21,29 +24,75 @@
                           :channel (-> notifier :config :channel)
                           :username (-> notifier :config :username)})}}))
 
-(defn delete-branches [notifier branches]
-  (notify notifier (str "branches deleted: " (clojure.string/join ", " branches))))
+(defn- notify-attach [notifier attachments]
+  (http/post (str "https://anychart-team.slack.com/services/hooks/incoming-webhook?token="
+                  (-> notifier :config :token))
+             {:form-params
+              {:payload (generate-string
+                          {:attachments attachments
+                           :mrkdwn true
+                           :channel (-> notifier :config :channel)
+                           :username (-> notifier :config :username)})}}))
 
-(defn start-building [notifier]
-  (notify notifier "start api update"))
+(defn start-building [notifier branches removed-branches queue-index]
+  (let [attachments [{:color  "#4183C4"
+                      :text (str "#" queue-index " api `" (prefix notifier) "` - start")
+                      :mrkdwn_in ["text", "pretext"]
+                      :fields (if (seq branches)
+                                [{:title "Branches"
+                                  :value (clojure.string/join ", " branches)
+                                  :short true}]
+                                [])}]
+        removed-fields (when (seq removed-branches)
+                         [{:title "Removed branches"
+                           :value (clojure.string/join ", " removed-branches)
+                           :short true}])]
+    (notify-attach notifier (update-in attachments [0 :fields] concat removed-fields))))
 
-(defn start-database-refresh [notifier]
-  (notify notifier "start database refresh"))
+(defn complete-building [notifier branches removed-branches queue-index]
+  (let [attachments [{:color  "#36a64f"
+                      :text (str "#" queue-index " api `" (prefix notifier) "` - complete")
+                      :mrkdwn_in ["text", "pretext"]
+                      :fields (if (seq branches)
+                                [{:title "Branches"
+                                  :value (clojure.string/join ", " branches)
+                                  :short true}]
+                                [])}]
+        removed-fields (when (seq removed-branches)
+                         [{:title "Removed branches"
+                           :value (clojure.string/join ", " removed-branches)
+                           :short true}])]
+    (notify-attach notifier (update-in attachments [0 :fields] concat removed-fields))))
 
-(defn complete-building [notifier]
-  (notify notifier "api update completed"))
+(defn complete-building-with-errors [notifier branches queue-index]
+  (let [attachments [{:color  "danger"
+                      :text (str "#" queue-index " api `" (prefix notifier) "` - complete with errors")
+                      :mrkdwn_in ["text", "pretext"]
+                      :fields (if (seq branches)
+                                [{:title "Branches"
+                                  :value (clojure.string/join ", " branches)
+                                  :short true}]
+                                [])}]]
+    (notify-attach notifier attachments)))
 
-(defn versions-for-build [notifier versions]
-  (notify notifier (str "build list: " (clojure.string/join ", " versions))))
+(defn start-version-building [notifier version queue-index]
+  (let [attachments [{:color  "#4183C4"
+                      :text (str "#" queue-index " api `" (prefix notifier) "` - *" version "* start" )
+                      :mrkdwn_in ["text"]}]]
+    (notify-attach notifier attachments)))
 
-(defn start-version-building [notifier version]
-  (notify notifier (str "start building " version)))
+(defn complete-version-building [notifier version queue-index]
+  (let [attachments [{:color  "#36a64f"
+                      :text (str "#" queue-index " api `" (prefix notifier) "` - *" version "* complete")
+                      :mrkdwn_in ["text"]}]]
+    (notify-attach notifier attachments)))
 
-(defn complete-version-building [notifier version]
-  (notify notifier (str version " build completed")))
+(defn build-failed [notifier version queue-index]
+  (let [attachments [{:color  "danger"
+                      :text (str "#" queue-index " api `" (prefix notifier) "` - *" version "* failed")
+                      :mrkdwn_in ["text"]}]]
+    (notify-attach notifier attachments)))
 
-(defn build-failed [notifier version]
-  (notify notifier (str version " build FAILED")))
 
 (defn notify-404 [notifier path]
   (http/post (str "https://anychart-team.slack.com/services/hooks/incoming-webhook?token="
