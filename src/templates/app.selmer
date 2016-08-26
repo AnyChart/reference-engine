@@ -22,6 +22,14 @@
         <link href="/css/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/lib/prettiffy/prettify-tomorrow.css"/>
         <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+
+        <script src="/lib/jquery-2.1.3.min.js" ></script>
+        <script src="/lib/bootstrap/js/bootstrap.min.js" async></script>
+        <script src="/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.js"></script>
+        <script src="/lib/bootstrap-select.min.js" async></script>
+        <script src="/lib/bootstrap3-typeahead.min.js" async></script>
+        <script src="/lib/prettiffy/prettify.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/js/reference.min.js"></script>
     </head>
     <body>
         <div id="search-results-new" style="display:none">
@@ -107,13 +115,6 @@
             {% endif %}
         </div>
     </body>
-    <script src="/lib/jquery-2.1.3.min.js"></script>
-    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.js"></script>
-    <script src="/lib/bootstrap-select.min.js"></script>
-    <script src="/lib/bootstrap3-typeahead.min.js"></script>
-    <script src="/lib/prettiffy/prettify.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/reference.min.js"></script>
     <script>
      api.core.init("{{version}}", "{{page}}");
     </script>
