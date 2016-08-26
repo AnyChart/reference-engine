@@ -189,11 +189,11 @@
 (defn test2 []
   (let [namespaces (join "\n\n" (map #(namespace-definition @top-level %)
                                      (sort-by :full-name (:namespaces @top-level))))]
-    (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" (add-prefix namespaces))))
+    (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" namespaces)))
 
 (defn generate-ts-declarations [data-dir version-key top-level]
   (info "generate TypeScript definitions")
   (let [file-name (str data-dir "/versions-static/" version-key "/anychart.d.ts")
         namespaces (join "\n\n" (map #(namespace-definition top-level %)
                                      (sort-by :full-name (:namespaces top-level))))]
-    (spit file-name (add-prefix namespaces))))
+    (spit file-name namespaces)))
