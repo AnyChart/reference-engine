@@ -93,6 +93,8 @@
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level)
             config (get-version-config data-dir (:name branch))]
+        ;(when (= (:name branch) "DVF-2417_typescript")
+        ;  (ts/set-top-level! top-level))
         (info "categories order:" categories-order)
         (let [version-id (vdata/add-version jdbc
                                             (:name branch)

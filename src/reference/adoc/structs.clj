@@ -365,6 +365,10 @@
            :has-extends (boolean (seq (:augments class)))
            :enums (sort-by :name (map #(create-link-struct % version)
                                       (get-enums doclets class)))
+           :typedefs (sort-by :name (map #(create-link-struct % version)
+                                        (get-doclets-by-memberof-and-kind doclets
+                                                                          class
+                                                                          "typedef")))
            :methods (group-functions
                      (map #(create-function % doclets version base-path)
                           (get-functions doclets class)))

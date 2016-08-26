@@ -11,32 +11,56 @@
 (defn set-top-level! [_top-level]
   (reset! top-level _top-level))
 
-(defn get-type [t]
+(defn check-param [param]
+  (case param
+    "function" "func"
+    "this" "obj"
+    (clojure.string/replace param #"-" "")))
+
+(defn parse-object-type [t]
   ; "Object.<string, (string|boolean)>" => "{[prop: string]: string|boolean}"
-  (if-let [m (re-matches #"Object\.<([^>,]*),\s*([^>,]*)\>" t)]
-    (let [[_ key-type value-type] m]
-      (str "{[prop: " key-type "]: " value-type "}"))
+  (if (.startsWith t "Object.<")
+    (if (.startsWith t "Object.<string,")
+      (if-let [m (re-matches #"Object\.<([^>,]*),\s*([^>]*)\>" t)]
+        (let [[_ key-type value-type] m]
+          (str "{[prop: " key-type "]: " value-type "}"))
+        (do
+          ;(prn t)
+          (str "{[prop: string]: " (clojure.string/trim (subs t 15 (dec (count t)))) "}")))
+      (parse-object-type (clojure.string/replace t #"Object\.<" "Object.<string, ")))
+    t))
+
+(defn get-type [t]
+  (let [t (parse-object-type (clojure.string/replace t #"\|undefined" ""))]
     (case t
       "function" "(() => void)"
+      "Array" "Array<any>"
       (-> t
           (s/replace #"scope" "any")
           (s/replace #"\*" "any")
-          (s/replace #"Array." "Array")
-          (s/replace #"!" "")))))
+          (s/replace #"Array\." "Array")
+          (s/replace #"!" "")
+          (s/replace #"\|null" "")))))
 
 (defn get-types [types]
-  (join " | " (map get-type types)))
+  (join " | " (map get-type
+                   (filter (partial #(and (not= % "null") (not= % "undefined"))) types))))
 
 ;;; =============== functions ===============
 
 (defn function-return [returns]
   (if (seq returns)
     (let [types (mapcat :types returns)]
-      (join " | " (map get-type types)))
+      (get-types types))
     "void"))
 
 (defn function-param [param]
-  (str (:name param) ": " (function-return [param])))
+  (if-not (:name param)
+    (do (prn "pram" param) "_error_")
+    (let [param-name (check-param (:name param))]
+      (if (= param-name "var_args")
+        (str "..." param-name ": (" (function-return [param]) ")[]")
+        (str param-name ": " (function-return [param]))))))
 
 (defn function-params [params]
   (join ", " (map function-param params)))
@@ -58,7 +82,7 @@
 ;;; =============== typedefs ===============
 
 (defn interface-prop [prop]
-  (str p8 (:name prop) ": "  (join " | " (map get-type (:type prop))) ";" ))
+  (str p8 (check-param (:name prop)) ": " (get-types (:type prop)) ";" ))
 
 (defn interface-props [props]
   (join "\n" (map interface-prop props)))
@@ -81,11 +105,22 @@
 (defn enum-field [field]
   (if (integer? (:value field))
     (str p8 (:name field) " = " (:value field) "" )
-    (str p8 (:name field) " = <any>\"" (:value field) "\"" )))
+    ;(str p8 (:name field) " = <any>\"" (:value field) "\"" )
+    (str p8 (:name field))))
 
 (defn enum-declaration [enum]
   (str p4 "enum " (:name enum) " {\n"
         (join ",\n" (map enum-field (:fields enum)))
+       "\n    }"))
+
+(defn enum-field-cl [field class-name]
+  (str p8 "static " (:name field) " = new " class-name "(\"" (:value field) "\");"))
+
+(defn enum-declaration-cl [enum]
+  (str p4 "class " (:name enum) " {\n"
+       p8 "constructor(public value:string){}\n"
+       p8 "toString(){return this.value;}\n"
+       (join "\n" (map #(enum-field-cl % (:name enum)) (:fields enum)))
        "\n    }"))
 
 (defn enum-declarations [enums]
@@ -96,22 +131,35 @@
 
 ;;; ========= classes ==========
 
+(defn get-enums-and-typedefs-class [class top-level]
+  (when (or (seq (:enums class))
+            (seq (:typedefs class)))
+    (str
+      ;"\n" p4 "module  " (:full-name class) " {\n"
+      "\n" p4 "namespace " (:name class) " {\n"
+         (enum-declarations (get-enums top-level (map :name (:enums class))))
+         (typedef-declarations (get-typedefs top-level (map :name (:typedefs class))))
+         "\n    }")))
+
 (defn method-declaration [f]
   (str p8 (:name f) "(" (function-params (:params f)) "): " (function-return (:returns f)) ";"))
 
-(defn class-declaration [class]
+(defn class-declaration [class top-level]
   (if (> (.indexOf (:name class) ".") 0)
     (let [[module name] (s/split (:name class) #"\.")]
       (str p4 "module " module " {\n"
-           (class-declaration (assoc class :name name))
-           "\n    }"))
+           (class-declaration (assoc class :name name) top-level)
+           "\n    }"
+           (get-enums-and-typedefs-class class top-level)
+           ))
     (str p4 "interface " (:name class)
          (when (:extends class) (str " extends " (join ", " (:extends class)))) " {\n"
          (join "\n" (map method-declaration (mapcat :overrides (:methods class))))
-         "\n    }")))
+         "\n    }"
+         (get-enums-and-typedefs-class class top-level))))
 
-(defn class-declarations [classes]
-  (join "\n" (map class-declaration classes)))
+(defn class-declarations [top-level classes]
+  (join "\n" (map #(class-declaration % top-level) classes)))
 
 (defn get-classes [top-level names]
   (filter (fn [td] (some #(= % (:full-name td) ) names)) (:classes top-level)))
@@ -130,16 +178,22 @@
        (enum-declarations (get-enums top-level (map :name (:enums namespace))))
        (when (seq (:enums namespace)) "\n")
 
-       (class-declarations (get-classes top-level (map :name (:classes namespace))))
+       (class-declarations top-level (get-classes top-level (map :name (:classes namespace))))
        (when (seq (:classes namespace)) "\n")
        "}"))
 
-;(defn test2 []
-;  (let [namespaces (join "\n\n" (map #(namespace-definition @top-level %) (sort-by :full-name (:namespaces @top-level))))]
-;    (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" namespaces)))
+(defn add-prefix [data]
+  (str "/// <reference path=\"all.d.ts\"/>\n"
+       "// from https://github.com/teppeis/closure-library.d.ts\n" data))
+
+(defn test2 []
+  (let [namespaces (join "\n\n" (map #(namespace-definition @top-level %)
+                                     (sort-by :full-name (:namespaces @top-level))))]
+    (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" (add-prefix namespaces))))
 
 (defn generate-ts-declarations [data-dir version-key top-level]
   (info "generate TypeScript definitions")
   (let [file-name (str data-dir "/versions-static/" version-key "/anychart.d.ts")
-        namespaces (join "\n\n" (map #(namespace-definition top-level %) (sort-by :full-name (:namespaces top-level))))]
-    (spit file-name namespaces)))
+        namespaces (join "\n\n" (map #(namespace-definition top-level %)
+                                     (sort-by :full-name (:namespaces top-level))))]
+    (spit file-name (add-prefix namespaces))))

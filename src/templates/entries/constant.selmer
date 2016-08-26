@@ -28,6 +28,13 @@
                         </div>
                         {% endif %}
                     </div>
+                    {% if c.type %}
+                    <div class="small-group">
+                        <p>
+                            <strong>Type: </strong>{{c.type}}
+                        </p>
+                    </div>
+                    {% endif %}
                     {% listings-and-samples c %}
                 </div>
             </div>
