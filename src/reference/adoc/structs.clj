@@ -302,18 +302,19 @@
        (re-find #"^\s*\[[^\]]*\]\s*" (:description param))))
 
 (defn- parse-function-param [param version]
-  (if (param-has-default? param)
-    (let [d (reduce-to-param-default (:description param))]
-      (info d)
-      {:types (get-in param [:type :names])
-       :description (parse-param-description (:description d) version)
-       :name (if (:name param)
-               (clojure.string/replace (:name param) #"^opt_" ""))
-       :default (:default d)})
-    {:types (get-in param [:type :names])
-     :description (parse-param-description (:description param) version)
-     :name (if (:name param)
-             (clojure.string/replace (:name param) #"^opt_" ""))}))
+  (let [result {:name (if (:name param) (clojure.string/replace (:name param) #"^opt_" ""))
+                :types (get-in param [:type :names])}
+        result-with-desc
+        (if (param-has-default? param)
+          (let [d (reduce-to-param-default (:description param))]
+            (assoc result :description (parse-param-description (:description d) version)
+                          :default (:default d)))
+          (assoc result :description (parse-param-description (:description param) version)))
+        result-with-optional (if (or (:optional param)
+                                     (.startsWith (:name param) "opt_"))
+                               (assoc result-with-desc :optional true)
+                               result-with-desc)]
+    result-with-optional))
 
 (defn- function-has-params-defaults [params]
   (boolean (some #(:default %) params)))

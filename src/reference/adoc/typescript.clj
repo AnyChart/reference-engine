@@ -54,13 +54,18 @@
       (get-types types))
     "void"))
 
+(defn check-optional [param name]
+  (if (:optional param)
+    (str name "?")
+    name))
+
 (defn function-param [param]
   (if-not (:name param)
     (do (prn "pram" param) "_error_")
     (let [param-name (check-param (:name param))]
       (if (= param-name "var_args")
-        (str "..." param-name ": (" (function-return [param]) ")[]")
-        (str param-name ": " (function-return [param]))))))
+        (str "..." (check-optional param param-name) ": (" (function-return [param]) ")[]")
+        (str (check-optional param param-name) ": " (function-return [param]))))))
 
 (defn function-params [params]
   (join ", " (map function-param params)))
