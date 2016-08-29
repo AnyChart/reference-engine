@@ -311,7 +311,8 @@
                           :default (:default d)))
           (assoc result :description (parse-param-description (:description param) version)))
         result-with-optional (if (or (:optional param)
-                                     (.startsWith (:name param) "opt_"))
+                                     (and (:name param)
+                                          (.startsWith (:name param) "opt_")))
                                (assoc result-with-desc :optional true)
                                result-with-desc)]
     result-with-optional))
