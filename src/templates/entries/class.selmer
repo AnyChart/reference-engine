@@ -39,7 +39,7 @@
 {% if main.has-methods %}
 <div class="content-block methods">
     <h2>Methods Description</h2>
-    {% for m in main.methods %}
+    {% for f in main.methods %}
     {% include "templates/entries/method.selmer" %}
     {% endfor %}
 </div>

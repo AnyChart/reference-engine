@@ -409,7 +409,7 @@
            :constants (sort-by :name
                                (map #(create-constant % doclets version base-path)
                                     (get-static-members doclets namespace)))
-           :functions (sort-by :name
+           :functions (group-functions
                                (map #(create-function % doclets version base-path)
                                     (get-static-functions doclets namespace))))))
 

@@ -102,7 +102,11 @@
 <div class="content-block methods">
     <h2>Functions Description</h2>
     {% for f in main.functions %}
+    {% if f.overrides %}
+    {% include "templates/entries/method.selmer" %}
+    {% else %}
     {% include "templates/entries/function.selmer" %}
+    {% endif %}
     {% endfor %}
 </div>
 {% endif %}

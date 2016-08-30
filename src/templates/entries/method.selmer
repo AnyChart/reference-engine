@@ -1,27 +1,27 @@
 <div class="method-block">
-    <h3 id="{{m.name}}">{{m.name}}</h3>
-    <div class="panel-group" id="accordion-{{m.name}}">
-        {% for o in m.overrides %}
+    <h3 id="{{f.name}}">{{f.name}}</h3>
+    <div class="panel-group" id="accordion-{{f.name}}">
+        {% for o in f.overrides %}
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion-{{m.name}}" href="#accordion-{{m.name}}-{{forloop.counter}}">{{o.signature}}
+                    <a data-toggle="collapse" data-parent="#accordion-{{f.name}}" href="#accordion-{{f.name}}-{{forloop.counter}}">{{o.signature}}
                         {% if o.has-since %}
                         <span class="pull-right">Since version {{o.since}}</span>
                         {% endif %}
                     </a>
                 </h4>
             </div>
-            <div class="pannel-collapse collapse{% if forloop.last %} in{% endif %}" id="accordion-{{m.name}}-{{forloop.counter}}">
+            <div class="pannel-collapse collapse{% if forloop.last %} in{% endif %}" id="accordion-{{f.name}}-{{forloop.counter}}">
                 <div class="panel-body">
                     <div class="small-group">
                         {{o.description|safe}}
                         {% if o.has-detailed %}
                         <div class="collapse-group">
-                            <a data-toggle="collapse" aria-expanded="true" href="#detailed-{{m.name}}-{{forloop.counter}}" class="collapsed">
+                            <a data-toggle="collapse" aria-expanded="true" href="#detailed-{{f.name}}-{{forloop.counter}}" class="collapsed">
                                 <i class="fa fa-info"></i> Detailed description
                             </a>
-                            <div id="detailed-{{m.name}}-{{forloop.counter}}" class="collapse-div collapse" aria-expanded="false">
+                            <div id="detailed-{{f.name}}-{{forloop.counter}}" class="collapse-div collapse" aria-expanded="false">
                                 <div class="collapse-content">
                                     {{o.detailed|safe}}
                                 </div>
