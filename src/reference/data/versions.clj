@@ -16,14 +16,20 @@
 ;; );
 
 (defn add-version [jdbc key commit tree search show-samples]
-  (:id (first (insert! jdbc :versions {:key key
-                                       :commit commit
-                                       :show_samples show-samples
-                                       :tree (generate-string tree)
-                                       :search (generate-string search)}))))
+  (first (insert! jdbc :versions {:key          key
+                                  :commit       commit
+                                  :show_samples show-samples
+                                  :tree         (generate-string tree)
+                                  :search       (generate-string search)})))
 
 (defn version-by-key [jdbc key]
   (one jdbc (-> (select :key :id :show-samples)
+                (from :versions)
+                (where [:= :hidden false]
+                       [:= :key key]))))
+
+(defn version-tree-by-key [jdbc key]
+  (one jdbc (-> (select :key :id :show-samples :tree)
                 (from :versions)
                 (where [:= :hidden false]
                        [:= :key key]))))
@@ -88,8 +94,7 @@
                                 [:= :hidden false])))))
 
 (defn tree-data [jdbc version-id]
-  (parse-string (:tree (one jdbc (-> (select :tree)
-                                     (from :versions)
-                                     (where [:= :id version-id]
-                                            [:= :hidden false]))))
-                true))
+  (:tree (one jdbc (-> (select :tree)
+                       (from :versions)
+                       (where [:= :id version-id]
+                              [:= :hidden false])))))

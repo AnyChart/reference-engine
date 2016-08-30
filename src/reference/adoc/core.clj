@@ -55,9 +55,6 @@
 (defn- build-media [jdbc version-id version-key data-dir]
   (move-media version-key (str data-dir "/versions/") (str data-dir "/versions-static/")))
 
-(defn- build-pages [jdbc version-id version-key top-level docs playground]
-  (save-entries jdbc version-id version-key top-level))
-
 (defn- remove-previous-versions [jdbc actual-id key]
   (let [ids (vdata/version-ids jdbc key)
         outdated-ids (filter #(not= actual-id %) ids)]
@@ -96,12 +93,13 @@
         ;(when (= (:name branch) "DVF-2417_typescript")
         ;  (ts/set-top-level! top-level))
         (info "categories order:" categories-order)
-        (let [version-id (vdata/add-version jdbc
-                                            (:name branch)
-                                            (:commit branch)
-                                            tree-data search-index
-                                            (:samples config))]
-          (build-pages jdbc version-id (:name branch) top-level docs playground)
+        (let [version (vdata/add-version jdbc
+                                         (:name branch)
+                                         (:commit branch)
+                                         tree-data search-index
+                                         (:samples config))
+              version-id (:id version)]
+          (save-entries jdbc version (:name branch) top-level docs playground)
           (build-media jdbc version-id (:name branch) data-dir)
           (sitemap/update-sitemap jdbc version-id top-level)
           (ts/generate-ts-declarations data-dir (:name branch) top-level)

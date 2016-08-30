@@ -1,6 +1,7 @@
 (ns reference.adoc.saver
   (:require [taoensso.timbre :as timbre :refer [info]]
-            [reference.data.pages :as pages]))
+            [reference.data.pages :as pages]
+            [reference.web.data :refer [render-entry]]))
 
 (defn- get-namespace-data [entry]
   (assoc entry
@@ -21,29 +22,29 @@
 (defn- get-typedef-data [entry]
   entry)
 
-(defn save-entries [jdbc version-id version-key top-level]
+(defn save-entries [jdbc version version-key top-level docs playground]
   (info "save-entries" version-key (count top-level))
   
   (doall (pmap #(pages/add-page jdbc
-                                version-id
+                                (:id version)
                                 "class"
                                 (:full-name %)
                                 (get-class-data %))
                (:classes top-level)))
   (doall (pmap #(pages/add-page jdbc
-                                version-id
+                                (:id version)
                                 "namespace"
                                 (:full-name %)
                                 (get-namespace-data %))
                (:namespaces top-level)))
   (doall (pmap #(pages/add-page jdbc
-                                version-id
+                                (:id version)
                                 "typedef"
                                 (:full-name %)
                                 (get-typedef-data %))
                (:typedefs top-level)))
   (doall (pmap #(pages/add-page jdbc
-                                version-id
+                                (:id version)
                                 "enum"
                                 (:full-name %)
                                 (get-enum-data %))

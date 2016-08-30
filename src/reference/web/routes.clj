@@ -57,24 +57,24 @@
 
 (defn- show-landing [request]
   (let [versions (vdata/versions (jdbc request))
-        version (vdata/version-by-key (jdbc request) (first versions))]
+        version (vdata/version-tree-by-key (jdbc request) (first versions))]
     (render-file "templates/app.selmer"
-                 {:version (:key version)
-                  :tree (vdata/tree-data (jdbc request) (:id version))
-                  :url "https://api.anychart.com/"
-                  :is-last true
-                  :last-version (first versions)
-                  :versions versions
-                  :debug false
-                  :info (generate-string {})
-                  :page ""
+                 {:version        (:key version)
+                  :tree           (:tree version)
+                  :url            "https://api.anychart.com/"
+                  :is-last        true
+                  :last-version   (first versions)
+                  :versions       versions
+                  :debug          false
+                  :info           (generate-string {})
+                  :page           ""
                   :static-version "12"
-                  :footer (seo/random-entry)
-                  :content (render-file "templates/landing-content.selmer"
-                                        {:versions versions
-                                         :version (:key version)})
-                  :link #(str "/" (:key version) "/" %)
-                  :title "AnyChart JavaScript charts API Reference"})))
+                  :footer         (seo/random-entry)
+                  :content        (render-file "templates/landing-content.selmer"
+                                               {:versions versions
+                                                :version  (:key version)})
+                  :link           #(str "/" (:key version) "/" %)
+                  :title          "AnyChart JavaScript charts API Reference"})))
 
 (defn- show-default-version [request]
   (redirect (str "/" (vdata/default (jdbc request)) "/anychart")))
@@ -112,34 +112,40 @@
 
 (defn- get-page-data [version page request]
   (let [info (pdata/info page)]
-    (response {:content (generate-page-content version page request)
-               :info info
-               :version (:key version)
-               :page (:url page)
-               :keywords (str (:url page) " " (:kind info) ", anychart api reference, js charts, javascript charts, html5 charts, ajax charts, plots, line charts, bar charts, pie charts, js maps, javascript gantt charts, js dashboard")
+    (response {:content     (generate-page-content version page request)
+               :info        info
+               :version     (:key version)
+               :page        (:url page)
+               :keywords    (str (:url page) " " (:kind info) ", anychart api reference, js charts, javascript charts, html5 charts, ajax charts, plots, line charts, bar charts, pie charts, js maps, javascript gantt charts, js dashboard")
                :description (str "AnyChart HTML5 charts for for web and mobile - API reference for " (:url page) " " (:kind info))
-               :title (get-page-title version page info)
-               :url (str "https://api.anychart.com/" (:key version) "/" (:url page))})))
+               :title       (get-page-title version page info)
+               :url         (str "https://api.anychart.com/" (:key version) "/" (:url page))})))
 
-(defn- show-page [version page request]
-  (let [versions (vdata/versions (jdbc request))
-        info (pdata/info page)]
-    (render-file "templates/app.selmer"
-                 {:version (:key version)
-                  :tree (vdata/tree-data (jdbc request) (:id version))
-                  :is-last (= (:key version) (first versions))
-                  :last-version (first versions)
-                  :versions versions
-                  :url (str "https://api.anychart.com/" (:key version) "/" (:url page))
-                  :debug false
-                  :info (generate-string info)
-                  :page (:url page)
-                  :page-name (str (:url page) " " (:kind info))
-                  :footer (seo/random-entry)
-                  :static-version "12"
-                  :content (generate-page-content version page request)
-                  :link #(str "/" (:key version) "/" %)
-                  :title (get-page-title version page info)})))
+(defn- show-page [request]
+  (let [version-key (-> request :route-params :version)
+        page-url (-> request :route-params :page)]
+    (if-let [page (pdata/page-and-version (jdbc request) version-key page-url)]
+      (let [version {:key version-key
+                     :id  (:version-id page)}
+            info (pdata/info page)
+            versions (vdata/versions (jdbc request))]
+        (render-file "templates/app.selmer"
+                     {:version        version-key
+                      :tree           (:tree page)
+                      :is-last        (= version-key (first versions))
+                      :last-version   (first versions)
+                      :versions       versions
+                      :url            (str "https://api.anychart.com/" version-key "/" (:url page))
+                      :debug          false
+                      :info           (generate-string info)
+                      :page           (:url page)
+                      :page-name      (str (:url page) " " (:kind info))
+                      :footer         (seo/random-entry)
+                      :static-version "12"
+                      :content        (generate-page-content version page request)
+                      :link           #(str "/" version-key "/" %)
+                      :title          (get-page-title version page info)}))
+      (page-404 request))))
 
 (defn- show-default-ns [version request]
   (if-let [search (-> request :params :entry)]
@@ -219,6 +225,6 @@
   (GET "/:version/try/:page" [] (check-version-middleware try-show-page))
   (GET "/:version/:page/data" [] (wrap-json-response (check-page-middleware get-page-data)))
   (GET "/latest/:page" [] redirect-latest-page)
-  (GET "/:version/:page" [] (check-page-middleware show-page)))
+  (GET "/:version/:page" [] show-page))
 
 (def app (routes app-routes))

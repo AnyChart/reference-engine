@@ -47,6 +47,7 @@
    :web {:debug true
          :static 12
          :port 8080
+         :max-line 8192
          :reference-queue "reference-queue"
          :docs "docs.anychart.stg"
          :playground "playground.anychart.stg"}
