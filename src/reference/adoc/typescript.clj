@@ -74,7 +74,7 @@
   (str p4 "function " (:name f) "(" (function-params (:params f)) "): " (function-return (:returns f)) ";"))
 
 (defn function-declarations [functions]
-  (join "\n" (map function-declaration functions)))
+  (join "\n" (map function-declaration (mapcat :overrides functions))))
 
 ;;; =============== constants ===============
 
@@ -194,7 +194,9 @@
 (defn test2 []
   (let [namespaces (join "\n\n" (map #(namespace-definition @top-level %)
                                      (sort-by :full-name (:namespaces @top-level))))]
-    (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" namespaces)))
+    (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" namespaces)
+    (spit "/media/ssd/work/TypeScript/typescript-example/typescript-example/src/anychart.d.ts" namespaces)
+    ))
 
 (defn generate-ts-declarations [data-dir version-key top-level]
   (info "generate TypeScript definitions")
