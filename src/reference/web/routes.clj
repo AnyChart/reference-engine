@@ -103,7 +103,7 @@
                                    (:show_samples version)
                                    (:type page)
                                    (:content page))]
-      (redisca/cache (redis request) (:id version) (:url page) data)
+      ;(redisca/cache (redis request) (:id version) (:url page) data)
       data)))
 
 (defn- get-page-title
