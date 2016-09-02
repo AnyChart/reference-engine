@@ -7,7 +7,7 @@
             [reference.adoc.tree :refer [generate-tree]]
             [reference.adoc.search :refer [generate-search-index]]
             [reference.adoc.media :refer [move-media]]
-            [reference.adoc.typescript :as ts]
+            [reference.adoc.defs.typescript :as ts]
             [reference.adoc.categories :refer [parse-categories-order build-class-categories build-namespace-categories]]
             [reference.git :as git]
             [reference.data.versions :as vdata]

@@ -1,4 +1,4 @@
-(ns reference.adoc.typescript
+(ns reference.adoc.defs.typescript
   (:require [clojure.string :as s :refer [join]]
             [taoensso.timbre :as timbre :refer [info error]]))
 
