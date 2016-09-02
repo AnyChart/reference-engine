@@ -7,9 +7,9 @@
    :name (:name entry)})
 
 (defn- generate-function-or-constant-search-index [fn ns-name]
-  {:full-name (:full-name fn)
-   :link (str ns-name "#" (:name fn))
-   :name (:name fn)})
+  {:full-name (or (:full-name fn) (:full-name (first (:overrides fn)))) ;for old and new grouping in doclets functions
+   :link      (str ns-name "#" (:name fn))
+   :name      (:name fn)})
 
 (defn- generate-method-search-index [method class-name]
   {:full-name (str class-name "." (:name method))
