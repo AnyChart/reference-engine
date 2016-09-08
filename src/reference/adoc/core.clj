@@ -8,6 +8,7 @@
             [reference.adoc.search :refer [generate-search-index]]
             [reference.adoc.media :refer [move-media]]
             [reference.adoc.defs.typescript :as ts]
+            [reference.adoc.defs.tern :as tern]
             [reference.adoc.categories :refer [parse-categories-order build-class-categories build-namespace-categories]]
             [reference.git :as git]
             [reference.data.versions :as vdata]
@@ -90,8 +91,9 @@
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level)
             config (get-version-config data-dir (:name branch))]
-        ;(when (= (:name branch) "DVF-2417_typescript")
-        ;  (ts/set-top-level! top-level))
+        ;(when (= (:name branch) "develop")
+        ;  (ts/set-top-level! top-level)
+        ;  (tern/set-top-level! top-level tree-data))
         (info "categories order:" categories-order)
         (let [version (vdata/add-version jdbc
                                          (:name branch)
@@ -103,6 +105,7 @@
           (build-media jdbc version-id (:name branch) data-dir)
           (sitemap/update-sitemap jdbc version-id top-level)
           (ts/generate-ts-declarations data-dir (:name branch) top-level)
+          ;(tern/generate-declarations data-dir (:name branch) top-level)
           (remove-previous-versions jdbc version-id (:name branch))))
       (notifications/complete-version-building notifier (:name branch) queue-index)
       true)
