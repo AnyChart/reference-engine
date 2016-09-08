@@ -118,16 +118,16 @@
       (assoc res "!type" (:type constant))
       res)))
 
-(defn create-enum-field [field parent settings]
+(defn create-enum-field [field enum settings]
   {"!doc" (description field)
-   "!url" (url field settings)
-   "!type" (str  parent) })
+   "!url" (url enum settings)
+   "!type" (:full-name enum)})
 
 (defn create-enum [enum settings]
   (let [type (if (-> enum :fields first :value string?) "string" "number")
         result1 {"!doc" (str (description enum) " @enum {" type "}")
                  "!url" (url enum settings)}
-        result2 (reduce #(assoc %1 (:name %2) (create-enum-field %2 (:full-name enum) settings))
+        result2 (reduce #(assoc %1 (:name %2) (create-enum-field %2 enum settings))
                                      result1
                                      (:fields enum))]
   result2))
