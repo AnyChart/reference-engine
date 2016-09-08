@@ -3,12 +3,7 @@
             [taoensso.timbre :as timbre :refer [info error]]
             [cheshire.core :refer [generate-string]]))
 
-;(defonce ^:const t2 "  ")
-;(defonce ^:const tab4 "    ")
-;(defonce ^:const tab6 "      ")
-;(defonce ^:const tab8 "        ")
-
-;; for developing
+;; for developing and testing
 (defonce top-level (atom nil))
 (defonce tree (atom nil))
 
@@ -16,42 +11,9 @@
   (reset! top-level _top-level)
   (reset! tree _tree))
 
-;(defn shift [tab]
-;  (str tab t2))
-;;================
 (defn get-ns [full-name top-level]
   (first (filter #(= full-name (:full-name %)) (:namespaces top-level))))
 
-;;;======================== printing
-;(defn print-constant [constant tab]
-;  (str tab "\"" (:name constant) "\": {"
-;      (when (:type constant) (str "\"!type\": \"" (:type constant) "\", "))
-;       "\"!doc\": \"" (or (:short-description constant) (:description constant)) "\""
-;       "}"))
-;
-;(defn build-ns [ns top-level tab]
-;  (let [full-ns (get-ns (:full-name ns) top-level)
-;        nss (filter #(= (:kind %) :namespace) (:children ns))]
-;    (str tab "\"" (:name ns) "\": {\n"
-;         (join ",\n" (map #(print-constant % (shift tab)) (:constants full-ns)))
-;         (when (and (seq (:constants full-ns)) (seq nss)) ",")
-;         (when (seq (:constants full-ns)) "\n")
-;
-;
-;         (join ",\n" (map #(build-ns % top-level (shift tab)) nss))
-;         (when (seq nss) "\n")
-;
-;         tab "}"))
-;  )
-;
-;(defn build [ns top-level]
-;  (str "{\n"
-;       t2 "\"!name\": \"anychart\",\n"
-;       (build-ns ns top-level t2)
-;       "\n}"
-;       ))
-
-;;====================================== object
 (defn get-enums [top-level names]
   (filter (fn [td] (some #(= % (:full-name td) ) names)) (:enums top-level)))
 
@@ -68,8 +30,8 @@
   (-> (or (:short-description object) (:description object))
       remove-tags))
 
-(defn url [object]
-  (str "https://api.anychart.com/7.11.1/" (:full-name object)))
+(defn url [object settings]
+  (str (:domain settings) (:version-key settings) "/" (:full-name object)))
 
 (defn parse-object-type [t]
   (if (.startsWith t "Object.<")
@@ -122,8 +84,8 @@
 
 (defn function-return [function]
   (let [rets (distinct (mapcat :types (map first (map :returns (:overrides function)))))]
-    (when (= "number" (:name function))
-      (prn rets))
+    ;(when (= "number" (:name function))
+    ;  (prn rets))
     (when (seq rets)
       (str " -> " (get-types rets)))))
 
@@ -131,47 +93,51 @@
   (let [params (map :params (:overrides function))
         grouped-params (set-params params [])
         simply-params (simplify-params grouped-params)]
-    (when (= "number" (:name function))
-      (prn params)
-      (prn grouped-params)
-      (prn simply-params))
+    ;(when (= "number" (:name function))
+    ;  (prn params)
+    ;  (prn grouped-params)
+    ;  (prn simply-params))
     (str "fn("  (create-function-params-str simply-params)  ")" (function-return function))))
 
-(defn create-function [function]
+(defn create-function [function settings]
   {"!type" (create-function-type function)
-   "!url"  (str "https://api.anychart.com/7.11.1/" (let [f (first (:overrides function))]
-                                                     (clojure.string/replace (:full-name f)
-                                                                             (re-pattern (str "." (:name f)))
-                                                                             (str "#" (:name f)))))
+   "!url"  (str (:domain settings) (:version-key settings) "/"
+                (let [f (first (:overrides function))]
+                  (clojure.string/replace (:full-name f)
+                                          (re-pattern (str "." (:name f)))
+                                          (str "#" (:name f)))))
    "!doc"  (description function)})
 
-(defn create-constant [constant]
-  (let [res {"!doc" (or (:short-description constant) (:description constant))}]
+(defn create-constant [constant settings]
+  (let [res {"!doc" (or (:short-description constant) (:description constant))
+             "!url" (str (:domain settings) (:version-key settings) "/"
+                         (clojure.string/replace (:full-name constant)
+                                                 (re-pattern (str "." (:name constant)))
+                                                 (str "#" (:name constant))))}]
     (if (:type constant)
       (assoc res "!type" (:type constant))
       res)))
 
-(defn create-enum-field [field parent]
+(defn create-enum-field [field parent settings]
   {"!doc" (description field)
-   "!url" (url field)
+   "!url" (url field settings)
    "!type" (str  parent) })
 
-(defn create-enum [enum]
+(defn create-enum [enum settings]
   (let [type (if (-> enum :fields first :value string?) "string" "number")
         result1 {"!doc" (str (description enum) " @enum {" type "}")
-                 "!url" (url enum)}
-        result2 (reduce #(assoc %1 (:name %2) (create-enum-field %2 (:full-name enum)))
+                 "!url" (url enum settings)}
+        result2 (reduce #(assoc %1 (:name %2) (create-enum-field %2 (:full-name enum) settings))
                                      result1
                                      (:fields enum))]
   result2))
 
-(defn create-typedef [typedef]
-  ;(prn "Typedef: " typedef)
+(defn create-typedef [typedef settings]
   (if (empty? (:properties typedef))
     {"!doc" (str (description typedef) " @typedef {(" (join "|" (:type typedef)) ")}")
-     "!url" (url typedef)}
+     "!url" (url typedef settings)}
     {"!doc"      (description typedef)
-     "!url"      (url typedef)
+     "!url"      (url typedef settings)
      "prototype" (reduce #(assoc %1 (:name %2) {"!type" (get-types (:type %2))
                                                 "!doc" (description %2)})
                          {}
@@ -196,66 +162,64 @@
                     outer-classes)]
     result))
 
-
-(defn create-class [class top-level]
+(defn create-class [class top-level settings]
   (let [result {"!doc"      (description class)
-                "!url"      (url class)
-                "prototype" (reduce #(assoc %1 (:name %2) (create-function %2))
+                "!url"      (url class settings)
+                "prototype" (reduce #(assoc %1 (:name %2) (create-function %2 settings))
                                     {}
                                     (:methods class))}
-        result-enums (reduce #(assoc %1 (:name %2) (create-enum %2))
+        result-enums (reduce #(assoc %1 (:name %2) (create-enum %2 settings))
                              result
                              (get-enums top-level (map :name (:enums class))))
 
-        result-typedefs (reduce #(assoc %1 (:name %2) (create-typedef %2))
+        result-typedefs (reduce #(assoc %1 (:name %2) (create-typedef %2 settings))
                                 result-enums
                                 (get-typedefs top-level (map :name (:typedefs class))))
 
-        result-classes (reduce #(assoc %1 (:name %2) (create-class %2 top-level))
+        result-classes (reduce #(assoc %1 (:name %2) (create-class %2 top-level settings))
                                result-typedefs
                                (:classes class))]
     result-classes))
 
-
-(defn build-ns [ns top-level]
+(defn build-ns [ns top-level settings]
   (let [full-ns (get-ns (:full-name ns) top-level)
         tree-namespaces (filter #(= (:kind %) :namespace) (:children ns))
 
-        result-constants (reduce #(assoc %1 (:name %2) (create-constant %2)) {} (:constants full-ns))
-        result-namespaces (reduce #(assoc %1 (:name %2) (build-ns %2 top-level)) result-constants tree-namespaces)
+        result-constants (reduce #(assoc %1 (:name %2) (create-constant %2 settings)) {} (:constants full-ns))
+        result-namespaces (reduce #(assoc %1 (:name %2) (build-ns %2 top-level settings)) result-constants tree-namespaces)
 
-        result-functions (reduce #(assoc %1 (:name %2) (create-function %2)) result-namespaces (:functions full-ns))
+        result-functions (reduce #(assoc %1 (:name %2) (create-function %2 settings)) result-namespaces (:functions full-ns))
 
-        result-classes (reduce #(assoc %1 (:name %2) (create-class %2 top-level))
+        result-classes (reduce #(assoc %1 (:name %2) (create-class %2 top-level settings))
                                result-functions
                                (get-classes top-level (map :name (:classes full-ns))))
 
-        result-enums (reduce #(assoc %1 (:name %2) (create-enum %2))
+        result-enums (reduce #(assoc %1 (:name %2) (create-enum %2 settings))
                              result-classes
                              (get-enums top-level (map :name (:enums full-ns))))
 
-        result-typedefs (reduce #(assoc %1 (:name %2) (create-typedef %2))
+        result-typedefs (reduce #(assoc %1 (:name %2) (create-typedef %2 settings))
                                 result-enums
                                (get-typedefs top-level (map :name (:typedefs full-ns))))
         result result-typedefs]
     (assoc result "!doc" (description full-ns)
-                  "!url" (url ns))))
+                  "!url" (url ns settings))))
 
-(defn build [ns top-level]
+(defn build [ns top-level settings]
   (assoc {} "!name" "anychart"
-            "anychart" (build-ns ns
-                                 (update top-level :classes treefy-classes ))))
+            "anychart" (build-ns ns (update top-level :classes treefy-classes) settings)))
 
 (defn test2 []
-  (let [result (build (first @tree) @top-level)
+  (let [settings {:version-key "develop"
+                  :domain "http://api.anychart.stg/"}
+        result (build (first @tree) @top-level settings)
         json (generate-string result {:pretty true})]
     (spit "/media/ssd/sibental/reference-engine-data/tern/codeMirror/defs/anychart.json" json)))
 
-
-(defn generate-declarations [data-dir version-key top-level]
+(defn generate-declarations [settings tree top-level]
   (info "generate TernJS definitions")
-  (let [file-name (str data-dir "/versions-static/" version-key "/anychart.json")
-        result (build (first @tree) @top-level)
+  (let [file-name (str (:data-dir settings) "/versions-static/" (:version-key settings) "/anychart.json")
+        result (build (first tree) top-level settings)
         json (generate-string result {:pretty true})]
     (spit file-name json)))
 

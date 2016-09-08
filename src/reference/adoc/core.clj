@@ -105,7 +105,9 @@
           (build-media jdbc version-id (:name branch) data-dir)
           (sitemap/update-sitemap jdbc version-id top-level)
           (ts/generate-ts-declarations data-dir (:name branch) top-level)
-          ;(tern/generate-declarations data-dir (:name branch) top-level)
+          (tern/generate-declarations {:data-dir data-dir
+                                       :version-key (:name branch)
+                                       :domain (-> notifier :config :domain)} tree-data top-level)
           (remove-previous-versions jdbc version-id (:name branch))))
       (notifications/complete-version-building notifier (:name branch) queue-index)
       true)
