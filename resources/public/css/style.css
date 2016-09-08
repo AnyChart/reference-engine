@@ -1,10 +1,3 @@
-@font-face {
-  font-family: 'AnyChart';
-  src: url('../lib/AnyChart-font/AnyChart.eot?-x72mzv');
-  src: url('../lib/AnyChart-font/AnyChart.eot?#iefix-x72mzv') format('embedded-opentype'), url('../lib/AnyChart-font/AnyChart.woff?-x72mzv') format('woff'), url('../lib/AnyChart-font/AnyChart.ttf?-x72mzv') format('truetype'), url('../lib/AnyChart-font/AnyChart.svg?-x72mzv#AnyChart') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
 body {
     font-family: 'Source Sans Pro', sans-serif;
 }
@@ -304,6 +297,9 @@ a.switcher{
     z-index: 20;
     background: none;
 }
+a.switcher i{
+    font-size: 22px;
+}
 #tree-wrapper{
     position: absolute;
     top: 50px;
@@ -324,6 +320,11 @@ a.switcher{
     
     display: inline-block;
     margin-left: -5px;
+}
+#tree a i {
+    font-size: 13px;
+    line-height: 17px;
+    vertical-align: bottom;
 }
 #tree a.default-cursor{
     cursor: default;
@@ -458,7 +459,9 @@ img.img-in-context{
     display: none;
 }
 #top-page-content:hover{text-decoration: none; color: #79ACD3}
-
+#top-page-content i{
+    font-size: 13px;
+}
 .loader{
     display: block;
     font-size: 14px;
@@ -518,6 +521,9 @@ img.img-in-context{
     top: 105px;
     right: 20px;
     width: 270px;
+}
+.warning-version .ac {
+    color: #ff6c00;
 }
 .alert-padding{
     padding: 20px 30px 30px;
@@ -775,6 +781,13 @@ a.soc-network .soc-network-icon {
     border-radius: 50%;
     color: #929292;
     border: 2px solid #929292;
+    position: relative;
+}
+a.soc-network .soc-network-icon .sn-mini-icon {
+    font-size: 20px !important;
+    position: absolute;
+    top: 3px;
+    left: 3px;;
 }
 .icon {
     font-family: 'AnyChart';
@@ -790,12 +803,15 @@ a.text-support{
     display: block;
     float: left;
     width: 50px;
-    height: 50px;
-    line-height: 50px;
+    height: 43px;
+    line-height: 43px;
     text-align: center;
     border-radius: 50%;
     color: #929292;
     margin-top: -5px;
+    font-size: 35px;
+}
+a.text-support i{
     font-size: 35px;
 }
 a.soc-network:hover{
@@ -1059,6 +1075,10 @@ code {
     font-size: 50px;
     display: block;
 }
+.ac-product{
+    font-size: 50px !important;
+}
+
 a.product.AnyChart:focus,
 a.product.AnyChart:hover {
     color: #1c75ba;

@@ -37,7 +37,7 @@ api.tree.expand_ = function(entry, opt_hash) {
         var path = parts.slice(0, (i+1)).join(".");
         var $el = $("#tree li[x-data-name='" + path + "']");
         $el.find(">ul").show();
-        $el.find(">a i").removeClass("fa-chevron-right").addClass("fa-chevron-down");
+        $el.find(">a i").removeClass("ac-chevron-right").addClass("ac-chevron-down");
         $el.addClass("active");
     }
     if (opt_hash) {
@@ -110,10 +110,10 @@ api.tree.init = function() {
         
         $(this).find(">a i").click(function() {
             if ($ul.is(":visible")) {
-                $(this).addClass("fa-chevron-right").removeClass("fa-chevron-down");
+                $(this).addClass("ac-chevron-right").removeClass("ac-chevron-down");
                 $ul.hide();
             }else {
-                $(this).addClass("fa-chevron-down").removeClass("fa-chevron-right");
+                $(this).addClass("ac-chevron-down").removeClass("ac-chevron-right");
                 $ul.show();
             }
             return false;

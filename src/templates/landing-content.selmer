@@ -5,19 +5,19 @@
 
     <div class="products-list">
         <a href="//anychart.com/products/anychart/" class="item product AnyChart active">
-            <span class="product-icon"><i class="icon icon-share-o"></i></span>
+            <span class="product-icon"><i class="ac ac-anychart ac-product"></i></span>
             <span class="product-title">AnyChart</span>
         </a>
         <a href="//anychart.com/products/anystock/" class="item product AnyStock active">
-            <span class="product-icon"><i class="icon icon-settings"></i></span>
+            <span class="product-icon"><i class="ac ac-anystock ac-product"></i></span>
             <span class="product-title">AnyStock</span>
         </a>
         <a href="//anychart.com/products/anymap/" class="item product AnyMap active">
-            <span class="product-icon"><i class="icon icon-compass"></i></span>
+            <span class="product-icon"><i class="ac ac-anymap ac-product"></i></span>
             <span class="product-title">AnyMap</span>
         </a>
         <a href="//anychart.com/products/anygantt/" class="item product AnyGantt active">
-            <span class="product-icon"><i class="icon icon-contact"></i></span>
+            <span class="product-icon"><i class="ac ac-anygantt ac-product"></i></span>
             <span class="product-title">AnyGantt</span>
         </a>
     </div>

@@ -3,7 +3,7 @@
 <div class="small-group">
     <div class="collapse-group">
         <a data-toggle="collapse" href="#listing-{{l.id}}">
-            <i class="fa fa-code"></i> {{l.title}}
+            <i class="ac ac-andrews-pitchfork"></i> {{l.title}}
         </a>
         <div id="listing-{{l.id}}" class="collapse collapse-div">
             <div class="collapse-content">

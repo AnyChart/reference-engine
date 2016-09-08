@@ -18,7 +18,7 @@
                         {% if c.has-detailed %}
                         <div class="collapse-group">
                             <a data-toggle="collapse" aria-expanded="true">
-                                <i class="fa fa-info"></i>Detailed description
+                                <i class="ac ac-info"></i>Detailed description
                             </a>
                             <div class="collapse-div collapse in" aria-expanded="true">
                                 <div class="collapse-content">

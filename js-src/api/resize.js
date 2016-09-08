@@ -78,7 +78,7 @@ api.resize.hideSidebar_ = function(animate) {
         $('#footer').css('opacity', 0);
         $('.breadcrumb').css('left', w);
     }
-    $('a.switcher .fa').attr('class', 'fa fa-chevron-right');
+    $('a.switcher .ac').attr('class', 'ac ac-chevron-right-thick');
     $('#size-controller').css('cursor', 'default');
     api.tree.disableScrolling();
 };
@@ -104,7 +104,7 @@ api.resize.showSidebar_ = function(animate) {
     $('#search-form').css('opacity', 1);
     $('#tree-wrapper').css('opacity', 1);
     $('#footer').css('opacity', 1);
-    $('a.switcher .fa').attr('class', 'fa fa-chevron-left');
+    $('a.switcher .ac').attr('class', 'ac ac-chevron-left-thick');
     $('#size-controller').css('cursor', 'col-resize');
     
     api.tree.updateScrolling();

@@ -17,10 +17,10 @@
         
         <title>{{title}}</title>
         <!--[if IE]>
+        <link rel="stylesheet" href="https://cdn.anychart.com/fonts/2.0.0/anychart.css">
         <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="/lib/bootstrap-select.min.css"/>
         <link rel="stylesheet" type="text/css" href="/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.css"/>
-        <link href="/css/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/lib/prettiffy/prettify-tomorrow.css"/>
         <link rel="stylesheet" type="text/css" href="/css/style.css"/>
         <![endif]-->
@@ -37,10 +37,10 @@
     </head>
     <body>
         <!--[if !IE]> -->
+        <link rel="stylesheet" href="https://cdn.anychart.com/fonts/2.0.0/anychart.css">
         <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="/lib/bootstrap-select.min.css"/>
         <link rel="stylesheet" type="text/css" href="/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.css"/>
-        <link href="/css/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/lib/prettiffy/prettify-tomorrow.css"/>
         <link rel="stylesheet" type="text/css" href="/css/style.css"/>
         <!-- <![endif]-->
@@ -63,7 +63,7 @@
                     {% endfor %}
                 </select>
                 <div class="text-muted questions">
-                    <a href="//support.anychart.com/" class="text-support"><i class="icon icon-ring icon-data"></i></a>
+                    <a href="//support.anychart.com/" class="text-support"><i class="ac ac-support"></i></a>
                     <span class="hidden-super-small">
                         Still have questions?<br/>
                         <a href="http://anychart.com/support/"> Contact support</a></span>
@@ -71,14 +71,14 @@
             </div>
         </div>
         <div id="menu-bar">
-            <a class="switcher"> <i class="fa fa-chevron-left"></i></a>
+            <a class="switcher"> <i class="ac ac-chevron-left-thick"></i></a>
             <div id="search-form">
                 <form class="form-horizontal" role="form">
                     <div class="form-group has-feedback">
                         <div class="col-sm-12">
                             <input type="text" class="form-control" id="search" placeholder="search" autocomplete="off">
                             <div id="search-results" style="background-color: white;"></div>
-                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                            <span class="ac ac-search form-control-feedback"></span>
                         </div>
                     </div>
                 </form>
@@ -92,13 +92,13 @@
             <div id="footer">
                 <div id="footer-inner">
                     <a href="https://www.facebook.com/AnyCharts" class="soc-network" target="_blank">
-                        <span class="soc-network-icon fb"><i class="icon icon-fb"></i></span>
+                        <span class="soc-network-icon fb"><i class="sn-mini-icon ac ac-facebook"></i></span>
                     </a>
                     <a href="https://twitter.com/AnyChart" class="soc-network" target="_blank">
-                        <span class="soc-network-icon tw"><i class="icon icon-tw"></i></span>
+                        <span class="soc-network-icon tw"><i class="sn-mini-icon ac ac-twitter"></i></span>
                     </a>
                     <a href="https://www.linkedin.com/company/386660" class="soc-network" target="_blank">
-                        <span class="soc-network-icon in"><i class="icon icon-in"></i></span>
+                        <span class="soc-network-icon in"><i class="sn-mini-icon ac ac-linkedin"></i></span>
                     </a>
                     <p> © 2015 AnyChart.Com All rights reserved.</p>
                 </div>
@@ -107,12 +107,12 @@
         </div>
         <ol class="breadcrumb"></ol>
         <a id="top-page-content">
-            Top <i class="fa fa-arrow-up"></i></a>
+            Top <i class="ac ac-arrow-up"></i></a>
 
         {% if not is-last %}
         <div id="warning" class="warning-version alert alert-default fade in">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <i class="fa fa-exclamation-triangle"></i> You are looking old product version {{version}}. See for actual information <a data-last-version="{{last-version}}" href="/{{last-version}}/try/{{page}}">{{last-version}}</a>.
+            <i class="ac ac-exclamation"></i> You are looking old product version {{version}}. See for actual information <a data-last-version="{{last-version}}" href="/{{last-version}}/try/{{page}}">{{last-version}}</a>.
         </div>
         {% endif %}
         <div id="content-wrapper">
@@ -122,7 +122,7 @@
                 </div>
             </div>
             {% if footer %}
-            <div class="content-footer"><hr /><i class="fa fa-info"></i> {{footer|safe}}</div>
+            <div class="content-footer"><hr /><i class="ac ac-info"></i> {{footer|safe}}</div>
             {% endif %}
         </div>
     </body>
@@ -143,7 +143,7 @@
         function make_menu(el){
             if (is_group(el)) {
                 return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +
-                        "'><i class='fa fa-chevron-right'></i> " + node_title(el) +  "</a><ul style='display:none'>" +
+                        "'><i class='ac ac-chevron-right'></i> " + node_title(el) +  "</a><ul style='display:none'>" +
                         el.children.map(make_menu).join("") + "</ul></li>"
             }else{
                 return "<li class='item' x-data-name='" +  el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +"'>" + node_title(el) + "</a></li>";
