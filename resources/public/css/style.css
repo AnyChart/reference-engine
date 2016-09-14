@@ -292,7 +292,8 @@ a.switcher{
     font-size: 24px;
     float: right;
     color: #dddddd;
-    padding: 0 10px;
+    padding: 0 5px;
+    margin: 0 2px;
     cursor: pointer;
     z-index: 20;
     background: none;
@@ -851,6 +852,17 @@ a.soc-network:hover .soc-network-icon.in {
         display: inline-block;
     }
 }
+@media (max-width: 645px){
+    .hidden-small-645{
+        display: none;
+    }
+}
+@media (max-width: 410px){
+    .hidden-small-410{
+        display: none;
+    }
+}
+
 
 .in-content{display: none}
 code {
