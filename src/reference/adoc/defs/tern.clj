@@ -219,7 +219,11 @@
 (defn generate-declarations [settings tree top-level]
   (info "generate TernJS definitions")
   (let [file-name (str (:data-dir settings) "/versions-static/" (:version-key settings) "/anychart.json")
+        file-name-min-js (str (:data-dir settings) "/versions-static/" (:version-key settings) "/def_anychart.min.js")
         result (build (first tree) top-level settings)
-        json (generate-string result {:pretty true})]
-    (spit file-name json)))
+        json (generate-string result {:pretty true})
+        json-min (generate-string result)
+        js (str "var def_anychart = " json-min ";")]
+    (spit file-name json)
+    (spit file-name-min-js js)))
 
