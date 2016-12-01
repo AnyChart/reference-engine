@@ -124,7 +124,10 @@
 (defn- sort-categories [categories sorting]
   (map #(dissoc % :index)
        (sort-by (juxt :index :name)
-                (map #(assoc % :index (get sorting (:name %) 999999)) categories))))
+                (map #(assoc % :index
+                               (if (= (:id %) "specific-settings")
+                                 -1
+                                 (get sorting (:name %) 999998))) categories))))
 
 (defn- sort-members [categories]
   (map #(assoc % :members (sort-by :name (:members %))) categories))
@@ -138,9 +141,9 @@
     (assoc class
            :categories (if has-categories
                          (-> (categorize-class-methods class)
+                             (assoc-categories-id)
                              (sort-categories sorting)
-                             (sort-members)
-                             (assoc-categories-id)))
+                             (sort-members)))
            :has-categories has-categories)))
 
 (defn build-namespace-categories [namespace sorting]
@@ -149,7 +152,7 @@
     (assoc namespace
            :categories (if has-categories
                          (-> (categorize-namespace-functions (:functions namespace))
+                             (assoc-categories-id)
                              (sort-categories sorting)
-                             (sort-members)
-                             (assoc-categories-id)))
+                             (sort-members)))
            :has-categories has-categories)))

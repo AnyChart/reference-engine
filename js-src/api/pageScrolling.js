@@ -62,6 +62,7 @@ api.pageScrolling.getFirstVisible_ = function(top) {
  * @private
  */
 api.pageScrolling.onContentScroll_ = function() {
+    $(window).off("focus");
     api.pageScrolling.checkTopVisible(this.mcs.top);
     var el = api.pageScrolling.getFirstVisible_(this.mcs.top);
     if (el) {
@@ -128,3 +129,16 @@ api.pageScrolling.init = function() {
         return false;
     });
 };
+
+// wihtout this when righ tlick on menu -> open link in new tab ->
+// wait until page is loaded -> switch to loaded page -> anchor scroll doesn't work
+$(window).focus(function(){
+    var id = window.location.hash;
+    if (id) {
+        $("#content-wrapper").mCustomScrollbar("scrollTo", $(id), {callbacks: false});
+    }
+    api.tree.scrollToEntry(api.config.page, location.hash ? location.hash.substr(1) : null);
+    api.core.needAnchorScroll_ = false;
+    $(window).off("focus");
+});
+

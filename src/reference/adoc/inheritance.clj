@@ -47,6 +47,25 @@
         (assoc :inherited-methods (sort-by :name filtered-parent-class-methods))
         (dissoc :all-members))))
 
+(defn- set-default-expand-method-override** [method classes]
+  (let [getters (keep-indexed #(when (.startsWith (:description %2) "Getter") [%1 %2]) (:overrides method))]
+    (if (= 1 (count getters))
+      (let [[index getter] (first getters)
+            types (mapcat :types (:returns getter))]
+        (if (some #(some (partial = %) classes ) types)
+          (assoc method :default-override-index index)
+          method))
+      method)))
+
+(defn- set-default-expand-method-override* [class classes]
+  (let [methods (:methods class)
+        new-methods (map #(set-default-expand-method-override** % classes) methods)]
+    (assoc class :methods new-methods)))
+
+(defn- set-default-expand-method-override [classes]
+  (map #(set-default-expand-method-override* % (map :full-name classes)) classes))
+
 (defn build-inheritance [classes]
   (info "build-inheritance")
-  (map merge-methods (map #(build-class-inheritance % classes) classes)))
+  (let [new-classes (map merge-methods (map #(build-class-inheritance % classes) classes))]
+    (set-default-expand-method-override new-classes)))

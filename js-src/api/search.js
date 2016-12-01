@@ -8,6 +8,20 @@ goog.require("api.config");
  * @type {Object}
  */
 api.search.data_ = null;
+api.search.firstResult_ = null;
+
+api.search.setFirstResult = function(entry){
+    if (api.search.firstResult_ == null){
+        api.search.firstResult_ = "/" + api.config.version + "/" + entry.link;
+    }
+};
+
+api.search.setFirstResultByGroup = function(group){
+    if (api.search.firstResult_ == null){
+        group.sort(api.search.sortGroup_);
+        api.search.setFirstResult(group[0]);
+    }
+};
 
 /**
  *
@@ -181,6 +195,12 @@ api.search.findTypedefs_ = function(str) {
     return api.search.filter_(str, api.search.data_.typedefs, "typedef");
 };
 
+api.search.sortGroup_ = function(a, b){
+    if(a["full-name"] < b["full-name"]) return -1;
+    if(a["full-name"] > b["full-name"]) return 1;
+    return 0;
+};
+
 /**
  * @private
  * @param {Object} item
@@ -193,11 +213,7 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
 
     $("#search-results-new").hide();
     var $res = $("<ul></ul>");
-    item.group.sort(function(a, b){
-        if(a["full-name"] < b["full-name"]) return -1;
-        if(a["full-name"] > b["full-name"]) return 1;
-        return 0;
-    });
+    item.group.sort(api.search.sortGroup_);
     for (var i = 0; i < item.group.length; i++) {
         var entry = item.group[i];
         $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["full-name"] + postfix + "</a></li>");
@@ -223,6 +239,7 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         if (item.multiple) {
+            api.search.setFirstResultByGroup(item.group);
             (function(item) {
                 var $link = $("<li><a class='group-link' href='#'>" + prefix + item.name + postfix + " <span>"+ item.group.length +" matches</span></a></li>");
                 $link.find("a").click(function() {
@@ -235,8 +252,10 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
     }
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
-        if (!item.multiple)
+        if (!item.multiple){
+            api.search.setFirstResult(item);
             $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
+        }
     }
 };
 
@@ -253,6 +272,7 @@ api.search.showEmpty_ = function($res) {
  * @param {string} query
  */
 api.search.search_ = function(query) {
+    api.search.firstResult_ = null;
     if (query.length < 2) {
         api.search.hide();
         return;
@@ -393,7 +413,12 @@ api.search.onLoad_ = function(data) {
     $("#search").focus(function() {
         api.search.search_($(this).val());
     });
-
+    $("#search").keydown(function(e) {
+        if(e.keyCode == 13){
+            e.preventDefault();
+            window.location.href = api.search.firstResult_;
+        }
+    });
     $("#search").keyup(function(e) {
         if (e.keyCode == 27) { //esc
             api.search.hide();

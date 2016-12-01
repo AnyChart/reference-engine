@@ -49,6 +49,19 @@
                                version (clojure.string/trim val) "-plain")))
           :endplayground)
 
+(add-tag! :is-override-expand (fn [args context-map]
+                       (let [paths (map #(clojure.string/split % #"\.") args)
+                             vals (map #(get-in context-map (map keyword %)) paths)
+                             method (first vals)
+                             default-override-index (:default-override-index method)
+                             last (second vals)
+                             counter (nth vals 2)]
+                         (if (and default-override-index)
+                           (when (= (inc default-override-index) counter)
+                             "in")
+                           (when last
+                             "in")))))
+
 (add-tag! :listings-and-samples (fn [args context-map]
                                   (let [entry (get context-map (keyword (first args)))]
                                     (render-file "templates/entries/samples.selmer"
