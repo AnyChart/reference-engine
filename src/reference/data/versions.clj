@@ -53,19 +53,24 @@
                            (from :versions)
                            (where [:= :key key])))))
 
-(defn versions [jdbc]
-  (reverse
-   (sort version-compare
-         (map :key (query jdbc (-> (select :key)
-                                   (from :versions)
-                                   (where [:= :hidden false])))))))
+(defn- version-keys [jdbc]
+  (map :key (query jdbc (-> (select :key)
+                            (from :versions)
+                            (where [:= :hidden false])))))
+
+(defn versions
+  ([jdbc] (sort (comp - version-compare) (version-keys jdbc)))
+  ([jdbc keys] (sort (comp - version-compare) (concat keys (version-keys jdbc)))))
+
+(defn default
+  ([jdbc] (first (versions jdbc)))
+  ([jdbc keys] (first (versions jdbc keys))))
 
 (defn versions-full-info [jdbc]
-  (reverse
-   (sort #(version-compare (:key %1) (:key %2))
-         (query jdbc (-> (select :id :key)
-                         (from :versions)
-                         (where [:= :hidden false]))))))
+  (sort (comp - #(version-compare (:key %1) (:key %2)))
+        (query jdbc (-> (select :id :key)
+                        (from :versions)
+                        (where [:= :hidden false])))))
 
 (defn outdated-versions-ids [jdbc actual-ids]
   (if (seq actual-ids)
@@ -77,9 +82,6 @@
   (if (seq ids)
     (exec jdbc (-> (delete-from :versions)
                    (where [:in :id ids])))))
-
-(defn default [jdbc]
-  (first (versions jdbc)))
 
 (defn need-rebuild? [jdbc version-key commit]
   (nil? (one jdbc (-> (select :key)

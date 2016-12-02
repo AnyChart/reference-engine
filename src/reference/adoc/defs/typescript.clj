@@ -191,16 +191,27 @@
   (str "/// <reference path=\"all.d.ts\"/>\n"
        "// from https://github.com/teppeis/closure-library.d.ts\n" data))
 
-(defn test2 []
-  (let [namespaces (join "\n\n" (map #(namespace-definition @top-level %)
-                                     (sort-by :full-name (:namespaces @top-level))))]
-    (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" namespaces)
-    (spit "/media/ssd/work/TypeScript/typescript-example/typescript-example/src/anychart.d.ts" namespaces)
-    ))
+(defn add-header [ts version-key need-version]
+  (str "// Type definitions for anychart" (when need-version (str " v" version-key))
+       "\n// Project: http://anychart.com/\n"
+       "// Definitions by: AnyChart <http://anychart.com>\n"
+       "// Definitions: https://github.com/DefinitelyTyped/DefinitelyType\n"
+       ts))
 
-(defn generate-ts-declarations [data-dir version-key top-level]
-  (info "generate TypeScript definitions")
-  (let [file-name (str data-dir "/versions-static/" version-key "/anychart.d.ts")
-        namespaces (join "\n\n" (map #(namespace-definition top-level %)
-                                     (sort-by :full-name (:namespaces top-level))))]
-    (spit file-name namespaces)))
+(defn generate-ts [top-level version-key is-last-versionl]
+  (let [ts (join "\n\n" (map #(namespace-definition top-level %)
+                          (sort-by :full-name (:namespaces top-level))))]
+    (add-header ts version-key (not is-last-versionl))))
+
+(defn test2 []
+  (let [ts (generate-ts @top-level "develop" false)]
+    (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" ts)
+    (spit "/media/ssd/work/TypeScript/typescript-example/typescript-example/src/anychart.d.ts" ts)))
+
+(defn generate-ts-declarations [data-dir version-key latest-version-key top-level]
+  (info "generate TypeScript definitions for: " version-key ", latest: " latest-version-key)
+  (let [is-last-version (= version-key latest-version-key)
+        file-name (if is-last-version "index.d.ts" (str "index-" version-key ".d.ts"))
+        path (str data-dir "/versions-static/" version-key "/" file-name)
+        ts (generate-ts top-level version-key is-last-version)]
+    (spit path ts)))

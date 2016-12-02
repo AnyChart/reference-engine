@@ -71,7 +71,7 @@
     {:samples true}))
 
 (defn build-branch
-  [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground queue-index]
+  [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground queue-index latest-version-key]
   (try
     (do
       (info "building" branch)
@@ -104,7 +104,7 @@
           (save-entries jdbc version (:name branch) top-level docs playground)
           (build-media jdbc version-id (:name branch) data-dir)
           (sitemap/update-sitemap jdbc version-id top-level)
-          (ts/generate-ts-declarations data-dir (:name branch) top-level)
+          (ts/generate-ts-declarations data-dir (:name branch) latest-version-key top-level)
           (tern/generate-declarations {:data-dir data-dir
                                        :version-key (:name branch)
                                        :domain (-> notifier :config :domain)} tree-data top-level)
@@ -134,7 +134,8 @@
   (let [actual-branches (update-branches show-branches git-ssh data-dir)
         removed-branches (remove-branches jdbc (map :name actual-branches) data-dir)
         branches (filter-for-rebuild jdbc actual-branches)
-        branch-names (map :name branches)]
+        branch-names (map :name branches)
+        latest-version-key (vdata/default jdbc branch-names)]
     (notifications/start-building notifier branch-names removed-branches queue-index)
     (let [result (doall (map #(build-branch %
                                             jdbc
@@ -145,7 +146,8 @@
                                             jsdoc-bin
                                             docs
                                             playground
-                                            queue-index)
+                                            queue-index
+                                            latest-version-key)
                                  branches))]
       ;(when (or (not-empty removed-branches)
       ;          (not-empty branches))
