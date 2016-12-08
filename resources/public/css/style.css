@@ -12,6 +12,9 @@ a {
     text-decoration: none;
     cursor: pointer;
 }
+a.hovered {
+    color: rgb(119, 172, 214) !important;
+}
 a:hover,
 a:focus {
     color: #1c75ba;

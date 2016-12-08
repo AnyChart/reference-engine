@@ -1,5 +1,4 @@
 goog.provide("api.search");
-
 goog.require("api.config");
 
 
@@ -8,20 +7,8 @@ goog.require("api.config");
  * @type {Object}
  */
 api.search.data_ = null;
-api.search.firstResult_ = null;
-
-api.search.setFirstResult = function(entry){
-    if (api.search.firstResult_ == null){
-        api.search.firstResult_ = "/" + api.config.version + "/" + entry.link;
-    }
-};
-
-api.search.setFirstResultByGroup = function(group){
-    if (api.search.firstResult_ == null){
-        group.sort(api.search.sortGroup_);
-        api.search.setFirstResult(group[0]);
-    }
-};
+api.search.searchIndex_ = 0;
+api.search.scrollOfftop_ = 0;
 
 /**
  *
@@ -239,12 +226,13 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         if (item.multiple) {
-            api.search.setFirstResultByGroup(item.group);
             (function(item) {
                 var $link = $("<li><a class='group-link' href='#'>" + prefix + item.name + postfix + " <span>"+ item.group.length +" matches</span></a></li>");
                 $link.find("a").click(function() {
                     api.search.showGrouped_(item, prefix, postfix);
                     return false;
+                }).mouseenter(function(e){
+                    api.search.searchOver(e.currentTarget);
                 });
                 $res.append($link);
             })(item);
@@ -253,8 +241,11 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         if (!item.multiple){
-            api.search.setFirstResult(item);
-            $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
+            var $link = $("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
+            $link.find("a").mouseenter(function(e){
+                api.search.searchOver(e.currentTarget);
+            });
+            $res.append($link);
         }
     }
 };
@@ -272,7 +263,6 @@ api.search.showEmpty_ = function($res) {
  * @param {string} query
  */
 api.search.search_ = function(query) {
-    api.search.firstResult_ = null;
     if (query.length < 2) {
         api.search.hide();
         return;
@@ -288,19 +278,27 @@ api.search.search_ = function(query) {
     api.search.addToResults_($res, api.search.findClasses_(query), "", "", "Classes");
     $res.find("a.item-link").click(api.links.typeLinkClick);
 
-    if (!$res.find("a").length) api.search.showEmpty_($res);
-
     $("#search-results-new").show();
     $("#search-results-new").html("");
     $("#search-results-new").append($res);
+
+    if (!$res.find("a").length) {
+        api.search.showEmpty_($res);
+    }else{
+        api.search.setSearchIndex(0)
+    }
 };
 
+
+/**
+ * ========================== search from server ===============================
+ */
 /**
  * @private
  * @param {Array} data
  * @param {string} query
  */
-api.search.onDataLoad_ = function(data, query){
+/*api.search.onDataLoad_ = function(data, query){
     api.search.data_ = data;
     var constants = [];
     var functions = [];
@@ -339,13 +337,13 @@ api.search.onDataLoad_ = function(data, query){
     $("#search-results-new").show();
     $("#search-results-new").html("");
     $("#search-results-new").append($res);
-};
+};*/
 
 /**
  * @private
  * @param {string} query
  */
-api.search.makeSearchReq = function(query){
+/*api.search.makeSearchReq = function(query){
     if (query.length < 2) {
         api.search.hide();
         return;
@@ -353,9 +351,9 @@ api.search.makeSearchReq = function(query){
     $.get("/" + api.config.version + "/search.json?q=" + query, function(data){
         api.search.onDataLoad_(data, query);
     });
-};
+};*/
 
-api.search.init_ = function() {
+/*api.search.init_ = function() {
     $("#search-results-new").click(function(e) {
         e.stopPropagation();
     });
@@ -389,11 +387,50 @@ api.search.init_ = function() {
             }
         }
     });
+};*/
+
+api.search.setSearchIndex = function(index, notScroll){
+    var elems = $("#search-results-new li a");
+    if (index >= 0 && index < elems.length) {
+        if (index == 0) {
+            api.search.scrollOfftop_ = $("#search-results-new").height()/2;
+        }
+        api.search.searchIndex_ = index;
+        elems.removeClass("hovered");
+        $(elems[api.search.searchIndex_]).addClass("hovered");
+        //console.log($("#search-results-new").scrollTop() + " " + $(elems[api.search.searchIndex_]).parent().position().top + " " + $("#search-results-new").height());
+        if (!notScroll) {
+            $('#search-results-new').animate({
+                scrollTop: $("#search-results-new").scrollTop() + $(elems[api.search.searchIndex_]).parent().position().top -
+                api.search.scrollOfftop_
+            }, 20);
+        } else {
+            api.search.scrollOfftop_ = $(elems[api.search.searchIndex_]).parent().position().top;
+        }
+    }
 };
 
-/**
- * ========================== Old searching ===============================
- */
+api.search.selectUpSearchResult_ = function(){
+    api.search.setSearchIndex(api.search.searchIndex_ - 1);
+};
+
+api.search.selectDownSearchResult_ = function(){
+    api.search.setSearchIndex(api.search.searchIndex_ + 1);
+};
+
+api.search.searchOver = function(elem){
+    var elems = $("#search-results-new li a");
+    for (var i = 0; i < elems.length && elems[i].innerHTML != elem.innerHTML;) i++;
+    api.search.setSearchIndex(i, true);
+};
+
+api.search.openSearchResult_ = function(){
+    var elems = $("#search-results-new li a");
+    if (elems.length) {
+        $(elems[api.search.searchIndex_]).trigger('click');
+        $("#search").blur();
+    }
+};
 
 /**
  * @private
@@ -414,17 +451,26 @@ api.search.onLoad_ = function(data) {
         api.search.search_($(this).val());
     });
     $("#search").keydown(function(e) {
-        if(e.keyCode == 13){
-            e.preventDefault();
-            window.location.href = api.search.firstResult_;
+        switch(e.keyCode){
+            case 13: e.preventDefault(); break;
+            case 38: api.search.selectUpSearchResult_(); break;
+            case 40: api.search.selectDownSearchResult_(); break;
         }
     });
     $("#search").keyup(function(e) {
-        if (e.keyCode == 27) { //esc
-            api.search.hide();
-            $("#search").val('');
-        }else {
-            api.search.search_($(this).val());
+        switch (e.keyCode){
+            case 13:
+                e.preventDefault();
+                api.search.openSearchResult_();
+                break;
+            case 27:
+                api.search.hide();
+                $("#search").val('');
+                break;
+            case 38: e.preventDefault(); break;
+            case 40: e.preventDefault(); break;
+            default:
+                api.search.search_($(this).val());
         }
     });
     api.search.setSearchPage();
