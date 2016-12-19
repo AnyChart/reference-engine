@@ -80,7 +80,9 @@
   (redirect (str "/" (vdata/default (jdbc request)) "/anychart")))
 
 (defn- redirect-latest [request]
-  (redirect (str "/" (vdata/default (jdbc request)) "/anychart")))
+  (redirect (str "/" (vdata/default (jdbc request)) (if (-> request :params :entry)
+                                                      (str "/?" (:query-string request))
+                                                      "/anychart"))))
 
 (defn- redirect-latest-page [request]
   (let [page (get-in request [:route-params :page])]
@@ -224,7 +226,6 @@
   (GET "/:version/search.json" [] (wrap-json-response (check-version-middleware search)))
   (GET "/:version/try/:page" [] (check-version-middleware try-show-page))
   (GET "/:version/:page/data" [] (wrap-json-response (check-page-middleware get-page-data)))
-  (GET "/latest/:page" [] redirect-latest-page)
   (GET "/:version/:page" [] show-page))
 
 (def app (routes app-routes))
