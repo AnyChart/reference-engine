@@ -2,7 +2,8 @@
   (:require [selmer.parser :refer [render-file add-tag! render]]
             [selmer.filters :refer [add-filter!]]
             [taoensso.timbre :as timbre :refer [info]]
-            [reference.web.tree :refer [tree-view]]))
+            [cheshire.core :refer [parse-string]]
+            [reference.web.tree :refer [tree-view-partial]]))
 
 (defn- escape-str [str]
   (render "{{val}}" {:val str}))
@@ -71,8 +72,9 @@
                                                   :playground (:playground context-map)}))))
 
 (add-tag! :tree-view (fn [args context-map]
-                       (let [entries (get context-map (keyword (first args)))]
-                         (reduce str (map #(tree-view % (:version context-map)) entries)))))
+                       (let [entries (parse-string (get context-map (keyword (first args))) true)
+                             url (get context-map (keyword (second args)))]
+                         (reduce str (map #(tree-view-partial % (:version context-map) url) entries)))))
 
 (defn- fix-version [version data]
   (clojure.string/replace data "__VERSION__" version))

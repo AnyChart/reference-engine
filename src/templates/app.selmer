@@ -87,6 +87,7 @@
             <div id="tree-wrapper">
                 <div id="tree">
                     <ul class="menu">
+                        {% tree-view tree page %}
                     </ul>
                 </div>
             </div>
