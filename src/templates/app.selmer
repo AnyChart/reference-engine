@@ -129,30 +129,30 @@
         </div>
     </body>
     <script>
-        var menu_data = {{tree|safe}};
-        function node_title(el){
-            switch (el.kind){
-                case "function": return el.name + "()";
-                case "method": return el.name + "()";
-                case "enum": return "[" + el.name + "]";
-                case "typedef": return "{" + el.name + "}";
-            }
-            return el.name;
-        }
-        function is_group(el){
-            return el.kind == "class" || el.kind == "namespace";
-        }
-        function make_menu(el){
-            if (is_group(el)) {
-                return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +
-                        "'><i class='ac ac-chevron-right'></i> " + node_title(el) +  "</a><ul style='display:none'>" +
-                        el.children.map(make_menu).join("") + "</ul></li>"
-            }else{
-                return "<li class='item' x-data-name='" +  el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +"'>" + node_title(el) + "</a></li>";
-            }
-        }
-        document.getElementsByClassName("menu")[0].innerHTML = make_menu(menu_data[0]);
         head.ready(function () {
+            var menu_data = {{tree|safe}};
+            function node_title(el){
+                switch (el.kind){
+                    case "function": return el.name + "()";
+                    case "method": return el.name + "()";
+                    case "enum": return "[" + el.name + "]";
+                    case "typedef": return "{" + el.name + "}";
+                }
+                return el.name;
+            }
+            function is_group(el){
+                return el.kind == "class" || el.kind == "namespace";
+            }
+            function make_menu(el){
+                if (is_group(el)) {
+                    return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +
+                            "'><i class='ac ac-chevron-right'></i> " + node_title(el) +  "</a><ul style='display:none'>" +
+                            el.children.map(make_menu).join("") + "</ul></li>"
+                }else{
+                    return "<li class='item' x-data-name='" +  el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +"'>" + node_title(el) + "</a></li>";
+                }
+            }
+            document.getElementsByClassName("menu")[0].innerHTML = make_menu(menu_data[0]);
             api.core.init("{{version}}", "{{page}}");
         });
     </script>
