@@ -36,6 +36,7 @@
       "function" "(() => void)"
       "Array" "Array<any>"
       (-> t
+          (s/replace #"function\(\)" "Function")
           (s/replace #"scope" "any")
           (s/replace #"\*" "any")
           (s/replace #"Array\." "Array")
