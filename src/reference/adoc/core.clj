@@ -91,7 +91,7 @@
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level)
             config (get-version-config data-dir (:name branch))]
-        ;(when (= (:name branch) "develop")
+        ;(when (= (:name branch) "DVF-2121_common_api_improvement")
         ;  (ts/set-top-level! top-level)
         ;  (tern/set-top-level! top-level tree-data))
         (info "categories order:" categories-order)

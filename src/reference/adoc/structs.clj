@@ -2,7 +2,7 @@
   (:require [taoensso.timbre :as timbre :refer [info]]
             [reference.adoc.media :refer [update-links]]
             [reference.git :refer [file-last-commit-date]]
-            [clojure.string :refer [blank?]]))
+            [clojure.string :refer [blank? join]]))
 
 (def id-counter (atom 0))
 
@@ -87,7 +87,8 @@
 (defn- get-static-members [doclets memberof]
   (let [longname (:longname memberof)] 
     (filter #(and (not (is-function %))
-                  (= (:kind %) "member")
+                  (or (= (:kind %) "member")
+                      (= (:kind %) "constant"))
                   (= longname (:memberof %))
                   (is-static %)
                   (not (:isEnum %)))
@@ -248,7 +249,8 @@
 
 (defn create-constant [const doclets version base-path]
   (parse-examples-and-listing base-path
-                              (assoc (parse-general const version) :type (constant-type const))
+                              (assoc (parse-general const version) :type (or (constant-type const)
+                                                                             (join "|" (-> const :type :names))))
                               const))
 
 (defn- parse-function-return [ret version]

@@ -80,7 +80,7 @@
 ;;; =============== constants ===============
 
 (defn constant-declaration [constant]
-  (str p4 "const " (:name constant) (when (:type constant) (str ": " (:type constant))) ";"))
+  (str p4 "const " (:name constant) (when (:type constant) (str ": " (get-type (:type constant)))) ";"))
 
 (defn constant-declarations [constants]
   (join "\n" (map constant-declaration constants)))
