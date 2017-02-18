@@ -119,14 +119,14 @@ api.tree.init = function() {
             return false;
         });
         
-        $(this).find(">a").click(function(e) {
+        /*$(this).find(">a").click(function(e) {
             if (e.ctrlKey || e.metaKey) return true;
             return api.page.load($(this).attr("href"));
-        });
+        });*/
     });
     
-    $("#tree li.item a").click(function(e) {
+    /*$("#tree li.item a").click(function(e) {
         if (e.ctrlKey || e.metaKey) return true;
         return api.page.load($(this).attr("href"));
-    });
+    });*/
 };

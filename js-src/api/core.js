@@ -18,7 +18,7 @@ api.core.init = function(version, page) {
     api.page.fixLinks();
     api.page.fixListings();
     api.tree.init();
-    api.pageScrolling.update();
+    //api.pageScrolling.update();
     api.search.init();
 
     api.tree.expand(location.pathname, location.hash);
@@ -30,7 +30,7 @@ api.core.init = function(version, page) {
         api.page.highlightOnLoad(location.hash.substr(1));
 
     api.page.fixAccordionLinks();
-    api.pageScrolling.init();
+    //api.pageScrolling.init();
 
     if (page == "" || page.indexOf("?entry=") > -1) {
         api.tree.expand("/latest/anychart");
