@@ -88,17 +88,17 @@ api.pageScrolling.update = function() {
     api.pageScrolling.isTopVisible_ = false;
     api.pageScrolling.currentVisible_ = null;
 
-    /*$("#content-wrapper").mCustomScrollbar(
+    $("#content-wrapper").mCustomScrollbar(
         $.extend(api.config.scrollSettings,
                  { callbacks: {
-                     onScroll: api.pageScrolling.onContentScroll_ }}));*/
+                     onScroll: api.pageScrolling.onContentScroll_ }}));
 };
 
 /** 
  * @param {string} entry
  */
 api.pageScrolling.scrollTo = function(entry) {
-    //$("#content-wrapper").mCustomScrollbar("scrollTo", $(entry), {callbacks: false});
+    $("#content-wrapper").mCustomScrollbar("scrollTo", $(entry), {callbacks: false});
     api.pageScrolling.checkTopVisible(-100);
 };
 
@@ -108,9 +108,9 @@ api.pageScrolling.scrollTo = function(entry) {
 api.pageScrolling.highlightScroll = function(entry) {
     setTimeout(function() {
         api.page.currentActive_ = entry;
-        //$("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
-        //                                       {scrollInertia: 700,
-        //                                        callbacks: false});
+        $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
+                                               {scrollInertia: 700,
+                                                callbacks: false});
         api.pageScrolling.checkTopVisible(-100);
     }, 100);
 };
@@ -134,9 +134,9 @@ api.pageScrolling.init = function() {
 // wait until page is loaded -> switch to loaded page -> anchor scroll doesn't work
 $(window).focus(function(){
     var id = window.location.hash;
-    /*if (id) {
+    if (id) {
         $("#content-wrapper").mCustomScrollbar("scrollTo", $(id), {callbacks: false});
-    }*/
+    }
     api.tree.scrollToEntry(api.config.page, location.hash ? location.hash.substr(1) : null);
     api.core.needAnchorScroll_ = false;
     $(window).off("focus");
