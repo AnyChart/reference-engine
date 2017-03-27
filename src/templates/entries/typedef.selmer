@@ -10,7 +10,7 @@
 
 {% if main.has-types %}
 <div class="content-block">
-    <p> This type can contains one of the following types:
+    <p> This type can contain one of the following types:
         <ul class="list list-dotted">
             {% for t in main.type %}
             <li>{% type-link t %}</li>
