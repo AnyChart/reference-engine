@@ -1,6 +1,7 @@
 (ns reference.adoc.defs.typescript
   (:require [clojure.string :as s :refer [join]]
-            [taoensso.timbre :as timbre :refer [info error]]))
+            [taoensso.timbre :as timbre :refer [info error]]
+            [me.raynes.fs :as fs]))
 
 (defonce ^:const p4 "    ")
 (defonce ^:const p8 "        ")
@@ -213,6 +214,8 @@
   (info "generate TypeScript definitions for: " version-key ", latest: " latest-version-key)
   (let [is-last-version (= version-key latest-version-key)
         file-name (if is-last-version "index.d.ts" (str "index-" version-key ".d.ts"))
-        path (str data-dir "/versions-static/" version-key "/" file-name)
+        dir (str data-dir "/versions-static/" version-key)
+        path (str dir "/" file-name)
         ts (generate-ts top-level version-key is-last-version)]
+    (fs/mkdirs dir)
     (spit path ts)))
