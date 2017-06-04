@@ -43,24 +43,22 @@
   (run-git git-ssh target-path "checkout" version)
   (run-git git-ssh target-path "pull" "origin" version))
 
+(defn remote-branches [git-ssh path pred]
+  (let [raw-lines (split (run-git git-ssh path "branch" "-r" "--format='%(refname:short)|-|%(objectname)|-|%(authorname)|-|%(contents:subject)'") #"\n")
+        lines (map #(clojure.string/replace % #"'" "") raw-lines)
+        filtered-lines (filter (fn [s] (and (some? s)
+                                            (not (.contains s "origin/HEAD"))
+                                            (pred s))) lines)
+        branches (map (fn [s]
+                        (let [[raw-name commit author message] (clojure.string/split s #"\|-\|")]
+                          {:name    (last (re-matches #"origin/(.+)" raw-name))
+                           :commit  commit
+                           :author  author
+                           :message message})) filtered-lines)]
+    branches))
 
-(defn- get-hash [git-ssh path]
-  (clojure.string/trim-newline (run-git git-ssh path "rev-parse" "HEAD")))
+(defn actual-branches-with-hashes [git-ssh path]
+  (remote-branches git-ssh path (constantly true)))
 
-(defn actual-branches [git-ssh path]
-  (map (fn [s] (last (re-matches #".*origin/([^ ]+).*" s)))
-       (filter (fn [s] (and (some? s)
-                            (not (.contains s "->"))))
-               (split (run-git git-ssh path "branch" "-r") #"\n"))))
-
-(defn version-branches [git-ssh path]
-  (map (fn [s] (re-find #"\d+\.\d+\.\d+" s))
-       (filter (fn [s] (and (not (.contains s "->"))
-                            (re-matches #"[ ]+origin/\d+\.\d+\.\d+" s)))
-               (split (run-git git-ssh path "branch" "-r") #"\n"))))
-
-(defn get-hashes [git-ssh base-path branches]
-  (map (fn [branch]
-         {:name branch
-          :commit (get-hash git-ssh (str base-path branch))})
-       branches))
+(defn version-branches-with-hashes [git-ssh path]
+  (remote-branches git-ssh path (fn [s] (re-find #"origin/\d+\.\d+\.\d+" s))))
