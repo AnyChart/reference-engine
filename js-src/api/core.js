@@ -34,7 +34,11 @@ api.core.init = function(version, page, is_url_version) {
     api.pageScrolling.init();
 
     if (page == "" || page.indexOf("?entry=") > -1) {
-        api.tree.expand("/latest/anychart");
+        if (api.config.is_url_version){
+            api.tree.expand("/latest/anychart");
+        }else{
+            api.tree.expand("/anychart");
+        }
         api.tree.unhighight();
     }
 };

@@ -89,7 +89,7 @@
                                                 :version  (:key version)})
                   :link           #(str "/" (:key version) "/" %)
                   :title          "AnyChart API Reference"
-                  :is-url-version true})))
+                  :is-url-version false})))
 
 
 (defn- redirect-latest [request]
