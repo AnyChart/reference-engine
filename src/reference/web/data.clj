@@ -51,30 +51,31 @@
           :endplayground)
 
 (add-tag! :is-override-expand (fn [args context-map]
-                       (let [paths (map #(clojure.string/split % #"\.") args)
-                             vals (map #(get-in context-map (map keyword %)) paths)
-                             method (first vals)
-                             default-override-index (:default-override-index method)
-                             last (second vals)
-                             counter (nth vals 2)]
-                         (if (and default-override-index)
-                           (when (= (inc default-override-index) counter)
-                             "in")
-                           (when last
-                             "in")))))
+                                (let [paths (map #(clojure.string/split % #"\.") args)
+                                      vals (map #(get-in context-map (map keyword %)) paths)
+                                      method (first vals)
+                                      default-override-index (:default-override-index method)
+                                      last (second vals)
+                                      counter (nth vals 2)]
+                                  (if (and default-override-index)
+                                    (when (= (inc default-override-index) counter)
+                                      "in")
+                                    (when last
+                                      "in")))))
 
 (add-tag! :listings-and-samples (fn [args context-map]
                                   (let [entry (get context-map (keyword (first args)))]
                                     (render-file "templates/entries/samples.selmer"
-                                                 {:entry entry
+                                                 {:entry        entry
                                                   :show-samples (:show-samples context-map)
-                                                  :version (:version context-map)
-                                                  :playground (:playground context-map)}))))
+                                                  :version      (:version context-map)
+                                                  :playground   (:playground context-map)}))))
 
 (add-tag! :tree-view (fn [args context-map]
                        (let [entries (parse-string (get context-map (keyword (first args))) true)
                              url (get context-map (keyword (second args)))]
-                         (reduce str (map #(tree-view-partial % (:version context-map) url) entries)))))
+                         (reduce str (map #(tree-view-partial % (:version context-map)
+                                                              (:is-url-version context-map) url) entries)))))
 
 (defn- fix-version [version data]
   (clojure.string/replace data "__VERSION__" version))
@@ -102,10 +103,10 @@
   (fix-links docs-domain
              version-key
              (render-file template
-                          {:main entry
-                           :version version-key
+                          {:main         entry
+                           :version      version-key
                            :show-samples true
-                           :playground playground-domain})))
+                           :playground   playground-domain})))
 
 (defn render-entry [docs-domain playground-domain version-key show-samples entry-type entry]
   (render-template docs-domain playground-domain version-key show-samples

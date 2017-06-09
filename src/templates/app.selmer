@@ -4,16 +4,16 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="/i/anychart.ico" type="image/x-icon">
-        
-        <meta property="og:title" content="{{title}}" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="{{url}}" />
-        <meta property="og:image" content="https://cdn.anychart.com/images/features-laptop.png" />
+        <link rel="canonical" href="{{url}}">
+        <meta property="og:title" content="{{title}}"/>
+        <meta property="og:type" content="website"/>
+        <meta property="og:url" content="{{url}}"/>
+        <meta property="og:image" content="https://cdn.anychart.com/images/features-laptop.png"/>
         <meta property="og:site_name" content="AnyChart"/>
-        <meta property="og:locale" content="en_US" />
-        <meta property="og:description" content="AnyChart HTML5 charts for for web and mobile - API reference{% if page-name %} for {{page-name}}{% endif %}" />
-        <meta name="keywords" content="{% if page-name %}{{page-name}}, {% endif %}anychart api reference, js charts, javascript charts, html5 charts, ajax charts, plots, line charts, bar charts, pie charts, js maps, javascript gantt charts, js dashboard" />
-        <meta name="description" content="AnyChart HTML5 charts for for web and mobile - API reference{% if page-name %} for {{page-name}}{% endif %}" />
+        <meta property="og:locale" content="en_US"/>
+        <meta property="og:description" content="{{description}}"/>
+        <meta name="keywords" content="{% if page-name %}{{page-name}}, {% endif %}anychart api reference, js charts, javascript charts, html5 charts, ajax charts, plots, line charts, bar charts, pie charts, js maps, javascript gantt charts, js dashboard"/>
+        <meta name="description" content="{{description}}"/>
         
         <title>{{title}}</title>
         <!--[if IE]>
@@ -114,7 +114,7 @@
         {% if not is-last %}
         <div id="warning" class="warning-version alert alert-default fade in">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <i class="ac ac-exclamation"></i> You are looking at an outdated {{version}} version of this document. Switch to the <a data-last-version="{{last-version}}" href="/{{last-version}}/try/{{page}}">{{last-version}}</a> version to see the up to date information.
+            <i class="ac ac-exclamation"></i> You are looking at an outdated {{version}} version of this document. Switch to the <a data-last-version="{{last-version}}" href="/try/{{page}}">{{last-version}}</a> version to see the up to date information.
         </div>
         {% endif %}
         <div id="content-wrapper">
@@ -144,16 +144,26 @@
                 return el.kind == "class" || el.kind == "namespace";
             }
             function make_menu(el){
-                if (is_group(el)) {
-                    return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +
-                            "'><i class='ac ac-chevron-right'></i> " + node_title(el) +  "</a><ul style='display:none'>" +
-                            el.children.map(make_menu).join("") + "</ul></li>"
+                if ({{is-url-version}}){
+                    if (is_group(el)) {
+                        return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +
+                                "'><i class='ac ac-chevron-right'></i> " + node_title(el) +  "</a><ul style='display:none'>" +
+                                el.children.map(make_menu).join("") + "</ul></li>"
+                    }else{
+                        return "<li class='item' x-data-name='" +  el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +"'>" + node_title(el) + "</a></li>";
+                    }
                 }else{
-                    return "<li class='item' x-data-name='" +  el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +"'>" + node_title(el) + "</a></li>";
+                    if (is_group(el)) {
+                        return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/" + el["full-name"] +
+                                "'><i class='ac ac-chevron-right'></i> " + node_title(el) +  "</a><ul style='display:none'>" +
+                                el.children.map(make_menu).join("") + "</ul></li>"
+                    }else{
+                        return "<li class='item' x-data-name='" +  el["full-name"] + "'><a href='/" + el["full-name"] +"'>" + node_title(el) + "</a></li>";
+                    }
                 }
             }
             document.getElementsByClassName("menu")[0].innerHTML = make_menu(menu_data[0]);
-            api.core.init("{{version}}", "{{page}}");
+            api.core.init("{{version}}", "{{page}}", {{is-url-version}});
         });
     </script>
 

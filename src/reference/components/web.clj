@@ -5,7 +5,7 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [taoensso.timbre :as timbre :refer [info]]
-            [reference.web.routes :refer [app]]))
+            [reference.web.routes :refer [app-routes]]))
 
 (defn- component-middleware [component app]
   (fn [request]
@@ -13,11 +13,11 @@
 
 (defn- create-web-app [component]
   (wrap-json-response
-   (wrap-json-body
-     (wrap-params
-       (wrap-keyword-params
-         (component-middleware component #'app)))
-    {:keywords? true})))
+    (wrap-json-body
+      (wrap-params
+        (wrap-keyword-params
+          (component-middleware component #'app-routes)))
+      {:keywords? true})))
 
 (defrecord Web [config web-server jdbc redis]
   component/Lifecycle

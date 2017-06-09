@@ -9,8 +9,9 @@ goog.require("api.pageScrolling");
 goog.require("api.search");
 goog.require("api.history");
 
-api.core.init = function(version, page) {
+api.core.init = function(version, page, is_url_version) {
     api.config.version = version;
+    api.config.is_url_version = is_url_version;
     api.config.page = page;
     
     api.versions.init();

@@ -61,7 +61,12 @@ api.tree.expand = function(path, opt_hash) {
         $("#tree-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});
         return;
     }
-    var entry = path.match("^/[^/]+/(.*)$");
+    var entry;
+    if( api.config.is_url_version ){
+        entry = path.match("^/[^/]+/(.*)$");
+    } else{
+        entry = path.match("^/(.*)$");
+    }
 
     var hash;
     if (opt_hash)
