@@ -188,6 +188,35 @@ api.search.sortGroup_ = function(a, b){
     return 0;
 };
 
+
+var groupBy = function(xs, key) {
+    return xs.reduce(function(rv, x) {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+    }, {});
+};
+api.search.groupByNamespace = function(items){
+    var res = [];
+    items.forEach(function(item, i, arr) {
+        var parts = item["full-name"].split('.');
+        parts.pop();
+        var cls = parts.pop() + "." + item.name;
+        var namespace = parts.join(".");
+        res.push({name: item.name, "full-name": item["full-name"], link: item.link, cls: cls, namespace: namespace})
+    });
+    var groupedItems = groupBy(res, 'namespace');
+    return groupedItems;
+};
+api.search.getNamespaceDescription = function(namespace){
+    var namespaces = api.search.data_.namespaces;
+    for (var i = 0; i < namespaces.length; i++){
+        if (namespaces[i]["full-name"] == namespace){
+            return namespaces[i].description;
+        }
+    }
+    return false;
+};
+
 /**
  * @private
  * @param {Object} item
@@ -198,17 +227,42 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
     api.history.setHashSearch(item.name);
     api.breadcrumb.showSearch(item.name);
 
-    $("#search-results-new").hide();
-    var $res = $("<ul></ul>");
-    item.group.sort(api.search.sortGroup_);
-    for (var i = 0; i < item.group.length; i++) {
-        var entry = item.group[i];
-        $res.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["full-name"] + postfix + "</a></li>");
+    var groupedItems = api.search.groupByNamespace(item.group);
+
+    var $total =  $("<div style='display:flex; flex-wrap:wrap;'></div>");
+
+    var groupedItemsArr = [];
+    for (var namespace in groupedItems) {
+        groupedItemsArr.push(groupedItems[namespace]);
     }
+    groupedItemsArr = groupedItemsArr.sort(function(a, b){
+        if (a[0].namespace > b[0].namespace) return 1;
+        if (a[0].namespace < b[0].namespace) return -1;
+        return 0;
+    });
 
+    for (var j = 0; j < groupedItemsArr.length; j++) {
+        var group = groupedItemsArr[j];
+        var $res = $("<div style='margin-right: 20px; width: 300px;'></div>");
+        $res.append("<h4>" + group[0].namespace +  "</h4>");
+
+        var description = api.search.getNamespaceDescription(group[0].namespace);
+        if (description){
+            $res.append("<p>" + description +  "</p>");
+        }
+
+        var $list = $("<ul></ul>");
+
+        for (var i = 0; i < group.length; i++) {
+            var entry = group[i];
+            $list.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["cls"] + postfix + "</a></li>");
+        }
+        $res.append($list);
+        $total.append($res);
+    }
+    $("#search-results-new").hide();
     api.config.page = null;
-
-    api.page.showSearchResults($res);
+    api.page.showSearchResults($total);
 };
 
 /**
