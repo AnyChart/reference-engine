@@ -448,7 +448,7 @@ api.search.onLoad_ = function(data) {
         return false;
     });
     $("#search").focus(function() {
-        api.search.search_($(this).val());
+        api.search.search_($(this).val().trim());
     });
     $("#search").keydown(function(e) {
         switch(e.keyCode){
@@ -470,7 +470,7 @@ api.search.onLoad_ = function(data) {
             case 38: e.preventDefault(); break;
             case 40: e.preventDefault(); break;
             default:
-                api.search.search_($(this).val());
+                api.search.search_($(this).val().trim());
         }
     });
     api.search.setSearchPage();
