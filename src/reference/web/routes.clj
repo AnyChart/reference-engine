@@ -175,7 +175,8 @@
                     :static-version "12"
                     :content        ""
                     :link           #(str "/" (:key version) "/" %)
-                    :title          (get-page-title "Search results" version)}))
+                    :title          (get-page-title "Search results" version)
+                    :is-url-version is-url-version}))
     (redirect (str "/" (:key version) "/anychart"))))
 
 (defn- try-show-page [version is-url-version versions request]
