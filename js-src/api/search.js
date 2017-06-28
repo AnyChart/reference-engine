@@ -230,7 +230,7 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
     var groupedItems = api.search.groupByNamespace(item.group);
 
     var $searchPage = $("<div></div>");
-    if (api.search.data_.methods[item.name]){
+    if (api.search.data_["methods"] && api.search.data_["methods"][item.name]){
         $searchPage.append(api.search.data_.methods[item.name]);
     }
 
