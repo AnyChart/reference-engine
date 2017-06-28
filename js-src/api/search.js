@@ -229,6 +229,11 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
 
     var groupedItems = api.search.groupByNamespace(item.group);
 
+    var $searchPage = $("<div></div>");
+    if (api.search.data_.methods[item.name]){
+        $searchPage.append(api.search.data_.methods[item.name]);
+    }
+
     var $total =  $("<div style='display:flex; flex-wrap:wrap;'></div>");
 
     var groupedItemsArr = [];
@@ -262,7 +267,8 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
     }
     $("#search-results-new").hide();
     api.config.page = null;
-    api.page.showSearchResults($total);
+    $searchPage.append($total);
+    api.page.showSearchResults($searchPage);
 };
 
 /**

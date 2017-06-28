@@ -74,16 +74,16 @@
             doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
             raw-top-level (structurize doclets data-dir (:name branch))
             inh-top-level (assoc raw-top-level
-                                 :classes (build-inheritance (:classes raw-top-level)))
+                            :classes (build-inheritance (:classes raw-top-level)))
             top-level (assoc inh-top-level
-                             :namespaces (doall (map #(build-namespace-categories
-                                                       % categories-order)
-                                                     (:namespaces inh-top-level)))
-                             :classes (doall (map #(build-class-categories
-                                                    % categories-order)
-                                                  (:classes inh-top-level))))
+                        :namespaces (doall (map #(build-namespace-categories
+                                                  % categories-order)
+                                                (:namespaces inh-top-level)))
+                        :classes (doall (map #(build-class-categories
+                                               % categories-order)
+                                             (:classes inh-top-level))))
             tree-data (generate-tree top-level)
-            search-index (generate-search-index top-level)
+            search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
         ;(when (= (:name branch) "DVF-2121_common_api_improvement")
         ;  (ts/set-top-level! top-level)
@@ -92,16 +92,17 @@
         (let [version (vdata/add-version jdbc
                                          (:name branch)
                                          (:commit branch)
-                                         tree-data search-index
+                                         tree-data
+                                         search-index
                                          (:samples config))
               version-id (:id version)]
           (save-entries jdbc version (:name branch) top-level docs playground)
           (build-media jdbc version-id (:name branch) data-dir)
           (sitemap/update-sitemap jdbc version-id top-level)
           (ts/generate-ts-declarations data-dir (:name branch) latest-version-key top-level)
-          (tern/generate-declarations {:data-dir data-dir
+          (tern/generate-declarations {:data-dir    data-dir
                                        :version-key (:name branch)
-                                       :domain (-> notifier :config :domain)} tree-data top-level)
+                                       :domain      (-> notifier :config :domain)} tree-data top-level)
           (remove-previous-versions jdbc version-id (:name branch))))
       (notifications/complete-version-building notifier (:name branch) queue-index)
       true)

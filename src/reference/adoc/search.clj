@@ -36,8 +36,25 @@
     :constants (map #(generate-function-or-constant-search-index % (:full-name namespace))
                     (:constants namespace))))
 
-(defn generate-search-index [top-level]
-  {:enums      (map generate-enum-search-index (:enums top-level))
-   :typedefs   (map generate-typedef-search-index (:typedefs top-level))
-   :classes    (map generate-class-search-index (:classes top-level))
-   :namespaces (map generate-namespace-search-index (:namespaces top-level))})
+(defn clean-name [file]
+  (let [name (.getName file)]
+    (clojure.string/join "." (butlast (clojure.string/split name #"\.")))))
+
+(defn get-methods-descriptions [search-folder]
+  (let [files (filter #(and
+                        (not (.isDirectory %))
+                        (not (.isHidden %)))
+                      (file-seq search-folder))]
+    (reduce (fn [res file] (assoc res (keyword (clean-name file)) (slurp file)))
+            {} files)))
+
+
+(defn generate-search-index [top-level search-path]
+  (let [file (clojure.java.io/file search-path)]
+    {:enums      (map generate-enum-search-index (:enums top-level))
+     :typedefs   (map generate-typedef-search-index (:typedefs top-level))
+     :classes    (map generate-class-search-index (:classes top-level))
+     :namespaces (map generate-namespace-search-index (:namespaces top-level))
+     :methods    (if (.exists file)
+                   (get-methods-descriptions file)
+                   {})}))
