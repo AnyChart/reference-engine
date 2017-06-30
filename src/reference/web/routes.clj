@@ -183,7 +183,7 @@
   (let [page-url (get-in request [:route-params :page])]
     (if (pdata/page-exists? (jdbc request) (:id version) page-url)
       (redirect (str
-                  (when is-url-version (str "/") (:key version))
+                  (when is-url-version (str "/" (:key version)))
                   "/" page-url))
       (show-default-ns version is-url-version versions request))))
 
