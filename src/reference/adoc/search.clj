@@ -17,10 +17,15 @@
    :name      (:name method)})
 
 (defn- generate-enum-search-index [enum]
-  (generate-entry-search-index enum))
+  (let [fields (:fields enum)
+        names (map #(hash-map :name (:name %)
+                              :value (:value %)) fields)]
+    (assoc (generate-entry-search-index enum) :fields names)))
 
 (defn- generate-typedef-search-index [typedef]
-  (generate-entry-search-index typedef))
+  (let [properties (:properties typedef)
+        names (map :name properties)]
+    (assoc (generate-entry-search-index typedef) :props names)))
 
 (defn- generate-class-search-index [class]
   (assoc (generate-entry-search-index class)

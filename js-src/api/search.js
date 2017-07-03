@@ -10,14 +10,10 @@ api.search.data_ = null;
 api.search.searchIndex_ = 0;
 api.search.scrollOfftop_ = 0;
 
-/**
- *
- */
 api.search.updateMaxHeight = function() {
     $('#search-results-new').css('max-height', window.innerHeight - 145);
 };
 
-/** */
 api.search.hide = function() {
     $("#search-results-new").hide();
 };
@@ -30,11 +26,6 @@ api.search.notBaseContain = function(name, fullName) {
     return names.join(".").indexOf("Base") == -1;
 };
 
-/**
- * @private
- * @param {string} str
- * @param {string} target
- */
 api.search.match_ = function(name, fullName, target) {
     if (target.indexOf(".") == -1)
         return name.toLowerCase().indexOf(target.toLowerCase()) != -1 && api.search.notBaseContain(name, fullName);
@@ -128,6 +119,61 @@ api.search.filter_ = function(str, entries, type) {
     return res;
 };
 
+api.search.matchEnumFields_ = function(entry, str){
+    var fields = entry.fields;
+    if (!entry.fields) return false;
+    for (var i = 0; i < fields.length; i++){
+        var field = fields[i];
+        if (field.name.toLowerCase().indexOf(str.toLowerCase()) != -1){
+            return field.name;
+        }
+        if ((field.value + "").toLowerCase().indexOf(str.toLowerCase()) != -1) {
+            return field.value;
+        }
+    }
+    return false;
+};
+api.search.filterEnums_ = function(str, entries){
+    var res = [];
+    for (var i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        var matchField = api.search.matchEnumFields_(entry, str);
+        if (api.search.match_(entry["name"], entry["full-name"], str) || matchField) {
+            if (matchField){
+                entry.key = matchField;
+            }
+            res.push(entry);
+        }
+    }
+    return res;
+};
+api.search.matchTypdefProps_ = function(entry, str){
+    var props = entry.props;
+    if (!entry.props) return false;
+    for (var i = 0; i < props.length; i++){
+        var field = props[i];
+        if (field.toLowerCase().indexOf(str.toLowerCase()) != -1) {
+            return field;
+        }
+    }
+    return false;
+};
+api.search.filterTypedef_ = function(str, entries){
+    var res = [];
+    for (var i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        var matchProp = api.search.matchTypdefProps_(entry, str);
+        if (api.search.match_(entry["name"], entry["full-name"], str) || matchProp) {
+            if (matchProp){
+                entry.key = matchProp;
+            }
+            res.push(entry);
+        }
+    }
+    return res;
+};
+
+
 /**
  * @private
  * @param {string} str
@@ -170,7 +216,7 @@ api.search.findClasses_ = function(str) {
  * @return {Array}
  */
 api.search.findEnums_ = function(str) {
-    return api.search.filter_(str, api.search.data_.enums, "enum");
+    return api.search.filterEnums_(str, api.search.data_.enums, "enum");
 };
 
 /**
@@ -179,7 +225,7 @@ api.search.findEnums_ = function(str) {
  * @return {Array}
  */
 api.search.findTypedefs_ = function(str) {
-    return api.search.filter_(str, api.search.data_.typedefs, "typedef");
+    return api.search.filterTypedef_(str, api.search.data_.typedefs, "typedef");
 };
 
 api.search.sortGroup_ = function(a, b){
@@ -301,7 +347,8 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         if (!item.multiple){
-            var $link = $("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix + "</a></li>");
+            var $link = $("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix +
+                (item.key ? ("<span> " + item.key + "</span>") : "") + "</a></li>");
             $link.find("a").mouseenter(function(e){
                 api.search.searchOver(e.currentTarget);
             });
