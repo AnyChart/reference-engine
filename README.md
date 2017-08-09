@@ -8,6 +8,12 @@
 [Staging](http://api.anychart.stg) 
 [![Build Status](https://travis-ci.com/AnyChart/reference-engine.svg?token=ERMLfyrvWdA8g6gi11Vp&branch=staging)](https://travis-ci.com/AnyChart/reference-engine)
 
+## Install dependencies
+```
+sudo npm install -g jsdoc
+sudo ln -s /usr/bin/jsdoc /usr/local/bin/jsdoc
+```
+
 
 ## Setup local database
 ```
