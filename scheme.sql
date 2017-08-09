@@ -10,7 +10,7 @@ CREATE TABLE versions (
 );
 
 CREATE SEQUENCE page_id_seq;
-CREATE TYPE page_type AS ENUM ('namespace', 'class', 'typedef', 'enum');
+--- CREATE TYPE page_type AS ENUM ('namespace', 'class', 'typedef', 'enum'); -- not used now
 CREATE TABLE pages (
    id integer PRIMARY KEY DEFAULT nextval('page_id_seq'),
    type varchar(100),
@@ -26,6 +26,7 @@ create table sitemap (
   last_modified bigint
 );
 
+-- not used now
 CREATE MATERIALIZED VIEW search_table AS
 select
   version_id,
