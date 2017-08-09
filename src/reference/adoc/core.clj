@@ -9,6 +9,7 @@
             [reference.adoc.media :refer [move-media]]
             [reference.adoc.defs.typescript :as ts]
             [reference.adoc.defs.tern :as tern]
+            [reference.adoc.defs.json :as json-gen]
             [reference.adoc.categories :refer [parse-categories-order build-class-categories build-namespace-categories]]
             [reference.git :as git]
             [reference.data.versions :as vdata]
@@ -85,9 +86,10 @@
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
-        ;(when (= (:name branch) "DVF-2121_common_api_improvement")
+        ;(when (= (:name branch) "7.14.3")
         ;  (ts/set-top-level! top-level)
-        ;  (tern/set-top-level! top-level tree-data))
+        ;  (tern/set-top-level! top-level tree-data)
+        ;  (json-gen/set-top-level! top-level))
         (info "categories order:" categories-order)
         (let [version (vdata/add-version jdbc
                                          (:name branch)
@@ -103,6 +105,7 @@
           (tern/generate-declarations {:data-dir    data-dir
                                        :version-key (:name branch)
                                        :domain      (-> notifier :config :domain)} tree-data top-level)
+          (json-gen/generate data-dir (:name branch) latest-version-key top-level)
           (remove-previous-versions jdbc version-id (:name branch))))
       (notifications/complete-version-building notifier (:name branch) queue-index)
       true)
