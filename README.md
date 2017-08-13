@@ -25,4 +25,8 @@ CREATE DATABASE reference_db;
 
 GRANT ALL PRIVILEGES ON DATABASE reference_db TO reference_user;
 
+\c reference_db
+
+# create scheme
+
 ```
