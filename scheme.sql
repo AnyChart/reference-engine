@@ -18,7 +18,7 @@ CREATE TABLE pages (
    url varchar(255) not null,
    full_name varchar(255),
    content jsonb
-)
+);
 
 create table sitemap (
   page_url varchar(255),
