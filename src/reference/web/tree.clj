@@ -19,7 +19,7 @@
 
 (defn version-path [version is-url-version]
   (when is-url-version
-    (str "/" version)))
+    (str version "/")))
 
 (defn expand [el parts version is-url-version]
   (let [first-parts (butlast parts)
