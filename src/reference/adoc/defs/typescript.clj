@@ -193,17 +193,16 @@
   (str "/// <reference path=\"all.d.ts\"/>\n"
        "// from https://github.com/teppeis/closure-library.d.ts\n" data))
 
-(defn add-header [ts version-key need-version]
-  (str "// Type definitions for anychart" (when need-version (str " v" version-key))
-       "\n// Project: http://anychart.com/\n"
-       "// Definitions by: AnyChart <http://anychart.com>\n"
-       "// Definitions: https://github.com/DefinitelyTyped/DefinitelyType\n"
+(defn add-header [ts version-key]
+  (str "// Type definitions for AnyChart JavaScript Charting Library" (str ", v" version-key)
+       "\n// Project: https://www.anychart.com/\n"
+       "// Definitions by: AnyChart <https://www.anychart.com>\n"
        ts))
 
 (defn generate-ts [top-level version-key is-last-versionl]
   (let [ts (join "\n\n" (map #(namespace-definition top-level %)
                           (sort-by :full-name (:namespaces top-level))))]
-    (add-header ts version-key (not is-last-versionl))))
+    (add-header ts version-key)))
 
 (defn test2 []
   (let [ts (generate-ts @top-level "develop" false)]
