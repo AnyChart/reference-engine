@@ -1,5 +1,4 @@
 language: clojure
-lein: lein2
 sudo: false
 branches:
   only:
@@ -8,7 +7,7 @@ branches:
 sudo: false
 services:
 - redis-server
-script: lein2 uberjar
+script: lein uberjar
 before_install:
 - openssl aes-256-cbc -K $encrypted_ca052cba0f72_key -iv $encrypted_ca052cba0f72_iv
   -in id_rsa.enc -out id_rsa -d
