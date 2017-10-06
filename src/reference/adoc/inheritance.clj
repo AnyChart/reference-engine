@@ -15,19 +15,19 @@
           parent-parent-class-name (first (:extends parent-class))
           inherited-methods (filter #(inherit-method? % class-methods-names) methods)]
       (concat (map #(assoc %
-                           :inherited-from parent-class-name
-                           :is-inherited true) inherited-methods)
+                      :inherited-from parent-class-name
+                      :is-inherited true) inherited-methods)
               (get-inherited-methods (class-by-name parent-parent-class-name classes)
                                      (concat class-methods-names
                                              (map :name inherited-methods))
                                      classes)))
     []))
 
-(defn- merge-methods [class]
-  (let [inherited (:inherited-methods class)
-        self (:methods class)]
-    (assoc (dissoc class :inherited-methods)
-           :methods (sort-by :name (concat self inherited)))))
+;(defn- merge-methods [class]
+;  (let [inherited (:inherited-methods class)
+;        methods (:methods class)]
+;    (assoc (dissoc class :inherited-methods)
+;           :methods (sort-by :name (concat methods inherited)))))
 
 (defn- build-class-inheritance [class classes]
   ;;(info "build-class-inheritance" (:full-name class) "from" (first (:extends class)))
@@ -40,19 +40,38 @@
         parent-class (class-by-name parent-class-name classes)
         parent-class-methods (get-inherited-methods parent-class class-methods-names classes)
         ;remove inherited ignored methods
-        filtered-parent-class-methods (filter
-                                        (fn [m] (some #(= (:name m) (:name %)) (:all-members class)))
-                                        parent-class-methods)]
+        inherited-methods (filter
+                            (fn [m] (some #(= (:name m) (:name %)) (:all-members class)))
+                            parent-class-methods)
+        all-methods (sort-by :name (concat class-methods inherited-methods))
+        all-methods-set-inh (map (fn [method]
+                                   (if (some #(= (:name method) (:name %)) (:all-members parent-class))
+                                     (assoc method
+                                       :inherited-from parent-class-name
+                                       :is-inherited true)
+                                     method)
+                                   ) all-methods)
+        ]
+    ;(when (= (:full-name class) "anychart.charts.Cartesian")
+    ;  (prn "CARTESIAN:")
+    ;  (prn class)
+    ;  (prn parent-class)
+    ;  (prn parent-class-methods)
+    ;  (prn inherited-methods)
+    ;  (prn all-methods)
+    ;  (prn all-methods2)
+    ;  )
     (-> class
-        (assoc :inherited-methods (sort-by :name filtered-parent-class-methods))
-        (dissoc :all-members))))
+        ;(assoc :inherited-methods (sort-by :name filtered-parent-class-methods))
+        (dissoc :all-members)
+        (assoc :methods all-methods-set-inh))))
 
 (defn- set-default-expand-method-override** [method classes]
   (let [getters (keep-indexed #(when (.startsWith (:description %2) "Getter") [%1 %2]) (:overrides method))]
     (if (= 1 (count getters))
       (let [[index getter] (first getters)
             types (mapcat :types (:returns getter))]
-        (if (some #(some (partial = %) classes ) types)
+        (if (some #(some (partial = %) classes) types)
           (assoc method :default-override-index index)
           method))
       method)))
@@ -67,5 +86,5 @@
 
 (defn build-inheritance [classes]
   (info "build-inheritance")
-  (let [new-classes (map merge-methods (map #(build-class-inheritance % classes) classes))]
+  (let [new-classes (map #(build-class-inheritance % classes) classes)]
     (set-default-expand-method-override new-classes)))
