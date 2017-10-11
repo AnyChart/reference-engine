@@ -45,8 +45,13 @@
           (s/replace #"\|null" "")))))
 
 (defn get-types [types]
-  (join " | " (map get-type
-                   (filter (partial #(and (not= % "null") (not= % "undefined"))) types))))
+  (->> types
+       (map #(s/replace %  #"anychart\.enums\.[a-zA-Z0-9]+"  "string" ))
+       distinct
+       (filter (partial #(and (not= % "null")
+                              (not= % "undefined"))))
+       (map get-type)
+       (join " | ")))
 
 ;;; =============== functions ===============
 

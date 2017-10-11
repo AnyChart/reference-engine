@@ -12,7 +12,6 @@
     <table class="table table-condensed">
         <thead>
             <tr>
-                <th>Name</th>
                 <th>Value</th>
                 <th>Description</th>
             </tr>
@@ -20,7 +19,6 @@
         <tbody>
             {% for f in main.fields %}
             <tr>
-                <td class="name">{{f.name}}</td>
                 <td class="code-style">{{f.value}}</td>
                 <td>{{f.description|safe}}<br>{% listings-and-samples f %}</td>
             </tr>
