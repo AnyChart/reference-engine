@@ -41,7 +41,7 @@
                           (if (some #(= (:name %) (:name member)) (:members data))
                             res
                             (assoc res category (assoc data
-                                                       :members (conj (:members data) member))))))
+                                                  :members (conj (:members data) member))))))
                       {}
                       members))))
 
@@ -60,9 +60,9 @@
 (defn- find-category-short-descriptions [category]
   (let [grouped-members (group-members-by-name (:members category))]
     (assoc category :members
-           (reduce (fn [res [name group]]
-                     (conj res (find-member-with-short-description group)))
-                   [] grouped-members))))
+                    (reduce (fn [res [name group]]
+                              (conj res (find-member-with-short-description group)))
+                            [] grouped-members))))
 
 (defn- update-class-methods-categories [categories]
   (doall (map find-category-short-descriptions categories)))
@@ -77,27 +77,27 @@
       (doall (map #(if (:has-category %)
                      %
                      (assoc %
-                            :has-category true
-                            :category category))
+                       :has-category true
+                       :category category))
                   overrides))
       overrides)))
 
 (defn- categorize-class-methods [class]
   (update-class-methods-categories
-   (doall (map (fn [[k v]] v)
-               (reduce (fn [res method]
-                         (reduce (fn [res override]
-                                   (let [category (if (:has-category override)
-                                                    (:category override)
-                                                   uncategorized)
-                                         data (get res category {:name category :members []})]
-                                     (assoc res category
-                                            (assoc data :members
-                                                   (conj (:members data) override)))))
-                                 res
-                                 (add-overrides-categories (:overrides method))))
-                       {}
-                       (:methods class))))))
+    (doall (map (fn [[k v]] v)
+                (reduce (fn [res method]
+                          (reduce (fn [res override]
+                                    (let [category (if (:has-category override)
+                                                     (:category override)
+                                                     uncategorized)
+                                          data (get res category {:name category :members []})]
+                                      (assoc res category
+                                                 (assoc data :members
+                                                             (conj (:members data) override)))))
+                                  res
+                                  (add-overrides-categories (:overrides method))))
+                        {}
+                        (:methods class))))))
 
 (defn- get-categories-order [config]
   (let [raw (clojure.string/split-lines config)
@@ -106,13 +106,13 @@
                                  (clojure.string/trim)) raw)
         categories (filter #(not (clojure.string/blank? %)) raw-categories)]
     (doall
-     (reduce (fn [res val]
-               (assoc res (:name val) (:index val)))
-             {}
-             (map-indexed (fn [idx category]
-                            {:name category
-                             :index idx})
-                          categories)))))
+      (reduce (fn [res val]
+                (assoc res (:name val) (:index val)))
+              {}
+              (map-indexed (fn [idx category]
+                             {:name  category
+                              :index idx})
+                           categories)))))
 
 (defn parse-categories-order [data-dir branch]
   (info "categories file path" (str data-dir "/versions/" branch "/categories"))
@@ -121,13 +121,15 @@
         {})
       (assoc uncategorized 9999999)))
 
-(defn- sort-categories [categories sorting]
-  (map #(dissoc % :index)
-       (sort-by (juxt :index :name)
-                (map #(assoc % :index
-                               (if (= (:id %) "specific-settings")
-                                 -1
-                                 (get sorting (:name %) 999998))) categories))))
+(defn sort-categories [categories sorting]
+  (->> categories
+       (map #(assoc % :index
+                      (case (:id %)
+                        "specific-settings" -2
+                        "icon-settings" -1
+                        (get sorting (:name %) 999998))))
+       (sort-by (juxt :index :name))
+       (map #(dissoc % :index))))
 
 (defn- sort-members [categories]
   (map #(assoc % :members (sort-by :name (:members %))) categories))
@@ -139,20 +141,20 @@
   (let [categories (get-class-categories (:methods class))
         has-categories (boolean (seq categories))]
     (assoc class
-           :categories (if has-categories
-                         (-> (categorize-class-methods class)
-                             (assoc-categories-id)
-                             (sort-categories sorting)
-                             (sort-members)))
-           :has-categories has-categories)))
+      :categories (if has-categories
+                    (-> (categorize-class-methods class)
+                        (assoc-categories-id)
+                        (sort-categories sorting)
+                        (sort-members)))
+      :has-categories has-categories)))
 
 (defn build-namespace-categories [namespace sorting]
   (let [categories (get-namespace-categories (:functions namespace))
         has-categories (boolean (seq categories))]
     (assoc namespace
-           :categories (if has-categories
-                         (-> (categorize-namespace-functions (:functions namespace))
-                             (assoc-categories-id)
-                             (sort-categories sorting)
-                             (sort-members)))
-           :has-categories has-categories)))
+      :categories (if has-categories
+                    (-> (categorize-namespace-functions (:functions namespace))
+                        (assoc-categories-id)
+                        (sort-categories sorting)
+                        (sort-members)))
+      :has-categories has-categories)))
