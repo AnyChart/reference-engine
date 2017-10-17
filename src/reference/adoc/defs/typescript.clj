@@ -46,7 +46,7 @@
 
 (defn get-types [types]
   (->> types
-       (map #(s/replace %  #"anychart\.enums\.[a-zA-Z0-9]+"  "string" ))
+       (map #(s/replace % #"anychart\.enums\.[a-zA-Z0-9]+" "string"))
        distinct
        (filter (partial #(and (not= % "null")
                               (not= % "undefined"))))
@@ -94,14 +94,14 @@
 ;;; =============== typedefs ===============
 
 (defn interface-prop [prop]
-  (str p8 (check-param (:name prop)) ": " (get-types (:type prop)) ";" ))
+  (str p8 (check-param (:name prop)) ": " (get-types (:type prop)) ";"))
 
 (defn interface-props [props]
   (join "\n" (map interface-prop props)))
 
 (defn typedef-declaration [typedef]
   (if (empty? (:properties typedef))
-    (str p4 "type " (:name typedef) " = " (get-types (:type typedef))  ";")
+    (str p4 "type " (:name typedef) " = " (get-types (:type typedef)) ";")
     (str p4 "interface " (:name typedef) " {\n"
          (interface-props (:properties typedef))
          "\n    }")))
@@ -110,19 +110,19 @@
   (join "\n" (map typedef-declaration typedefs)))
 
 (defn get-typedefs [top-level names]
-  (filter (fn [td] (some #(= % (:full-name td) ) names)) (:typedefs top-level)))
+  (filter (fn [td] (some #(= % (:full-name td)) names)) (:typedefs top-level)))
 
 ;;; ============= enums ======================
 
 (defn enum-field [field]
   (if (integer? (:value field))
-    (str p8 (:name field) " = " (:value field) "" )
+    (str p8 (:name field) " = " (:value field) "")
     ;(str p8 (:name field) " = <any>\"" (:value field) "\"" )
     (str p8 (:name field))))
 
 (defn enum-declaration [enum]
   (str p4 "enum " (:name enum) " {\n"
-        (join ",\n" (map enum-field (:fields enum)))
+       (join ",\n" (map enum-field (:fields enum)))
        "\n    }"))
 
 (defn enum-field-cl [field class-name]
@@ -139,7 +139,7 @@
   (join "\n" (map enum-declaration enums)))
 
 (defn get-enums [top-level names]
-  (filter (fn [td] (some #(= % (:full-name td) ) names)) (:enums top-level)))
+  (filter (fn [td] (some #(= % (:full-name td)) names)) (:enums top-level)))
 
 ;;; ========= classes ==========
 
@@ -149,9 +149,9 @@
     (str
       ;"\n" p4 "module  " (:full-name class) " {\n"
       "\n" p4 "namespace " (:name class) " {\n"
-         (enum-declarations (get-enums top-level (map :name (:enums class))))
-         (typedef-declarations (get-typedefs top-level (map :name (:typedefs class))))
-         "\n    }")))
+      (enum-declarations (get-enums top-level (map :name (:enums class))))
+      (typedef-declarations (get-typedefs top-level (map :name (:typedefs class))))
+      "\n    }")))
 
 (defn method-declaration [f]
   (str p8 (:name f) "(" (function-params (:params f)) "): " (function-return (:returns f)) ";"))
@@ -174,7 +174,7 @@
   (join "\n" (map #(class-declaration % top-level) classes)))
 
 (defn get-classes [top-level names]
-  (filter (fn [td] (some #(= % (:full-name td) ) names)) (:classes top-level)))
+  (filter (fn [td] (some #(= % (:full-name td)) names)) (:classes top-level)))
 
 (defn namespace-definition [top-level namespace]
   (str "declare namespace " (:full-name namespace) " {\n"
@@ -205,8 +205,11 @@
        ts))
 
 (defn generate-ts [top-level version-key is-last-versionl]
-  (let [ts (join "\n\n" (map #(namespace-definition top-level %)
-                          (sort-by :full-name (:namespaces top-level))))]
+  (let [ts (->> (:namespaces top-level)
+                (remove #(= (:full-name %) "anychart.enums"))
+                (sort-by :full-name)
+                (map #(namespace-definition top-level %))
+                (join "\n\n"))]
     (add-header ts version-key)))
 
 (defn test2 []
