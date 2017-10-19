@@ -10,6 +10,9 @@
 
 ## Install dependencies
 ```
+# to build js
+sudo apt-get install closure-compiler
+
 sudo npm install -g jsdoc
 sudo ln -s /usr/bin/jsdoc /usr/local/bin/jsdoc
 ```
