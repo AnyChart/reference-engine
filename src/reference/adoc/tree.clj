@@ -6,56 +6,77 @@
 
 (defn- simplify-members [members container kind]
   (map (fn [member]
-         {:name (:name member)
+         {:name      (:name member)
           :full-name (str (:full-name container) "#" (:name member))
-          :kind kind})
+          :kind      kind})
        members))
 
 (defn- simplify-methods [methods container]
   (map (fn [method]
-         {:name (:name method)
+         {:name      (:name method)
           :full-name (str (:full-name container) "#" (:name method))
-          :kind :method})
+          :kind      :method})
        methods))
+
+(defn- to-enum [enum]
+  {:name      (:name enum)
+   :full-name (:full-name enum)
+   :kind      :enum})
 
 (defn- generate-enum-tree [enum-name struct]
   (let [enum (get-obj-from-struct (:enums struct) (:name enum-name))]
-    {:name (:name enum)
-     :full-name (:full-name enum)
-     :kind :enum}))
+    (to-enum enum)))
+
+(defn- to-typedef [typedef]
+  {:name      (:name typedef)
+   :full-name (:full-name typedef)
+   :kind      :typedef})
 
 (defn- generate-typedef-tree [typedef-name struct]
   (let [typedef (get-obj-from-struct (:typedefs struct) (:name typedef-name))]
-    {:name (:name typedef)
-     :full-name (:full-name typedef)
-     :kind :typedef}))
+    (to-typedef typedef)))
+
+(defn class-typedefs [struct class]
+  (let [typedefs (filter (fn [typedef]
+                           (.startsWith (:full-name typedef)
+                                        (str (:full-name class) ".")))
+                         (:typedefs struct))]
+    typedefs))
+
+(defn class-enums [struct class]
+  (let [enums (filter (fn [enum]
+                        (.startsWith (:full-name enum)
+                                     (str (:full-name class) ".")))
+                      (:enums struct))]
+    enums))
+
 
 (defn- generate-class-tree [class-name struct]
   (let [classdef (get-obj-from-struct (:classes struct) (:name class-name))]
-    {:name (:name classdef)
+    {:name      (:name classdef)
      :full-name (:full-name classdef)
-     :kind :class
-     :children (sort-by (juxt :kind :name)
-                        (concat
-                         (simplify-methods (:methods classdef) classdef)
-                         (simplify-methods (:inherited-methods classdef) classdef)
-                         (map #(generate-enum-tree % struct) (:enums namespace))
-                         (map #(generate-class-tree % struct) (:classes namespace))))}))
+     :kind      :class
+     :children  (sort-by (juxt :kind :name)
+                         (concat
+                           (simplify-methods (:methods classdef) classdef)
+                           (simplify-methods (:inherited-methods classdef) classdef)
+                           (map to-enum (class-enums struct classdef))
+                           (map to-typedef (class-typedefs struct classdef))))}))
 
 (defn- is-top-level-ns [namespace]
   (= (count (clojure.string/split (:full-name namespace) #"\."))
      0))
 
 (defn- generate-ns-tree [namespace struct]
-  {:name (:name namespace)
+  {:name      (:name namespace)
    :full-name (:full-name namespace)
-   :kind :namespace
-   :children (sort-by (juxt :kind :name)
-                      (concat (simplify-members (:constants namespace) namespace :constant)
-                              (simplify-members (:functions namespace) namespace :function)
-                              (map #(generate-enum-tree % struct) (:enums namespace))
-                              (map #(generate-typedef-tree % struct) (:typedefs namespace))
-                              (map #(generate-class-tree % struct) (:classes namespace))))})
+   :kind      :namespace
+   :children  (sort-by (juxt :kind :name)
+                       (concat (simplify-members (:constants namespace) namespace :constant)
+                               (simplify-members (:functions namespace) namespace :function)
+                               (map #(generate-enum-tree % struct) (:enums namespace))
+                               (map #(generate-typedef-tree % struct) (:typedefs namespace))
+                               (map #(generate-class-tree % struct) (:classes namespace))))})
 
 (defn- is-child-ns [ns tlns]
   (let [name (:full-name ns)
