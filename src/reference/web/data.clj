@@ -11,10 +11,11 @@
 (add-tag! :link (fn [args context-map]
                   (let [path (clojure.string/split (first args) #"\.")
                         val (get-in context-map (map keyword path))
-                        version (:version context-map)]
+                        version (:version context-map)
+                        is-url-version (:is-url-version context-map)]
                     (if (.contains val "://")
                       val
-                      (str "/" version "/" val)))))
+                      (str (when is-url-version (str "/" version)) "/" val)))))
 
 (add-tag! :edit-link (fn [args context-map]
                        (let [version (:version context-map)
