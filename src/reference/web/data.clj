@@ -26,28 +26,36 @@
                           (let [path (clojure.string/split (first args) #"\.")
                                 val (escape-str (get-in context-map (map keyword path)))
                                 version (:version context-map)
+                                is-url-version (:is-url-version context-map)
                                 replaced-links (clojure.string/replace val
                                                                        #"anychart[\w\.]+"
                                                                        #(str "<a class='type-link' href='/"
-                                                                             version "/" %1 "'>" %1 "</a>"))]
+                                                                             (when is-url-version
+                                                                               (str version "/"))
+                                                                             %1 "'>" %1 "</a>"))]
                             replaced-links)))
 
 (add-tag! :type-link (fn [args context-map]
                        (let [path (clojure.string/split (first args) #"\.")
                              val (escape-str (get-in context-map (map keyword path)))
                              version (:version context-map)
+                             is-url-version (:is-url-version context-map)
                              replaced-links (clojure.string/replace val
                                                                     #"anychart[\w\.]+"
                                                                     #(str "<a class='type-link code-style' href='/"
-                                                                          version "/" %1 "'>" %1 "</a>"))]
+                                                                          (when is-url-version
+                                                                            (str version "/"))
+                                                                          %1 "'>" %1 "</a>"))]
                          (str "<span class='code-style'>" replaced-links "</span>"))))
 
 (add-tag! :playground (fn [args context-map content]
                         (let [val (get-in content [:playground :content])
                               version (:version context-map)
+                              is-url-version (:is-url-version context-map)
                               playground (:playground context-map)]
-                          (str "//" playground "/api/"
-                               version (clojure.string/trim val) "-plain")))
+                          (str "//" playground "/api"
+                               (when is-url-version (str "/" version))
+                               (clojure.string/trim val) "-plain")))
           :endplayground)
 
 (add-tag! :is-override-expand (fn [args context-map]
@@ -66,10 +74,11 @@
 (add-tag! :listings-and-samples (fn [args context-map]
                                   (let [entry (get context-map (keyword (first args)))]
                                     (render-file "templates/entries/samples.selmer"
-                                                 {:entry        entry
-                                                  :show-samples (:show-samples context-map)
-                                                  :version      (:version context-map)
-                                                  :playground   (:playground context-map)}))))
+                                                 {:entry          entry
+                                                  :show-samples   (:show-samples context-map)
+                                                  :version        (:version context-map)
+                                                  :is-url-version (:is-url-version context-map)
+                                                  :playground     (:playground context-map)}))))
 
 (add-tag! :tree-view (fn [args context-map]
                        (let [entries (parse-string (get context-map (keyword (first args))) true)
@@ -77,38 +86,59 @@
                          (reduce str (map #(tree-view-partial % (:version context-map)
                                                               (:is-url-version context-map) url) entries)))))
 
-(defn- fix-version [version data]
-  (clojure.string/replace data "__VERSION__" version))
+(defn- fix-version [html version]
+  (clojure.string/replace html "__VERSION__" version))
 
-(defn- fix-docs-links [docs-domain version data]
-  (clojure.string/replace (fix-version version data)
+
+(defn- fix-docs-links [html docs-domain version is-url-version]
+  (clojure.string/replace html
                           #"\{docs:([^\}]+)\}([^\{]+)\{docs\}"
-                          (str "<a href='//" docs-domain "/" version "/$1'>$2</a>")))
+                          (str "<a href='//" docs-domain
+                               (when is-url-version (str "/" version))
+                               "/$1'>$2</a>")))
 
-(defn- fix-web-links [docs-domain version data]
-  (fix-docs-links docs-domain
-                  version
-                  (clojure.string/replace data
-                                          #"\{@link ([^\}]+)\}"
-                                          (str "<a class='type-link' href='$1'>$1</a>"))))
 
-(defn- fix-links [docs-domain version data]
-  (fix-web-links docs-domain
-                 version
-                 (clojure.string/replace data
-                                         #"\{@link (anychart[^\}]+)\}"
-                                         (str "<a class='type-link' href='/" version "/$1'>$1</a>"))))
+(defn- fix-api-links [html version is-url-version]
+  (clojure.string/replace html
+                          #"\{api:([^\}]+)\}([^\{]+)\{api\}"
+                          (str "<a href='"
+                               (when is-url-version (str "/" version))
+                               "/$1'>$2</a>")))
 
-(defn- render-template [docs-domain playground-domain version-key show-samples template entry]
-  (fix-links docs-domain
-             version-key
-             (render-file template
-                          {:main         entry
-                           :version      version-key
-                           :show-samples true
-                           :playground   playground-domain})))
 
-(defn render-entry [docs-domain playground-domain version-key show-samples entry-type entry]
-  (render-template docs-domain playground-domain version-key show-samples
-                   (str "templates/entries/" entry-type ".selmer")
-                   entry))
+(defn- fix-pg-links [html playground-domain version is-url-version]
+  (clojure.string/replace html
+                          #"\{pg:([^\}]+)\}([^\{]+)\{pg\}"
+                          (str "<a href='//" playground-domain "/api"
+                               (when is-url-version (str "/" version))
+                               "/$1'>$2</a>")))
+
+
+(defn- fix-web-links [html]
+  (clojure.string/replace html
+                          #"\{@link ([^\}]+)\}"
+                          (str "<a class='type-link' href='$1'>$1</a>")))
+
+
+(defn- fix-links [html version is-url-version]
+  (clojure.string/replace html
+                          #"\{@link (anychart[^\}]+)\}"
+                          (str "<a class='type-link' href='/"
+                               (when is-url-version (str version "/"))
+                               "$1'>$1</a>")))
+
+
+(defn render-entry [docs-domain playground-domain version-key show-samples entry-type entry is-url-version]
+  (let [template (str "templates/entries/" entry-type ".selmer")
+        html (render-file template
+                          {:main           entry
+                           :version        version-key
+                           :is-url-version is-url-version
+                           :show-samples   true
+                           :playground     playground-domain})]
+    (-> html
+        (fix-links version-key is-url-version)
+        fix-web-links
+        (fix-docs-links docs-domain version-key is-url-version)
+        (fix-api-links version-key is-url-version)
+        (fix-pg-links playground-domain version-key is-url-version))))

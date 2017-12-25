@@ -110,7 +110,7 @@
   (-> (response (vdata/tree-data (jdbc request) (:id version)))
       (header "Content-Type" "application/json")))
 
-(defn- generate-page-content [version page request]
+(defn- generate-page-content [version is-url-version page request]
   (if-let [cached-data nil]                                 ;;(redisca/cached-data (redis request) (:id version) (:url page))]
     cached-data
     (let [data (wdata/render-entry (get-in request [:component :config :docs])
@@ -118,13 +118,14 @@
                                    (:key version)
                                    (:show_samples version)
                                    (:type page)
-                                   (:content page))]
+                                   (:content page)
+                                   is-url-version)]
       ;(redisca/cache (redis request) (:id version) (:url page) data)
       data)))
 
 (defn- get-page-data [version is-url-version page request]
   (let [info (pdata/info page)]
-    (response {:content     (generate-page-content version page request)
+    (response {:content     (generate-page-content version is-url-version page request)
                :info        info
                :version     (:key version)
                :page        (:url page)
@@ -151,7 +152,7 @@
                     :page-name      (str (:url page) " " (:type page))
                     :footer         (seo/random-entry)
                     :static-version "12"
-                    :content        (generate-page-content version page request)
+                    :content        (generate-page-content version is-url-version page request)
                     :link           #(str "/" version-key "/" %)
                     :title          (get-page-title (prefix-title page) (when is-url-version version))
                     :description    (get-page-description page is-url-version version)
