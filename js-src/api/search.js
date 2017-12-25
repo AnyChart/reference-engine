@@ -10,15 +10,15 @@ api.search.data_ = null;
 api.search.searchIndex_ = 0;
 api.search.scrollOfftop_ = 0;
 
-api.search.updateMaxHeight = function() {
+api.search.updateMaxHeight = function () {
     $('#search-results-new').css('max-height', window.innerHeight - 145);
 };
 
-api.search.hide = function() {
+api.search.hide = function () {
     $("#search-results-new").hide();
 };
 
-api.search.notBaseContain = function(name, fullName) {
+api.search.notBaseContain = function (name, fullName) {
     var names = fullName.split(".");
     if (name.charAt(0) == name.toLowerCase().charAt(0)) {
         names.pop();
@@ -26,7 +26,7 @@ api.search.notBaseContain = function(name, fullName) {
     return names.join(".").indexOf("Base") == -1;
 };
 
-api.search.match_ = function(name, fullName, target) {
+api.search.match_ = function (name, fullName, target) {
     if (target.indexOf(".") == -1)
         return name.toLowerCase().indexOf(target.toLowerCase()) != -1 && api.search.notBaseContain(name, fullName);
     return fullName.toLowerCase().indexOf(target.toLowerCase()) != -1 && api.search.notBaseContain(name, fullName);
@@ -37,7 +37,7 @@ api.search.match_ = function(name, fullName, target) {
  * @param {string} str
  * @return {Array}
  */
-api.search.findConstants_ = function(str) {
+api.search.findConstants_ = function (str) {
     var res = [];
     var data = api.search.data_;
     for (var i = 0; i < data.namespaces.length; i++) {
@@ -57,7 +57,7 @@ api.search.findConstants_ = function(str) {
  * @param {Array} res
  * @return {Array}
  */
-api.search.setMultiple_ = function(res){
+api.search.setMultiple_ = function (res) {
     var actual = [];
     for (var i = 0; i < res.length; i++) {
         var item = res[i];
@@ -85,7 +85,7 @@ api.search.setMultiple_ = function(res){
  * @param {string} key
  * @return {Array}
  */
-api.search.findGrouped_ = function(str, container, key) {
+api.search.findGrouped_ = function (str, container, key) {
     var data = api.search.data_;
     var contains = api.search.match_;
     var res = [];
@@ -108,7 +108,7 @@ api.search.findGrouped_ = function(str, container, key) {
  * @param {string} type
  * @return {Array}
  */
-api.search.filter_ = function(str, entries, type) {
+api.search.filter_ = function (str, entries, type) {
     var res = [];
     for (var i = 0; i < entries.length; i++) {
         var entry = entries[i];
@@ -119,12 +119,12 @@ api.search.filter_ = function(str, entries, type) {
     return res;
 };
 
-api.search.matchEnumFields_ = function(entry, str){
+api.search.matchEnumFields_ = function (entry, str) {
     var fields = entry.fields;
     if (!entry.fields) return false;
-    for (var i = 0; i < fields.length; i++){
+    for (var i = 0; i < fields.length; i++) {
         var field = fields[i];
-        if (field.name.toLowerCase().indexOf(str.toLowerCase()) != -1){
+        if (field.name.toLowerCase().indexOf(str.toLowerCase()) != -1) {
             return field.name;
         }
         if ((field.value + "").toLowerCase().indexOf(str.toLowerCase()) != -1) {
@@ -133,13 +133,13 @@ api.search.matchEnumFields_ = function(entry, str){
     }
     return false;
 };
-api.search.filterEnums_ = function(str, entries){
+api.search.filterEnums_ = function (str, entries) {
     var res = [];
     for (var i = 0; i < entries.length; i++) {
         var entry = entries[i];
         var matchField = api.search.matchEnumFields_(entry, str);
         if (api.search.match_(entry["name"], entry["full-name"], str) || matchField) {
-            if (matchField){
+            if (matchField) {
                 entry.key = matchField;
             }
             res.push(entry);
@@ -147,10 +147,10 @@ api.search.filterEnums_ = function(str, entries){
     }
     return res;
 };
-api.search.matchTypdefProps_ = function(entry, str){
+api.search.matchTypdefProps_ = function (entry, str) {
     var props = entry.props;
     if (!entry.props) return false;
-    for (var i = 0; i < props.length; i++){
+    for (var i = 0; i < props.length; i++) {
         var field = props[i];
         if (field.toLowerCase().indexOf(str.toLowerCase()) != -1) {
             return field;
@@ -158,13 +158,13 @@ api.search.matchTypdefProps_ = function(entry, str){
     }
     return false;
 };
-api.search.filterTypedef_ = function(str, entries){
+api.search.filterTypedef_ = function (str, entries) {
     var res = [];
     for (var i = 0; i < entries.length; i++) {
         var entry = entries[i];
         var matchProp = api.search.matchTypdefProps_(entry, str);
         if (api.search.match_(entry["name"], entry["full-name"], str) || matchProp) {
-            if (matchProp){
+            if (matchProp) {
                 entry.key = matchProp;
             }
             res.push(entry);
@@ -179,7 +179,7 @@ api.search.filterTypedef_ = function(str, entries){
  * @param {string} str
  * @return {Array}
  */
-api.search.findMethods_ = function(str) {
+api.search.findMethods_ = function (str) {
     return api.search.findGrouped_(str, "classes", "methods");
 };
 
@@ -188,7 +188,7 @@ api.search.findMethods_ = function(str) {
  * @param {string} str
  * @return {Array}
  */
-api.search.findFunctions_ = function(str) {
+api.search.findFunctions_ = function (str) {
     return api.search.findGrouped_(str, "namespaces", "functions");
 };
 
@@ -197,7 +197,7 @@ api.search.findFunctions_ = function(str) {
  * @param {string} str
  * @return {Array}
  */
-api.search.findNamespaces_ = function(str) {
+api.search.findNamespaces_ = function (str) {
     return api.search.filter_(str, api.search.data_.namespaces, "namespace");
 };
 
@@ -206,7 +206,7 @@ api.search.findNamespaces_ = function(str) {
  * @param {string} str
  * @return {Array}
  */
-api.search.findClasses_ = function(str) {
+api.search.findClasses_ = function (str) {
     return api.search.filter_(str, api.search.data_.classes, "class");
 };
 
@@ -215,7 +215,7 @@ api.search.findClasses_ = function(str) {
  * @param {string} str
  * @return {Array}
  */
-api.search.findEnums_ = function(str) {
+api.search.findEnums_ = function (str) {
     return api.search.filterEnums_(str, api.search.data_.enums, "enum");
 };
 
@@ -224,26 +224,26 @@ api.search.findEnums_ = function(str) {
  * @param {string} str
  * @return {Array}
  */
-api.search.findTypedefs_ = function(str) {
+api.search.findTypedefs_ = function (str) {
     return api.search.filterTypedef_(str, api.search.data_.typedefs, "typedef");
 };
 
-api.search.sortGroup_ = function(a, b){
-    if(a["full-name"] < b["full-name"]) return -1;
-    if(a["full-name"] > b["full-name"]) return 1;
+api.search.sortGroup_ = function (a, b) {
+    if (a["full-name"] < b["full-name"]) return -1;
+    if (a["full-name"] > b["full-name"]) return 1;
     return 0;
 };
 
 
-var groupBy = function(xs, key) {
-    return xs.reduce(function(rv, x) {
+var groupBy = function (xs, key) {
+    return xs.reduce(function (rv, x) {
         (rv[x[key]] = rv[x[key]] || []).push(x);
         return rv;
     }, {});
 };
-api.search.groupByNamespace = function(items){
+api.search.groupByNamespace = function (items) {
     var res = [];
-    items.forEach(function(item, i, arr) {
+    items.forEach(function (item, i, arr) {
         var parts = item["full-name"].split('.');
         parts.pop();
         var cls = parts.pop() + "." + item.name;
@@ -253,10 +253,10 @@ api.search.groupByNamespace = function(items){
     var groupedItems = groupBy(res, 'namespace');
     return groupedItems;
 };
-api.search.getNamespaceDescription = function(namespace){
+api.search.getNamespaceDescription = function (namespace) {
     var namespaces = api.search.data_.namespaces;
-    for (var i = 0; i < namespaces.length; i++){
-        if (namespaces[i]["full-name"] == namespace){
+    for (var i = 0; i < namespaces.length; i++) {
+        if (namespaces[i]["full-name"] == namespace) {
             return namespaces[i].description;
         }
     }
@@ -269,24 +269,24 @@ api.search.getNamespaceDescription = function(namespace){
  * @param {string} prefix
  * @param {string} postfix
  */
-api.search.showGrouped_ = function(item, prefix, postfix) {
+api.search.showGrouped_ = function (item, prefix, postfix) {
     api.history.setHashSearch(item.name);
     api.breadcrumb.showSearch(item.name);
 
     var groupedItems = api.search.groupByNamespace(item.group);
 
     var $searchPage = $("<div></div>");
-    if (api.search.data_["methods"] && api.search.data_["methods"][item.name]){
+    if (api.search.data_["methods"] && api.search.data_["methods"][item.name]) {
         $searchPage.append(api.search.data_.methods[item.name]);
     }
 
-    var $total =  $("<div style='display:flex; flex-wrap:wrap;'></div>");
+    var $total = $("<div style='display:flex; flex-wrap:wrap;'></div>");
 
     var groupedItemsArr = [];
     for (var namespace in groupedItems) {
         groupedItemsArr.push(groupedItems[namespace]);
     }
-    groupedItemsArr = groupedItemsArr.sort(function(a, b){
+    groupedItemsArr = groupedItemsArr.sort(function (a, b) {
         if (a[0].namespace > b[0].namespace) return 1;
         if (a[0].namespace < b[0].namespace) return -1;
         return 0;
@@ -295,18 +295,20 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
     for (var j = 0; j < groupedItemsArr.length; j++) {
         var group = groupedItemsArr[j];
         var $res = $("<div style='margin-right: 20px; width: 300px;'></div>");
-        $res.append("<h4>" + group[0].namespace +  "</h4>");
+        $res.append("<h4>" + group[0].namespace + "</h4>");
 
         var description = api.search.getNamespaceDescription(group[0].namespace);
-        if (description){
-            $res.append("<p>" + description +  "</p>");
+        if (description) {
+            $res.append("<p>" + description + "</p>");
         }
 
         var $list = $("<ul></ul>");
 
         for (var i = 0; i < group.length; i++) {
             var entry = group[i];
-            $list.append("<li><a class='item-link' href='/" + api.config.version + "/" + entry.link + "'>" + prefix + entry["cls"] + postfix + "</a></li>");
+            $list.append("<li><a class='item-link' href='/" +
+                (api.config.is_url_version ? api.config.version + "/" : "" ) +
+                entry.link + "'>" + prefix + entry["cls"] + postfix + "</a></li>");
         }
         $res.append($list);
         $total.append($res);
@@ -325,19 +327,19 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
  * @param {string} postfix
  * @param {string} title
  */
-api.search.addToResults_ = function($res, items, prefix, postfix, title) {
+api.search.addToResults_ = function ($res, items, prefix, postfix, title) {
     if (!items.length) return;
-    $res.append("<li class='group-name'>" + title +"</li>");
+    $res.append("<li class='group-name'>" + title + "</li>");
 
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         if (item.multiple) {
-            (function(item) {
-                var $link = $("<li><a class='group-link' href='#'>" + prefix + item.name + postfix + " <span>"+ item.group.length +" matches</span></a></li>");
-                $link.find("a").click(function() {
+            (function (item) {
+                var $link = $("<li><a class='group-link' href='#'>" + prefix + item.name + postfix + " <span>" + item.group.length + " matches</span></a></li>");
+                $link.find("a").click(function () {
                     api.search.showGrouped_(item, prefix, postfix);
                     return false;
-                }).mouseenter(function(e){
+                }).mouseenter(function (e) {
                     api.search.searchOver(e.currentTarget);
                 });
                 $res.append($link);
@@ -346,10 +348,12 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
     }
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
-        if (!item.multiple){
-            var $link = $("<li><a class='item-link' href='/" + api.config.version + "/" + item.link + "'>" + prefix + item["full-name"] + postfix +
+        if (!item.multiple) {
+            var $link = $("<li><a class='item-link' href='/" +
+                (api.config.is_url_version ? api.config.version + "/" : "" ) +
+                item.link + "'>" + prefix + item["full-name"] + postfix +
                 (item.key ? ("<span> " + item.key + "</span>") : "") + "</a></li>");
-            $link.find("a").mouseenter(function(e){
+            $link.find("a").mouseenter(function (e) {
                 api.search.searchOver(e.currentTarget);
             });
             $res.append($link);
@@ -361,7 +365,7 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
  * @private
  * @param {Object} $res
  */
-api.search.showEmpty_ = function($res) {
+api.search.showEmpty_ = function ($res) {
     $res.append("<li>No results found</li>");
 };
 
@@ -369,7 +373,7 @@ api.search.showEmpty_ = function($res) {
  * @private
  * @param {string} query
  */
-api.search.search_ = function(query) {
+api.search.search_ = function (query) {
     if (query.length < 2) {
         api.search.hide();
         return;
@@ -391,7 +395,7 @@ api.search.search_ = function(query) {
 
     if (!$res.find("a").length) {
         api.search.showEmpty_($res);
-    }else{
+    } else {
         api.search.setSearchIndex(0)
     }
 };
@@ -496,11 +500,11 @@ api.search.search_ = function(query) {
     });
 };*/
 
-api.search.setSearchIndex = function(index, notScroll){
+api.search.setSearchIndex = function (index, notScroll) {
     var elems = $("#search-results-new li a");
     if (index >= 0 && index < elems.length) {
         if (index == 0) {
-            api.search.scrollOfftop_ = $("#search-results-new").height()/2;
+            api.search.scrollOfftop_ = $("#search-results-new").height() / 2;
         }
         api.search.searchIndex_ = index;
         elems.removeClass("hovered");
@@ -517,21 +521,21 @@ api.search.setSearchIndex = function(index, notScroll){
     }
 };
 
-api.search.selectUpSearchResult_ = function(){
+api.search.selectUpSearchResult_ = function () {
     api.search.setSearchIndex(api.search.searchIndex_ - 1);
 };
 
-api.search.selectDownSearchResult_ = function(){
+api.search.selectDownSearchResult_ = function () {
     api.search.setSearchIndex(api.search.searchIndex_ + 1);
 };
 
-api.search.searchOver = function(elem){
+api.search.searchOver = function (elem) {
     var elems = $("#search-results-new li a");
     for (var i = 0; i < elems.length && elems[i].innerHTML != elem.innerHTML;) i++;
     api.search.setSearchIndex(i, true);
 };
 
-api.search.openSearchResult_ = function(){
+api.search.openSearchResult_ = function () {
     var elems = $("#search-results-new li a");
     if (elems.length) {
         $(elems[api.search.searchIndex_]).trigger('click');
@@ -543,29 +547,35 @@ api.search.openSearchResult_ = function(){
  * @private
  * @param {Object} data
  */
-api.search.onLoad_ = function(data) {
+api.search.onLoad_ = function (data) {
     api.search.data_ = data;
 
-    $("#search-results-new").click(function(e) {
+    $("#search-results-new").click(function (e) {
         e.stopPropagation();
     });
     $("html").click(api.search.hide);
 
-    $("#search").click(function() {
+    $("#search").click(function () {
         return false;
     });
-    $("#search").focus(function() {
+    $("#search").focus(function () {
         api.search.search_($(this).val().trim());
     });
-    $("#search").keydown(function(e) {
-        switch(e.keyCode){
-            case 13: e.preventDefault(); break;
-            case 38: api.search.selectUpSearchResult_(); break;
-            case 40: api.search.selectDownSearchResult_(); break;
+    $("#search").keydown(function (e) {
+        switch (e.keyCode) {
+            case 13:
+                e.preventDefault();
+                break;
+            case 38:
+                api.search.selectUpSearchResult_();
+                break;
+            case 40:
+                api.search.selectDownSearchResult_();
+                break;
         }
     });
-    $("#search").keyup(function(e) {
-        switch (e.keyCode){
+    $("#search").keyup(function (e) {
+        switch (e.keyCode) {
             case 13:
                 e.preventDefault();
                 api.search.openSearchResult_();
@@ -574,8 +584,12 @@ api.search.onLoad_ = function(data) {
                 api.search.hide();
                 $("#search").val('');
                 break;
-            case 38: e.preventDefault(); break;
-            case 40: e.preventDefault(); break;
+            case 38:
+                e.preventDefault();
+                break;
+            case 40:
+                e.preventDefault();
+                break;
             default:
                 api.search.search_($(this).val().trim());
         }
@@ -583,7 +597,7 @@ api.search.onLoad_ = function(data) {
     api.search.setSearchPage();
 };
 
-api.search.setSearchPage = function(){
+api.search.setSearchPage = function () {
     var data = api.search.data_;
     var searchArr = /entry=([^&]+)/.exec(window.location.href);
     if (searchArr && searchArr.length >= 2) {
@@ -607,7 +621,7 @@ api.search.setSearchPage = function(){
     }
 };
 
-api.search.init = function() {
+api.search.init = function () {
     $.get("/" + api.config.version + "/data/search.json", api.search.onLoad_);
 };
 
