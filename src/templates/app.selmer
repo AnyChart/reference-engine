@@ -48,7 +48,7 @@
         <!-- <![endif]-->
         <div id="search-results-new" style="display:none">
         </div>
-        <div id="header">
+        <div id="ac-header">
             <a class="navbar-brand" href="//anychart.com/">
                 <img src="/i/AnyChart-light-empty.png" width="300" height="72" alt="AnyChart">
                 <div class="chart-row">
