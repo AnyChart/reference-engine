@@ -3,20 +3,25 @@
             [taoensso.timbre :as timbre :refer [info error]]
             [me.raynes.fs :as fs]))
 
+
 (defonce ^:const p4 "    ")
 (defonce ^:const p8 "        ")
+
 
 ;; for developing
 (defonce top-level (atom nil))
 
+
 (defn set-top-level! [_top-level]
   (reset! top-level _top-level))
+
 
 (defn check-param [param]
   (case param
     "function" "func"
     "this" "obj"
     (clojure.string/replace param #"-" "")))
+
 
 (defn parse-object-type [t]
   ; "Object.<string, (string|boolean)>" => "{[prop: string]: string|boolean}"
@@ -31,6 +36,7 @@
       (parse-object-type (clojure.string/replace t #"Object\.<" "Object.<string, ")))
     t))
 
+
 (defn get-type [t]
   (let [t (parse-object-type (clojure.string/replace t #"\|undefined" ""))]
     (case t
@@ -44,6 +50,7 @@
           (s/replace #"!" "")
           (s/replace #"\|null" "")))))
 
+
 (defn get-types [types]
   (->> types
        (map #(s/replace % #"anychart\.enums\.[a-zA-Z0-9]+" "string"))
@@ -53,7 +60,10 @@
        (map get-type)
        (join " | ")))
 
-;;; =============== functions ===============
+
+;; =====================================================================================================================
+;; Functions
+;; =====================================================================================================================
 
 (defn function-return [returns]
   (if (seq returns)
@@ -83,7 +93,9 @@
 (defn function-declarations [functions]
   (join "\n" (map function-declaration (mapcat :overrides functions))))
 
-;;; =============== constants ===============
+;; =====================================================================================================================
+;; Constants
+;; =====================================================================================================================
 
 (defn constant-declaration [constant]
   (str p4 "const " (:name constant) (when (:type constant) (str ": " (get-type (:type constant)))) ";"))
@@ -91,7 +103,10 @@
 (defn constant-declarations [constants]
   (join "\n" (map constant-declaration constants)))
 
-;;; =============== typedefs ===============
+;; =====================================================================================================================
+;; Typedefs
+;; =====================================================================================================================
+
 
 (defn interface-prop [prop]
   (str p8 (check-param (:name prop)) ": " (get-types (:type prop)) ";"))
@@ -112,7 +127,9 @@
 (defn get-typedefs [top-level names]
   (filter (fn [td] (some #(= % (:full-name td)) names)) (:typedefs top-level)))
 
-;;; ============= enums ======================
+;; =====================================================================================================================
+;; Enums
+;; =====================================================================================================================
 
 (defn enum-field [field]
   (if (integer? (:value field))
@@ -141,7 +158,9 @@
 (defn get-enums [top-level names]
   (filter (fn [td] (some #(= % (:full-name td)) names)) (:enums top-level)))
 
-;;; ========= classes ==========
+;; =====================================================================================================================
+;; Classes
+;; =====================================================================================================================
 
 (defn get-enums-and-typedefs-class [class top-level]
   (when (or (seq (:enums class))

@@ -5,7 +5,7 @@
             [reference.components.generator :as generator]
             [reference.components.web :as web]
             [com.stuartsierra.component :as component])
-  (:gen-class :main :true))
+  (:gen-class))
 
 (defn dev-system [config]
   (component/system-map
