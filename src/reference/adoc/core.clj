@@ -7,7 +7,7 @@
             [reference.adoc.tree :refer [generate-tree]]
             [reference.adoc.search :refer [generate-search-index]]
             [reference.adoc.media :refer [move-media]]
-            [reference.adoc.defs.typescript :as ts]
+            [reference.adoc.defs.ts.typescript :as ts]
             [reference.adoc.defs.ts.tree :as tree-ts]
             [reference.adoc.defs.tern :as tern]
             [reference.adoc.defs.json :as json-gen]

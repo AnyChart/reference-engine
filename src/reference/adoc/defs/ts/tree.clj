@@ -89,26 +89,13 @@
 
 
 ;; (reference.adoc.defs.ts.tree/class-by-name "anychart.core.SeparateChart" (:classes (reference.adoc.defs.ts.tree/t0)))
+;; (count (:methods (reference.adoc.defs.ts.tree/class-by-name "anychart.core.SeparateChart" (:classes (reference.adoc.defs.ts.tree/t0)))))
 
 ;(defn t0 []
 ;  (let [tree (modify @reference.adoc.defs.typescript/top-level)]
 ;    tree))
-;
-;
+
+
 ;(defn t []
 ;  (let [classes (:classes @reference.adoc.defs.typescript/top-level)]
 ;    (parent-names (class-by-name "anychart.core.SeparateChart" classes) classes)))
-;
-;
-;;(defn t2 []
-;;  (let [classes (:classes @reference.adoc.defs.typescript/top-level)
-;;        sep-chart (class-by-name "anychart.core.SeparateChart" classes)]
-;;    (build-class sep-chart classes)
-;;    )
-;;  )
-;
-;
-;(defn t3 []
-;  (let [classes (:classes @reference.adoc.defs.typescript/top-level)
-;        sep-chart (class-by-name "anychart.core.SeparateChart" classes)]
-;    sep-chart))
