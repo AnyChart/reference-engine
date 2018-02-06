@@ -8,7 +8,7 @@
                  [me.raynes/fs "1.4.6"]
                  [cheshire "5.8.0"]
                  ;; templates
-                 [selmer "0.8.2"]
+                 [selmer "1.11.7"]
                  ;; web
                  [http-kit "2.2.0"]
                  [compojure "1.6.0"]

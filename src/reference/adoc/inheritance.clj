@@ -52,15 +52,27 @@
                                      method)
                                    ) all-methods)
         ]
+
     ;(when (= (:full-name class) "anychart.charts.Cartesian")
-    ;  (prn "CARTESIAN:")
+    ;  (println "CARTESIAN:")
     ;  (prn class)
+    ;
+    ;  (println "\n\n\nParent class: ")
     ;  (prn parent-class)
+    ;
+    ;  (println "\n\n\nParent class methods: ")
     ;  (prn parent-class-methods)
+    ;
+    ;  (println "\n\n\nInherited methods: ")
     ;  (prn inherited-methods)
+    ;
+    ;  (println "\n\n\nAll methods: ")
     ;  (prn all-methods)
-    ;  (prn all-methods2)
+    ;
+    ;  (println "\n\n\nAll methods set inh")
+    ;  (prn all-methods-set-inh)
     ;  )
+
     (-> class
         ;(assoc :inherited-methods (sort-by :name filtered-parent-class-methods))
         (dissoc :all-members)

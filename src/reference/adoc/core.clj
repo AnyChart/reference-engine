@@ -8,6 +8,7 @@
             [reference.adoc.search :refer [generate-search-index]]
             [reference.adoc.media :refer [move-media]]
             [reference.adoc.defs.typescript :as ts]
+            [reference.adoc.defs.ts.tree :as tree-ts]
             [reference.adoc.defs.tern :as tern]
             [reference.adoc.defs.json :as json-gen]
             [reference.adoc.categories :refer [parse-categories-order build-class-categories build-namespace-categories]]
@@ -86,10 +87,12 @@
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
-        ;(when (= (:name branch) "7.14.3")
+
+        ;(when (= (:name branch) "8.1.0")
         ;  (ts/set-top-level! top-level)
         ;  (tern/set-top-level! top-level tree-data)
         ;  (json-gen/set-top-level! top-level))
+
         (info "categories order:" categories-order)
         (let [version (vdata/add-version jdbc
                                          (:name branch)
@@ -101,7 +104,8 @@
           (save-entries jdbc version (:name branch) top-level docs playground)
           (build-media jdbc version-id (:name branch) data-dir)
           (sitemap/update-sitemap jdbc version-id top-level)
-          (ts/generate-ts-declarations data-dir (:name branch) latest-version-key top-level)
+          (ts/generate-ts-declarations data-dir (:name branch) latest-version-key
+                                       (tree-ts/modify top-level))
           (tern/generate-declarations {:data-dir    data-dir
                                        :version-key (:name branch)
                                        :domain      (-> notifier :config :domain)} tree-data top-level)
