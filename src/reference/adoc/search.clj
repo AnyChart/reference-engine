@@ -47,8 +47,8 @@
 
 (defn get-methods-descriptions [search-folder]
   (let [files (filter #(and
-                        (not (.isDirectory %))
-                        (not (.isHidden %)))
+                         (not (.isDirectory %))
+                         (not (.isHidden %)))
                       (file-seq search-folder))]
     (reduce (fn [res file] (assoc res (keyword (clean-name file)) (slurp file)))
             {} files)))

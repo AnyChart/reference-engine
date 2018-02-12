@@ -79,10 +79,10 @@
                             :classes (build-inheritance (:classes raw-top-level)))
             top-level (assoc inh-top-level
                         :namespaces (doall (map #(build-namespace-categories
-                                                  % categories-order)
+                                                   % categories-order)
                                                 (:namespaces inh-top-level)))
                         :classes (doall (map #(build-class-categories
-                                               % categories-order)
+                                                % categories-order)
                                              (:classes inh-top-level))))
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))

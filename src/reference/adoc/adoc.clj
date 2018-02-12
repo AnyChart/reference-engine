@@ -8,8 +8,8 @@
 (defn- get-all-files-by-ext [path extension]
   (let [res (doall (map #(.getAbsolutePath %)
                         (filter #(and
-                                  (re-matches (re-pattern (str ".*\\." extension)) (.getName %))
-                                  (not (.isHidden %)))
+                                   (re-matches (re-pattern (str ".*\\." extension)) (.getName %))
+                                   (not (.isHidden %)))
                                 (file-seq (file path)))))]
     (info "get-all-js-files" path "count:" (count res))
     res))
@@ -23,10 +23,10 @@
     (let [res (:out (apply sh (vec (concat [jsdoc-path "-X"] (vec files)))))]
       (info "got res" (count res))
       (parse-string
-       (clojure.string/replace res 
-                               "acgraph"
-                               "anychart.graphics")
-       true))))
+        (clojure.string/replace res
+                                "acgraph"
+                                "anychart.graphics")
+        true))))
 
 (defn- get-jsdoc [max-groups jsdoc-path path]
   (info "get-jsdoc" path max-groups jsdoc-path)
@@ -50,11 +50,11 @@
         jsdoc-path (str data-dir "/versions-tmp/" version)]
     (convert-to-jsdoc src-path jsdoc-path)
     (let [jsdocs (get-jsdoc max-groups jsdoc-bin jsdoc-path)
-          doclets  (filter #(and (:name %)
+          doclets (filter #(and (:name %)
                                 (not (or (= (:access %) "private")
                                          (= (:access %) "protected")
                                          (= (:access %) "inner")))
                                 (not (:undocumented %))
                                 (not (:inherited %))
                                 (not (ignored? %))) jsdocs)]
-          doclets)))
+      doclets)))

@@ -28,7 +28,7 @@
                           (where [:= :version_id version-id]
                                  [:= :url page-url])))]
     (if (some? res)
-        (assoc res :content (parse-string (-> res :content .getValue) true)))))
+      (assoc res :content (parse-string (-> res :content .getValue) true)))))
 
 (defn page-and-version [jdbc version-key page-url]
   (let [res (one jdbc (-> (select :pages.*
@@ -49,10 +49,10 @@
                  (where [:= :version_id version-id]))))
 
 (defn add-page [jdbc version-id type url content]
-  (insert! jdbc :pages {:url url
-                        :type type
-                        :content (pg-jsonb content)
-                        :full_name url
+  (insert! jdbc :pages {:url        url
+                        :type       type
+                        :content    (pg-jsonb content)
+                        :full_name  url
                         :version_id version-id}))
 
 (defn page-exists? [jdbc version-id url]
@@ -63,4 +63,4 @@
 
 (defn info [page]
   {:full-name (:url page)
-   :kind (:type page)})
+   :kind      (:type page)})

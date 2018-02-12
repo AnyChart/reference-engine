@@ -15,13 +15,13 @@
   (first (filter #(= full-name (:full-name %)) (:namespaces top-level))))
 
 (defn get-enums [top-level names]
-  (filter (fn [td] (some #(= % (:full-name td) ) names)) (:enums top-level)))
+  (filter (fn [td] (some #(= % (:full-name td)) names)) (:enums top-level)))
 
 (defn get-classes [top-level names]
-  (filter (fn [td] (some #(= % (:full-name td) ) names)) (:classes top-level)))
+  (filter (fn [td] (some #(= % (:full-name td)) names)) (:classes top-level)))
 
 (defn get-typedefs [top-level names]
-  (filter (fn [td] (some #(= % (:full-name td) ) names)) (:typedefs top-level)))
+  (filter (fn [td] (some #(= % (:full-name td)) names)) (:typedefs top-level)))
 
 (defn remove-tags [html]
   (clojure.string/replace html #"<[^>]*>" ""))
@@ -59,7 +59,7 @@
 
 (defn get-types [types]
   (join "|" (map get-type
-                   (filter (partial #(and (not= % "null") (not= % "undefined"))) types))))
+                 (filter (partial #(and (not= % "null") (not= % "undefined"))) types))))
 
 (defn set-params [params arr]
   (let [rest-params (map rest params)
@@ -97,7 +97,7 @@
     ;  (prn params)
     ;  (prn grouped-params)
     ;  (prn simply-params))
-    (str "fn("  (create-function-params-str simply-params)  ")" (function-return function))))
+    (str "fn(" (create-function-params-str simply-params) ")" (function-return function))))
 
 (defn create-function [function settings]
   {"!type" (create-function-type function)
@@ -119,8 +119,8 @@
       res)))
 
 (defn create-enum-field [field enum settings]
-  {"!doc" (description field)
-   "!url" (url enum settings)
+  {"!doc"  (description field)
+   "!url"  (url enum settings)
    "!type" (:full-name enum)})
 
 (defn create-enum [enum settings]
@@ -128,9 +128,9 @@
         result1 {"!doc" (str (description enum) " @enum {" type "}")
                  "!url" (url enum settings)}
         result2 (reduce #(assoc %1 (:name %2) (create-enum-field %2 enum settings))
-                                     result1
-                                     (:fields enum))]
-  result2))
+                        result1
+                        (:fields enum))]
+    result2))
 
 (defn create-typedef [typedef settings]
   (if (empty? (:properties typedef))
@@ -139,7 +139,7 @@
     {"!doc"      (description typedef)
      "!url"      (url typedef settings)
      "prototype" (reduce #(assoc %1 (:name %2) {"!type" (get-types (:type %2))
-                                                "!doc" (description %2)})
+                                                "!doc"  (description %2)})
                          {}
                          (:properties typedef))}))
 
@@ -200,7 +200,7 @@
 
         result-typedefs (reduce #(assoc %1 (:name %2) (create-typedef %2 settings))
                                 result-enums
-                               (get-typedefs top-level (map :name (:typedefs full-ns))))
+                                (get-typedefs top-level (map :name (:typedefs full-ns))))
         result result-typedefs]
     (assoc result "!doc" (description full-ns)
                   "!url" (url ns settings))))
@@ -211,7 +211,7 @@
 
 (defn test2 []
   (let [settings {:version-key "develop"
-                  :domain "http://api.anychart.stg/"}
+                  :domain      "http://api.anychart.stg/"}
         result (build (first @tree) @top-level settings)
         json (generate-string result {:pretty true})]
     (spit "/media/ssd/sibental/reference-engine-data/tern/codeMirror/defs/anychart.json" json)))

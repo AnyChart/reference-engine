@@ -8,9 +8,9 @@
                                 (clojure.string/re-quote-replacement path)
                                 "")
        (filter #(and
-                 (re-matches #".*/_media/.*" (.getAbsolutePath %))
-                 (not (.isHidden %))
-                 (not (.isDirectory %)))
+                  (re-matches #".*/_media/.*" (.getAbsolutePath %))
+                  (not (.isHidden %))
+                  (not (.isDirectory %)))
                (file-seq (file path)))))
 
 (defn- dirname [path]

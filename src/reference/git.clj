@@ -9,18 +9,18 @@
 (defn file-last-commit-date [base-path path]
   (info "last commit date for " (str base-path path))
   (with-sh-dir base-path
-    (let [res (sh "git" "--no-pager" "log" "-1" "--format=%ct" "--" (str base-path path))]
-      (-> res
-          :out
-          (clojure.string/trim)
-          read-string))))
+               (let [res (sh "git" "--no-pager" "log" "-1" "--format=%ct" "--" (str base-path path))]
+                 (-> res
+                     :out
+                     (clojure.string/trim)
+                     read-string))))
 
 (defn- run-git [git-ssh path & command]
   (with-sh-env {:GIT_SSH git-ssh}
-    (with-sh-dir path
-      (let [res (apply sh "/usr/bin/git" command)]
-        (println command res)
-        (:out res)))))
+               (with-sh-dir path
+                            (let [res (apply sh "/usr/bin/git" command)]
+                              (println command res)
+                              (:out res)))))
 
 (defn update [git-ssh repo]
   (run-git git-ssh repo "fetch" "-p"))

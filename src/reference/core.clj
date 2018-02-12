@@ -9,29 +9,29 @@
 
 (defn dev-system [config]
   (component/system-map
-   :notifier (notifier/new-notifier (:notifications config))
-   :jdbc  (jdbc/new-jdbc (:jdbc config))
-   :redis (redis/new-redis (:redis config))
-   :web   (component/using (web/new-web (:web config))
-                           [:jdbc :redis :notifier])
-   :generator (component/using (generator/new-generator (:generator config))
-                               [:jdbc :redis :notifier])))
+    :notifier (notifier/new-notifier (:notifications config))
+    :jdbc (jdbc/new-jdbc (:jdbc config))
+    :redis (redis/new-redis (:redis config))
+    :web (component/using (web/new-web (:web config))
+                          [:jdbc :redis :notifier])
+    :generator (component/using (generator/new-generator (:generator config))
+                                [:jdbc :redis :notifier])))
 
 (defn frontend-system [config]
   (component/system-map
-   :notifier (notifier/new-notifier (:notifications config))
-   :jdbc  (jdbc/new-jdbc (:jdbc config))
-   :redis (redis/new-redis (:redis config))
-   :web   (component/using (web/new-web (:web config))
-                           [:jdbc :redis :notifier])))
+    :notifier (notifier/new-notifier (:notifications config))
+    :jdbc (jdbc/new-jdbc (:jdbc config))
+    :redis (redis/new-redis (:redis config))
+    :web (component/using (web/new-web (:web config))
+                          [:jdbc :redis :notifier])))
 
 (defn generator-system [config]
   (component/system-map
-   :notifier (notifier/new-notifier (:notifications config))
-   :jdbc  (jdbc/new-jdbc (:jdbc config))
-   :redis (redis/new-redis (:redis config))
-   :generator (component/using (generator/new-generator (:generator config))
-                               [:jdbc :redis :notifier])))
+    :notifier (notifier/new-notifier (:notifications config))
+    :jdbc (jdbc/new-jdbc (:jdbc config))
+    :redis (redis/new-redis (:redis config))
+    :generator (component/using (generator/new-generator (:generator config))
+                                [:jdbc :redis :notifier])))
 
 ;; CREATE USER reference_user WITH PASSWORD 'pass';
 ;; CREATE DATABASE reference_db;
@@ -39,63 +39,63 @@
 ;; psql -p5432 -d reference_db -U reference_user -W
 
 (def base-config
-  {:notifications {:token "P8Z59E0kpaOqTcOxner4P5jb"
-                   :channel "#notifications-local"
+  {:notifications {:token    "P8Z59E0kpaOqTcOxner4P5jb"
+                   :channel  "#notifications-local"
                    :username "reference-engine"
-                   :domain "http://localhost/"
-                   :prefix "local"}
-   :web {:debug true
-         :static 12
-         :port 8080
-         :max-line 8192
-         :reference-queue "reference-queue"
-         :docs "docs.anychart.stg"
-         :playground "playground.anychart.stg"}
-   :jdbc {:subprotocol "postgresql"
-          :subname "//localhost:5432/reference_db"
-          :classname "org.postgresql.Driver"
-          :user "reference_user"
-          :password "pass"
-          :stringtype "unspecified"}
-   :redis {:pool {}
-           :spec {:host "127.0.0.1" :port 6379 :db 0}}
-   :generator {:show-branches true
-               :git-ssh "/Users/alex/Work/anychart/reference-engine/keys/git"
-               :data-dir (.getAbsolutePath (clojure.java.io/file "data"))
-               :max-processes 8
-               :jsdoc-bin "/usr/local/bin/jsdoc"
-               :queue "reference-queue"}})
+                   :domain   "http://localhost/"
+                   :prefix   "local"}
+   :web           {:debug           true
+                   :static          12
+                   :port            8080
+                   :max-line        8192
+                   :reference-queue "reference-queue"
+                   :docs            "docs.anychart.stg"
+                   :playground      "playground.anychart.stg"}
+   :jdbc          {:subprotocol "postgresql"
+                   :subname     "//localhost:5432/reference_db"
+                   :classname   "org.postgresql.Driver"
+                   :user        "reference_user"
+                   :password    "pass"
+                   :stringtype  "unspecified"}
+   :redis         {:pool {}
+                   :spec {:host "127.0.0.1" :port 6379 :db 0}}
+   :generator     {:show-branches true
+                   :git-ssh       "/Users/alex/Work/anychart/reference-engine/keys/git"
+                   :data-dir      (.getAbsolutePath (clojure.java.io/file "data"))
+                   :max-processes 8
+                   :jsdoc-bin     "/usr/local/bin/jsdoc"
+                   :queue         "reference-queue"}})
 
 (def stg-config (merge-with merge base-config
-                            {:notifications {:domain "http://api.anychart.stg/"
+                            {:notifications {:domain  "http://api.anychart.stg/"
                                              :channel "#notifications-staging"
-                                             :prefix "stg"}}
+                                             :prefix  "stg"}}
                             {:web {:debug false
-                                   :port 8090}}
-                            {:jdbc {:subname "//10.132.9.26:5432/api_stg"
-                                    :user "api_stg_user"
+                                   :port  8090}}
+                            {:jdbc {:subname  "//10.132.9.26:5432/api_stg"
+                                    :user     "api_stg_user"
                                     :password "fuckstg"}}
                             {:redis {:spec {:host "10.132.9.26" :db 1}}}
-                            {:generator {:git-ssh "/apps/keys/git"
+                            {:generator {:git-ssh  "/apps/keys/git"
                                          :data-dir "/apps/reference-stg/data"}}))
 
 (def prod-config (merge-with merge base-config
-                             {:notifications {:domain "http://api.anychart.com/"
+                             {:notifications {:domain  "http://api.anychart.com/"
                                               :channel "#notifications-prod"
-                                              :prefix "prod"}}
-                             {:web {:debug false
-                                    :port 8091
+                                              :prefix  "prod"}}
+                             {:web {:debug           false
+                                    :port            8091
                                     :reference-queue "reference-queue-prod"
-                                    :docs "docs.anychart.com"
-                                    :playground "playground.anychart.com"}}
-                             {:jdbc {:subname "//10.132.9.26:5432/api_prod"
-                                     :user "api_prod_user"
+                                    :docs            "docs.anychart.com"
+                                    :playground      "playground.anychart.com"}}
+                             {:jdbc {:subname  "//10.132.9.26:5432/api_prod"
+                                     :user     "api_prod_user"
                                      :password "fuckprod"}}
                              {:redis {:spec {:host "10.132.9.26" :db 1}}}
                              {:generator {:show-branches false
-                                          :git-ssh "/apps/keys/git"
-                                          :data-dir "/apps/reference-prod/data"
-                                          :queue "reference-queue-prod"}}))
+                                          :git-ssh       "/apps/keys/git"
+                                          :data-dir      "/apps/reference-prod/data"
+                                          :queue         "reference-queue-prod"}}))
 
 (def config base-config)
 
