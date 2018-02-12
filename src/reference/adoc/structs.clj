@@ -339,7 +339,8 @@
            :params params
            :signature (create-function-signature (:name func) params)
            :has-returns (boolean (seq returns))
-           :returns returns)))
+           :returns returns
+           :default-doclet (boolean (first (get-tag func "default_doclet"))))))
 
 (defn- create-link-struct [entry version]
   {:name (:longname entry)

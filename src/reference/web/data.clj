@@ -59,18 +59,22 @@
                                (clojure.string/trim val) "-plain")))
           :endplayground)
 
+
 (add-tag! :is-override-expand (fn [args context-map]
                                 (let [paths (map #(clojure.string/split % #"\.") args)
                                       vals (map #(get-in context-map (map keyword %)) paths)
+                                      ;; args
                                       method (first vals)
-                                      default-override-index (:default-override-index method)
                                       last (second vals)
-                                      counter (nth vals 2)]
+                                      counter (nth vals 2)
+
+                                      default-override-index (:default-override-index method)]
                                   (if (and default-override-index)
                                     (when (= (inc default-override-index) counter)
                                       "in")
                                     (when last
                                       "in")))))
+
 
 (add-tag! :listings-and-samples (fn [args context-map]
                                   (let [entry (get context-map (keyword (first args)))]
