@@ -5,8 +5,10 @@
             [cheshire.core :refer [parse-string]]
             [reference.web.tree :refer [tree-view-partial]]))
 
+
 (defn- escape-str [str]
   (render "{{val}}" {:val str}))
+
 
 (add-tag! :link (fn [args context-map]
                   (let [path (clojure.string/split (first args) #"\.")
@@ -17,11 +19,13 @@
                       val
                       (str (when is-url-version (str "/" version)) "/" val)))))
 
+
 (add-tag! :edit-link (fn [args context-map]
                        (let [version (:version context-map)
                              path (-> context-map :main :file)]
                          ;(str "https://github.com/AnyChart/api-reference/edit/" version path)
                          "https://github.com/AnyChart/api.anychart.com")))
+
 
 (add-tag! :link-or-text (fn [args context-map]
                           (let [path (clojure.string/split (first args) #"\.")
@@ -36,6 +40,7 @@
                                                                              %1 "'>" %1 "</a>"))]
                             replaced-links)))
 
+
 (add-tag! :type-link (fn [args context-map]
                        (let [path (clojure.string/split (first args) #"\.")
                              val (escape-str (get-in context-map (map keyword path)))
@@ -48,6 +53,7 @@
                                                                             (str version "/"))
                                                                           %1 "'>" %1 "</a>"))]
                          (str "<span class='code-style'>" replaced-links "</span>"))))
+
 
 (add-tag! :playground (fn [args context-map content]
                         (let [val (get-in content [:playground :content])
@@ -85,11 +91,13 @@
                                                   :is-url-version (:is-url-version context-map)
                                                   :playground     (:playground context-map)}))))
 
+
 (add-tag! :tree-view (fn [args context-map]
                        (let [entries (parse-string (get context-map (keyword (first args))) true)
                              url (get context-map (keyword (second args)))]
                          (reduce str (map #(tree-view-partial % (:version context-map)
                                                               (:is-url-version context-map) url) entries)))))
+
 
 (defn- fix-version [html version]
   (clojure.string/replace html "__VERSION__" version))

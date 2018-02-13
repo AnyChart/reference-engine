@@ -7,6 +7,7 @@
             [com.stuartsierra.component :as component])
   (:gen-class))
 
+
 (defn dev-system [config]
   (component/system-map
     :notifier (notifier/new-notifier (:notifications config))
@@ -17,6 +18,7 @@
     :generator (component/using (generator/new-generator (:generator config))
                                 [:jdbc :redis :notifier])))
 
+
 (defn frontend-system [config]
   (component/system-map
     :notifier (notifier/new-notifier (:notifications config))
@@ -24,6 +26,7 @@
     :redis (redis/new-redis (:redis config))
     :web (component/using (web/new-web (:web config))
                           [:jdbc :redis :notifier])))
+
 
 (defn generator-system [config]
   (component/system-map
@@ -33,17 +36,23 @@
     :generator (component/using (generator/new-generator (:generator config))
                                 [:jdbc :redis :notifier])))
 
+
 ;; CREATE USER reference_user WITH PASSWORD 'pass';
 ;; CREATE DATABASE reference_db;
 ;; GRANT ALL PRIVILEGES ON DATABASE reference_db TO reference_user;
 ;; psql -p5432 -d reference_db -U reference_user -W
 
+
 (def base-config
-  {:notifications {:token    "P8Z59E0kpaOqTcOxner4P5jb"
-                   :channel  "#notifications-local"
-                   :username "reference-engine"
-                   :domain   "http://localhost/"
-                   :prefix   "local"}
+  {:notifications {:skype {:id      "5bab828d-d6b2-4c0f-a955-82b088e30bcb"
+                           :key     "L2q5SBiXYqPDHVmq36vjgwe"
+                           :chat-id "19:58cbaa008fc640bab8c3cf71e0e2d51a@thread.skype"
+                           :prefix  "local"}
+                   :slack {:token    "P8Z59E0kpaOqTcOxner4P5jb"
+                           :channel  "#notifications-local"
+                           :username "reference-engine"
+                           :domain   "http://localhost/"
+                           :prefix   "local"}}
    :web           {:debug           true
                    :static          12
                    :port            8080
@@ -66,10 +75,12 @@
                    :jsdoc-bin     "/usr/local/bin/jsdoc"
                    :queue         "reference-queue"}})
 
+
 (def stg-config (merge-with merge base-config
-                            {:notifications {:domain  "http://api.anychart.stg/"
-                                             :channel "#notifications-staging"
-                                             :prefix  "stg"}}
+                            {:notifications {:slack {:domain  "http://api.anychart.stg/"
+                                                     :channel "#notifications-staging"
+                                                     :prefix  "stg"}
+                                             :skype {:prefix "stg"}}}
                             {:web {:debug false
                                    :port  8090}}
                             {:jdbc {:subname  "//10.132.9.26:5432/api_stg"
@@ -79,10 +90,12 @@
                             {:generator {:git-ssh  "/apps/keys/git"
                                          :data-dir "/apps/reference-stg/data"}}))
 
+
 (def prod-config (merge-with merge base-config
-                             {:notifications {:domain  "http://api.anychart.com/"
-                                              :channel "#notifications-prod"
-                                              :prefix  "prod"}}
+                             {:notifications {:slack {:domain  "http://api.anychart.com/"
+                                                      :channel "#notifications-prod"
+                                                      :prefix  "prod"}
+                                              :skype {:prefix "prod"}}}
                              {:web {:debug           false
                                     :port            8091
                                     :reference-queue "reference-queue-prod"
@@ -97,15 +110,20 @@
                                           :data-dir      "/apps/reference-prod/data"
                                           :queue         "reference-queue-prod"}}))
 
+
 (def config base-config)
 
+
 (def dev (dev-system config))
+
 
 (defn start []
   (alter-var-root #'dev component/start))
 
+
 (defn stop []
   (alter-var-root #'dev component/stop))
+
 
 (defn -main
   ([] (println "dev keys-path|stg frontend|stg backend|com frontend|com backend ??"))
