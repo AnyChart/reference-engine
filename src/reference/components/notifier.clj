@@ -38,9 +38,9 @@
   (skype/complete-version-building notifier version queue-index "good job, everything is ok!"))
 
 
-(defn build-failed [notifier version queue-index e]
-  (slack/build-failed notifier version queue-index e)
-  (skype/build-failed notifier version queue-index e))
+(defn build-failed [notifier version queue-index e ts-error]
+  (slack/build-failed notifier version queue-index e ts-error)
+  (skype/build-failed notifier version queue-index e ts-error))
 
 
 (defn notify-404 [notifier path]

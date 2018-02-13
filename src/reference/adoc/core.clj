@@ -23,16 +23,19 @@
             [org.httpkit.client :as http]
             [taoensso.timbre :as timbre :refer [info error]]))
 
+
 (defn actual-branches [show-branches git-ssh repo-path]
   (if show-branches
     (git/actual-branches-with-hashes git-ssh repo-path)
     (git/version-branches-with-hashes git-ssh repo-path)))
+
 
 (defn- remove-branch [jdbc branch-key]
   (let [version-id (:id (vdata/version-by-key jdbc branch-key))]
     (pdata/delete-version-pages jdbc version-id)
     (sitemap/remove-by-version jdbc version-id)
     (vdata/delete-by-id jdbc version-id)))
+
 
 (defn- remove-branches [jdbc actual-branches data-dir]
   (info "actual branches" (vec actual-branches))
@@ -46,11 +49,14 @@
         (git/run-sh "rm" "-rf" (str data-dir "/versions-static/" branch-key))))
     removed-branches))
 
+
 (defn- filter-for-rebuild [jdbc branches]
   (filter #(vdata/need-rebuild? jdbc (:name %) (:commit %)) branches))
 
+
 (defn- build-media [jdbc version-id version-key data-dir]
   (move-media version-key (str data-dir "/versions/") (str data-dir "/versions-static/")))
+
 
 (defn- remove-previous-versions [jdbc actual-id key]
   (let [ids (vdata/version-ids jdbc key)
@@ -61,10 +67,12 @@
                   (vdata/delete-by-id jdbc vid))
                 outdated-ids))))
 
+
 (defn- get-version-config [data-dir version-key]
   (if (.exists (file (str data-dir "/versions/" version-key "/.api-config.edn")))
     (read-string (slurp (str data-dir "/versions/" version-key "/.api-config.edn")))
     {:samples true}))
+
 
 (defn build-branch
   [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground queue-index latest-version-key]
@@ -72,6 +80,7 @@
     (do
       (info "building" branch)
       (notifications/start-version-building notifier branch queue-index)
+
       (let [categories-order (parse-categories-order data-dir (:name branch))
             doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
             raw-top-level (structurize doclets data-dir (:name branch))
@@ -104,19 +113,24 @@
           (save-entries jdbc version (:name branch) top-level docs playground)
           (build-media jdbc version-id (:name branch) data-dir)
           (sitemap/update-sitemap jdbc version-id top-level)
-          (ts/generate-ts-declarations data-dir (:name branch) latest-version-key
-                                       (tree-ts/modify top-level))
+
+          (remove-previous-versions jdbc version-id (:name branch))
+
           (tern/generate-declarations {:data-dir    data-dir
                                        :version-key (:name branch)
                                        :domain      (-> notifier :config :domain)} tree-data top-level)
+
           (json-gen/generate data-dir (:name branch) latest-version-key top-level)
-          (remove-previous-versions jdbc version-id (:name branch))))
-      (notifications/complete-version-building notifier (:name branch) queue-index)
-      true)
+
+          (let [ts-result (ts/generate-ts-declarations data-dir (:name branch) latest-version-key
+                                                       (tree-ts/modify top-level) notifier)]
+            (if (zero? (:exit ts-result))
+              (do (notifications/complete-version-building notifier (:name branch) queue-index) true)
+              (notifications/build-failed notifier (:name branch) queue-index nil ts-result))))))
     (catch Exception e
       (do (error e)
           (error (.getMessage e))
-          (notifications/build-failed notifier (:name branch) queue-index e)
+          (notifications/build-failed notifier (:name branch) queue-index e nil)
           nil))))
 
 ;(defn- build-experiments [dev]

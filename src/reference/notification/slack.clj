@@ -1,7 +1,8 @@
 (ns reference.notification.slack
   (:require [org.httpkit.client :as http]
             [cheshire.core :refer [generate-string]]
-            [reference.util.utils :as utils]))
+            [reference.util.utils :as utils]
+            [clojure.string :as string]))
 
 
 (defn- domain [notifier] (-> notifier :config :slack :domain))
@@ -89,10 +90,15 @@
     (notify-attach notifier attachments)))
 
 
-(defn build-failed [notifier version queue-index & [e]]
+(defn build-failed [notifier version queue-index e ts-error]
   (let [attachments [{:color     "danger"
                       :text      (str "#" queue-index " api `" (prefix notifier) "` - *" version "* failed"
-                                      (when e (str "\n```" (utils/format-exception e) "```")))
+                                      (when e (str "\n```" (utils/format-exception e) "```"))
+                                      (when ts-error
+                                        (str "\nTypeScript generation errors:\n" (:url ts-error) "\n"
+                                             "```"
+                                             (:out ts-error)
+                                             "```")))
                       :mrkdwn_in ["text"]}]]
     (notify-attach notifier attachments)))
 

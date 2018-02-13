@@ -77,10 +77,13 @@
     (send-message (config notifier) msg)))
 
 
-(defn build-failed [notifier version queue-index & [e]]
+(defn build-failed [notifier version queue-index e ts-error]
   (let [msg (str "#" queue-index " docs " (-> notifier prefix (font "#cc0066" 11) u) " - " (b version) (-> " failed" (font "#d00000") b) "\n"
                  (when e
-                   (-> (utils/format-exception e) (font "#777777" 11) i)))]
+                   (-> (utils/format-exception e) (font "#777777" 11) i))
+                 (when ts-error
+                   (str "TypeScript generation errors: \n" (:url ts-error) "\n"
+                        "" (:out ts-error) "")))]
     (send-message (config notifier) msg)))
 
 

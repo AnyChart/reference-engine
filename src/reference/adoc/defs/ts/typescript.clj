@@ -1,7 +1,8 @@
 (ns reference.adoc.defs.ts.typescript
   (:require [clojure.string :as s :refer [join]]
             [taoensso.timbre :as timbre :refer [info error]]
-            [me.raynes.fs :as fs]))
+            [me.raynes.fs :as fs]
+            [clojure.java.shell :as shell]))
 
 
 (defonce ^:const p4 "    ")
@@ -71,10 +72,12 @@
       (get-types types))
     "void"))
 
+
 (defn check-optional [param name]
   (if (:optional param)
     (str name "?")
     name))
+
 
 (defn function-param [param]
   (if-not (:name param)
@@ -84,11 +87,14 @@
         (str "..." (check-optional param param-name) ": (" (function-return [param]) ")[]")
         (str (check-optional param param-name) ": " (function-return [param]))))))
 
+
 (defn function-params [params]
   (join ", " (map function-param params)))
 
+
 (defn function-declaration [f]
   (str p4 "function " (:name f) "(" (function-params (:params f)) "): " (function-return (:returns f)) ";"))
+
 
 (defn function-declarations [functions]
   (join "\n" (map function-declaration (mapcat :overrides functions))))
@@ -99,6 +105,7 @@
 
 (defn constant-declaration [constant]
   (str p4 "const " (:name constant) (when (:type constant) (str ": " (get-type (:type constant)))) ";"))
+
 
 (defn constant-declarations [constants]
   (join "\n" (map constant-declaration constants)))
@@ -111,8 +118,10 @@
 (defn interface-prop [prop]
   (str p8 (check-param (:name prop)) ": " (get-types (:type prop)) ";"))
 
+
 (defn interface-props [props]
   (join "\n" (map interface-prop props)))
+
 
 (defn typedef-declaration [typedef]
   (if (empty? (:properties typedef))
@@ -121,8 +130,10 @@
          (interface-props (:properties typedef))
          "\n    }")))
 
+
 (defn typedef-declarations [typedefs]
   (join "\n" (map typedef-declaration typedefs)))
+
 
 (defn get-typedefs [top-level names]
   (filter (fn [td] (some #(= % (:full-name td)) names)) (:typedefs top-level)))
@@ -137,13 +148,16 @@
     ;(str p8 (:name field) " = <any>\"" (:value field) "\"" )
     (str p8 (:name field))))
 
+
 (defn enum-declaration [enum]
   (str p4 "enum " (:name enum) " {\n"
        (join ",\n" (map enum-field (:fields enum)))
        "\n    }"))
 
+
 (defn enum-field-cl [field class-name]
   (str p8 "static " (:name field) " = new " class-name "(\"" (:value field) "\");"))
+
 
 (defn enum-declaration-cl [enum]
   (str p4 "class " (:name enum) " {\n"
@@ -152,8 +166,10 @@
        (join "\n" (map #(enum-field-cl % (:name enum)) (:fields enum)))
        "\n    }"))
 
+
 (defn enum-declarations [enums]
   (join "\n" (map enum-declaration enums)))
+
 
 (defn get-enums [top-level names]
   (filter (fn [td] (some #(= % (:full-name td)) names)) (:enums top-level)))
@@ -172,8 +188,10 @@
       (typedef-declarations (get-typedefs top-level (map :name (:typedefs class))))
       "\n    }")))
 
+
 (defn method-declaration [f]
   (str p8 (:name f) "(" (function-params (:params f)) "): " (function-return (:returns f)) ";"))
+
 
 (defn class-declaration [class top-level]
   (if (> (.indexOf (:name class) ".") 0)
@@ -189,11 +207,14 @@
          "\n    }"
          (get-enums-and-typedefs-class class top-level))))
 
+
 (defn class-declarations [top-level classes]
   (join "\n" (map #(class-declaration % top-level) classes)))
 
+
 (defn get-classes [top-level names]
   (filter (fn [td] (some #(= % (:full-name td)) names)) (:classes top-level)))
+
 
 (defn namespace-definition [top-level namespace]
   (str "declare namespace " (:full-name namespace) " {\n"
@@ -213,15 +234,18 @@
        (when (seq (:classes namespace)) "\n")
        "}"))
 
+
 (defn add-prefix [data]
   (str "/// <reference path=\"all.d.ts\"/>\n"
        "// from https://github.com/teppeis/closure-library.d.ts\n" data))
+
 
 (defn add-header [ts version-key]
   (str "// Type definitions for AnyChart JavaScript Charting Library" (str ", v" version-key)
        "\n// Project: https://www.anychart.com/\n"
        "// Definitions by: AnyChart <https://www.anychart.com>\n"
        ts))
+
 
 (defn generate-ts [top-level version-key is-last-versionl]
   (let [ts (->> (:namespaces top-level)
@@ -231,17 +255,26 @@
                 (join "\n\n"))]
     (add-header ts version-key)))
 
+
 (defn test2 []
   (let [ts (generate-ts @top-level "develop" false)]
     (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" ts)
     (spit "/media/ssd/work/TypeScript/typescript-example/typescript-example/src/anychart.d.ts" ts)))
 
-(defn generate-ts-declarations [data-dir version-key latest-version-key top-level]
+
+(defn check-ts-file [file-name]
+  (let [{:keys [exit out err] :as result} (shell/sh "/bin/bash" "-c" (str " tsc --noImplicitAny " file-name))]
+    result))
+
+
+(defn generate-ts-declarations [data-dir version-key latest-version-key top-level notifier]
   (info "generate TypeScript definitions for: " version-key ", latest: " latest-version-key)
   (let [is-last-version (= version-key latest-version-key)
         file-name (if is-last-version "index.d.ts" (str "index-" version-key ".d.ts"))
         dir (str data-dir "/versions-static/" version-key)
         path (str dir "/" file-name)
-        ts (generate-ts top-level version-key is-last-version)]
+        ts (generate-ts top-level version-key is-last-version)
+        url (str (-> notifier :config :slack :domain) "si/" version-key "/" file-name)]
     (fs/mkdirs dir)
-    (spit path ts)))
+    (spit path ts)
+    (assoc (check-ts-file path) :url url)))
