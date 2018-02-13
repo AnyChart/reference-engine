@@ -4,7 +4,8 @@
             [reference.components.notifier :as notifier]
             [reference.components.generator :as generator]
             [reference.components.web :as web]
-            [com.stuartsierra.component :as component])
+            [com.stuartsierra.component :as component]
+            [reference.util.utils :as utils])
   (:gen-class))
 
 
@@ -76,39 +77,45 @@
                    :queue         "reference-queue"}})
 
 
-(def stg-config (merge-with merge base-config
-                            {:notifications {:slack {:domain  "http://api.anychart.stg/"
-                                                     :channel "#notifications-staging"
-                                                     :prefix  "stg"}
-                                             :skype {:prefix "stg"}}}
-                            {:web {:debug false
-                                   :port  8090}}
-                            {:jdbc {:subname  "//10.132.9.26:5432/api_stg"
-                                    :user     "api_stg_user"
-                                    :password "fuckstg"}}
-                            {:redis {:spec {:host "10.132.9.26" :db 1}}}
-                            {:generator {:git-ssh  "/apps/keys/git"
-                                         :data-dir "/apps/reference-stg/data"}}))
+(def stg-config (utils/deep-merge
+                  base-config
+                  {:notifications {:slack {:domain  "http://api.anychart.stg/"
+                                           :channel "#notifications-staging"
+                                           :prefix  "stg"}
+                                   :skype {:prefix "stg"}}
+
+                   :web           {:debug false
+                                   :port  8090}
+
+                   :jdbc          {:subname  "//10.132.9.26:5432/api_stg"
+                                   :user     "api_stg_user"
+                                   :password "fuckstg"}
+
+                   :redis         {:spec {:host "10.132.9.26" :db 1}}
+
+                   :generator     {:git-ssh  "/apps/keys/git"
+                                   :data-dir "/apps/reference-stg/data"}}))
 
 
-(def prod-config (merge-with merge base-config
-                             {:notifications {:slack {:domain  "http://api.anychart.com/"
-                                                      :channel "#notifications-prod"
-                                                      :prefix  "prod"}
-                                              :skype {:prefix "prod"}}}
-                             {:web {:debug           false
+(def prod-config (utils/deep-merge
+                   base-config
+                   {:notifications {:slack {:domain  "http://api.anychart.com/"
+                                            :channel "#notifications-prod"
+                                            :prefix  "prod"}
+                                    :skype {:prefix "prod"}}
+                    :web           {:debug           false
                                     :port            8091
                                     :reference-queue "reference-queue-prod"
                                     :docs            "docs.anychart.com"
-                                    :playground      "playground.anychart.com"}}
-                             {:jdbc {:subname  "//10.132.9.26:5432/api_prod"
-                                     :user     "api_prod_user"
-                                     :password "fuckprod"}}
-                             {:redis {:spec {:host "10.132.9.26" :db 1}}}
-                             {:generator {:show-branches false
-                                          :git-ssh       "/apps/keys/git"
-                                          :data-dir      "/apps/reference-prod/data"
-                                          :queue         "reference-queue-prod"}}))
+                                    :playground      "playground.anychart.com"}
+                    :jdbc          {:subname  "//10.132.9.26:5432/api_prod"
+                                    :user     "api_prod_user"
+                                    :password "fuckprod"}
+                    :redis         {:spec {:host "10.132.9.26" :db 1}}
+                    :generator     {:show-branches false
+                                    :git-ssh       "/apps/keys/git"
+                                    :data-dir      "/apps/reference-prod/data"
+                                    :queue         "reference-queue-prod"}}))
 
 
 (def config base-config)
