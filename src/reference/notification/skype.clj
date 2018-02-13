@@ -78,7 +78,7 @@
 
 
 (defn build-failed [notifier version queue-index e ts-error]
-  (let [msg (str "#" queue-index " docs " (-> notifier prefix (font "#cc0066" 11) u) " - " (b version) (-> " failed" (font "#d00000") b) "\n"
+  (let [msg (str "#" queue-index " api " (-> notifier prefix (font "#cc0066" 11) u) " - " (b version) (-> " failed" (font "#d00000") b) "\n"
                  (when e
                    (-> (utils/format-exception e) (font "#777777" 11) i))
                  (when ts-error
@@ -88,7 +88,7 @@
 
 
 (defn complete-building-with-errors [notifier branches queue-index e]
-  (let [msg (str "#" queue-index " docs " (-> notifier prefix (font "#cc0066" 11) u) " - " (-> "error during processing!" (font "#d00000") b) "\n"
+  (let [msg (str "#" queue-index " api " (-> notifier prefix (font "#cc0066" 11) u) " - " (-> "error during processing!" (font "#d00000") b) "\n"
                  (when (seq branches)
                    (str (b "Branches: ") (string/join ", " branches)))
                  (when e
