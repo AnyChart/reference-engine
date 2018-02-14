@@ -14,7 +14,7 @@
             <div class="panel-collapse collapse in">
                 <div class="panel-body">
                     <div class="small-group">
-                        <p>{{c.description|safe}}</p>
+                        <p>{% table-style %}{{c.description|safe}}{% endtable-style %}</p>
                         {% if c.has-detailed %}
                         <div class="collapse-group">
                             <a data-toggle="collapse" aria-expanded="true">
