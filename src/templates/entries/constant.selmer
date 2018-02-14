@@ -31,7 +31,7 @@
                     {% if c.type %}
                     <div class="small-group">
                         <p>
-                            <strong>Type: </strong>{{c.type}}
+                            <strong>Type: </strong>{% link-or-text c.type %}
                         </p>
                     </div>
                     {% endif %}
