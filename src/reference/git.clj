@@ -25,6 +25,9 @@
 (defn update [git-ssh repo]
   (run-git git-ssh repo "fetch" "-p"))
 
+(defn pull [git-ssh repo]
+  (run-git git-ssh repo "pull"))
+
 (defn update-samples [git-ssh repo branch]
   (run-git git-ssh repo "checkout" "--" "*")
   (run-git git-ssh repo "fetch" "-p")

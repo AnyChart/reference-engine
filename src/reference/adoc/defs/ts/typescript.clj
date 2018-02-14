@@ -2,7 +2,7 @@
   (:require [clojure.string :as s :refer [join]]
             [taoensso.timbre :as timbre :refer [info error]]
             [me.raynes.fs :as fs]
-            [clojure.java.shell :as shell]))
+            [reference.adoc.defs.ts.check :as ts-check]))
 
 
 (defonce ^:const p4 "    ")
@@ -262,12 +262,7 @@
     (spit "/media/ssd/work/TypeScript/typescript-example/typescript-example/src/anychart.d.ts" ts)))
 
 
-(defn check-ts-file [file-name]
-  (let [{:keys [exit out err] :as result} (shell/sh "/bin/bash" "-c" (str " tsc --noImplicitAny " file-name))]
-    result))
-
-
-(defn generate-ts-declarations [data-dir version-key latest-version-key top-level notifier]
+(defn generate-ts-declarations [data-dir git-ssh version-key latest-version-key top-level notifier]
   (info "generate TypeScript definitions for: " version-key ", latest: " latest-version-key)
   (let [is-last-version (= version-key latest-version-key)
         file-name (if is-last-version "index.d.ts" (str "index-" version-key ".d.ts"))
@@ -277,4 +272,4 @@
         url (str (-> notifier :config :slack :domain) "si/" version-key "/" file-name)]
     (fs/mkdirs dir)
     (spit path ts)
-    (assoc (check-ts-file path) :url url)))
+    (assoc (ts-check/check path version-key data-dir git-ssh) :url url)))

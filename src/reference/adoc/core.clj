@@ -122,8 +122,12 @@
 
           (json-gen/generate data-dir (:name branch) latest-version-key top-level)
 
-          (let [ts-result (ts/generate-ts-declarations data-dir (:name branch) latest-version-key
-                                                       (tree-ts/modify top-level) notifier)]
+          (let [ts-result (ts/generate-ts-declarations data-dir
+                                                       git-ssh
+                                                       (:name branch)
+                                                       latest-version-key
+                                                       (tree-ts/modify top-level)
+                                                       notifier)]
             (if (zero? (:exit ts-result))
               (do (notifications/complete-version-building notifier (:name branch) queue-index) true)
               (notifications/build-failed notifier (:name branch) queue-index nil ts-result))))))
@@ -144,7 +148,8 @@
 
 (defn build-all
   [jdbc notifier
-   {:keys [show-branches git-ssh data-dir max-processes jsdoc-bin docs playground]} queue-index]
+   {:keys [show-branches git-ssh data-dir max-processes jsdoc-bin docs playground]}
+   queue-index]
   (try
     (let [repo-path (str data-dir "/repo/")
          versions-path (str data-dir "/versions/")

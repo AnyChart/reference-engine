@@ -8,6 +8,15 @@
 [Staging](http://api.anychart.stg) 
 [![Build Status](https://travis-ci.com/AnyChart/reference-engine.svg?token=ERMLfyrvWdA8g6gi11Vp&branch=staging)](https://travis-ci.com/AnyChart/reference-engine)
 
+## Set up 
+```
+1. Put api.anychart.com repository to data/repo folder
+2. Set nginx to route: data/versions-static -> http://domain/si
+3. Set up ts-tests to data/ to check TypeScript index.d.ts
+
+```
+
+
 ## Install dependencies
 ```
 # to build js
