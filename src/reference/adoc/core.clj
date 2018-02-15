@@ -97,10 +97,11 @@
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
 
-        ;(when (= (:name branch) "8.1.0")
+        ;(when (= (:name branch) "develop")
         ;  (ts/set-top-level! top-level)
         ;  (tern/set-top-level! top-level tree-data)
-        ;  (json-gen/set-top-level! top-level))
+        ;  (json-gen/set-top-level! top-level)
+        ;  )
 
         (info "categories order:" categories-order)
         (let [version (vdata/add-version jdbc
@@ -152,39 +153,39 @@
    queue-index]
   (try
     (let [repo-path (str data-dir "/repo/")
-         versions-path (str data-dir "/versions/")
-         versions-tmp (str data-dir "/versions-tmp/")]
-     (fs/mkdirs versions-path)
-     (fs/mkdirs versions-tmp)
-     (git/update git-ssh repo-path)
-     (let [actual-branches (actual-branches show-branches git-ssh repo-path)
-           removed-branches (remove-branches jdbc (map :name actual-branches) data-dir)
-           branches (filter-for-rebuild jdbc actual-branches)
-           branch-names (map :name branches)
-           latest-version-key (vdata/default jdbc branch-names)]
-       (doall (pmap #(git/checkout git-ssh repo-path % (str versions-path %)) branch-names))
-       (notifications/start-building notifier branch-names removed-branches queue-index)
-       (let [result (doall (map #(build-branch %
-                                               jdbc
-                                               notifier
-                                               git-ssh
-                                               data-dir
-                                               max-processes
-                                               jsdoc-bin
-                                               docs
-                                               playground
-                                               queue-index
-                                               latest-version-key)
-                                branches))]
-         ;(when (or (not-empty removed-branches)
-         ;          (not-empty branches))
-         ;  (notifications/start-database-refresh notifier)
-         ;  (search-data/refresh jdbc))
-         (fs/delete-dir versions-path)
-         (fs/delete-dir versions-tmp)
-         (if (some nil? result)
-           (notifications/complete-building-with-errors notifier branch-names queue-index)
-           (notifications/complete-building notifier branch-names removed-branches queue-index)))))
+          versions-path (str data-dir "/versions/")
+          versions-tmp (str data-dir "/versions-tmp/")]
+      (fs/mkdirs versions-path)
+      (fs/mkdirs versions-tmp)
+      (git/update git-ssh repo-path)
+      (let [actual-branches (actual-branches show-branches git-ssh repo-path)
+            removed-branches (remove-branches jdbc (map :name actual-branches) data-dir)
+            branches (filter-for-rebuild jdbc actual-branches)
+            branch-names (map :name branches)
+            latest-version-key (vdata/default jdbc branch-names)]
+        (doall (pmap #(git/checkout git-ssh repo-path % (str versions-path %)) branch-names))
+        (notifications/start-building notifier branch-names removed-branches queue-index)
+        (let [result (doall (map #(build-branch %
+                                                jdbc
+                                                notifier
+                                                git-ssh
+                                                data-dir
+                                                max-processes
+                                                jsdoc-bin
+                                                docs
+                                                playground
+                                                queue-index
+                                                latest-version-key)
+                                 branches))]
+          ;(when (or (not-empty removed-branches)
+          ;          (not-empty branches))
+          ;  (notifications/start-database-refresh notifier)
+          ;  (search-data/refresh jdbc))
+          (fs/delete-dir versions-path)
+          (fs/delete-dir versions-tmp)
+          (if (some nil? result)
+            (notifications/complete-building-with-errors notifier branch-names queue-index)
+            (notifications/complete-building notifier branch-names removed-branches queue-index)))))
     (catch Exception e
       (do (timbre/error e)
           (timbre/error (.getMessage e))

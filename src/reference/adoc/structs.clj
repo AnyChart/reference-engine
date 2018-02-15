@@ -128,7 +128,8 @@
    :has-description       (not (blank? (:description entry)))
    :full-name             (cleanup-name (:longname entry))
    :since                 (:since entry)
-   :has-since             (not (blank? (:since entry)))})
+   :has-since             (not (blank? (:since entry)))
+   :optional              (:optional entry)})
 
 (defn- get-example-link [base-path doclet file]
   (let [folder (clojure.string/replace (get-in doclet [:meta :path])

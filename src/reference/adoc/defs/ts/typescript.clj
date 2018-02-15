@@ -116,7 +116,7 @@
 
 
 (defn interface-prop [prop]
-  (str p8 (check-param (:name prop)) ": " (get-types (:type prop)) ";"))
+  (str p8 (check-optional prop (check-param (:name prop))) ": " (get-types (:type prop)) ";"))
 
 
 (defn interface-props [props]
@@ -126,7 +126,7 @@
 (defn typedef-declaration [typedef]
   (if (empty? (:properties typedef))
     (str p4 "type " (:name typedef) " = " (get-types (:type typedef)) ";")
-    (str p4 "interface " (:name typedef) " {\n"
+    (str p4 "type " (:name typedef) " = {\n"
          (interface-props (:properties typedef))
          "\n    }")))
 
@@ -259,7 +259,8 @@
 (defn test2 []
   (let [ts (generate-ts @top-level "develop" false)]
     (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" ts)
-    (spit "/media/ssd/work/TypeScript/typescript-example/typescript-example/src/anychart.d.ts" ts)))
+    (spit "/media/ssd/work/TypeScript/typescript-example/typescript-example/src/anychart.d.ts" ts)
+    (spit "/media/ssd/sibental/reference-engine-data/index.d.ts" ts)))
 
 
 (defn generate-ts-declarations [data-dir git-ssh version-key latest-version-key top-level notifier]
