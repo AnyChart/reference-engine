@@ -25,7 +25,8 @@
 
 (defn complete-building-with-errors [notifier branches queue-index & [e]]
   (slack/complete-building-with-errors notifier branches queue-index e)
-  (skype/complete-building-with-errors notifier branches queue-index e))
+  ;(skype/complete-building-with-errors notifier branches queue-index e)
+  )
 
 
 (defn start-version-building [notifier branch queue-index]
