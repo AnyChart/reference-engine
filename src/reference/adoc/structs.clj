@@ -447,17 +447,10 @@
                    (map #(create-function % doclets version base-path)
                         (get-static-functions doclets namespace))))))
 
-(defn- get-unique-namespaces [doclets]
-  (let [namespaces (get-doclets-by-kind doclets "namespace")]
-    (reduce (fn [res ns]
-              (if (some #(= (:longname %)
-                            (:longname ns))
-                        res)
-                res
-                (conj res ns)))
-            [] namespaces)))
 
-(defn- fix-class-names [class classes])
+(defn- get-unique-namespaces [doclets]
+  (distinct (get-doclets-by-kind doclets "namespace")))
+
 
 (defn structurize [doclets data-path version]
   (info "structurize doclets")
