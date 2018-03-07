@@ -11,6 +11,7 @@
             [reference.adoc.defs.ts.tree :as tree-ts]
             [reference.adoc.defs.tern :as tern]
             [reference.adoc.defs.json :as json-gen]
+            [reference.adoc.typedef-builder :as typedef-builder]
             [reference.adoc.categories :refer [parse-categories-order build-class-categories build-namespace-categories]]
             [reference.git :as git]
             [reference.data.versions :as vdata]
@@ -93,14 +94,19 @@
                         :classes (doall (map #(build-class-categories
                                                 % categories-order)
                                              (:classes inh-top-level))))
+            _ (timbre/info "START TYPEDEF BUILDER")
+            top-level-ts (typedef-builder/fix-typedef top-level true)
+            top-level (typedef-builder/fix-typedef top-level)
+            _ (timbre/info "STOP TYPEDEF BUILDER")
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
 
-        ;(when (= (:name branch) "develop")
+        ;(when (= (:name branch) "typedef-test")
         ;  (ts/set-top-level! top-level)
         ;  (tern/set-top-level! top-level tree-data)
         ;  (json-gen/set-top-level! top-level)
+        ;  (typedef-builder/set-top-level! top-level)
         ;  )
 
         (info "categories order:" categories-order)
@@ -127,7 +133,7 @@
                                                        git-ssh
                                                        (:name branch)
                                                        latest-version-key
-                                                       (tree-ts/modify top-level)
+                                                       (tree-ts/modify top-level-ts)
                                                        notifier)]
             (if (zero? (:exit ts-result))
               (do (notifications/complete-version-building notifier (:name branch) queue-index) true)

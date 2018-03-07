@@ -4,7 +4,9 @@
             [reference.git :refer [file-last-commit-date]]
             [clojure.string :refer [blank? join]]))
 
+
 (def id-counter (atom 0))
+
 
 (defn- get-relative-path [doclet base-path]
   (let [fname (-> doclet :meta :filename)
@@ -198,9 +200,76 @@
                    {} functions)))
     []))
 
+
+(defn- parse-function-return [ret version]
+  {:types       (get-in ret [:type :names])
+   :description (parse-description (:description ret) version)})
+
+
+(defn- parse-param-description [description version]
+  (if description
+    (parse-description description version)))
+
+
+(defn- reduce-to-param-default [description]
+  (reduce (fn [res c]
+            (let [c (str c)]
+              (cond
+                (and (nil? (:state res)) (clojure.string/blank? (str c))) res
+
+                (and (nil? (:state res)) (= c "["))
+                (assoc res
+                  :state :start-default
+                  :cnt 1
+                  :default ""
+                  :description "")
+
+                (and (= (:state res) :start-default) (= c "]"))
+                (if (= (:cnt res) 1)
+                  (assoc res :state :end-default)
+                  (-> res
+                      (update :default str c)
+                      (update :cnt dec)))
+
+                (and (= (:state res) :start-default) (= c "["))
+                (-> res
+                    (update :default str c)
+                    (update :cnt inc))
+
+                (= (:state res) :start-default) (update res :default str c)
+
+                :else (update res :description str c))))
+          {:state nil :default "" :description ""}
+          description))
+
+
+(defn- param-has-default? [param]
+  (and (:description param)
+       (re-find #"^\s*\[[^\]]*\]\s*" (:description param))))
+
+
+(defn- parse-function-param [param version]
+  (let [result {:name  (if (:name param) (clojure.string/replace (:name param) #"^opt_" ""))
+                :types (get-in param [:type :names])}
+        result-with-desc
+        (if (param-has-default? param)
+          (let [d (reduce-to-param-default (:description param))]
+            (assoc result :description (parse-param-description (:description d) version)
+                          :default (:default d)))
+          (assoc result :description (parse-param-description (:description param) version)))
+        result-with-optional (if (or (:optional param)
+                                     (and (:name param)
+                                          (.startsWith (:name param) "opt_")))
+                               (assoc result-with-desc :optional true)
+                               result-with-desc)]
+    result-with-optional))
+
+
+
 (defn- create-typedef-property [prop version]
   (assoc (parse-general prop version)
     :type (get-in prop [:type :names])))
+
 
 (defn- create-typedef [typedef doclets version base-path last-mod-cache]
   (let [path (get-relative-path typedef base-path)]
@@ -213,11 +282,15 @@
                                 (:properties typedef)))
       :has-properties (not (empty? (:properties typedef)))
       :type (get-in typedef [:type :names])
-      :has-types (> (count (get-in typedef [:type :names])) 1))))
+      :has-types (> (count (get-in typedef [:type :names])) 1)
+      :params (map #(parse-function-param % version) (:params typedef))
+      :returns (map #(parse-function-return % version) (:returns typedef)))))
+
 
 (defn- create-enum-field [doclet version base-path]
   (assoc (parse-examples-and-listing base-path (parse-general doclet version) doclet)
     :value (get-in doclet [:meta :code :value])))
+
 
 (defn- get-enum-fields [enum doclets version base-path]
   (sort-by :name
@@ -254,13 +327,9 @@
                                                                              (join "|" (-> const :type :names))))
                               const))
 
-(defn- parse-function-return [ret version]
-  {:types       (get-in ret [:type :names])
-   :description (parse-description (:description ret) version)})
 
-(defn- parse-param-description [description version]
-  (if description
-    (parse-description description version)))
+
+
 
 (defn- convert-code-to-list [code]
   (let [lines (clojure.string/split-lines code)]
@@ -269,56 +338,9 @@
       (str "<ul>" (reduce str (map #(str "<li>" % "</li>") lines)) "</ul>")))
   code)
 
-(defn- reduce-to-param-default [description]
-  (reduce (fn [res c]
-            (let [c (str c)]
-              (cond
-                (and (nil? (:state res)) (clojure.string/blank? (str c))) res
 
-                (and (nil? (:state res)) (= c "["))
-                (assoc res
-                  :state :start-default
-                  :cnt 1
-                  :default ""
-                  :description "")
 
-                (and (= (:state res) :start-default) (= c "]"))
-                (if (= (:cnt res) 1)
-                  (assoc res :state :end-default)
-                  (-> res
-                      (update :default str c)
-                      (update :cnt dec)))
 
-                (and (= (:state res) :start-default) (= c "["))
-                (-> res
-                    (update :default str c)
-                    (update :cnt inc))
-
-                (= (:state res) :start-default) (update res :default str c)
-
-                :else (update res :description str c))))
-          {:state nil :default "" :description ""}
-          description))
-
-(defn- param-has-default? [param]
-  (and (:description param)
-       (re-find #"^\s*\[[^\]]*\]\s*" (:description param))))
-
-(defn- parse-function-param [param version]
-  (let [result {:name  (if (:name param) (clojure.string/replace (:name param) #"^opt_" ""))
-                :types (get-in param [:type :names])}
-        result-with-desc
-        (if (param-has-default? param)
-          (let [d (reduce-to-param-default (:description param))]
-            (assoc result :description (parse-param-description (:description d) version)
-                          :default (:default d)))
-          (assoc result :description (parse-param-description (:description param) version)))
-        result-with-optional (if (or (:optional param)
-                                     (and (:name param)
-                                          (.startsWith (:name param) "opt_")))
-                               (assoc result-with-desc :optional true)
-                               result-with-desc)]
-    result-with-optional))
 
 (defn- function-has-params-defaults [params]
   (boolean (some #(:default %) params)))

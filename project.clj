@@ -22,7 +22,9 @@
                  [org.clojure/java.jdbc "0.6.1"]
                  [org.postgresql/postgresql "9.4.1208"]
                  [clojure.jdbc/clojure.jdbc-c3p0 "0.3.2"]
-                 [honeysql "0.9.1"]]
+                 [honeysql "0.9.1"]
+                 [com.rpl/specter "1.1.0"]
+                 [instaparse "1.4.8"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
   :plugins [[lein-ancient "0.6.10"]]
