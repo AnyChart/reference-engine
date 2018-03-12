@@ -94,10 +94,18 @@
                         :classes (doall (map #(build-class-categories
                                                 % categories-order)
                                              (:classes inh-top-level))))
-            _ (timbre/info "START TYPEDEF BUILDER")
+            _ (timbre/info "START TYPEDEF BUILDER"
+                           (count (:namespaces top-level))
+                           (count (:classes top-level))
+                           (count (:typedefs top-level))
+                           (count (:enums top-level)))
             top-level-ts (typedef-builder/fix-typedef top-level true)
             top-level (typedef-builder/fix-typedef top-level)
-            _ (timbre/info "STOP TYPEDEF BUILDER")
+            _ (timbre/info "STOP TYPEDEF BUILDER"
+                           (count (:namespaces top-level))
+                           (count (:classes top-level))
+                           (count (:typedefs top-level))
+                           (count (:enums top-level)))
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
@@ -187,8 +195,8 @@
           ;          (not-empty branches))
           ;  (notifications/start-database-refresh notifier)
           ;  (search-data/refresh jdbc))
-          (fs/delete-dir versions-path)
-          (fs/delete-dir versions-tmp)
+          ;(fs/delete-dir versions-path)
+          ;(fs/delete-dir versions-tmp)
           (if (some nil? result)
             (notifications/complete-building-with-errors notifier branch-names queue-index)
             (notifications/complete-building notifier branch-names removed-branches queue-index)))))
