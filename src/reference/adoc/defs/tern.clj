@@ -27,8 +27,13 @@
   (clojure.string/replace html #"<[^>]*>" ""))
 
 (defn description [object]
-  (-> (or (:short-description object) (:description object))
-      remove-tags))
+  (try
+    (-> (or (:short-description object) (:description object))
+       remove-tags)
+    (catch Exception e
+      (timbre/info "TERN ERROR: " )
+      (timbre/info object)
+      (timbre/info e))))
 
 (defn url [object settings]
   (str (:domain settings) (:version-key settings) "/" (:full-name object)))
