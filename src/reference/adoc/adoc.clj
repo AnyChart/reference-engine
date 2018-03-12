@@ -22,9 +22,7 @@
     (info "jsdoc run:" (vec (concat [jsdoc-path "-X" "-a" "public"])))
     (let [full-res (apply sh (vec (concat [jsdoc-path "-X"] (vec files))))
           res (:out full-res)]
-      (info "got res" (count res))
-      (when (:err full-res)
-        (info "err res" (:err full-res)))
+      (info "got res" (count res) (:err full-res))
       (parse-string
         (clojure.string/replace res
                                 "acgraph"

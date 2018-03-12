@@ -24,16 +24,11 @@
   (filter (fn [td] (some #(= % (:full-name td)) names)) (:typedefs top-level)))
 
 (defn remove-tags [html]
-  (clojure.string/replace html #"<[^>]*>" ""))
+  (if (seq html) (clojure.string/replace html #"<[^>]*>" "") ""))
 
 (defn description [object]
-  (try
-    (-> (or (:short-description object) (:description object))
-       remove-tags)
-    (catch Exception e
-      (timbre/info "TERN ERROR: " )
-      (timbre/info object)
-      (timbre/info e))))
+  (-> (or (:short-description object) (:description object))
+      remove-tags))
 
 (defn url [object settings]
   (str (:domain settings) (:version-key settings) "/" (:full-name object)))
