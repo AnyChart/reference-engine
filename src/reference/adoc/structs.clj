@@ -449,7 +449,18 @@
 
 
 (defn- get-unique-namespaces [doclets]
-  (distinct (get-doclets-by-kind doclets "namespace")))
+  (let [namespaces (get-doclets-by-kind doclets "namespace")
+        groups (vals (group-by :longname namespaces))
+        groups (filter (fn [g] (> (count g) 1)) groups)
+        names (map #(-> % first :longname) groups)]
+    (timbre/error "UNIQUE NAMESPACES MULTIPLE DECLARATIONS DETECTED: " (pr-str names))
+    (reduce (fn [res ns]
+              (if (some #(= (:longname %)
+                            (:longname ns))
+                        res)
+                res
+                (conj res ns)))
+            [] namespaces)))
 
 
 (defn structurize [doclets data-path version]
