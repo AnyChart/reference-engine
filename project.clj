@@ -24,7 +24,8 @@
                  [clojure.jdbc/clojure.jdbc-c3p0 "0.3.2"]
                  [honeysql "0.9.1"]
                  [com.rpl/specter "1.1.0"]
-                 [instaparse "1.4.8"]]
+                 [instaparse "1.4.8"]
+                 [toml "0.1.3"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
   :plugins [[lein-ancient "0.6.10"]]
