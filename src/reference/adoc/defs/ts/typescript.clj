@@ -2,7 +2,9 @@
   (:require [clojure.string :as s :refer [join]]
             [taoensso.timbre :as timbre :refer [info error]]
             [me.raynes.fs :as fs]
-            [reference.adoc.defs.ts.check :as ts-check]))
+            [reference.adoc.defs.ts.check :as ts-check]
+            [reference.adoc.defs.ts.type-parser :as type-parser]
+            [clojure.string :as string]))
 
 
 (defonce ^:const p4 "    ")
@@ -21,35 +23,50 @@
   (case param
     "function" "func"
     "this" "obj"
-    (clojure.string/replace param #"-" "")))
+    (string/replace param #"-" "")))
 
 
-(defn parse-object-type [t]
-  ; "Object.<string, (string|boolean)>" => "{[prop: string]: string|boolean}"
-  (if (.startsWith t "Object.<")
-    (if (.startsWith t "Object.<string,")
-      (if-let [m (re-matches #"Object\.<([^>,]*),\s*([^>]*)\>" t)]
-        (let [[_ key-type value-type] m]
-          (str "{[prop: " key-type "]: " value-type "}"))
-        (do
-          ;(prn t)
-          (str "{[prop: string]: " (clojure.string/trim (subs t 15 (dec (count t)))) "}")))
-      (parse-object-type (clojure.string/replace t #"Object\.<" "Object.<string, ")))
-    t))
+;(defn parse-object-type [t]
+;  ; "Object.<string, (string|boolean)>" => "{[prop: string]: string|boolean}"
+;  (if (.startsWith t "Object.<")
+;
+;    (if (.startsWith t "Object.<string,")
+;      (if-let [m (re-matches #"Object\.<([^>,]*),\s*([^>]*)\>" t)]
+;        (let [[_ key-type value-type] m]
+;          (str "{[prop: " key-type "]: " value-type "}"))
+;        (do
+;          ;(prn t)
+;          (str "{[prop: string]: " (clojure.string/trim (subs t 15 (dec (count t)))) "}")))
+;
+;      (parse-object-type (clojure.string/replace t #"Object\.<" "Object.<string, ")))
+;    t))
+
+
+;(defn get-type [t]
+;  (let [t (parse-object-type (clojure.string/replace t #"\|undefined" ""))]
+;    (case t
+;      "function" "(() => void)"
+;      "Array" "Array<any>"
+;      (-> t
+;          (s/replace #"function\(\)" "Function")
+;          (s/replace #"scope" "any")
+;          (s/replace #"\*" "any")
+;          (s/replace #"Array\." "Array")
+;          (s/replace #"!" "")
+;          (s/replace #"\|null" "")))))
+
 
 
 (defn get-type [t]
-  (let [t (parse-object-type (clojure.string/replace t #"\|undefined" ""))]
-    (case t
-      "function" "(() => void)"
-      "Array" "Array<any>"
-      (-> t
-          (s/replace #"function\(\)" "Function")
-          (s/replace #"scope" "any")
-          (s/replace #"\*" "any")
-          (s/replace #"Array\." "Array")
-          (s/replace #"!" "")
-          (s/replace #"\|null" "")))))
+  (-> t
+      (s/replace #"function\(\)" "Function")
+      (s/replace #"scope" "any")
+      (s/replace #"\*" "any")
+      (s/replace #"!" "")
+      (s/replace #"\|null" "")
+      (s/replace #"\|undefined" "")
+      (s/replace #"\s+" "")
+      type-parser/jsdoc->ts))
 
 
 (defn get-types [types]

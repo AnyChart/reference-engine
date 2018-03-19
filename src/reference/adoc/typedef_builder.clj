@@ -82,6 +82,8 @@
     ;(prn (count typedefs))
     ;(prn (count function-typedefs))
 
-    (transform [:classes ALL :methods ALL :overrides ALL :params ALL :types ALL] typedef-transform-fn top-level)))
+    (assoc
+      (transform [:classes ALL :methods ALL :overrides ALL :params ALL :types ALL] typedef-transform-fn top-level)
+      :typedefs typedefs)))
 
 
