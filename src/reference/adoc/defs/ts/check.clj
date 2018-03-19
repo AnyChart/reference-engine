@@ -10,6 +10,7 @@
 (defn check-ts-file [file-name]
   (timbre/info "TypeScript check: tsc")
   (let [{:keys [exit out err] :as result} (shell/sh "/bin/bash" "-c" (str " tsc --noImplicitAny " file-name))]
+    (prn result)
     result))
 
 
