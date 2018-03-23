@@ -16,12 +16,12 @@ after_success:
 - echo "Deploying to $SERVER"
 - mv .travis/known_hosts ~/.ssh/known_hosts
 - mv .travis/id_rsa.pub ~/.ssh/id_rsa.pub
-- chmod 600 ~/.ssh/known_hosts
-- chmod 600 ~/.ssh/id_rsa
-- chmod 600 ~/.ssh/id_rsa.pub
+- chmod 400 ~/.ssh/known_hosts
+- chmod 400 ~/.ssh/id_rsa
+- chmod 400 ~/.ssh/id_rsa.pub
 - ssh-add ~/.ssh/id_rsa
-- scp -i ~/.ssh/id_rsa target/reference-3.0.0-standalone.jar root@104.236.66.244:/apps/$APP/reference-3.0.0-standalone.jar
-- scp -i ~/.ssh/id_rsa target/reference-3.0.0-standalone.jar root@104.131.17.78:/apps/$APP/reference-3.0.0-standalone.jar
+- scp target/reference-3.0.0-standalone.jar root@104.236.66.244:/apps/$APP/reference-3.0.0-standalone.jar
+- scp target/reference-3.0.0-standalone.jar root@104.131.17.78:/apps/$APP/reference-3.0.0-standalone.jar
 - ssh root@104.236.66.244 "supervisorctl restart $APP"
 - ssh root@104.131.17.78 "supervisorctl restart $APP"
 notifications:
