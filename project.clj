@@ -19,10 +19,10 @@
                  [com.taoensso/timbre "4.10.0"]
                  ;; databases
                  [com.taoensso/carmine "2.11.1"]
-                 [org.clojure/java.jdbc "0.6.1"]
+                 [org.clojure/java.jdbc "0.7.5"]
                  [org.postgresql/postgresql "9.4.1208"]
-                 [clojure.jdbc/clojure.jdbc-c3p0 "0.3.2"]
-                 [honeysql "0.9.1"]
+                 [clojure.jdbc/clojure.jdbc-c3p0 "0.3.3"]
+                 [honeysql "0.9.2"]
                  [com.rpl/specter "1.1.0"]
                  [instaparse "1.4.8"]
                  [toml "0.1.3"]]
