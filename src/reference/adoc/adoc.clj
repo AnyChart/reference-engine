@@ -3,7 +3,9 @@
             [cheshire.core :refer [parse-string]]
             [clojure.java.shell :refer [sh]]
             [clojure.java.io :refer [file]]
-            [taoensso.timbre :as timbre :refer [info]]))
+            [taoensso.timbre :as timbre :refer [info]]
+            [clojure.string :as string]))
+
 
 (defn- get-all-files-by-ext [path extension]
   (let [res (doall (map #(.getAbsolutePath %)
@@ -14,8 +16,10 @@
     (info "get-all-js-files" path "count:" (count res))
     res))
 
+
 (defn- group-files [groups files]
   (doall (partition-all (/ (count files) groups) files)))
+
 
 (defn- build-jsdoc [jsdoc-path files]
   (when (seq files)
@@ -24,16 +28,18 @@
           res (:out full-res)]
       (info "got res" (count res) (:err full-res))
       (parse-string
-        (clojure.string/replace res
-                                "acgraph"
-                                "anychart.graphics")
+        (string/replace res
+                        "acgraph"
+                        "anychart.graphics")
         true))))
+
 
 (defn- get-jsdoc [max-groups jsdoc-path path]
   (info "get-jsdoc" path max-groups jsdoc-path)
   (let [groups (group-files max-groups (get-all-files-by-ext path "adoc.js"))]
     (info "groups:" (count groups))
     (apply concat (doall (pmap #(build-jsdoc jsdoc-path %) groups)))))
+
 
 (defn- convert-to-jsdoc [src-path jsdoc-path]
   (info "convert-to-jsdoc" src-path jsdoc-path)
@@ -42,10 +48,8 @@
   (doall (map (fn [path] (sh "cp" path (str path ".js")))
               (get-all-files-by-ext jsdoc-path "adoc"))))
 
-(defn- ignored? [doclet]
-  (some (fn [tag] (= (:originalTitle tag) "ignoreDoc")) (:tags doclet)))
 
-(defn get-doclets [data-dir max-groups jsdoc-bin version]
+(defn get-all-doclets [data-dir max-groups jsdoc-bin version]
   (info "get-doclets" version jsdoc-bin)
   (let [src-path (str data-dir "/versions/" version)
         jsdoc-path (str data-dir "/versions-tmp/" version)]
@@ -56,6 +60,13 @@
                                          (= (:access %) "protected")
                                          (= (:access %) "inner")))
                                 (not (:undocumented %))
-                                (not (:inherited %))
-                                (not (ignored? %))) jsdocs)]
+                                (not (:inherited %))) jsdocs)]
       doclets)))
+
+
+(defn- ignored? [doclet]
+  (some (fn [tag] (= (:originalTitle tag) "ignoreDoc")) (:tags doclet)))
+
+
+(defn get-not-ignored-doclets [doclets]
+  doclets (filter #(not (ignored? %)) doclets))

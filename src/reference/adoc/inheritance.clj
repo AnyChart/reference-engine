@@ -116,7 +116,11 @@
   (map #(set-default-expand-method-override* % (map :full-name classes)) classes))
 
 
-(defn build-inheritance [classes]
-  (info "build-inheritance")
+(defn update-classes [classes]
   (let [new-classes (map #(build-class-inheritance % classes) classes)]
     (set-default-expand-method-override new-classes)))
+
+
+(defn build-inheritance [raw-top-level]
+  (info "Build inheritance")
+  (update raw-top-level :classes update-classes))

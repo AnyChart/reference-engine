@@ -1,4 +1,5 @@
-(ns reference.adoc.defs.ts.tree)
+(ns reference.adoc.defs.ts.tree
+  (:require [com.rpl.specter :refer :all]))
 
 
 (defn class-by-name [name classes]
@@ -23,28 +24,17 @@
 
 
 (defn update-self-methods [class-name class-methods parent-names]
-  (map (fn [method]
-         (update method :overrides
-                 (fn [overrides]
-                   (map (fn [override]
-                          (update override :returns
-                                  (fn [returns]
-                                    (map (fn [return]
-                                           (update return :types
-                                                   (fn [types]
-                                                     (map (fn [type]
-                                                            (if (need-replace? type parent-names)
-                                                              class-name
-                                                              type))
-                                                          types))))
-                                         returns))))
-                        overrides))))
-       class-methods))
+  (transform [ALL :overrides ALL :returns ALL :types ALL]
+             (fn [type]
+               (if (need-replace? type parent-names)
+                 class-name
+                 type))
+             class-methods))
 
 
 (defn combine-methods [methods parent-methods]
   (let [new-methods (filter (fn [parent-method]
-                              (not (some #(= (:name parent-methods)
+                              (not (some #(= (:name parent-method)
                                              (:name %))
                                          methods)))
                             parent-methods)]

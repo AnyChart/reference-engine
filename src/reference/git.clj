@@ -1,7 +1,7 @@
 (ns reference.git
   (:require [clojure.java.shell :refer [sh with-sh-env with-sh-dir]]
-            [clojure.string :refer [split]]
-            [taoensso.timbre :as timbre :refer [info error]]))
+            [taoensso.timbre :as timbre :refer [info error]]
+            [clojure.string :as string]))
 
 (defn run-sh [& command]
   (apply sh command))
@@ -12,7 +12,7 @@
                (let [res (sh "git" "--no-pager" "log" "-1" "--format=%ct" "--" (str base-path path))]
                  (-> res
                      :out
-                     (clojure.string/trim)
+                     (string/trim)
                      read-string))))
 
 (defn- run-git [git-ssh path & command]
@@ -47,13 +47,13 @@
   (run-git git-ssh target-path "pull" "origin" version))
 
 (defn remote-branches [git-ssh path pred]
-  (let [raw-lines (split (run-git git-ssh path "branch" "-r" "--format='%(refname:short)|-|%(objectname)|-|%(authorname)|-|%(contents:subject)'") #"\n")
-        lines (map #(clojure.string/replace % #"'" "") raw-lines)
+  (let [raw-lines (string/split (run-git git-ssh path "branch" "-r" "--format='%(refname:short)|-|%(objectname)|-|%(authorname)|-|%(contents:subject)'") #"\n")
+        lines (map #(string/replace % #"'" "") raw-lines)
         filtered-lines (filter (fn [s] (and (some? s)
                                             (not (.contains s "origin/HEAD"))
                                             (pred s))) lines)
         branches (map (fn [s]
-                        (let [[raw-name commit author message] (clojure.string/split s #"\|-\|")]
+                        (let [[raw-name commit author message] (string/split s #"\|-\|")]
                           {:name    (last (re-matches #"origin/(.+)" raw-name))
                            :commit  commit
                            :author  author

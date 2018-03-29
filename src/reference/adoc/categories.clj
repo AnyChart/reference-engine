@@ -1,16 +1,21 @@
 (ns reference.adoc.categories
   (:require [taoensso.timbre :as timbre :refer [info]]
-            [clojure.java.io :refer [file]]))
+            [com.rpl.specter :refer :all]
+            [clojure.java.io :refer [file]]
+            [clojure.string :as string]))
+
 
 (def uncategorized "Miscellaneous")
+
 
 (defn- assoc-category-id [category]
   (if (:name category)
     (assoc category :id (-> (:name category)
-                            (clojure.string/replace #" " "-")
-                            (clojure.string/replace #"/" "-")
+                            (string/replace #" " "-")
+                            (string/replace #"/" "-")
                             (.toLowerCase)))
     category))
+
 
 (defn- get-method-category [method]
   (doall (reduce (fn [res override]
@@ -18,11 +23,13 @@
                      (conj res (:category override))
                      res)) #{} (:overrides method))))
 
+
 (defn- get-class-categories [methods]
   (doall (reduce (fn [res method]
                    (let [categories (filter some? (map get-method-category method))]
                      (concat res categories)))
                  #{} methods)))
+
 
 (defn- get-namespace-categories [functions]
   (doall (reduce (fn [res func]
@@ -30,6 +37,7 @@
                      (conj res (:category func))
                      res))
                  #{} functions)))
+
 
 (defn- categorize-namespace-functions [members]
   (doall (map (fn [[k v]] v)
@@ -45,6 +53,7 @@
                       {}
                       members))))
 
+
 (defn- group-members-by-name [members]
   (doall (reduce (fn [res member]
                    (let [name (:name member)
@@ -52,10 +61,12 @@
                      (assoc res name (conj group member))))
                  {} members)))
 
+
 (defn- find-member-with-short-description [group]
   (if-let [member (first (filter #(:has-short-description %) group))]
     member
     (first group)))
+
 
 (defn- find-category-short-descriptions [category]
   (let [grouped-members (group-members-by-name (:members category))]
@@ -64,8 +75,10 @@
                               (conj res (find-member-with-short-description group)))
                             [] grouped-members))))
 
+
 (defn- update-class-methods-categories [categories]
   (doall (map find-category-short-descriptions categories)))
+
 
 (defn- add-overrides-categories [overrides]
   (let [categories (reduce (fn [res override]
@@ -81,6 +94,7 @@
                        :category category))
                   overrides))
       overrides)))
+
 
 (defn- categorize-class-methods [class]
   (update-class-methods-categories
@@ -99,12 +113,13 @@
                         {}
                         (:methods class))))))
 
+
 (defn- get-categories-order [config]
-  (let [raw (clojure.string/split-lines config)
+  (let [raw (string/split-lines config)
         raw-categories (map #(-> %
-                                 (clojure.string/trim-newline)
-                                 (clojure.string/trim)) raw)
-        categories (filter #(not (clojure.string/blank? %)) raw-categories)]
+                                 (string/trim-newline)
+                                 (string/trim)) raw)
+        categories (filter #(not (string/blank? %)) raw-categories)]
     (doall
       (reduce (fn [res val]
                 (assoc res (:name val) (:index val)))
@@ -114,12 +129,16 @@
                               :index idx})
                            categories)))))
 
+
 (defn parse-categories-order [data-dir branch]
   (info "categories file path" (str data-dir "/versions/" branch "/categories"))
   (-> (if (.exists (file (str data-dir "/versions/" branch "/categories")))
         (get-categories-order (slurp (str data-dir "/versions/" branch "/categories")))
         {})
       (assoc uncategorized 9999999)))
+
+
+
 
 (defn sort-categories [categories sorting]
   (->> categories
@@ -131,11 +150,14 @@
        (sort-by (juxt :index :name))
        (map #(dissoc % :index))))
 
+
 (defn- sort-members [categories]
   (map #(assoc % :members (sort-by :name (:members %))) categories))
 
+
 (defn- assoc-categories-id [categories]
   (doall (map assoc-category-id categories)))
+
 
 (defn build-class-categories [class sorting]
   (let [categories (get-class-categories (:methods class))
@@ -148,6 +170,7 @@
                         (sort-members)))
       :has-categories has-categories)))
 
+
 (defn build-namespace-categories [namespace sorting]
   (let [categories (get-namespace-categories (:functions namespace))
         has-categories (boolean (seq categories))]
@@ -158,3 +181,9 @@
                         (sort-categories sorting)
                         (sort-members)))
       :has-categories has-categories)))
+
+
+(defn categorize [inh-top-level categories-order]
+  (->> inh-top-level
+       (transform [:namespaces ALL] #(build-namespace-categories % categories-order))
+       (transform [:classes ALL] #(build-class-categories % categories-order))))

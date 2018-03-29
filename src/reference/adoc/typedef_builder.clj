@@ -1,7 +1,8 @@
 (ns reference.adoc.typedef-builder
   (:require [reference.adoc.defs.ts.typescript :as ts]
             [com.rpl.specter :refer :all]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [taoensso.timbre :as timbre]))
 
 
 ;; for developing
@@ -54,6 +55,11 @@
 
 
 (defn fix-typedef [top-level & [is-ts]]
+  (timbre/info "Fix function typedefs"
+               (count (:namespaces top-level))
+               (count (:classes top-level))
+               (count (:typedefs top-level))
+               (count (:enums top-level)))
   (let [all-typedefs (:typedefs top-level)
         group-typedefs (group-by (fn [typedef]
                                    (= function-type

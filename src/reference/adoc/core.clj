@@ -1,8 +1,8 @@
 (ns reference.adoc.core
   (:require [clojure.java.io :refer [file]]
-            [reference.adoc.adoc :refer [get-doclets]]
+            [reference.adoc.adoc :as adoc]
             [reference.adoc.structs :refer [structurize]]
-            [reference.adoc.inheritance :refer [build-inheritance]]
+            [reference.adoc.inheritance :as inh]
             [reference.adoc.saver :refer [save-entries]]
             [reference.adoc.tree :refer [generate-tree]]
             [reference.adoc.search :refer [generate-search-index]]
@@ -12,7 +12,7 @@
             [reference.adoc.defs.tern :as tern]
             [reference.adoc.defs.json :as json-gen]
             [reference.adoc.typedef-builder :as typedef-builder]
-            [reference.adoc.categories :refer [parse-categories-order build-class-categories build-namespace-categories]]
+            [reference.adoc.categories :as categories]
             [reference.git :as git]
             [reference.data.versions :as vdata]
             [reference.data.pages :as pdata]
@@ -75,6 +75,25 @@
     {:samples true}))
 
 
+(defn build-typescript [data-dir
+                        git-ssh
+                        branch
+                        latest-version-key
+                        notifier
+                        all-doclets
+                        categories-order]
+  (let [raw-top-level (structurize all-doclets data-dir (:name branch))
+        inh-top-level (inh/build-inheritance raw-top-level)
+        top-level (categories/categorize inh-top-level categories-order)
+        top-level-ts (typedef-builder/fix-typedef top-level true)]
+    (ts/generate-ts-declarations data-dir
+                                 git-ssh
+                                 (:name branch)
+                                 latest-version-key
+                                 (tree-ts/modify top-level-ts)
+                                 notifier)))
+
+
 (defn build-branch
   [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground queue-index latest-version-key]
   (try
@@ -82,22 +101,13 @@
       (info "building" branch)
       (notifications/start-version-building notifier branch queue-index)
 
-      (let [categories-order (parse-categories-order data-dir (:name branch))
-            doclets (get-doclets data-dir max-processes jsdoc-bin (:name branch))
+      (let [categories-order (categories/parse-categories-order data-dir (:name branch))
+            all-doclets (adoc/get-all-doclets data-dir max-processes jsdoc-bin (:name branch))
+            doclets (adoc/get-not-ignored-doclets all-doclets)
             raw-top-level (structurize doclets data-dir (:name branch))
-            inh-top-level (assoc raw-top-level
-                            :classes (build-inheritance (:classes raw-top-level)))
-            top-level (assoc inh-top-level
-                        :namespaces (doall (map #(build-namespace-categories
-                                                   % categories-order)
-                                                (:namespaces inh-top-level)))
-                        :classes (doall (map #(build-class-categories
-                                                % categories-order)
-                                             (:classes inh-top-level))))
-            _ (timbre/info "START TYPEDEF BUILDER" (count (:namespaces top-level)) (count (:classes top-level)) (count (:typedefs top-level)) (count (:enums top-level)))
-            top-level-ts (typedef-builder/fix-typedef top-level true)
+            inh-top-level (inh/build-inheritance raw-top-level)
+            top-level (categories/categorize inh-top-level categories-order)
             top-level (typedef-builder/fix-typedef top-level)
-            _ (timbre/info "STOP TYPEDEF BUILDER" (count (:namespaces top-level)) (count (:classes top-level)) (count (:typedefs top-level)) (count (:enums top-level)))
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
@@ -129,12 +139,7 @@
 
           (json-gen/generate data-dir (:name branch) latest-version-key top-level)
 
-          (let [ts-result (ts/generate-ts-declarations data-dir
-                                                       git-ssh
-                                                       (:name branch)
-                                                       latest-version-key
-                                                       (tree-ts/modify top-level-ts)
-                                                       notifier)]
+          (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order)]
             (if (zero? (:exit ts-result))
               (do (notifications/complete-version-building notifier (:name branch) queue-index) true)
               (notifications/build-failed notifier (:name branch) queue-index nil ts-result))))))
