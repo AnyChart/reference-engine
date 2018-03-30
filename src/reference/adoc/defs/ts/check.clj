@@ -21,9 +21,9 @@
                              (string/ends-with? (.getName file) ".ts")
                              (not (string/ends-with? (.getName file) ".d.ts"))))
                       files)
-        result (map (fn [file]
-                      (shell/sh "/bin/bash" "-c" (str " tsc --noEmit true " file)))
-                    files)
+        result (doall (map (fn [file]
+                             (shell/sh "/bin/bash" "-c" (str " tsc --noEmit true " file)))
+                           files))
         result (filter (fn [res] (not (zero? (:exit res)))) result)
 
         ;result (map (fn [res]
@@ -46,6 +46,9 @@
         dir (str data-dir "/ts-tests-" version-key)]
     (git/update git-ssh tests-dir)
     (git/pull git-ssh tests-dir)
+    (git/clean git-ssh tests-dir)
+    (shell/with-sh-dir tests-dir
+                       (shell/sh "/bin/bash" "-c" (str " npm install")))
     (fs/copy-dir tests-dir dir)
     (fs/copy file-name (str dir "/index-develop.d.ts"))
     (let [result (run-tests dir)]

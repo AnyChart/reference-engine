@@ -28,6 +28,11 @@
 (defn pull [git-ssh repo]
   (run-git git-ssh repo "pull"))
 
+(defn clean
+  "Remove all ignored, untracked files and directories"
+  [git-ssh repo]
+  (run-git git-ssh repo "clean" "-fxd"))
+
 (defn update-samples [git-ssh repo branch]
   (run-git git-ssh repo "checkout" "--" "*")
   (run-git git-ssh repo "fetch" "-p")

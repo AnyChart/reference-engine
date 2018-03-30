@@ -33,3 +33,4 @@ secrets.tar
 id_rsa_prod
 id_rsa
 .travis/id_rsa
+package-lock.json
