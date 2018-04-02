@@ -22,7 +22,7 @@
                              (not (string/ends-with? (.getName file) ".d.ts"))))
                       files)
         result (doall (map (fn [file]
-                             (shell/sh "/bin/bash" "-c" (str " tsc --noEmit true " file)))
+                             (shell/sh "/bin/bash" "-c" (str " tsc --noEmit true \"" file "\"")))
                            files))
         result (filter (fn [res] (not (zero? (:exit res)))) result)
 
