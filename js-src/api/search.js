@@ -470,10 +470,10 @@ api.search.search_ = function (query) {
     });
     $("html").click(api.search.hide);
 
-    $("#search").click(function() {
+    $("#search-input").click(function() {
         return false;
     });
-    $("#search").focus(function() {
+    $("#search-input").focus(function() {
         if( $(this).val() != ''){
             $("#search-results-new").show();
         }
@@ -481,12 +481,12 @@ api.search.search_ = function (query) {
 
     var timeout = null;
     var query = "";
-    $("#search").keyup(function(e) {
+    $("#search-input").keyup(function(e) {
         if (e.keyCode == 27) { //esc
             api.search.hide();
-            $("#search").val('');
+            $("#search-input").val('');
         }else {
-            var newQuery = $("#search").val();
+            var newQuery = $("#search-input").val();
             if (newQuery != query) {
                 query = newQuery;
                 if (timeout !== null) {
@@ -539,7 +539,7 @@ api.search.openSearchResult_ = function () {
     var elems = $("#search-results-new li a");
     if (elems.length) {
         $(elems[api.search.searchIndex_]).trigger('click');
-        $("#search").blur();
+        $("#search-input").blur();
     }
 };
 
@@ -555,13 +555,13 @@ api.search.onLoad_ = function (data) {
     });
     $("html").click(api.search.hide);
 
-    $("#search").click(function () {
+    $("#search-input").click(function () {
         return false;
     });
-    $("#search").focus(function () {
+    $("#search-input").focus(function () {
         api.search.search_($(this).val().trim());
     });
-    $("#search").keydown(function (e) {
+    $("#search-input").keydown(function (e) {
         switch (e.keyCode) {
             case 13:
                 e.preventDefault();
@@ -574,7 +574,7 @@ api.search.onLoad_ = function (data) {
                 break;
         }
     });
-    $("#search").keyup(function (e) {
+    $("#search-input").keyup(function (e) {
         switch (e.keyCode) {
             case 13:
                 e.preventDefault();
@@ -582,7 +582,7 @@ api.search.onLoad_ = function (data) {
                 break;
             case 27:
                 api.search.hide();
-                $("#search").val('');
+                $("#search-input").val('');
                 break;
             case 38:
                 e.preventDefault();
@@ -602,7 +602,7 @@ api.search.setSearchPage = function () {
     var searchArr = /entry=([^&]+)/.exec(window.location.href);
     if (searchArr && searchArr.length >= 2) {
         var searchString = searchArr[1];
-        $("#search").val(searchString);
+        $("#search-input").val(searchString);
         api.search.search_(searchString);
 
         var container = "classes";
