@@ -8,11 +8,6 @@
             [clj-time.coerce :as c]
             [clj-time.format :as f]))
 
-;; create table sitemap (
-;;  page_url varchar(255),
-;;  version_id integer references versions(id),
-;;  last_modified bigint
-;; );
 
 (def formatter (f/formatter "YYYY-MM-dd'T'hh:mm:ss'Z'"))
 

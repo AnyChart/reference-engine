@@ -4,16 +4,6 @@
             [honeysql.helpers :refer :all]
             [cheshire.core :refer [generate-string parse-string]]))
 
-;; CREATE SEQUENCE version_id_seq;
-;; CREATE TABLE versions (
-;;    id integer PRIMARY KEY DEFAULT nextval('version_id_seq'),
-;;    key varchar(255) not NULL,
-;;    commit varchar(40) not NULL,
-;;    hidden BOOLEAN DEFAULT FALSE,
-;;    tree TEXT,
-;;    search TEXT,
-;;    show_samples BOOLEAN DEFAULT TRUE
-;; );
 
 (defn add-version [jdbc key commit tree search show-samples]
   (first (insert! jdbc :versions {:key          key
