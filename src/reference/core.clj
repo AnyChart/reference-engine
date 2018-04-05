@@ -11,7 +11,7 @@
   (:gen-class))
 
 
-(defn dev-system [config]
+(defn all-system [config]
   (component/system-map
     :notifier (notifier/new-notifier (:notifications config))
     :jdbc (jdbc/new-jdbc (:jdbc config))
@@ -46,23 +46,15 @@
 ;; psql -p5432 -d reference_db -U reference_user -W
 
 
-(def all-config nil)
-
 (def config nil)
 
-(def stg-config nil)
 
-(def prod-config)
-
-
-(defn set-configs [config-path]
-  (alter-var-root #'all-config (constantly (toml/read (slurp config-path) :keywordize)))
-  (alter-var-root #'config (constantly (-> all-config :base)))
-  (alter-var-root #'stg-config (constantly (utils/deep-merge config (:stg all-config))))
-  (alter-var-root #'prod-config (constantly (utils/deep-merge config (:prod all-config)))))
+(defn set-config [config-path]
+  (let [config-data (toml/read (slurp config-path) :keywordize)]
+    (alter-var-root #'config (constantly config-data))))
 
 
-(def dev (dev-system config))
+(def dev (all-system config))
 
 
 (defn start []
@@ -74,17 +66,11 @@
 
 
 (defn -main
-  ([] (println "dev backend|stg frontend|stg backend|com frontend|com backend"))
+  ([] (println "all|backend|frontend config-path"))
   ([mode config-path]
-   (set-configs config-path)
-   (if (= mode "dev")
-     (component/start (dev-system config))
-     (timbre/info "Unknown mode")))
-  ([domain mode config-path]
-   (set-configs config-path)
+   (set-config config-path)
    (cond
-     (and (= domain "stg") (= mode "frontend")) (component/start (frontend-system stg-config))
-     (and (= domain "stg") (= mode "backend")) (component/start (generator-system stg-config))
-     (and (= domain "com") (= mode "frontend")) (component/start (frontend-system prod-config))
-     (and (= domain "com") (= mode "backend")) (component/start (generator-system prod-config))
-     :else (timbre/info "Unknown domain or mode"))))
+     (= mode "all") (component/start (all-system config))
+     (= mode "frontend") (component/start (frontend-system config))
+     (= mode "backend") (component/start (generator-system config))
+     :else (timbre/info "Unknown mode"))))
