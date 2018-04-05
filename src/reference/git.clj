@@ -22,6 +22,9 @@
                               (println command res)
                               (:out res)))))
 
+(defn current-commit [git-ssh path]
+  (subs (run-git git-ssh path "rev-parse" "HEAD") 0 7))
+
 (defn update [git-ssh repo]
   (run-git git-ssh repo "fetch" "-p"))
 

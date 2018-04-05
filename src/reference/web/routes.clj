@@ -16,6 +16,9 @@
             [cheshire.core :refer [generate-string]]
             [reference.web.data :as wdata]))
 
+(defn- config [request]
+  (-> request :component :config))
+
 (defn- static-version [request]
   (-> request :component :config :static))
 
@@ -89,6 +92,7 @@
                                                 :version  (:key version)})
                   :link           #(str "/" (:key version) "/" %)
                   :title          "AnyChart API Reference"
+                  :commit         (:commit (config request))
                   :is-url-version false})))
 
 

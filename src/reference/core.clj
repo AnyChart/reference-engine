@@ -7,8 +7,22 @@
             [com.stuartsierra.component :as component]
             [reference.util.utils :as utils]
             [toml.core :as toml]
-            [taoensso.timbre :as timbre])
+            [taoensso.timbre :as timbre]
+            [reference.git :as git])
   (:gen-class))
+
+
+(defn git-commit []
+  (try
+    (git/current-commit "/apps/keys/git" (.getAbsolutePath (clojure.java.io/file "")))
+    (catch Exception _ (quot (System/currentTimeMillis) 1000))))
+
+
+(defmacro parse-data-compile-time []
+  `'~(git-commit))
+
+
+(def commit (parse-data-compile-time))
 
 
 (defn all-system [config]
@@ -49,9 +63,14 @@
 (def config nil)
 
 
+(defn update-config [conf]
+  (-> conf
+      (assoc-in [:web :commit] commit)))
+
+
 (defn set-config [config-path]
   (let [config-data (toml/read (slurp config-path) :keywordize)]
-    (alter-var-root #'config (constantly config-data))))
+    (alter-var-root #'config (constantly (update-config config-data)))))
 
 
 (def dev (all-system config))
