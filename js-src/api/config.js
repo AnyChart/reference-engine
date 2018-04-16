@@ -21,5 +21,6 @@ api.config.scrollSettings = (function() {
             enable: true,
             scrollAmount: scrollKeyAmount,
             scrollType: 'stepless'
-        }};
+        }
+    };
 })();

@@ -7,13 +7,13 @@ goog.require('api.search');
  */
 api.resize.hiddenMenuSize_ = 30;
 
-/** 
+/**
  * @private
  * @type {Number}
  */
 api.resize.visibleMenuSize_ = 300;
 
-/** 
+/**
  * @private
  * @type {boolean}
  */
@@ -33,7 +33,7 @@ api.resize.stopResize_ = function(e) {
  * @param {Event} e
  */
 api.resize.doResize_ = function(e) {
-    if (e.pageX > 250 &&  e.pageX < window.innerWidth - 300) {
+    if (e.pageX > 250 && e.pageX < window.innerWidth - 300) {
         $('#menu-bar').css('width', e.pageX);
         $('#content-wrapper')
             .css('margin-left', e.pageX)
@@ -43,14 +43,14 @@ api.resize.doResize_ = function(e) {
     return false;
 };
 
-/** 
+/**
  * @private
  * @param {Event} e
  */
 api.resize.startResize_ = function(e) {
     $("body").on("mouseup", api.resize.stopResize_);
     $("body").on("mousemove", api.resize.doResize_);
-    
+
     return false;
 };
 
@@ -62,7 +62,7 @@ api.resize.hideSidebar_ = function(animate) {
     api.resize.sidebarVisible_ = false;
 
     var w = api.resize.hiddenMenuSize_;
-    if (animate){
+    if (animate) {
         $('#menu-bar').animate({width: w}, 300);
         $('#content-wrapper').animate({marginLeft: w, width: window.innerWidth - w}, 300);
         $('#search-form').animate({opacity: 0}, 200);
@@ -83,7 +83,7 @@ api.resize.hideSidebar_ = function(animate) {
     api.tree.disableScrolling();
 };
 
-/** 
+/**
  * @private
  * @param {booelan} animate
  */
@@ -91,8 +91,8 @@ api.resize.showSidebar_ = function(animate) {
     api.resize.sidebarVisible_ = true;
 
     var w = api.resize.visibleMenuSize_;
-    
-    if (animate){
+
+    if (animate) {
         $('#menu-bar').animate({width: w}, w);
         $('#content-wrapper').animate({marginLeft: w, width: window.innerWidth - w}, w);
         $('.breadcrumb').animate({left: w}, w);
@@ -106,7 +106,7 @@ api.resize.showSidebar_ = function(animate) {
     $('#footer').css('opacity', 1);
     $('a.switcher .ac').attr('class', 'ac ac-chevron-left-thick');
     $('#size-controller').css('cursor', 'col-resize');
-    
+
     api.tree.updateScrolling();
 };
 
@@ -124,7 +124,7 @@ api.resize.toggleSidebar_ = function() {
 api.resize.contentSize_ = function() {
     if (window.innerWidth < 992) {
         api.resize.hideSidebar_(false);
-    }else {
+    } else {
         api.resize.showSidebar_(false);
         $('#content-wrapper').css('width', window.innerWidth - 300).css('margin-left', 300);
         $('.breadcrumb').css('left', $('#menu-bar').width());

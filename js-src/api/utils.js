@@ -12,16 +12,16 @@ api.utils.cleanupPath = function(target) {
     return target;
 };
 
-/** 
+/**
  * @param {string} path
  * @return {string}
  */
 api.utils.getEntryFromURL = function(path) {
     path = api.utils.cleanupPath(path);
     if (path == "/") return "";
-    if (api.config.is_url_version){
+    if (api.config.is_url_version) {
         return path.match("^/[^/]+/(.*)$")[1];
-    }else {
+    } else {
         return path.match("^/(.*)$")[1]
     }
 };

@@ -1,9 +1,9 @@
 goog.provide('api.pageScrolling');
 goog.require('api.tree');
 
-/** 
+/**
  * @private
- * @type {boolean} 
+ * @type {boolean}
  */
 api.pageScrolling.isTopVisible_ = false;
 
@@ -13,7 +13,7 @@ api.pageScrolling.isTopVisible_ = false;
  */
 api.pageScrolling.currentVisible_ = null;
 
-/** 
+/**
  * @private
  * @param {number} top
  */
@@ -23,7 +23,7 @@ api.pageScrolling.checkTopVisible = function(top) {
             $('#top-page-content').fadeIn();
             api.pageScrolling.isTopVisible_ = true;
         }
-    }else {
+    } else {
         if (api.pageScrolling.isTopVisible_) {
             $('#top-page-content').fadeOut();
             api.pageScrolling.isTopVisible_ = false;
@@ -31,7 +31,7 @@ api.pageScrolling.checkTopVisible = function(top) {
     }
 };
 
-/** 
+/**
  * @private
  * @param {number} top
  * @return {string}
@@ -47,11 +47,11 @@ api.pageScrolling.getFirstVisible_ = function(top) {
             $minEl = $el;
         }
     });
-    
+
     if ($minEl) {
         var $first = $("div.content-block.methods h3,div.content-block.methods h4").first();
         if ($first.position().top == $minEl.position().top) {
-            if (- top + $("#content-wrapper").height() - 40 < $first.position().top)
+            if (-top + $("#content-wrapper").height() - 40 < $first.position().top)
                 return null;
         }
     }
@@ -75,7 +75,7 @@ api.pageScrolling.onContentScroll_ = function() {
             api.page.scrollHighlight(el);
             api.tree.scrollHighlight(el);
         }
-    }else {
+    } else {
         api.pageScrolling.currentVisible_ = null;
         api.tree.expand(location.pathname);
         api.history.setHash("");
@@ -90,11 +90,14 @@ api.pageScrolling.update = function() {
 
     $("#content-wrapper").mCustomScrollbar(
         $.extend(api.config.scrollSettings,
-                 { callbacks: {
-                     onScroll: api.pageScrolling.onContentScroll_ }}));
+            {
+                callbacks: {
+                    onScroll: api.pageScrolling.onContentScroll_
+                }
+            }));
 };
 
-/** 
+/**
  * @param {string} entry
  */
 api.pageScrolling.scrollTo = function(entry) {
@@ -102,15 +105,17 @@ api.pageScrolling.scrollTo = function(entry) {
     api.pageScrolling.checkTopVisible(-100);
 };
 
-/** 
+/**
  * @param {string} entry
  */
 api.pageScrolling.highlightScroll = function(entry) {
     setTimeout(function() {
         api.page.currentActive_ = entry;
         $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
-                                               {scrollInertia: 700,
-                                                callbacks: false});
+            {
+                scrollInertia: 700,
+                callbacks: false
+            });
         api.pageScrolling.checkTopVisible(-100);
     }, 100);
 };
@@ -132,7 +137,7 @@ api.pageScrolling.init = function() {
 
 // wihtout this when righ tlick on menu -> open link in new tab ->
 // wait until page is loaded -> switch to loaded page -> anchor scroll doesn't work
-$(window).focus(function(){
+$(window).focus(function() {
     var id = window.location.hash;
     if (id) {
         $("#content-wrapper").mCustomScrollbar("scrollTo", $(id), {callbacks: false});

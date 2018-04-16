@@ -86,7 +86,7 @@
                 </form>
             </div>
             <div id="tree-wrapper">
-                <div id="tree">
+                <div id="tree-menu">
                     <ul class="menu">
                         {% tree-view tree page %}
                     </ul>

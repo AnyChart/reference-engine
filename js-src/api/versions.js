@@ -2,8 +2,8 @@ goog.provide("api.versions");
 goog.require("api.utils");
 
 
-api.versions.init = function () {
-    $('.versionselect').on('change', function () {
+api.versions.init = function() {
+    $('.versionselect').on('change', function() {
         var newVersion = $(this).find("option:selected").val();
         var entry = api.utils.getEntryFromURL(location.pathname);
         if (location.search.length) {

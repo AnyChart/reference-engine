@@ -311,10 +311,10 @@ a.switcher i{
     overflow: scroll;
     width: 100%;
 }
-#tree{
+#tree-menu {
     padding: 20px 30px;
 }
-#tree a{
+#tree-menu a{
     color: #545f69;
     cursor: pointer;
     padding: 1px 5px 3px;
@@ -325,26 +325,26 @@ a.switcher i{
     display: inline-block;
     margin-left: -5px;
 }
-#tree a i {
+#tree-menu a i {
     font-size: 13px;
     line-height: 17px;
     vertical-align: bottom;
 }
-#tree a.default-cursor{
+#tree-menu a.default-cursor{
     cursor: default;
 }
-#tree a.default-cursor:hover{
+#tree-menu a.default-cursor:hover{
     background: none;
     color: #545f69;
     text-shadow: -1px 1px 0 rgba(255, 255, 255, 0.7);
 }
-#tree a:hover{
+#tree-menu a:hover{
     text-decoration: none;
     background: #ddd;
     color: #545f69;
     text-shadow: none;
 }
-#tree ul.menu {
+#tree-menu ul.menu {
     list-style: none;
     margin-bottom: 5px;
     margin-top: 0;
@@ -354,7 +354,7 @@ a.switcher i{
     font-size: 13px;
     padding-left: 0;
 }
-#tree ul.menu li ul{
+#tree-menu ul.menu li ul{
     list-style: none;
     padding-top: 2px;
     margin-bottom: 5px;
@@ -363,29 +363,29 @@ a.switcher i{
     padding-left: 20px;
     padding-bottom: 0;
 }
-#tree li{
+#tree-menu li{
     margin: 2px 0;
 }
-#tree li.pull-down{
+#tree-menu li.pull-down{
     margin-top: 8px;
 }
-#tree ul.menu li.active>a{
+#tree-menu ul.menu li.active>a{
     color: #d5edff;
     background: #2485d0;
     text-shadow: none;
 }
-#tree ul.menu li.scroll-active {
+#tree-menu ul.menu li.scroll-active {
     background: #ddd;
     color: #545f69;
     text-shadow: none;
 }
-#tree ul.menu li.active span.light{
+#tree-menu ul.menu li.active span.light{
     color: #2485d0;
 }
-#tree ul.menu li.scroll-active span.light{
+#tree-menu ul.menu li.scroll-active span.light{
     color: #2485d0;
 }
-#tree ul.menu li span.light{
+#tree-menu ul.menu li span.light{
     color: #ddd;
 }
 

@@ -13,7 +13,7 @@ api.core.init = function(version, page, is_url_version) {
     api.config.version = version;
     api.config.is_url_version = is_url_version;
     api.config.page = page;
-    
+
     api.versions.init();
     api.resize.init();
     api.page.fixLinks();
@@ -34,9 +34,9 @@ api.core.init = function(version, page, is_url_version) {
     api.pageScrolling.init();
 
     if (page == "" || page.indexOf("?entry=") > -1) {
-        if (api.config.is_url_version){
+        if (api.config.is_url_version) {
             api.tree.expand("/latest/anychart");
-        }else{
+        } else {
             api.tree.expand("/anychart");
         }
         api.tree.unhighight();
