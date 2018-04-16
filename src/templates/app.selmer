@@ -44,7 +44,7 @@
         <link rel="stylesheet" type="text/css" href="/lib/bootstrap-select.min.css"/>
         <link rel="stylesheet" type="text/css" href="/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.css"/>
         <link rel="stylesheet" type="text/css" href="/lib/prettiffy/prettify-tomorrow.css"/>
-        <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/style.css?v={{commit|safe}}"/>
         <!-- <![endif]-->
         <div id="search-results-new" style="display:none">
         </div>
