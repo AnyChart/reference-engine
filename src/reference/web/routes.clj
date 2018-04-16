@@ -75,6 +75,7 @@
 (defn- show-landing [request]
   (let [versions (vdata/versions (jdbc request))
         version (vdata/version-tree-by-key (jdbc request) (first versions))]
+    (println (:commit (config request)))
     (render-file "templates/app.selmer"
                  {:version        (:key version)
                   :tree           (:tree version)
@@ -92,8 +93,8 @@
                                                 :version  (:key version)})
                   :link           #(str "/" (:key version) "/" %)
                   :title          "AnyChart API Reference"
-                  :commit         (:commit (config request))
-                  :is-url-version false})))
+                  :is-url-version false
+                  :commit         (:commit (config request))})))
 
 
 (defn- redirect-latest [request]
@@ -160,7 +161,8 @@
                     :link           #(str "/" version-key "/" %)
                     :title          (get-page-title (prefix-title page) (when is-url-version version))
                     :description    (get-page-description page is-url-version version)
-                    :is-url-version is-url-version}))))
+                    :is-url-version is-url-version
+                    :commit         (:commit (config request))}))))
 
 
 (defn- show-default-ns [version is-url-version versions request]
@@ -181,7 +183,8 @@
                     :content        ""
                     :link           #(str "/" (:key version) "/" %)
                     :title          (get-page-title "Search results" version)
-                    :is-url-version is-url-version}))
+                    :is-url-version is-url-version
+                    :commit         (:commit (config request))}))
     (redirect (str "/" (:key version) "/anychart"))))
 
 (defn- try-show-page [version is-url-version versions request]
