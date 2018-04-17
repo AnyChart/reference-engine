@@ -15,7 +15,7 @@ api.page.scrollToEntry = function(entry) {
     $('.method-block').removeClass('active');
     $('#' + entry).addClass('active');
     window.setTimeout(function() {
-        $("#content").css('min-height', $("#content").height());
+        $("#article-content").css('min-height', $("#article-content").height());
         $("#content-wrapper").mCustomScrollbar('scrollTo', $('#' + entry), {scrollInertia: 700});
         $('.panel').on('hide.bs.collapse', function(e) {
             var $methodBlock = $(this).parent().parent();
@@ -29,7 +29,7 @@ api.page.scrollToEntry = function(entry) {
 
 /** */
 api.page.fixLinks = function() {
-    $("#content a.type-link").click(api.links.typeLinkClickWithScroll);
+    $("#article-content a.type-link").click(api.links.typeLinkClickWithScroll);
 };
 
 /** */
@@ -213,7 +213,7 @@ api.page.showSearchResults = function($results) {
     api.pageScrolling.destroy();
 
     $("#content-wrapper").html('<div id="content"><div class="content-container"></div></div>');
-    $("#content .content-container").append($results);
-    $("#content .content-container a").click(api.links.typeLinkClickWithScroll);
+    $("#article-content .content-container").append($results);
+    $("#article-content .content-container a").click(api.links.typeLinkClickWithScroll);
     api.pageScrolling.update();
 };

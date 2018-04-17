@@ -119,7 +119,7 @@
         </div>
         {% endif %}
         <div id="content-wrapper">
-            <div id="content">
+            <div id="article-content">
                 <div class="content-container">
                     {{content|safe}}
                 </div>
