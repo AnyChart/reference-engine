@@ -156,7 +156,7 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
         $("meta[name='description']").attr("content", res.description);
         $("meta[property='og\\:description']").attr("content", res.description);
 
-        $("#content-wrapper").html('<div id="content"><div class="content-container">' + res.content + '</div></div>');
+        $("#content-wrapper").html('<div id="article-content"><div class="content-container">' + res.content + '</div></div>');
 
         api.config.page = res.page;
 
@@ -212,7 +212,7 @@ api.page.fixAccordionLinks = function() {
 api.page.showSearchResults = function($results) {
     api.pageScrolling.destroy();
 
-    $("#content-wrapper").html('<div id="content"><div class="content-container"></div></div>');
+    $("#content-wrapper").html('<div id="article-content"><div class="content-container"></div></div>');
     $("#article-content .content-container").append($results);
     $("#article-content .content-container a").click(api.links.typeLinkClickWithScroll);
     api.pageScrolling.update();
