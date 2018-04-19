@@ -69,4 +69,4 @@
 
 
 (defn get-not-ignored-doclets [doclets]
-  doclets (filter #(not (ignored? %)) doclets))
+  (filter #(not (ignored? %)) doclets))
