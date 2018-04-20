@@ -1,6 +1,5 @@
 (ns reference.adoc.core
-  (:require [clojure.java.io :refer [file]]
-            [reference.adoc.adoc :as adoc]
+  (:require [reference.adoc.adoc :as adoc]
             [reference.adoc.structs :refer [structurize]]
             [reference.adoc.inheritance :as inh]
             [reference.adoc.saver :refer [save-entries]]
@@ -19,6 +18,7 @@
             [reference.data.search :as search-data]
             [reference.data.sitemap :as sitemap]
             [reference.components.notifier :as notifications]
+            [clojure.java.io :refer [file]]
             [me.raynes.fs :as fs]
             [cheshire.core :refer [generate-string]]
             [org.httpkit.client :as http]

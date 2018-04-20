@@ -14,13 +14,15 @@
             <tr>
                 <th>Value</th>
                 <th>Description</th>
+                <th>Example</th>
             </tr>
         </thead>
         <tbody>
             {% for f in main.fields %}
             <tr>
                 <td class="code-style">{{f.value}}</td>
-                <td>{{f.description|safe}}<br>{% listings-and-samples f %}</td>
+                <td>{{f.description|safe}}</td>
+                <td>{% listings-and-samples f %}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -25,7 +25,8 @@
                  [honeysql "0.9.2"]
                  [com.rpl/specter "1.1.0"]
                  [instaparse "1.4.8"]
-                 [toml "0.1.3"]]
+                 [toml "0.1.3"]
+                 [hiccup "1.0.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
   :plugins [[lein-ancient "0.6.10"]]

@@ -1,4 +1,5 @@
-(ns reference.util.utils)
+(ns reference.util.utils
+  (:require [clojure.string :as string]))
 
 
 (defn deep-merge [a b]
@@ -11,3 +12,18 @@
 
 (defn format-exception [e]
   (str e "\n\n" (apply str (interpose "\n" (.getStackTrace e)))))
+
+
+(defn name->url [name]
+  (-> name
+      ; TODO: refactor with one replace
+      (string/replace #"^/" "")
+      (string/replace #"/" "-")
+      (string/replace #", " "-")
+      (string/replace #",_" "-")
+      (string/replace #"," "-")
+      (string/replace #" " "-")
+      (string/replace #"_" "-")
+      (string/replace #"\(" "")
+      (string/replace #"\)" "")
+      string/lower-case))

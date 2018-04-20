@@ -4,7 +4,9 @@
             [taoensso.timbre :as timbre :refer [info]]
             [cheshire.core :refer [parse-string]]
             [reference.web.tree :refer [tree-view-partial]]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [hiccup.core :as hiccup]
+            [reference.web.views.enum :as enum-view]))
 
 
 (defn- escape-str [str]
@@ -151,12 +153,14 @@
 
 (defn render-entry [docs-domain playground-domain version-key show-samples entry-type entry is-url-version]
   (let [template (str "templates/entries/" entry-type ".selmer")
-        html (render-file template
-                          {:main           entry
-                           :version        version-key
-                           :is-url-version is-url-version
-                           :show-samples   true
-                           :playground     playground-domain})]
+        data {:main           entry
+              :version        version-key
+              :is-url-version is-url-version
+              :show-samples   true
+              :playground     playground-domain}
+        html (case entry-type
+               "enum" (hiccup/html (enum-view/enum data))
+               (render-file template data))]
     (-> html
         (fix-links version-key is-url-version)
         fix-web-links

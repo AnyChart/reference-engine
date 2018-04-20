@@ -289,7 +289,9 @@
 
 (defn- create-enum-field [doclet version base-path]
   (assoc (parse-examples-and-listing base-path (parse-general doclet version) doclet)
-    :value (get-in doclet [:meta :code :value])))
+    :value (get-in doclet [:meta :code :value])
+    :category (:value (first (get-tag doclet "category")))
+    :has-category (boolean (:value (first (get-tag doclet "category"))))))
 
 
 (defn- get-enum-fields [enum doclets version base-path]
