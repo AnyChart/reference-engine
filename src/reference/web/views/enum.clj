@@ -21,7 +21,6 @@
 
 
 (defn enum [{:keys [main version is-url-version show-samples playground] :as data}]
-  (println :enum)
   [:div
    [:h1
     [:span.page-type "[enum] "]
