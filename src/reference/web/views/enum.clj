@@ -40,9 +40,7 @@
         [:tr
          [:th "Value"]
          [:th "Description"]
-         [:th {:width "20%"}]
-         ;[:th "Example"]
-         ]]
+         [:th {:width "20%"} "Example"]]]
        (let [[categories misc-group] (get-categories (:fields main))]
          [:tbody
           ;(categories (:fields main))
