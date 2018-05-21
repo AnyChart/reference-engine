@@ -142,11 +142,11 @@
           (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order)]
             (if (zero? (:exit ts-result))
               (do (notifications/complete-version-building notifier (:name branch) queue-index) true)
-              (notifications/build-failed notifier (:name branch) queue-index nil ts-result))))))
+              (notifications/complete-version-building-error notifier (:name branch) queue-index nil ts-result))))))
     (catch Exception e
       (do (error e)
           (error (.getMessage e))
-          (notifications/build-failed notifier (:name branch) queue-index e nil)
+          (notifications/complete-version-building-error notifier (:name branch) queue-index e nil)
           nil))))
 
 ;(defn- build-experiments [dev]

@@ -79,7 +79,7 @@
       (send-release-message (config notifier) msg))))
 
 
-(defn build-failed [notifier version queue-index e ts-error]
+(defn complete-version-building-error [notifier version queue-index e ts-error]
   (let [msg (str "#" queue-index " api " (-> (c/prefix) (font "#cc0066" 11) u) " - " (b version) (-> " failed" (font "#d00000") b) "\n"
                  (when e
                    (-> (utils/format-exception e) (font "#777777" 11) i))

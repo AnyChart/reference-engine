@@ -89,7 +89,7 @@
     (notify-attach notifier attachments)))
 
 
-(defn build-failed [notifier version queue-index e ts-error]
+(defn complete-version-building-error [notifier version queue-index e ts-error]
   (let [attachments [{:color     "danger"
                       :text      (str "#" queue-index " api `" (c/prefix) "` - *" version "* failed"
                                       (when e (str "\n```" (utils/format-exception e) "```"))
