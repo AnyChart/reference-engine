@@ -4,18 +4,13 @@
             [cheshire.core :as json]
             [reference.util.utils :as utils]
             [clojure.string :as s]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [reference.config.core :as c]))
 
 
 ;; =====================================================================================================================
 ;; Settings and util functions
 ;; =====================================================================================================================
-(def config {:id      "5bab828d-d6b2-4c0f-a955-82b088e30bcb"
-             :key     "L2q5SBiXYqPDHVmq36vjgwe"
-             :chat-id "19:58cbaa008fc640bab8c3cf71e0e2d51a@thread.skype"})
-
-
-(defn- prefix [notifier] (-> notifier :config :skype :prefix))
 (defn- config [notifier] (-> notifier :config :skype))
 
 
@@ -47,6 +42,10 @@
       (timbre/error "Skype send message error: " message))))
 
 
+(defn send-release-message [conf message]
+  (when (:release-chat-id conf)
+    (send-message (assoc conf :chat-id (:release-chat-id conf)) message)))
+
 
 (defn font [text & [color size]]
   (str "<font "
@@ -63,32 +62,37 @@
 ;; =====================================================================================================================
 ;; Notifications functions
 ;; =====================================================================================================================
-
 (defn start-version-building [notifier {author :author commit-message :message version :name} queue-index]
-  (let [msg (str "#" queue-index " api " (-> notifier prefix (font "#cc0066" 11) u) " - "
+  (let [msg (str "#" queue-index " api " (-> (c/prefix) (font "#cc0066" 11) u) " - "
                  (b version)
                  " " commit-message " - " author
                  (-> " start" (font "#4183C4") b) "\n")]
-    (send-message (config notifier) msg)))
+    (send-message (config notifier) msg)
+    (when (utils/released-version? version)
+      (send-release-message (config notifier) msg))))
 
 
 (defn complete-version-building [notifier version queue-index message]
-  (let [msg (str "#" queue-index " api " (-> notifier prefix (font "#cc0066" 11) u) " - " (b version) (-> " complete" (font "#36a64f") b) " " message "\n")]
-    (send-message (config notifier) msg)))
+  (let [msg (str "#" queue-index " api " (-> (c/prefix) (font "#cc0066" 11) u) " - " (b version) (-> " complete" (font "#36a64f") b) " " message "\n")]
+    (send-message (config notifier) msg)
+    (when (utils/released-version? version)
+      (send-release-message (config notifier) msg))))
 
 
 (defn build-failed [notifier version queue-index e ts-error]
-  (let [msg (str "#" queue-index " api " (-> notifier prefix (font "#cc0066" 11) u) " - " (b version) (-> " failed" (font "#d00000") b) "\n"
+  (let [msg (str "#" queue-index " api " (-> (c/prefix) (font "#cc0066" 11) u) " - " (b version) (-> " failed" (font "#d00000") b) "\n"
                  (when e
                    (-> (utils/format-exception e) (font "#777777" 11) i))
                  (when ts-error
                    (str "TypeScript generation errors: \n" (:url ts-error) "\n"
                         "" (:out ts-error) "")))]
-    (send-message (config notifier) msg)))
+    (send-message (config notifier) msg)
+    (when (utils/released-version? version)
+      (send-release-message (config notifier) msg))))
 
 
 (defn complete-building-with-errors [notifier branches queue-index e]
-  (let [msg (str "#" queue-index " api " (-> notifier prefix (font "#cc0066" 11) u) " - " (-> "error during processing!" (font "#d00000") b) "\n"
+  (let [msg (str "#" queue-index " api " (-> (c/prefix) (font "#cc0066" 11) u) " - " (-> "error during processing!" (font "#d00000") b) "\n"
                  (when (seq branches)
                    (str (b "Branches: ") (string/join ", " branches)))
                  (when e

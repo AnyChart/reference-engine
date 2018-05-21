@@ -14,6 +14,10 @@
   (str e "\n\n" (apply str (interpose "\n" (.getStackTrace e)))))
 
 
+(defn released-version? [version-key]
+  (re-matches #"^\d+\.\d+\.\d+$" version-key))
+
+
 (defn name->url [name]
   (-> name
       ; TODO: refactor with one replace

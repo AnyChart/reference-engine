@@ -4,6 +4,7 @@
             [reference.components.notifier :as notifier]
             [reference.components.generator :as generator]
             [reference.components.web :as web]
+            [reference.config.core :as c]
             [com.stuartsierra.component :as component]
             [reference.util.utils :as utils]
             [toml.core :as toml]
@@ -70,7 +71,13 @@
 
 (defn set-config [config-path]
   (let [config-data (toml/read (slurp config-path) :keywordize)]
-    (alter-var-root #'config (constantly (update-config config-data)))))
+    (if (c/check-config config-data)
+      (do
+        (alter-var-root #'config (constantly (update-config config-data)))
+        (c/set-config config-data))
+      (do
+        (timbre/error (c/explain-config config-data))
+        (System/exit 1)))))
 
 
 (def dev (all-system config))
