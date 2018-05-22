@@ -34,14 +34,14 @@
   (skype/start-version-building notifier branch queue-index))
 
 
-(defn complete-version-building [notifier version queue-index]
-  (slack/complete-version-building notifier version queue-index)
-  (skype/complete-version-building notifier version queue-index "good job, everything is ok!"))
+(defn complete-version-building [notifier branch queue-index]
+  (slack/complete-version-building notifier (:name branch) queue-index)
+  (skype/complete-version-building notifier branch queue-index "good job, everything is ok!"))
 
 
-(defn complete-version-building-error [notifier version queue-index e ts-error]
-  (slack/complete-version-building-error notifier version queue-index e ts-error)
-  (skype/complete-version-building-error notifier version queue-index e ts-error))
+(defn complete-version-building-error [notifier branch queue-index e ts-error]
+  (slack/complete-version-building-error notifier (:name branch) queue-index e ts-error)
+  (skype/complete-version-building-error notifier branch queue-index e ts-error))
 
 
 (defn notify-404 [notifier path]

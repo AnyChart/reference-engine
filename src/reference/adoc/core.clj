@@ -141,8 +141,8 @@
 
           (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order)]
             (if (zero? (:exit ts-result))
-              (do (notifications/complete-version-building notifier (:name branch) queue-index) true)
-              (notifications/complete-version-building-error notifier (:name branch) queue-index nil ts-result))))))
+              (do (notifications/complete-version-building notifier branch queue-index) true)
+              (notifications/complete-version-building-error notifier branch queue-index nil ts-result))))))
     (catch Exception e
       (do (error e)
           (error (.getMessage e))

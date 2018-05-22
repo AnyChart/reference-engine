@@ -63,24 +63,24 @@
 ;; Notifications functions
 ;; =====================================================================================================================
 (defn start-version-building [notifier {author :author commit-message :message version :name} queue-index]
-  (let [msg (str "#" queue-index " api " (-> (c/prefix) (font "#cc0066" 11) u) " - "
-                 (b version)
-                 " " commit-message " - " author
-                 (-> " start" (font "#4183C4") b) "\n")]
+  (let [msg (str "[API " (c/prefix) "] #" queue-index " " (b version)
+                 " \"" commit-message "\" @" author " - " (-> "start" (font "#4183C4")) "\n")]
     (send-message (config notifier) msg)
     (when (utils/released-version? version)
       (send-release-message (config notifier) msg))))
 
 
-(defn complete-version-building [notifier version queue-index message]
-  (let [msg (str "#" queue-index " api " (-> (c/prefix) (font "#cc0066" 11) u) " - " (b version) (-> " complete" (font "#36a64f") b) " " message "\n")]
+(defn complete-version-building [notifier {author :author commit-message :message version :name} queue-index message]
+  (let [msg (str "[API " (c/prefix) "] #" queue-index " " (b version)
+                 " \"" commit-message "\" @" author " - " (-> message (font "#4183C4")) "\n")]
     (send-message (config notifier) msg)
     (when (utils/released-version? version)
       (send-release-message (config notifier) msg))))
 
 
-(defn complete-version-building-error [notifier version queue-index e ts-error]
-  (let [msg (str "#" queue-index " api " (-> (c/prefix) (font "#cc0066" 11) u) " - " (b version) (-> " failed" (font "#d00000") b) "\n"
+(defn complete-version-building-error [notifier {author :author commit-message :message version :name} queue-index e ts-error]
+  (let [msg (str "[API " (c/prefix) "] #" queue-index " " (b version)
+                 " \"" commit-message "\" @" author " - " (-> "failed" (font "#d00000")) "\n"
                  (when e
                    (-> (utils/format-exception e) (font "#777777" 11) i))
                  (when ts-error
