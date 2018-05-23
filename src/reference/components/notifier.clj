@@ -36,7 +36,7 @@
 
 (defn complete-version-building [notifier branch queue-index]
   (slack/complete-version-building notifier (:name branch) queue-index)
-  (skype/complete-version-building notifier branch queue-index "good job, everything is ok!"))
+  (skype/complete-version-building notifier branch queue-index))
 
 
 (defn complete-version-building-error [notifier branch queue-index e ts-error]
