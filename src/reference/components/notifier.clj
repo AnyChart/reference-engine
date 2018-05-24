@@ -34,9 +34,9 @@
   (skype/start-version-building notifier branch queue-index))
 
 
-(defn complete-version-building [notifier branch queue-index]
+(defn complete-version-building [notifier branch queue-index dts-enabled]
   (slack/complete-version-building notifier (:name branch) queue-index)
-  (skype/complete-version-building notifier branch queue-index))
+  (skype/complete-version-building notifier branch queue-index dts-enabled))
 
 
 (defn complete-version-building-error [notifier branch queue-index e ts-error]

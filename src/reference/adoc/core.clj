@@ -22,7 +22,9 @@
             [me.raynes.fs :as fs]
             [cheshire.core :refer [generate-string]]
             [org.httpkit.client :as http]
-            [taoensso.timbre :as timbre :refer [info error]]))
+            [taoensso.timbre :as timbre :refer [info error]]
+            [reference.util.utils :as utils]
+            [clojure.string :as string]))
 
 
 (defn actual-branches [show-branches git-ssh repo-path]
@@ -94,6 +96,15 @@
                                  notifier)))
 
 
+(defn need-generate-ts [branch]
+  (or (utils/released-version? (:name branch))
+      (= (:name branch) "develop")
+      (= (:name branch) "master")
+      (string/includes? (:message branch) "#dts")
+      (string/includes? (:message branch) "#ts")
+      (string/includes? (:message branch) "#all")))
+
+
 (defn build-branch
   [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground queue-index latest-version-key]
   (try
@@ -139,10 +150,12 @@
 
           (json-gen/generate data-dir (:name branch) latest-version-key top-level)
 
-          (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order)]
-            (if (zero? (:exit ts-result))
-              (do (notifications/complete-version-building notifier branch queue-index) true)
-              (notifications/complete-version-building-error notifier branch queue-index nil ts-result))))))
+          (if (need-generate-ts branch)
+            (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order)]
+              (if (zero? (:exit ts-result))
+                (do (notifications/complete-version-building notifier branch queue-index true) true)
+                (notifications/complete-version-building-error notifier branch queue-index nil ts-result)))
+            (do (notifications/complete-version-building notifier branch queue-index false) true)))))
     (catch Exception e
       (do (error e)
           (error (.getMessage e))

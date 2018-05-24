@@ -72,10 +72,13 @@
     (send-release-message (config notifier) version msg)))
 
 
-(defn complete-version-building [notifier {author :author commit-message :message version :name commit :commit} queue-index]
+(defn complete-version-building [notifier {author :author commit-message :message version :name commit :commit}
+                                 queue-index dts-enabled]
   (let [msg (str "[API " (c/prefix) "] #" queue-index " " (b version)
                  " \"" commit-message "\" @" author " (" (subs commit 0 7) ") - "
-                 (-> "complete" (font "#36a64f")) "\n")]
+                 (-> "complete" (font "#36a64f"))
+                 (when-not dts-enabled " (d.ts generation OFF)")
+                 "\n")]
     (send-message (config notifier) msg)
     (send-release-message (config notifier) version msg)))
 
