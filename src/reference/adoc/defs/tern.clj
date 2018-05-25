@@ -1,7 +1,8 @@
 (ns reference.adoc.defs.tern
   (:require [clojure.string :as s :refer [join]]
             [taoensso.timbre :as timbre :refer [info error]]
-            [cheshire.core :refer [generate-string]]))
+            [cheshire.core :refer [generate-string]]
+            [me.raynes.fs :as fs]))
 
 ;; for developing and testing
 (defonce top-level (atom nil))
@@ -218,12 +219,14 @@
 
 (defn generate-declarations [settings tree top-level]
   (info "generate TernJS definitions")
-  (let [file-name (str (:data-dir settings) "/versions-static/" (:version-key settings) "/anychart.json")
+  (let [dir (str (:data-dir settings) "/versions-static/" (:version-key settings))
+        file-name (str dir "/anychart.json")
         file-name-min-js (str (:data-dir settings) "/versions-static/" (:version-key settings) "/def_anychart.min.js")
         result (build (first tree) top-level settings)
         json (generate-string result {:pretty true})
         json-min (generate-string result)
         js (str "var def_anychart = " json-min ";")]
+    (fs/mkdirs dir)
     (spit file-name json)
     (spit file-name-min-js js)))
 
