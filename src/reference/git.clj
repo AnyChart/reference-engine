@@ -32,7 +32,7 @@
 
 
 (defn update [git-ssh repo]
-  (run-git git-ssh repo "fetch" "-p"))
+  (run-git git-ssh repo "fetch" "-p" "-P"))
 
 
 (defn pull [git-ssh repo]
