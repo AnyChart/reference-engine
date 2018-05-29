@@ -13,9 +13,14 @@
      <types_> = type (<whitespace>? <'|'> <whitespace>? type)*
 
      <type> = (<'('> type_ <')'>) | type_
-     <type_> = (simple|array|object|tsfunc)
+     <type_> = (simple|array|object|tsfunc|jsfunc)
 
      tsfunc = <'('> kvs <')'> <'=>'> types
+
+     jsfunc = <'function('> jsfuncparams <')'>  (<':'> types)?
+     jsfuncparams = jsfuncparam? | jsfuncparam (<','> <whitespace>? jsfuncparam)*
+     jsfuncparam = types (<whitespace> jsfuncparamname)?
+     jsfuncparamname = #'[a-zA-Z0-9.]+'
 
      array = <'Array.<'> types <'>'>
 
@@ -26,9 +31,9 @@
      props = <'{'> kvs  <'}'> | (<'('> <'{'> kvs  <'}'> <')'>)
      <kvs> = kv (<','> kv)*
      kv = key <':'> types
-     <key> = #'[a-zA-Z]+'
+     <key> = #'[a-zA-Z0-9_]+'
 
-     <simple> = #'[a-zA-Z0-9.]+' | 'function()'
+     <simple> = #'[a-zA-Z0-9_.*]+' | 'function()'
 
      whitespace = #'\\s+'
     "))
@@ -44,6 +49,8 @@
   (case data
     "Array" "Array<any>"
     "function" "(() => void)"
+    "*" "any"
+    nil "void"
     data))
 
 
@@ -77,6 +84,14 @@
   (let [kvs (butlast kvs-return)
         return (last kvs-return)]
     (str "((" (string/join "," (map write kvs)) ")=>" (write return) ")")))
+
+
+(defmethod write :jsfunc [[_ [_ & js-func-params] return]]
+  (str "((" (string/join "," (map write js-func-params)) ")=>" (write return) ")"))
+
+
+(defmethod write :jsfuncparam [[_ types [_ paramname]]]
+  (str paramname ":" (write types)))
 
 
 (defmethod write :types [[_ & types]]

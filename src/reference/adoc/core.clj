@@ -87,7 +87,9 @@
   (let [raw-top-level (structurize all-doclets data-dir (:name branch))
         inh-top-level (inh/build-inheritance raw-top-level)
         top-level (categories/categorize inh-top-level categories-order)
-        top-level-ts (typedef-builder/fix-typedef top-level true)]
+        top-level-ts (typedef-builder/fix-typedef top-level true)
+        top-level-js (typedef-builder/fix-typedef top-level)]
+    (json-gen/generate data-dir (:name branch) latest-version-key (tree-ts/modify top-level-js))
     (ts/generate-ts-declarations data-dir
                                  git-ssh
                                  (:name branch)
@@ -147,8 +149,6 @@
           (tern/generate-declarations {:data-dir    data-dir
                                        :version-key (:name branch)
                                        :domain      (-> notifier :config :domain)} tree-data top-level)
-
-          (json-gen/generate data-dir (:name branch) latest-version-key top-level)
 
           (if (need-generate-ts branch)
             (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order)]

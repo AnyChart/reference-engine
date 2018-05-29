@@ -1,7 +1,9 @@
 (ns reference.adoc.defs.json
   (:require [cheshire.core :as ches]
             [me.raynes.fs :as fs]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [cheshire.core :as json]))
+
 
 ;; for developing
 (defonce top-level (atom nil))
@@ -15,8 +17,10 @@
 (defn get-typedefs [top-level names]
   (filter (fn [td] (some #(= % (:full-name td)) names)) (:typedefs top-level)))
 
+
 (defn get-enums [top-level names]
   (filter (fn [td] (some #(= % (:full-name td)) names)) (:enums top-level)))
+
 
 (defn get-classes [top-level names]
   (filter (fn [td] (some #(= % (:full-name td)) names)) (:classes top-level)))
@@ -33,15 +37,18 @@
           :has-categories :categories
           :has-category :category))
 
+
 (defn clean-typedef [typedef]
   (-> typedef
       (assoc :properties (map clean (:properties typedef)))
       clean))
 
+
 (defn clean-enum [item]
   (-> item
       (assoc :fields (map clean (:fields item)))
       clean))
+
 
 (defn clean-class [class]
   (-> class
@@ -52,6 +59,7 @@
                               methods)))
       clean))
 
+
 (defn clean-namespace [class]
   (-> class
       (update :functions (fn [methods]
@@ -60,6 +68,7 @@
                                                               (map clean overrides))))
                                 methods)))
       clean))
+
 
 ;;======================================================================================================================
 ;; Main generation
@@ -72,9 +81,11 @@
         :classes (map clean-class (get-classes top-level (map :name (:classes namespace)))))
       clean-namespace))
 
+
 (defn optimize-tree [top-level]
   (map #(namespace-definition top-level %)
        (sort-by :full-name (:namespaces top-level))))
+
 
 (defn optimize-flat [top-level]
   {:classes    (map clean-class (:classes top-level))
@@ -82,12 +93,15 @@
    :enums      (map clean-enum (:enums top-level))
    :namespaces (map clean-namespace (:namespaces top-level))})
 
+
 (defn generate-ts [top-level version-key is-last-versionl]
   (ches/generate-string (optimize-flat top-level)))
+
 
 (defn test2 []
   (let [ts (generate-ts @top-level "develop" false)]
     (spit "/media/ssd/sibental/reference-engine-data/data.json" ts)))
+
 
 (defn generate [data-dir version-key latest-version-key top-level]
   (timbre/info "generate JSON definitions for: " version-key ", latest: " latest-version-key)
@@ -97,3 +111,12 @@
           (ches/generate-string (optimize-flat top-level)))
     (spit (str dir "/anychart-tree.json")
           (ches/generate-string (optimize-tree top-level)))))
+
+
+; test anychart.json for pie
+;(defn t1 []
+;  (let [tree (json/parse-string (slurp "/media/ssd/sibental/reference-engine/data/versions-static/develop/anychart.json") true)
+;        classes (:classes tree)
+;        pie (first (filter #(= (:name %) "Pie") classes))]
+;
+;    (clojure.pprint/pprint pie)))
