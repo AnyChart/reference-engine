@@ -21,22 +21,15 @@
                              (string/ends-with? (.getName file) ".ts")
                              (not (string/ends-with? (.getName file) ".d.ts"))))
                       files)
-        result (doall (map (fn [file]
-                             (shell/sh "/bin/bash" "-c" (str " tsc --noEmit true \"" file "\"")))
-                           files))
-        result (filter (fn [res] (not (zero? (:exit res)))) result)
-
-        ;result (map (fn [res]
-        ;              (update res :out (fn [out]
-        ;                                 (string/replace out )
-        ;                                 ))
-        ;              ) result)
-
-        ]
+        result (doall (pmap (fn [file]
+                              (shell/sh "/bin/bash" "-c" (str " tsc --noEmit true \"" file "\"")))
+                            files))
+        result (filter (fn [res] (not (zero? (:exit res)))) result)]
     (if (seq result)
-      {:exit -1
-       :out  (string/join "\n" (map :out result))
-       :err  ""}
+      {:exit  -1
+       :out   (string/join "\n" (map :out result))
+       :count (count result)
+       :err   ""}
       {:exit 0 :out "" :err ""})))
 
 

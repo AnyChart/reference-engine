@@ -83,14 +83,18 @@
     (send-release-message (config notifier) version msg)))
 
 
-(defn complete-version-building-error [notifier {author :author commit-message :message version :name commit :commit} queue-index e ts-error]
+(defn complete-version-building-error [notifier {author :author commit-message :message version :name commit :commit}
+                                       queue-index e ts-error]
   (let [msg (str "[API " (c/prefix) "] #" queue-index " " (b version)
                  " \"" commit-message "\" @" author " (" (subs commit 0 7) ") - "
                  (-> "failed" (font "#d00000")) "\n"
                  (when e
                    (-> (utils/format-exception e) (font "#777777" 11) i))
                  (when ts-error
-                   (str "TypeScript generation errors: \n" (:url ts-error) "\n"
+                   (str "<a href=\"" (c/domain) (:url ts-error) "\">index.d.ts</a> errors"
+                        (when (:count ts-error)
+                          (str " - " (b (:count ts-error)) " tests failed"))
+                        ":\n"
                         "" (:out ts-error) "")))]
     (send-message (config notifier) msg)
     (send-release-message (config notifier) version msg)))
