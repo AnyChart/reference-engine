@@ -21,24 +21,24 @@
   (doall (partition-all (/ (count files) groups) files)))
 
 
-(defn- build-jsdoc [jsdoc-path files]
+(defn- build-jsdoc [jsdoc-path version files]
   (when (seq files)
     (info "jsdoc run:" (vec (concat [jsdoc-path "-X" "-a" "public"])))
     (let [full-res (apply sh (vec (concat [jsdoc-path "-X"] (vec files))))
           res (:out full-res)]
       (info "got res" (count res) (:err full-res))
       (parse-string
-        (string/replace res
-                        "acgraph"
-                        "anychart.graphics")
+        (-> res
+            (string/replace "acgraph" "anychart.graphics")
+            (string/replace "{{branch-name}}" version))
         true))))
 
 
-(defn- get-jsdoc [max-groups jsdoc-path path]
+(defn- get-jsdoc [max-groups jsdoc-path path version]
   (info "get-jsdoc" path max-groups jsdoc-path)
   (let [groups (group-files max-groups (get-all-files-by-ext path "adoc.js"))]
     (info "groups:" (count groups))
-    (apply concat (doall (pmap #(build-jsdoc jsdoc-path %) groups)))))
+    (apply concat (doall (pmap #(build-jsdoc jsdoc-path version %) groups)))))
 
 
 (defn- convert-to-jsdoc [src-path jsdoc-path]
@@ -54,7 +54,7 @@
   (let [src-path (str data-dir "/versions/" version)
         jsdoc-path (str data-dir "/versions-tmp/" version)]
     (convert-to-jsdoc src-path jsdoc-path)
-    (let [jsdocs (get-jsdoc max-groups jsdoc-bin jsdoc-path)
+    (let [jsdocs (get-jsdoc max-groups jsdoc-bin jsdoc-path version)
           doclets (filter #(and (:name %)
                                 (not (or (= (:access %) "private")
                                          (= (:access %) "protected")
