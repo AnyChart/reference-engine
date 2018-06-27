@@ -8,6 +8,11 @@ goog.require('api.tree');
 goog.require('api.pageScrolling');
 goog.require('api.breadcrumb');
 
+
+api.page.prettifyCode = function (){
+    $("pre").addClass("prettyprint");
+};
+
 /**
  * @param {string} entry
  */

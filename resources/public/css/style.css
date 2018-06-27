@@ -702,6 +702,9 @@ pre.prettyprint{
 pre.prettyprint ol{
     color: #929292;
 }
+div.small-group > pre {
+    margin-top: 5px;
+}
 .listings-block .panel-body{
     padding: 5px;
 }

@@ -16,6 +16,7 @@ api.core.init = function(version, page, is_url_version) {
 
     api.versions.init();
     api.resize.init();
+    api.page.prettifyCode();
     api.page.fixLinks();
     api.page.fixListings();
     api.tree.init();
