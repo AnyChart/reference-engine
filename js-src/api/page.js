@@ -170,6 +170,7 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
         $("#warning a").attr("href", "/" + $("#warning a").attr("data-last-version") + "/try/" + res.page);
 
         api.breadcrumb.update(res.page);
+        api.page.prettifyCode();
         api.page.fixLinks();
         api.page.fixListings();
         api.page.fixAccordionLinks();
