@@ -79,7 +79,10 @@
                                  ;(prn type (map :full-name typedefs))
                                  (reduce (fn [res typedef]
                                            (string/replace res
-                                                           (re-pattern (:full-name typedef))
+                                                           ;; add lookahead and lookbehind
+                                                           (re-pattern (str "(?<![a-zA-Z])"
+                                                                            (:full-name typedef)
+                                                                            "(?![a-zA-Z])"))
                                                            ((if-not is-ts
                                                               function-definition-js
                                                               function-definition-ts) typedef)))
