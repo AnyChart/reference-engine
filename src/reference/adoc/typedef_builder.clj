@@ -31,9 +31,9 @@
 (defn function-definition-js [typedef]
   (let [params (:params typedef)
         returns (:returns typedef)
-        params-str (string/join ","
+        params-str (string/join ", "
                                 (map (fn [param]
-                                       (str (string/join "|" (:types param)) " " (:name param)))
+                                       (str (:name param) ":" (string/join "|" (:types param))))
                                      params))
         returns-str (string/join "|" (mapcat :types returns))]
     (str "function(" params-str ")"
@@ -95,5 +95,3 @@
            (transform [:classes ALL :methods ALL :overrides ALL :params ALL :types ALL] typedef-transform-fn)
            (transform [:namespaces ALL :functions ALL :overrides ALL :params ALL :types ALL] typedef-transform-fn))
       :typedefs typedefs)))
-
-

@@ -19,7 +19,7 @@
 
      jsfunc = <'function('> jsfuncparams <')'>  (<':'> types)?
      jsfuncparams = jsfuncparam? | jsfuncparam (<','> <whitespace>? jsfuncparam)*
-     jsfuncparam = types (<whitespace> jsfuncparamname)?
+     jsfuncparam = jsfuncparamname <':'> types
      jsfuncparamname = #'[a-zA-Z0-9.]+'
 
      array = <'Array.<'> types <'>'>
@@ -90,7 +90,7 @@
   (str "((" (string/join "," (map write js-func-params)) ")=>" (write return) ")"))
 
 
-(defmethod write :jsfuncparam [[_ types [_ paramname]]]
+(defmethod write :jsfuncparam [[_ [_ paramname] types]]
   (str paramname ":" (write types)))
 
 

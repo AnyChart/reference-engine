@@ -131,7 +131,8 @@
    :full-name             (cleanup-name (:longname entry))
    :since                 (:since entry)
    :has-since             (not (blank? (:since entry)))
-   :optional              (:optional entry)})
+   :optional              (:optional entry)
+   :this                  (:this entry)})
 
 (defn- get-example-link [base-path doclet file]
   (let [folder (clojure.string/replace (get-in doclet [:meta :path])
@@ -265,6 +266,17 @@
     result-with-optional))
 
 
+(defn parse-function-params [item version]
+  (let [params (map #(parse-function-param % version) (:params item))]
+    (if-let [this (:this item)]
+      (do
+        (println :this-print item)
+        (concat [{:types       [this]
+                  :description "This param"
+                  :name        "this"}]
+                params))
+      params)))
+
 
 (defn- create-typedef-property [prop version]
   (assoc (parse-general prop version)
@@ -283,7 +295,7 @@
       :has-properties (not (empty? (:properties typedef)))
       :type (get-in typedef [:type :names])
       :has-types (> (count (get-in typedef [:type :names])) 1)
-      :params (map #(parse-function-param % version) (:params typedef))
+      :params (parse-function-params typedef version)
       :returns (map #(parse-function-return % version) (:returns typedef)))))
 
 
@@ -351,7 +363,7 @@
   (str name "(" (clojure.string/join ", " (map :name params)) ")"))
 
 (defn- create-function [func doclets version base-path]
-  (let [params (map #(parse-function-param % version) (:params func))
+  (let [params (parse-function-params func version)
         returns (map #(parse-function-return % version) (:returns func))
 
         base-func (parse-examples-and-listing base-path (parse-general func version) func)
