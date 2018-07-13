@@ -93,5 +93,7 @@
     (assoc
       (->> top-level
            (transform [:classes ALL :methods ALL :overrides ALL :params ALL :types ALL] typedef-transform-fn)
-           (transform [:namespaces ALL :functions ALL :overrides ALL :params ALL :types ALL] typedef-transform-fn))
+           (transform [:classes ALL :methods ALL :overrides ALL :returns ALL :types ALL] typedef-transform-fn)
+           (transform [:namespaces ALL :functions ALL :overrides ALL :params ALL :types ALL] typedef-transform-fn)
+           (transform [:namespaces ALL :functions ALL :overrides ALL :returns ALL :types ALL] typedef-transform-fn))
       :typedefs typedefs)))
