@@ -89,12 +89,12 @@
         top-level (categories/categorize inh-top-level categories-order)
         top-level-ts (typedef-builder/fix-typedef top-level true)
         top-level-js (typedef-builder/fix-typedef top-level)]
-    (json-gen/generate data-dir (:name branch) latest-version-key (tree-ts/modify top-level-js))
+    (json-gen/generate data-dir (:name branch) latest-version-key (tree-ts/modify top-level-js true))
     (ts/generate-ts-declarations data-dir
                                  git-ssh
                                  (:name branch)
                                  latest-version-key
-                                 (tree-ts/modify top-level-ts)
+                                 (tree-ts/modify top-level-ts true)
                                  notifier)))
 
 
@@ -121,6 +121,7 @@
             inh-top-level (inh/build-inheritance raw-top-level)
             top-level (categories/categorize inh-top-level categories-order)
             top-level (typedef-builder/fix-typedef top-level)
+            top-level (tree-ts/modify top-level false)
             tree-data (generate-tree top-level)
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]

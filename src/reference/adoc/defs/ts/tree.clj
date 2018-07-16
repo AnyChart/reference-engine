@@ -32,7 +32,7 @@
              class-methods))
 
 
-(defn combine-methods [methods parent-methods]
+(defn new-methods-from-parent [methods parent-methods]
   (let [new-methods (filter (fn [parent-method]
                               (not (some #(= (:name parent-method)
                                              (:name %))
@@ -41,41 +41,44 @@
     new-methods))
 
 
-(defn update-methods [class parent-class classes]
+(defn update-methods [class parent-class classes add-parent-methods?]
   (let [class-methods (:methods class)
         ;; parent-methods (:methods parent-class)
         parent-names (parent-names class classes)
 
         all-methods (concat
                       class-methods
-                      (combine-methods class-methods (:methods parent-class)))
+                      (when add-parent-methods?
+                        (new-methods-from-parent class-methods (:methods parent-class))))
 
         self-methods (update-self-methods (:full-name class) all-methods parent-names)]
     (assoc class :methods self-methods)))
 
 
-(defn build-class [class classes *cache]
+(defn build-class [class classes *cache add-parent-methods?]
   (or
     ; get from cache
     (get @*cache (:full-name class))
     ; or build
     (let [parent-class (parent class classes)
           parent-class (when parent-class
-                         (build-class parent-class classes *cache))
+                         (build-class parent-class classes *cache add-parent-methods?))
           new-class (if parent-class
-                      (update-methods class parent-class classes)
+                      (update-methods class parent-class classes add-parent-methods?)
                       class)]
       (swap! *cache assoc (:full-name class) new-class)
       new-class)))
 
 
-(defn build-methods [classes]
+(defn build-methods [classes add-parent-methods?]
   (let [*cache (atom {})]
-    (map #(build-class % classes *cache) classes)))
+    (map #(build-class % classes *cache add-parent-methods?) classes)))
 
 
-(defn modify [tree]
-  (update tree :classes build-methods))
+;; add inherited methods from parents, if it needs
+;; and replace returned type: e.g.  /anychart.charts.Pie#title - anychart.charts.Pie instead of anychart.core.Chart
+(defn modify [tree add-parent-methods?]
+  (update tree :classes build-methods add-parent-methods?))
 
 
 ;; (reference.adoc.defs.ts.tree/class-by-name "anychart.core.SeparateChart" (:classes (reference.adoc.defs.ts.tree/t0)))
