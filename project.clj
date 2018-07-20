@@ -26,7 +26,8 @@
                  [com.rpl/specter "1.1.1"]
                  [instaparse "1.4.9"]
                  [toml "0.1.3"]
-                 [hiccup "1.0.5"]]
+                 [hiccup "1.0.5"]
+                 [garden "1.3.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
   :plugins [[lein-ancient "0.6.10"]]

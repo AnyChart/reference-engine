@@ -12,25 +12,12 @@
             [reference.data.seo :as seo]
             [reference.components.redis :as redisca]
             [reference.components.notifier :refer [notify-404]]
+            [reference.web.helpers :refer :all]
             [taoensso.timbre :as timbre :refer [info]]
             [cheshire.core :refer [generate-string]]
-            [reference.web.data :as wdata]))
-
-
-(defn- config [request]
-  (-> request :component :config))
-
-(defn- static-version [request]
-  (-> request :component :config :static))
-
-(defn- jdbc [request]
-  (-> request :component :jdbc))
-
-(defn- redis [request]
-  (-> request :component :redis))
-
-(defn- notifier [request]
-  (-> request :component :notifier))
+            [reference.web.data :as wdata]
+            [reference.web.handlers.admin-handlers :as admin-handlers]
+            [reference.web.handlers.sitemap-handlers :as sitemap-handlers]))
 
 
 (defn- prefix-title [page]
@@ -72,11 +59,6 @@
                :page        ""
                :url         "https://api.anychart.com/"
                :title       "AnyChart API Reference"})))
-
-
-(defn- show-sitemap [request]
-  (-> (response (sdata/generate-sitemap (jdbc request)))
-      (content-type "text/xml")))
 
 
 (defn- show-landing [request]
@@ -245,10 +227,13 @@
 (defroutes app-routes
            (route/resources "/")
            (GET "/" [] show-landing)
-           (GET "/sitemap" [] show-sitemap)
-           (GET "/sitemap.xml" [] show-sitemap)
+           (GET "/sitemap" [] sitemap-handlers/show-sitemap)
+           (GET "/sitemap.xml" [] sitemap-handlers/show-sitemap)
            (GET "/_update_reference_" [] request-update)
            (POST "/_update_reference_" [] request-update)
+           (GET "/_admin_" [] admin-handlers/admin-panel)
+           (POST "/_delete_" [] admin-handlers/delete-version)
+           (POST "/_rebuild_" [] admin-handlers/rebuild-version)
 
            (GET "/versions" [] list-versions)
            (GET "/latest/" [] redirect-latest)

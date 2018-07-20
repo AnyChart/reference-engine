@@ -33,13 +33,6 @@
     (git/version-branches-with-hashes git-ssh repo-path)))
 
 
-(defn- remove-branch [jdbc branch-key]
-  (let [version-id (:id (vdata/version-by-key jdbc branch-key))]
-    (pdata/delete-version-pages jdbc version-id)
-    (sitemap/remove-by-version jdbc version-id)
-    (vdata/delete-by-id jdbc version-id)))
-
-
 (defn- remove-branches [jdbc actual-branches data-dir]
   (info "actual branches" (vec actual-branches))
   (let [current-branches (vdata/versions jdbc)
@@ -48,7 +41,7 @@
     (info "removed branches" (vec removed-branches))
     (if (seq removed-branches)
       (doseq [branch-key removed-branches]
-        (remove-branch jdbc branch-key)
+        (vdata/remove-branch-by-key jdbc branch-key)
         (git/run-sh "rm" "-rf" (str data-dir "/versions-static/" branch-key))))
     removed-branches))
 
