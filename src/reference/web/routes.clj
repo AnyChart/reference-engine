@@ -16,6 +16,7 @@
             [cheshire.core :refer [generate-string]]
             [reference.web.data :as wdata]))
 
+
 (defn- config [request]
   (-> request :component :config))
 
@@ -35,15 +36,18 @@
 (defn- prefix-title [page]
   (str (:url page) " " (:type page)))
 
+
 (defn- get-page-title [prefix & [version]]
   (str prefix " | AnyChart API Reference"
        (when version (str " v" (:key version)))))
+
 
 (defn- get-page-description [page is-url-version version]
   (str (:url page) " " (:type page)
        (when (seq (:short-description (:content page)))
          (str " | " (:short-description (:content page))))
        " | AnyChart API Reference" (when is-url-version (str " v" (:key version)))))
+
 
 (defn- page-404 [request]
   (let [referrer (get-in request [:headers "referer"])
@@ -53,6 +57,7 @@
         (notify-404 (notifier request) (str (request-url request) " from " referrer))
         (notify-404 (notifier request) (request-url request)))))
   (route/not-found "page not found"))
+
 
 (defn- landing-content [request]
   (let [versions (vdata/versions (jdbc request))
@@ -68,9 +73,11 @@
                :url         "https://api.anychart.com/"
                :title       "AnyChart API Reference"})))
 
+
 (defn- show-sitemap [request]
   (-> (response (sdata/generate-sitemap (jdbc request)))
       (content-type "text/xml")))
+
 
 (defn- show-landing [request]
   (let [versions (vdata/versions (jdbc request))
@@ -107,13 +114,16 @@
   (let [page (get-in request [:route-params :page])]
     (redirect (str "/" page))))
 
+
 (defn- search-data [version is-url-version versions request]
   (-> (response (vdata/search-index (jdbc request) (:id version)))
       (header "Content-Type" "application/json")))
 
+
 (defn- tree-data [version is-url-version versions request]
   (-> (response (vdata/tree-data (jdbc request) (:id version)))
       (header "Content-Type" "application/json")))
+
 
 (defn- generate-page-content [version is-url-version page request]
   (if-let [cached-data nil]                                 ;;(redisca/cached-data (redis request) (:id version) (:url page))]
@@ -127,6 +137,7 @@
                                    is-url-version)]
       ;(redisca/cache (redis request) (:id version) (:url page) data)
       data)))
+
 
 (defn- get-page-data [version is-url-version page request]
   (let [info (pdata/info page)]
@@ -187,6 +198,7 @@
                     :commit         (:commit (config request))}))
     (redirect (str "/" (:key version) "/anychart"))))
 
+
 (defn- try-show-page [version is-url-version versions request]
   (let [page-url (get-in request [:route-params :page])]
     (if (pdata/page-exists? (jdbc request) (:id version) page-url)
@@ -195,18 +207,22 @@
                   "/" page-url))
       (show-default-ns version is-url-version versions request))))
 
+
 (defn- list-versions [request]
   (response (vdata/versions (jdbc request))))
+
 
 (defn- request-update [request]
   (redisca/enqueue (redis request)
                    (-> request :component :config :reference-queue)
                    "generate"))
 
+
 (defn- search [version is-url-version versions request]
   (let [q (-> request :params :q)
         data (response (search-data/search (jdbc request) (:id version) q))]
     (-> data (header "Content-Type" "application/json"))))
+
 
 (defn- check-version-middleware [app]
   (fn [request]
