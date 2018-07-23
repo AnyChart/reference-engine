@@ -4,18 +4,20 @@
             [reference.adoc.core :as gen]))
 
 
-(defn generate-reference [comp]
+(defn generate-reference [comp gen-params]
   (gen/build-all (:jdbc comp)
                  (:notifier comp)
                  (:config comp)
-                 (swap! (:queue-index (:config comp)) inc))
+                 (swap! (:queue-index (:config comp)) inc)
+                 gen-params)
   (println "generate reference"))
 
 
 (defn- message-processor [comp]
   (fn [{:keys [message attempt]}]
-    (if (= message "generate")
-      (generate-reference comp))
+    (let [{cmd :cmd} message]
+      (if (= cmd "generate")
+        (generate-reference comp message)))
     {:status :success}))
 
 

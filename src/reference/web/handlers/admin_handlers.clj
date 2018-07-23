@@ -21,10 +21,8 @@
   (let [params (-> request :params)]
     (timbre/info "REBUILD version request:" params)
     ;; just for not showing updated version in select on admin panel
-    ;(when-let [version (:version params)]
-    ;  (vdata/remove-branch-by-key (jdbc request) version))
-    ;(redisca/enqueue (redis request)
-    ;                 (-> request :component :config :queue)
-    ;                 (assoc params :cmd "generate"))
-    "ok"))
-
+    (when-let [version (:version params)]
+      (vdata/remove-branch-by-key (jdbc request) version))
+    (redisca/enqueue (redis request)
+                     (-> request :component :config :reference-queue)
+                     (assoc params :cmd "generate"))))

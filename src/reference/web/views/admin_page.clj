@@ -89,11 +89,11 @@
                              :title "Rebuild without link checking"
                              :rel   "nofollow"}
            "fast"]
-          [:a.dropdown-item {:id    "rebuildLinkChecker"
+          [:a.dropdown-item {:id    "rebuildFull"
                              :href  "#"
-                             :title "Rebuild with link checking"
+                             :title "Rebuild with d.ts generation"
                              :rel   "nofollow"}
-           "with link checking"]]]
+           "with d.ts"]]]
 
         [:button.btn.btn-link {:id "showReportLink" :type "button"} "index.d.ts"]]
 

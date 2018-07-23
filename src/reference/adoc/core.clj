@@ -91,17 +91,21 @@
                                  notifier)))
 
 
-(defn need-generate-ts [branch]
-  (or (utils/released-version? (:name branch))
-      (= (:name branch) "develop")
-      (= (:name branch) "master")
-      (string/includes? (:message branch) "#dts")
-      (string/includes? (:message branch) "#ts")
-      (string/includes? (:message branch) "#all")))
+(defn need-generate-ts [branch gen-params]
+  (cond
+    (and (= (:name branch) (:version gen-params)) (:fast gen-params)) false
+    (and (= (:name branch) (:version gen-params)) (:dts gen-params)) true
+    :else (or (utils/released-version? (:name branch))
+              (= (:name branch) "develop")
+              (= (:name branch) "master")
+              (string/includes? (:message branch) "#dts")
+              (string/includes? (:message branch) "#ts")
+              (string/includes? (:message branch) "#all"))))
 
 
 (defn build-branch
-  [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground queue-index latest-version-key]
+  [branch jdbc notifier git-ssh data-dir max-processes jsdoc-bin docs playground queue-index
+   latest-version-key gen-params]
   (try
     (do
       (info "building" branch)
@@ -144,7 +148,7 @@
                                        :version-key (:name branch)
                                        :domain      (-> notifier :config :domain)} tree-data top-level)
 
-          (if (need-generate-ts branch)
+          (if (need-generate-ts branch gen-params)
             (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order)]
               (if (zero? (:exit ts-result))
                 (do (notifications/complete-version-building notifier branch queue-index true) true)
@@ -168,7 +172,8 @@
 (defn build-all
   [jdbc notifier
    {:keys [show-branches git-ssh data-dir max-processes jsdoc-bin docs playground]}
-   queue-index]
+   queue-index
+   gen-params]
   (try
     (let [repo-path (str data-dir "/repo/")
           versions-path (str data-dir "/versions/")
@@ -193,7 +198,8 @@
                                                 docs
                                                 playground
                                                 queue-index
-                                                latest-version-key)
+                                                latest-version-key
+                                                gen-params)
                                  branches))]
           ;(when (or (not-empty removed-branches)
           ;          (not-empty branches))

@@ -197,7 +197,7 @@
 (defn- request-update [request]
   (redisca/enqueue (redis request)
                    (-> request :component :config :reference-queue)
-                   "generate"))
+                   {:cmd "generate"}))
 
 
 (defn- search [version is-url-version versions request]

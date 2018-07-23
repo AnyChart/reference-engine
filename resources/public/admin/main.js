@@ -49,14 +49,14 @@ window.onload = (e) => {
         });
     });
 
-    $('#rebuildLinkChecker').click((e) => {
+    $('#rebuildFull').click((e) => {
         $('button').prop('disabled', true);
         e.preventDefault();
         $.ajax({
             type: "POST", url: `/_rebuild_`,
             data: {
                 version: selectedVersion(),
-                linkChecker: true
+                dts: true
             },
             success: rebuildSuccessFn, error: errorFn
         });
