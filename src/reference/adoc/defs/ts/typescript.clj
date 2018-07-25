@@ -282,12 +282,19 @@
 
 (defn generate-ts-declarations [data-dir git-ssh version-key latest-version-key top-level notifier]
   (info "generate TypeScript definitions for: " version-key ", latest: " latest-version-key)
+  ;; create two .d.ts files
   (let [is-last-version (= version-key latest-version-key)
-        file-name (if is-last-version "index.d.ts" (str "index-" version-key ".d.ts"))
         dir (str data-dir "/versions-static/" version-key)
-        path (str dir "/" file-name)
+
+        file-name-index "index.d.ts"
+        file-name-full (str "index-" version-key ".d.ts")
+
+        path-index (str dir "/" file-name-index)
+        path-full (str dir "/" file-name-full)
+
         ts (generate-ts top-level version-key is-last-version)
-        url (str (-> notifier :config :slack :domain) "si/" version-key "/" file-name)]
+        url (str (-> notifier :config :slack :domain) "si/" version-key "/" file-name-index)]
     (fs/mkdirs dir)
-    (spit path ts)
-    (assoc (ts-check/check path version-key data-dir git-ssh) :url url)))
+    (spit path-index ts)
+    (spit path-full ts)
+    (assoc (ts-check/check path-index version-key data-dir git-ssh) :url url)))
