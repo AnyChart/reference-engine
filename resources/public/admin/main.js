@@ -62,12 +62,21 @@ window.onload = (e) => {
         });
     });
 
-    $('#showReportLink').click((e) => {
+    $('#indexLink').click((e) => {
         const index = $("#versionSelect").prop('selectedIndex');
         if (index == 0) {
             window.location.href = `/si/${selectedVersion()}/index.d.ts`
         } else {
             window.location.href = `/si/${selectedVersion()}/index-${selectedVersion()}.d.ts`
+        }
+    });
+
+    $('#graphicsLink').click((e) => {
+        const index = $("#versionSelect").prop('selectedIndex');
+        if (index == 0) {
+            window.location.href = `/si/${selectedVersion()}/graphics.d.ts`
+        } else {
+            window.location.href = `/si/${selectedVersion()}/graphics-${selectedVersion()}.d.ts`
         }
     });
 };

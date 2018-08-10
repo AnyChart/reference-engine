@@ -1,6 +1,6 @@
 (ns reference.adoc.adoc
   (:require [reference.git :refer [run-sh]]
-            [cheshire.core :refer [parse-string]]
+            [cheshire.core :as json]
             [clojure.java.shell :refer [sh]]
             [clojure.java.io :refer [file]]
             [taoensso.timbre :as timbre :refer [info]]
@@ -27,7 +27,7 @@
     (let [full-res (apply sh (vec (concat [jsdoc-path "-X"] (vec files))))
           res (:out full-res)]
       (info "got res" (count res) (:err full-res))
-      (parse-string
+      (json/parse-string
         (-> res
             (string/replace "acgraph" "anychart.graphics")
             (string/replace "{{branch-name}}" version))

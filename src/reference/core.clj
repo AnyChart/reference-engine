@@ -81,7 +81,7 @@
 
 
 (def dev (all-system config))
-
+(def system nil)
 
 (defn start []
   (alter-var-root #'dev component/start))
@@ -96,7 +96,7 @@
   ([mode config-path]
    (set-config config-path)
    (cond
-     (= mode "all") (component/start (all-system config))
+     (= mode "all") (alter-var-root #'system (constantly (component/start (all-system config))))
      (= mode "frontend") (component/start (frontend-system config))
      (= mode "backend") (component/start (generator-system config))
      :else (timbre/info "Unknown mode"))))

@@ -257,27 +257,19 @@
        "// from https://github.com/teppeis/closure-library.d.ts\n" data))
 
 
+(defn generate-ts [top-level]
+  (->> (:namespaces top-level)
+       (remove #(= (:full-name %) "anychart.enums"))
+       (sort-by :full-name)
+       (map #(namespace-definition top-level %))
+       (join "\n\n")))
+
+
 (defn add-header [ts version-key]
   (str "// Type definitions for AnyChart JavaScript Charting Library" (str ", v" version-key)
        "\n// Project: https://www.anychart.com/\n"
        "// Definitions by: AnyChart <https://www.anychart.com>\n"
        ts))
-
-
-(defn generate-ts [top-level version-key is-last-versionl]
-  (let [ts (->> (:namespaces top-level)
-                (remove #(= (:full-name %) "anychart.enums"))
-                (sort-by :full-name)
-                (map #(namespace-definition top-level %))
-                (join "\n\n"))]
-    (add-header ts version-key)))
-
-
-(defn test2 []
-  (let [ts (generate-ts @top-level "develop" false)]
-    (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" ts)
-    (spit "/media/ssd/work/TypeScript/typescript-example/typescript-example/src/anychart.d.ts" ts)
-    (spit "/media/ssd/sibental/reference-engine-data/index.d.ts" ts)))
 
 
 (defn generate-ts-declarations [data-dir git-ssh version-key latest-version-key top-level notifier]
@@ -292,9 +284,47 @@
         path-index (str dir "/" file-name-index)
         path-full (str dir "/" file-name-full)
 
-        ts (generate-ts top-level version-key is-last-version)
+        ts (generate-ts top-level)
+        ts (add-header ts version-key)
+
         url (str (-> notifier :config :slack :domain) "si/" version-key "/" file-name-index)]
     (fs/mkdirs dir)
     (spit path-index ts)
     (spit path-full ts)
     (assoc (ts-check/check path-index version-key data-dir git-ssh) :url url)))
+
+
+(defn add-graphics-js-header [ts version-key]
+  (str "// Type definitions for GraphicsJS JavaScript Graphics Library" (str ", v" version-key)
+       "\n// Project: http://www.graphicsjs.org/\n"
+       "// Definitions by: AnyChart <https://www.anychart.com>\n"
+       ts))
+
+
+(defn generate-graphics-js-declarations [data-dir git-ssh version-key latest-version-key top-level notifier]
+  (info "generate GraphicsJS TS definitions for: " version-key ", latest: " latest-version-key)
+  (let [is-last-version (= version-key latest-version-key)
+        dir (str data-dir "/versions-static/" version-key)
+
+        file-name-index "graphics.d.ts"
+        file-name-full (str "graphics-" version-key ".d.ts")
+
+        path-index (str dir "/" file-name-index)
+        path-full (str dir "/" file-name-full)
+
+        ts (generate-ts top-level)
+        ts (string/replace ts "anychart.graphics" "acgraph")
+        ts (add-graphics-js-header ts version-key)
+
+        url (str (-> notifier :config :slack :domain) "si/" version-key "/" file-name-index)]
+    (fs/mkdirs dir)
+    (spit path-index ts)
+    (spit path-full ts)
+    (assoc (ts-check/check path-index version-key data-dir git-ssh) :url url)))
+
+
+;(defn test2 []
+;  (let [ts (generate-ts @top-level "develop" false)]
+;    (spit "/media/ssd/work/TypeScript/St1/src/anychart.d.ts" ts)
+;    (spit "/media/ssd/work/TypeScript/typescript-example/typescript-example/src/anychart.d.ts" ts)
+;    (spit "/media/ssd/sibental/reference-engine-data/index.d.ts" ts)))

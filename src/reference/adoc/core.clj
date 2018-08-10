@@ -81,14 +81,33 @@
         inh-top-level (inh/build-inheritance raw-top-level)
         top-level (categories/categorize inh-top-level categories-order)
         top-level-ts (typedef-builder/fix-typedef top-level true)
+        replaced-top-level-ts (tree-ts/modify top-level-ts true)
         top-level-js (typedef-builder/fix-typedef top-level)]
     (json-gen/generate data-dir (:name branch) latest-version-key (tree-ts/modify top-level-js true))
-    (ts/generate-ts-declarations data-dir
-                                 git-ssh
-                                 (:name branch)
-                                 latest-version-key
-                                 (tree-ts/modify top-level-ts true)
-                                 notifier)))
+
+    ;; generate graphics.d.ts
+    (let [graphics-top-level (-> replaced-top-level-ts
+                                 (update :namespaces (fn [ns] (filter #(string/starts-with? (:full-name %) "anychart.graphics") ns)))
+                                 (update :classes (fn [ns] (filter #(string/starts-with? (:full-name %) "anychart.graphics") ns)))
+                                 (update :typedefs (fn [ns] (filter #(string/starts-with? (:full-name %) "anychart.graphics") ns)))
+                                 (update :enums (fn [ns] (filter #(string/starts-with? (:full-name %) "anychart.graphics") ns))))
+
+          graphics-ts-result (ts/generate-graphics-js-declarations data-dir
+                                                                   git-ssh
+                                                                   (:name branch)
+                                                                   latest-version-key
+                                                                   graphics-top-level
+                                                                   notifier)
+
+          ;; generate index.d.ts
+          index-ts-result (ts/generate-ts-declarations data-dir
+                                                       git-ssh
+                                                       (:name branch)
+                                                       latest-version-key
+                                                       replaced-top-level-ts
+                                                       notifier)]
+      {:index-ts-result    index-ts-result
+       :graphics-ts-result graphics-ts-result})))
 
 
 (defn need-generate-ts [branch gen-params]
@@ -150,7 +169,8 @@
 
           (if (need-generate-ts branch gen-params)
             (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order)]
-              (if (zero? (:exit ts-result))
+              (if (and (zero? (-> ts-result :index-ts-result :exit))
+                       (zero? (-> ts-result :graphics-ts-result :exit)))
                 (do (notifications/complete-version-building notifier branch queue-index true) true)
                 (notifications/complete-version-building-error notifier branch queue-index nil ts-result)))
             (do (notifications/complete-version-building notifier branch queue-index false) true)))))

@@ -15,7 +15,7 @@
      <type> = (<'('> type_ <')'>) | type_
      <type_> = (simple|array|object|tsfunc|jsfunc)
 
-     tsfunc = <'('> kvs <')'> <'=>'> types
+     tsfunc = <'('> kvs? <')'> <'=>'> types
 
      jsfunc = <'function('> jsfuncparams <')'>  (<':'> types)?
      jsfuncparams = jsfuncparam? | jsfuncparam (<','> <whitespace>? jsfuncparam)*

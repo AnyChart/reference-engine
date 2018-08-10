@@ -84,18 +84,21 @@
 
 
 (defn complete-version-building-error [notifier {author :author commit-message :message version :name commit :commit}
-                                       queue-index e ts-error]
+                                       queue-index e {:keys [index-ts-result graphics-ts-result]}]
   (let [msg (str "[API " (c/prefix) "] #" queue-index " " (b version)
                  " \"" commit-message "\" @" author " (" (subs commit 0 7) ") - "
                  (-> "failed" (font "#d00000")) "\n"
                  (when e
                    (-> (utils/format-exception e) (font "#777777" 11) i))
-                 (when ts-error
-                   (str "<a href=\"" (c/domain) (:url ts-error) "\">index.d.ts</a> errors"
-                        (when (:count ts-error)
-                          (str " - " (b (:count ts-error)) " tests failed"))
+                 (when (not= 0 (:exit index-ts-result))
+                   (str "<a href=\"" (c/domain) (:url index-ts-result) "\">index.d.ts</a> errors"
+                        (when (:count index-ts-result)
+                          (str " - " (b (:count index-ts-result)) " tests failed"))
                         ":\n"
-                        "" (:out ts-error) "")))]
+                        "" (:out index-ts-result) ""))
+                 (when (not= 0 (:exit graphics-ts-result))
+                   (str "<a href=\"" (c/domain) (:url graphics-ts-result) "\">graphics.d.ts</a> errors:\n"
+                        "" (:out graphics-ts-result) "")))]
     (send-message (config notifier) msg)
     (send-release-message (config notifier) version msg)))
 

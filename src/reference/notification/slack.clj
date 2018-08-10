@@ -92,17 +92,22 @@
     (notify-attach notifier attachments)))
 
 
-(defn complete-version-building-error [notifier version queue-index e ts-error]
+(defn complete-version-building-error [notifier version queue-index e {:keys [index-ts-result graphics-ts-result]}]
   (let [attachments [{:color     "danger"
                       :text      (str "#" queue-index " api `" (c/prefix) "` - *" version "* failed"
                                       (when e (str "\n```" (utils/format-exception e) "```"))
-                                      (when ts-error
-                                        (str "\n<" (c/domain) (:url ts-error) "|index.d.ts> errors"
-                                             (when (:count ts-error)
-                                               (str " - " (b (:count ts-error)) " tests failed"))
+                                      (when (not= 0 (:exit index-ts-result))
+                                        (str "\n<" (c/domain) (:url index-ts-result) "|index.d.ts> errors"
+                                             (when (:count index-ts-result)
+                                               (str " - " (b (:count index-ts-result)) " tests failed"))
                                              ":\n"
                                              "```"
-                                             (:out ts-error)
+                                             (:out index-ts-result)
+                                             "```"))
+                                      (when (not= 0 (:exit graphics-ts-result))
+                                        (str "\n<" (c/domain) (:url graphics-ts-result) "|graphics.d.ts> errors:\n"
+                                             "```"
+                                             (:out graphics-ts-result)
                                              "```")))
                       :mrkdwn_in ["text"]}]]
     (notify-attach notifier attachments)))

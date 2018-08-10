@@ -11,7 +11,7 @@
                       :display "inline-block"
                       :padding "4px 10px"}]
     [:select.custom-select {:width "200px"}]
-    [:.main {:width "580px"}]
+    [:.main {:width "670px"}]
     [:.btn-secondary :.btn-danger :.btn-primary :.btn-group {:margin-left "10px"}]))
 
 
@@ -95,7 +95,8 @@
                              :rel   "nofollow"}
            "with d.ts"]]]
 
-        [:button.btn.btn-link {:id "showReportLink" :type "button"} "index.d.ts"]]
+        [:button.btn.btn-link {:id "indexLink" :type "button"} "index.d.ts"]
+        [:button.btn.btn-link {:id "graphicsLink" :type "button"} "graphics.d.ts"]]
 
        ]]
 
