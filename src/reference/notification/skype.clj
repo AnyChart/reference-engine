@@ -96,6 +96,8 @@
                           (str " - " (b (:count index-ts-result)) " tests failed"))
                         ":\n"
                         "" (:out index-ts-result) ""))
+                 (when (and (not= 0 (:exit index-ts-result))
+                            (not= 0 (:exit graphics-ts-result))) "\n")
                  (when (not= 0 (:exit graphics-ts-result))
                    (str "<a href=\"" (c/domain) (:url graphics-ts-result) "\">graphics.d.ts</a> errors:\n"
                         "" (:out graphics-ts-result) "")))]
