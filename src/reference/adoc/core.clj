@@ -18,6 +18,7 @@
             [reference.data.search :as search-data]
             [reference.data.sitemap :as sitemap]
             [reference.components.notifier :as notifications]
+            [com.rpl.specter :refer :all]
             [clojure.java.io :refer [file]]
             [me.raynes.fs :as fs]
             [cheshire.core :refer [generate-string]]
@@ -91,6 +92,18 @@
                                  (update :classes (fn [ns] (filter #(string/starts-with? (:full-name %) "anychart.graphics") ns)))
                                  (update :typedefs (fn [ns] (filter #(string/starts-with? (:full-name %) "anychart.graphics") ns)))
                                  (update :enums (fn [ns] (filter #(string/starts-with? (:full-name %) "anychart.graphics") ns))))
+
+          ;; delete 'credits' method from anychart.graphics.vector.Stage - cause it returns
+          ;; non-graphics class: anychart.core.ui.StageCredits
+          ;; http://api.anychart.stg/anychart.graphics.vector.Stage#credits
+          graphics-top-level (setval [:classes
+                                      ALL
+                                      #(= "anychart.graphics.vector.Stage" (:full-name %))
+                                      :methods
+                                      ALL
+                                      #(= "credits" (:name %))]
+                                     NONE
+                                     graphics-top-level)
 
           graphics-ts-result (ts/generate-graphics-js-declarations data-dir
                                                                    git-ssh
