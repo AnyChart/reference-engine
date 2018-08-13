@@ -11,8 +11,8 @@
                       :display "inline-block"
                       :padding "4px 10px"}]
     [:select.custom-select {:width "200px"}]
-    [:.main {:width "670px"}]
-    [:.btn-secondary :.btn-danger :.btn-primary :.btn-group {:margin-left "10px"}]))
+    [:.main {:width "700px"}]
+    [:select :.btn-secondary :.btn-danger  :.btn-group :.btn-link {:margin-right "10px"}]))
 
 
 (defn page [versions]
@@ -56,18 +56,16 @@
       [:p                                                   ;.alert.alert-primary {:role "alert"}
        [:p "Select a version and choose an action."]
        [:div.form-group
+
+        [:a.btn.btn-secondary {:id "refreshButton"
+                               :role  "button"
+                               :href  "/_admin_"
+                               :title "Refresh page"
+                               :rel   "nofollow"} [:i.fas.fa-sync-alt]]
+
         [:select.custom-select {:id "versionSelect"}
          (for [version versions]
            [:option {:value (:key version)} (:key version)])]
-
-        [:a.btn.btn-secondary {:role  "button"
-                               :href  "/_admin_"
-                               :title "Update page"
-                               :rel   "nofollow"} [:i.fas.fa-sync-alt]]
-
-        [:button.btn.btn-danger {:id    "deleteButton"
-                                 :type  "button"
-                                 :title "Remove version"} "Remove"]
 
         [:div.btn-group
          [:button.btn.btn-primary.dropdown-toggle
@@ -94,6 +92,10 @@
                              :title "Rebuild with d.ts generation"
                              :rel   "nofollow"}
            "with d.ts"]]]
+
+        [:button.btn.btn-danger {:id    "deleteButton"
+                                 :type  "button"
+                                 :title "Remove version"} "Remove"]
 
         [:button.btn.btn-link {:id "indexLink" :type "button"} "index.d.ts"]
         [:button.btn.btn-link {:id "graphicsLink" :type "button"} "graphics.d.ts"]]
