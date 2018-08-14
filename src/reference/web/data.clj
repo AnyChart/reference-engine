@@ -6,7 +6,8 @@
             [reference.web.tree :refer [tree-view-partial]]
             [clojure.string :as string]
             [hiccup.core :as hiccup]
-            [reference.web.views.enum :as enum-view]))
+            [reference.web.views.enum :as enum-view]
+            [reference.web.views.typedef :as typedef-view]))
 
 
 (defn- escape-str [str]
@@ -152,6 +153,7 @@
 
 
 (defn render-entry [docs-domain playground-domain version-key show-samples entry-type entry is-url-version]
+  ;(println "render-entry: " entry-type)
   (let [template (str "templates/entries/" entry-type ".selmer")
         data {:main           entry
               :version        version-key
@@ -160,6 +162,7 @@
               :playground     playground-domain}
         html (case entry-type
                "enum" (hiccup/html (enum-view/enum data))
+               "typedef" (hiccup/html (typedef-view/typedef data))
                (render-file template data))]
     (-> html
         (fix-links version-key is-url-version)

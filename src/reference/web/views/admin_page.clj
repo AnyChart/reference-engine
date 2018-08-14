@@ -12,7 +12,7 @@
                       :padding "4px 10px"}]
     [:select.custom-select {:width "200px"}]
     [:.main {:width "700px"}]
-    [:select :.btn-secondary :.btn-danger  :.btn-group :.btn-link {:margin-right "10px"}]))
+    [:select :.btn-secondary :.btn-danger :.btn-group :.btn-link {:margin-right "10px"}]))
 
 
 (defn page [versions]
@@ -57,7 +57,7 @@
        [:p "Select a version and choose an action."]
        [:div.form-group
 
-        [:a.btn.btn-secondary {:id "refreshButton"
+        [:a.btn.btn-secondary {:id    "refreshButton"
                                :role  "button"
                                :href  "/_admin_"
                                :title "Refresh page"
