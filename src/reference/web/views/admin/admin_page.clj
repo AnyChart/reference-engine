@@ -1,4 +1,4 @@
-(ns reference.web.views.admin-page
+(ns reference.web.views.admin.admin-page
   (:require [garden.core :as garden]
             [hiccup.page :as hiccup-page]))
 

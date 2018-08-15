@@ -1,7 +1,7 @@
 (ns reference.web.handlers.admin-handlers
   (:require [reference.web.helpers :refer :all]
             [reference.data.versions :as vdata]
-            [reference.web.views.admin-page :as admin-view]
+            [reference.web.views.admin.admin-page :as admin-view]
             [taoensso.timbre :as timbre]
             [reference.components.redis :as redisca]))
 

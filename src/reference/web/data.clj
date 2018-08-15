@@ -6,8 +6,11 @@
             [reference.web.tree :refer [tree-view-partial]]
             [clojure.string :as string]
             [hiccup.core :as hiccup]
-            [reference.web.views.enum :as enum-view]
-            [reference.web.views.typedef :as typedef-view]))
+            [reference.web.views.main.entries.enum :as enum-view]
+            [reference.web.views.main.entries.typedef :as typedef-view]
+            [reference.web.views.main.entries.class-entry :as class-view]
+            [reference.web.views.main.entries.namespace-entry :as namespace-view]
+            ))
 
 
 (defn- escape-str [str]
@@ -162,7 +165,9 @@
               :playground     playground-domain}
         html (case entry-type
                "enum" (hiccup/html (enum-view/enum data))
-               "typedef" (hiccup/html (typedef-view/typedef data))
+               ;"typedef" (hiccup/html (typedef-view/typedef data))
+               ;"class" (hiccup/html (class-view/class' data))
+               ;"namespace" (hiccup/html (namespace-view/namespace' data))
                (render-file template data))]
     (-> html
         (fix-links version-key is-url-version)

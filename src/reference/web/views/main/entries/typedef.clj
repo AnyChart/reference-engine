@@ -1,4 +1,4 @@
-(ns reference.web.views.typedef
+(ns reference.web.views.main.entries.typedef
   (:require [reference.web.views.common :as common]
             [clojure.string :as string]))
 
@@ -14,7 +14,7 @@
 
     [:div.content-block
      [:div.small-group (:description main)]
-     (common/listing-and-samples data)]
+     (common/listing-and-samples data main)]
 
     (when (:has-types main)
       [:div.content-block

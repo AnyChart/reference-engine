@@ -1,4 +1,4 @@
-(ns reference.web.views.enum
+(ns reference.web.views.main.entries.enum
   (:require [reference.web.views.common :as common]
             [reference.util.utils :as utils]))
 

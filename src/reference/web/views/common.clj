@@ -7,6 +7,12 @@
   "https://github.com/AnyChart/api.anychart.com")
 
 
+(defn link [{:keys [version is-url-version playground]} val]
+  (if (.contains val "://")
+    val
+    (str (when is-url-version (str "/" version)) "/" val)))
+
+
 (defn playground-link [{:keys [version is-url-version playground]} val]
   (str "//" playground "/api"
        (when is-url-version (str "/" version))
@@ -32,6 +38,18 @@
                         %1 "'>" %1 "</a>")))
 
 
+(defn is-override-expand [method last counter]
+  (let [default-override-index (:default-override-index method)]
+    (if (and default-override-index)
+      (when (= default-override-index counter)
+        "in")
+      (when last
+        "in"))))
+
+
+(defn table-style [text]
+  (string/replace text #"<table>" "<table class='table table-condensed'>"))
+
 
 (defn samples [{:keys [main version is-url-version show-samples playground] :as data} entry]
   (when (and show-samples (:has-playground-samples entry))
@@ -52,16 +70,16 @@
       [:div.small-group
        [:div.collapse-group
         [:a
-         {:href        (str "#listing" (:id l))
+         {:href        (str "#listing-" (:id l))
           :data-toggle "collapse"}
          [:i.ac.ac-andrews-pitchfork]
-         (:title l)]
+         " " (:title l)]
         [:div.collapse.collapse-div {:id (str "listing-" (:id l))}
          [:div.collapse-content
           [:pre.prettyprint.linenums:1 (:code l)]]]]])))
 
 
-(defn listing-and-samples [data]
+(defn listing-and-samples [data entry]
   (list
-    (listings data (:main data))
-    (samples data (:main data))))
+    (listings data entry)
+    (samples data entry)))
