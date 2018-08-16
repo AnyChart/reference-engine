@@ -301,7 +301,7 @@
        ts))
 
 
-(defn generate-graphics-js-declarations [data-dir git-ssh version-key latest-version-key top-level notifier]
+(defn generate-graphics-ts-declarations [data-dir git-ssh version-key latest-version-key top-level notifier]
   (info "generate GraphicsJS TS definitions for: " version-key ", latest: " latest-version-key)
   (let [is-last-version (= version-key latest-version-key)
         dir (str data-dir "/versions-static/" version-key)
@@ -320,7 +320,7 @@
     (fs/mkdirs dir)
     (spit path-index ts)
     (spit path-full ts)
-    (assoc (ts-check/check path-index version-key data-dir git-ssh) :url url)))
+    (assoc (ts-check/check-ts-file path-index) :url url)))
 
 
 ;(defn test2 []

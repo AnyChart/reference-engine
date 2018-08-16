@@ -105,7 +105,7 @@
                                      NONE
                                      graphics-top-level)
 
-          graphics-ts-result (ts/generate-graphics-js-declarations data-dir
+          graphics-ts-result (ts/generate-graphics-ts-declarations data-dir
                                                                    git-ssh
                                                                    (:name branch)
                                                                    latest-version-key
