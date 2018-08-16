@@ -1,6 +1,7 @@
 (ns reference.web.views.main.entries.typedef
   (:require [reference.web.views.common :as common]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [hiccup.core :as hiccup]))
 
 
 (defn typedef [{:keys [main] :as data}]
@@ -32,9 +33,8 @@
           [:th "Type"]
           [:th "Description"]]]
         [:tbody
-         (for [p (:properties main)]
+         (for [prop (:properties main)]
            [:tr
-            [:td.name (:name p)]
-            [:td.code-style
-             (string/join " | " (map #(common/link-or-text data %) (:type p)))]
-            [:td (:description p)]])]]])))
+            [:td.name (:name prop)]
+            [:td.code-style (common/compound-type data (:type prop))]
+            [:td (:description prop)]])]]])))

@@ -18,8 +18,8 @@
       (when (:has-extends main)
         (list
           "Extends: "
-          (for [e (:extends main)]
-            [:a.type-link {:href (common/link data e)} e])))]
+          (for [extend (:extends main)]
+            [:a.type-link {:href (common/link data extend)} extend])))]
      [:p (:description main)]
      (common/listing-and-samples data main)]
 
@@ -29,37 +29,35 @@
        [:table.table.table-condensed
         [:tbody
          (when (:has-categories main)
-           (for [c (:categories main)]
+           (for [category (:categories main)]
              (list
                [:tr
                 [:td.th.empty {:colspan "2"}
-                 [:a.category.type-link {:id   (str "category-" (:id c))
-                                         :href (str "#category-" (:id c))}
-
-                  (:name c)]]]
-               (for [f (:members c)]
+                 [:a.category.type-link {:id   (str "category-" (:id category))
+                                         :href (str "#category-" (:id category))}
+                  (:name category)]]]
+               (for [member (:members category)]
                  [:tr
-                  [:td.name [:a.type-link {:href (str "#" (:name f))}
-                             (str (:name f) "()")]]
-                  [:td (:short-description f)]])))
-           )
+                  [:td.name
+                   [:a.type-link {:href (str "#" (:name member))}
+                    (str (:name member) "()")]]
+                  [:td (:short-description member)]]))))
+
          (when-not (:has-categories main)
-           [:tr [:td.th {:colspan "2"}]]
-           (for [f (:methods main)]
+           [:tr
+            [:td.th {:colspan "2"}]]
+           (for [method (:methods main)]
              [:tr
-              [:td.name [:a.type-link {:href (str "#" (:name f))}
-                         (str (:name f) "()")]]
-              [:td (:short-description f)]]))
-         ]
-        ]
-       ])
+              [:td.name
+               [:a.type-link {:href (str "#" (:name method))}
+                (str (:name method) "()")]]
+              [:td (:short-description method)]]))
+         ]]])
 
     (when (:has-methods main)
       [:div.content-block.methods
        [:h2 "Methods Description"]
-       (for [f (:methods main)]
-         (method-view/method data f)
-         )])
+       (for [method (:methods main)]
+         (method-view/method data method))])
     )
-
   )

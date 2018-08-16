@@ -1,49 +1,49 @@
 (ns reference.web.views.main.entries.method
   (:require [reference.web.views.common :as common]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [hiccup.core :as hiccup]))
 
 
-(defn method [data f]
+(defn method [data method]
   ;(println "method: " (:name f))
   [:div.method-block
-   [:h3 {:id (:name f)} (:name f)]
+   [:h3 {:id (:name method)} (:name method)]
 
-   [:div.panel-group {:id (str "accordion-" (:name f))}
+   [:div.panel-group {:id (str "accordion-" (:name method))}
 
-    (for [[index o] (map-indexed vector (:overrides f))
-          :let [is-last (= (inc index) (count (:overrides f)))]]
+    (for [[index override] (map-indexed vector (:overrides method))
+          :let [is-last (= (inc index) (count (:overrides method)))]]
 
       [:div.panel.panel-default
 
        [:div.panel-heading
         [:h4.panel-title
-         [:a {:href        (str "#accordion-" (:name f) "-" index)
-              :data-parent (str "#accordion-" (:name f))
+         [:a {:href        (str "#accordion-" (:name method) "-" index)
+              :data-parent (str "#accordion-" (:name method))
               :data-toggle "collapse"}
-          (:signature o)
-          (when (:has-since o)
-            [:span.pull-right (str "Since version " (:since o))])]]]
+          (:signature override)
+          (when (:has-since override)
+            [:span.pull-right (str "Since version " (:since override))])]]]
 
-       [:div.pannel-collapse.collapse {:id    (str "accordion-" (:name f) "-" index)
-                                       :class (common/is-override-expand f is-last index)}
+       [:div.pannel-collapse.collapse {:id    (str "accordion-" (:name method) "-" index)
+                                       :class (common/is-override-expand method is-last index)}
         [:div.panel-body
-
          [:div.small-group
-          (:description o)
-          (when (:has-detailed o)
+          (:description override)
+          (when (:has-detailed override)
             [:div.collapse-group
-             [:a.collapsed {:href          (str "#detailed-" (:name f) "-" index)
+             [:a.collapsed {:href          (str "#detailed-" (:name method) "-" index)
                             :aria-expanded "true"
                             :data-toggle   "collapse"}
               [:i.ac.ac-info]
               " Detailed description"]
 
-             [:div.collapse-div.collapse {:id            (str "detailed-" (:name f) "-" index)
+             [:div.collapse-div.collapse {:id            (str "detailed-" (:name method) "-" index)
                                           :aria-expanded "false"}
               [:div.collapse-content
-               (:detailed o)]]])]
+               (:detailed override)]]])]
 
-         (when (:has-params o)
+         (when (:has-params override)
            [:div.small-group
             [:p [:strong "Params:"]]
             [:table.table.table-bordered
@@ -51,29 +51,27 @@
               [:tr
                [:th "Name"]
                [:th "Type"]
-               (when (:has-params-defaults o) [:th "Default"])
+               (when (:has-params-defaults override) [:th "Default"])
                [:th "Description"]]]
              [:tbody
-              (for [p (:params o)]
+              (for [param (:params override)]
                 [:tr
-                 [:td (:name p)]
-                 [:td (string/join " | " (map #(common/link-or-text data %) (:types p)))]
-                 (when (:has-params-defaults o)
-                   [:td [:pre.prettyprint (:default p)]])
-                 [:td (:description p)]])]]])
+                 [:td (:name param)]
+                 [:td (common/compound-type data (:types param))]
+                 (when (:has-params-defaults override)
+                   [:td [:pre.prettyprint (:default param)]])
+                 [:td (:description param)]])]]])
 
-         (when (:has-returns o)
+         (when (:has-returns override)
            [:div.small-group
             [:p [:strong "Returns:"]]
-            (for [r (:returns o)]
+            (for [return (:returns override)]
               (list
-                (->> (:types r)
-                     (map #(common/type-link data %))
-                     (string/join " | "))
+                (common/compound-type data (:types return))
                 " - "
-                (:description r)))])
+                (:description return)))])
 
-         (common/listing-and-samples data o)
+         (common/listing-and-samples data override)
 
          ]]])
     ]])

@@ -2,19 +2,14 @@
   (:require [reference.web.views.common :as common]
             [reference.web.views.main.entries.constant :as constant-view]
             [reference.web.views.main.entries.method :as method-view]
-            [reference.web.views.main.entries.function :as function-view]
-
-            ))
+            [reference.web.views.main.entries.function :as function-view]))
 
 
 (defn namespace' [{:keys [main] :as data}]
-  (println (:name main))
   (list
     [:h1
-     [:span.page-type "namespace "]
-     (:full-name main)
-     [:a#github-edit.btn.btn-default.btn-small.github-fork.pull-right
-      {:href (common/edit-link)}
+     [:span.page-type "namespace "] (:full-name main)
+     [:a#github-edit.btn.btn-default.btn-small.github-fork.pull-right {:href (common/edit-link)}
       [:span [:i.ac.ac-andrews-pitchfork]]
       " Improve this Doc"]]
 
@@ -28,11 +23,11 @@
         [:tbody
          [:tr
           [:td.th.empty {:colspan "2"}]]
-         (for [c (:constants main)]
+         (for [const (:constants main)]
            [:tr
             [:td.name
-             [:a.type-link {:href (str "#" (:name c))} (:name c)]]
-            [:td (:short-description c)]])]]])
+             [:a.type-link {:href (str "#" (:name const))} (:name const)]]
+            [:td (:short-description const)]])]]])
 
 
     (when (:has-functions main)
@@ -41,25 +36,27 @@
        [:table.table.table-condensed
         [:tbody
          (when (:has-categories main)
-           (for [c (:categories main)]
+           (for [category (:categories main)]
              (list
                [:tr
                 [:td.th.empty {:colspan "2"}
-                 [:a.category.type-link {:id   (str "category-" (:id c))
-                                         :href (str "#category-" (:id c))}
-                  (:name c)]]]
-               (for [f (:members c)]
+                 [:a.category.type-link {:id   (str "category-" (:id category))
+                                         :href (str "#category-" (:id category))}
+                  (:name category)]]]
+               (for [member (:members category)]
                  [:tr
-                  [:td.name [:a.type-link {:href (str "#" (:name f))}
-                             (str (:name f) "()")]]
-                  [:td (:short-description f)]]))))
+                  [:td.name
+                   [:a.type-link {:href (str "#" (:name member))}
+                    (str (:name member) "()")]]
+                  [:td (:short-description member)]]))))
          (when-not (:has-categories main)
            (list
-             [:tr [:td.th.empty {:colspan "2"}]]
-             (for [f (:functions main)]
+             [:tr
+              [:td.th.empty {:colspan "2"}]]
+             (for [func (:functions main)]
                [:tr
-                [:td.name [:a.type-link {:href (str "#" (:name f))} (str (:name f) "()")]]
-                [:td (:short-description f)]])))
+                [:td.name [:a.type-link {:href (str "#" (:name func))} (str (:name func) "()")]]
+                [:td (:short-description func)]])))
          ]]
        ])
 
@@ -93,27 +90,26 @@
        [:table.table.table-condensed
         [:tbody
          [:tr [:td.th.empty {:colspan "2"}]]
-         (for [c (:classes main)]
+         (for [cls (:classes main)]
            [:tr
             [:td.name
-             [:a.type-link {:href (common/link data (:name c))} (:name c)]]
-            [:td (:short-description c)]])]]])
+             [:a.type-link {:href (common/link data (:name cls))} (:name cls)]]
+            [:td (:short-description cls)]])]]])
 
     (when (:has-constants main)
       [:div.content-block.methods
        [:h2 "Constants Description"]
-       (for [c (:constants main)]
-         (constant-view/constant data c))])
+       (for [const (:constants main)]
+         (constant-view/constant data const))])
 
     (when (:has-functions main)
       [:div.content-block.methods
        [:h2 "Functions Description"]
-       (for [f (:functions main)]
-         (if (:overrides f)
-           (method-view/method data f)
-           (function-view/function data f)))]
+       (for [func (:functions main)]
+         (if (:overrides func)
+           (method-view/method data func)
+           (function-view/function data func)))]
 
       )
-
     )
   )

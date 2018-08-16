@@ -9,8 +9,7 @@
             [reference.web.views.main.entries.enum :as enum-view]
             [reference.web.views.main.entries.typedef :as typedef-view]
             [reference.web.views.main.entries.class-entry :as class-view]
-            [reference.web.views.main.entries.namespace-entry :as namespace-view]
-            ))
+            [reference.web.views.main.entries.namespace-entry :as namespace-view]))
 
 
 (defn- escape-str [str]
@@ -156,19 +155,18 @@
 
 
 (defn render-entry [docs-domain playground-domain version-key show-samples entry-type entry is-url-version]
-  ;(println "render-entry: " entry-type)
-  (let [template (str "templates/entries/" entry-type ".selmer")
-        data {:main           entry
+  (let [data {:main           entry
               :version        version-key
               :is-url-version is-url-version
               :show-samples   true
               :playground     playground-domain}
         html (case entry-type
                "enum" (hiccup/html (enum-view/enum data))
-               ;"typedef" (hiccup/html (typedef-view/typedef data))
-               ;"class" (hiccup/html (class-view/class' data))
-               ;"namespace" (hiccup/html (namespace-view/namespace' data))
-               (render-file template data))]
+               "typedef" (hiccup/html (typedef-view/typedef data))
+               "class" (hiccup/html (class-view/class' data))
+               "namespace" (hiccup/html (namespace-view/namespace' data))
+               ;(render-file (str "templates/entries/" entry-type ".selmer") data)
+               )]
     (-> html
         (fix-links version-key is-url-version)
         fix-web-links

@@ -4,7 +4,6 @@
 
 
 (defn function [data f]
-  ;(println (:name f))
   [:div.method-block
    [:h3 {:id (:name f)} (:name f)]
    [:div.panel-group
@@ -23,10 +22,9 @@
 
         (when (:has-detailed f)
           [:div.collapse-group
-           [:a
-            {:href          (str "#detailed-" (:name f) "-") ;; TODO index
-             :aria-expanded "true"
-             :data-toggle   "collapse"}
+           [:a {:href          (str "#detailed-" (:name f) "-") ;; TODO index
+                :aria-expanded "true"
+                :data-toggle   "collapse"}
             [:i.ac.ac-info]
             " Detailed description"]
            [:div.collapse-div.collapse {:id            (str "detailed-" (:name f) "-") ;; TODO index
@@ -42,29 +40,24 @@
                     [:th "Type"]
                     (when (:has-params-defaults f)
                       [:th "Default"])
-                    [:th "Description"]
-                    ]]
+                    [:th "Description"]]]
            [:tbody
-            (for [p (:params f)]
+            (for [param (:params f)]
               [:tr
-               [:td (:name p)]
-               [:td (string/join " | " (map #(common/link-or-text data %) (:types p)))]
+               [:td (:name param)]
+               [:td (common/compound-type data (:types param))]
                (when (:has-params-defaults f)
-                 [:td [:pre.prettyprint (:default p)]])
-               [:td (:description p)]])]
+                 [:td [:pre.prettyprint (:default param)]])
+               [:td (:description param)]])]
            ]])
-
 
        (when (:has-returns f)
          [:div.small-group
           [:p [:strong "Returns:"]]
-          (for [r (:returns f)]
+          (for [return (:returns f)]
             (list
-              (->> (:types r)
-                   (map #(common/type-link data %))
-                   (string/join " | "))
+              (common/compound-type data (:types return))
               " - "
-              (:description r)))])
-       (common/listing-and-samples data f)]]]]]
+              (:description return)))])
 
-  )
+       (common/listing-and-samples data f)]]]]])

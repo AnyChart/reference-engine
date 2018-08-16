@@ -2,40 +2,39 @@
   (:require [reference.web.views.common :as common]))
 
 
-(defn constant [data c]
+(defn constant [data const]
   [:div.method-block.const-block
    [:div.panel-group
     [:div.panel.panel-default
 
      [:div.panel-heading
-      [:h4.panel-title {:id (:name c)}
+      [:h4.panel-title {:id (:name const)}
        [:a {:data-toggle "collapse"}
-        (:name c)
-        (when (:has-since c)
-          [:span.pull-right (str "Since version " (:since c))])]]]
+        (:name const)
+        (when (:has-since const)
+          [:span.pull-right (str "Since version " (:since const))])]]]
 
      [:div.panel-collapse.collapse.in
       [:div.panel-body
        [:div.small-group
-        [:p (common/table-style (:description c))]
+        [:p (common/table-style (:description const))]
 
-        (when (:has-detailed c)
+        (when (:has-detailed const)
           [:div.collapse-group
            [:a {:aria-expanded "true"
                 :data-toggle   "collapse"}
             [:i.ac.ac-info]
             "Detailed description "]
-           [:div.collapse-div.collapse.in
-            {:aria-expanded "true"}
-            [:div.collapse-content (:detailed c)]]])]
+           [:div.collapse-div.collapse.in {:aria-expanded "true"}
+            [:div.collapse-content (:detailed const)]]])]
 
-       (when (:type c)
+       (when (:type const)
          [:div.small-group
           [:p
            [:strong "Type: "]
-           (common/link-or-text data (:type c))]])
+           (common/link-or-text data (:type const))]])
 
-       (common/listing-and-samples data c)
+       (common/listing-and-samples data const)
 
        ]]]]]
 

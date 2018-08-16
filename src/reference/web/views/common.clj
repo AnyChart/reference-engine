@@ -47,6 +47,12 @@
         "in"))))
 
 
+(defn compound-type [data types]
+  (->> types
+       (map #(link-or-text data (hiccup/h %)))
+       (string/join " | ")))
+
+
 (defn table-style [text]
   (string/replace text #"<table>" "<table class='table table-condensed'>"))
 
