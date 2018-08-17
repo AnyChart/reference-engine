@@ -23,7 +23,11 @@
                 return "<li class='item' x-data-name='" +  el["full-name"] + "'><a href='/" + versionPart + el["full-name"] +"'>" + node_title(el) + "</a></li>";
             }
         }
+        //var start = new Date().getTime();
         document.getElementsByClassName("menu")[0].innerHTML = make_menu(menu_data[0]);
+        //var end = new Date().getTime();
+        //var time = end - start;
+        //console.log('Execution time: ' + time);
         api.core.init("{{version}}", "{{page}}", {{is-url-version}});
     });
 </script>

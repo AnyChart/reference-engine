@@ -123,7 +123,12 @@
 
       [:div#tree-wrapper
        [:div#tree-menu
-        [:ul.menu (tree-view data page)]]]
+        [:ul.menu
+         ;(tree-view data page)
+         [:li.pull-down.group {:x-data-name "anychart"}
+          [:a {:href "/anychart"} [:i.ac.ac-chevron-right] "anychart"]
+          [:ul {:style "display:none"}]]
+         ]]]
 
       [:div#footer
        [:div#footer-inner
@@ -172,5 +177,6 @@
     {:lang "en"}
     (head data)
     (body data)
-    (resources/init-script data)
+    ;(resources/init-script data)
+    (resources/init-script-fast data)
     (resources/google-tag-manager)))

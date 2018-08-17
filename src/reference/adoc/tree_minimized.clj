@@ -1,6 +1,5 @@
-(ns reference.adoc.tree
-  (:require [taoensso.timbre :as timbre :refer [info]]))
-
+(ns reference.adoc.tree-minimized
+  (:require [taoensso.timbre :as timbre]))
 
 (defn- get-obj-from-struct [struct name]
   (first (filter #(= (:full-name %) name) struct)))
@@ -57,36 +56,23 @@
     {:name      (:name classdef)
      :full-name (:full-name classdef)
      :kind      :class
-     :children  (sort-by (juxt :kind :name)
-                         (concat
-                           (simplify-members (:methods classdef) classdef :method)
-                           (simplify-members (:inherited-methods classdef) classdef :method)
-                           (map to-enum (class-enums struct classdef))
-                           (map to-typedef (class-typedefs struct classdef))))}))
+     :methods   (sort (map :name
+                           (concat
+                             (simplify-members (:methods classdef) classdef :method)
+                             (simplify-members (:inherited-methods classdef) classdef :method))))
+     :enums     (sort (map :name (class-enums struct classdef)))
+     :typedefs  (sort (map :name (class-typedefs struct classdef)))}))
 
 
 (defn- generate-ns-tree [namespace struct]
   {:name      (:name namespace)
    :full-name (:full-name namespace)
    :kind      :namespace
-   :children  (sort-by (juxt :kind :name)
-                       (concat (simplify-members (:constants namespace) namespace :constant)
-                               (simplify-members (:functions namespace) namespace :function)
-                               (map #(generate-enum-tree % struct) (:enums namespace))
-                               (map #(generate-typedef-tree % struct) (:typedefs namespace))
-                               (map #(generate-class-tree % struct) (:classes namespace))))})
-
-;(defn- is-top-level-ns [namespace]
-;  (= (count (clojure.string/split (:full-name namespace) #"\."))
-;     0))
-;
-;
-;(defn- is-child-ns [ns tlns]
-;  (let [name (:full-name ns)
-;        target-name (:full-name tlns)]
-;    (and (re-find (re-pattern (str "^" target-name "\\.")) name)
-;         (not (is-top-level-ns ns))
-;         (not (= target-name "anychart")))))
+   :constants (sort (map :name (:constants namespace)))
+   :functions (sort (map :name (:functions namespace)))
+   :enums     (sort (map :name (map #(generate-enum-tree % struct) (:enums namespace))))
+   :typedefs  (sort (map :name (map #(generate-typedef-tree % struct) (:typedefs namespace))))
+   :classes   (sort-by :name (map #(generate-class-tree % struct) (:classes namespace)))})
 
 
 (defn- get-parent-namespace-name [name]
@@ -100,10 +86,9 @@
 
 (defn- add-child-namespaces [ns all-nses]
   (let [children (get-child-namespaces ns all-nses)]
-    (assoc ns :children (sort-by (juxt :kind :name)
-                                 (filter #(some? (:name %))
-                                         (concat (:children ns)
-                                                 (map #(add-child-namespaces % all-nses) children)))))))
+    (assoc ns :namespaces (sort-by :name
+                                   (filter #(some? (:name %))
+                                           (map #(add-child-namespaces % all-nses) children))))))
 
 
 (defn- structurize-namespaces [all-nses]
@@ -112,6 +97,7 @@
 
 
 (defn generate-tree [struct]
-  (info "generate-tree")
+  (timbre/info "generate-tree min")
   (let [nses (map #(generate-ns-tree % struct) (:namespaces struct))]
     (structurize-namespaces nses)))
+

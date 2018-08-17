@@ -21,6 +21,9 @@
 (defn init-script [data]
   (selmer-parser/render-file "templates/init-script.selmer" data))
 
+(defn init-script-fast [data]
+  (selmer-parser/render-file "templates/init-script-fast.selmer" data))
+
 
 (defn google-tag-manager []
   (str "<!-- Google Tag Manager -->

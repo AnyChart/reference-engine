@@ -4,6 +4,7 @@
             [reference.adoc.inheritance :as inh]
             [reference.adoc.saver :refer [save-entries]]
             [reference.adoc.tree :refer [generate-tree]]
+            [reference.adoc.tree-minimized :as tree-minimized]
             [reference.adoc.search :refer [generate-search-index]]
             [reference.adoc.media :refer [move-media]]
             [reference.adoc.defs.ts.typescript :as ts]
@@ -25,7 +26,8 @@
             [org.httpkit.client :as http]
             [taoensso.timbre :as timbre :refer [info error]]
             [reference.util.utils :as utils]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [cheshire.core :as json]))
 
 
 (defn actual-branches [show-branches git-ssh repo-path]
@@ -152,6 +154,7 @@
             top-level (typedef-builder/fix-typedef top-level)
             top-level (tree-ts/modify top-level false)
             tree-data (generate-tree top-level)
+            tree-min-data (tree-minimized/generate-tree top-level)
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
 
@@ -166,7 +169,7 @@
         (let [version (vdata/add-version jdbc
                                          (:name branch)
                                          (:commit branch)
-                                         tree-data
+                                         tree-min-data
                                          search-index
                                          (:samples config))
               version-id (:id version)]
