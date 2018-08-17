@@ -1,6 +1,7 @@
 <script>
     head.ready(function () {
         var menu_data = {{tree|safe}};
+        var versionPart = {{is-url-version}} ? '{{version}}/' : "";
         function node_title(el){
             switch (el.kind){
                 case "function": return el.name + "()";
@@ -14,22 +15,12 @@
             return el.kind == "class" || el.kind == "namespace";
         }
         function make_menu(el){
-            if ({{is-url-version}}){
-                if (is_group(el)) {
-                    return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +
-                        "'><i class='ac ac-chevron-right'></i> " + node_title(el) +  "</a><ul style='display:none'>" +
+            if (is_group(el)) {
+                return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/" + versionPart + el["full-name"] +
+                       "'><i class='ac ac-chevron-right'></i> " + node_title(el) +  "</a><ul style='display:none'>" +
                         el.children.map(make_menu).join("") + "</ul></li>"
-                }else{
-                    return "<li class='item' x-data-name='" +  el["full-name"] + "'><a href='/{{version}}/" + el["full-name"] +"'>" + node_title(el) + "</a></li>";
-                }
             }else{
-                if (is_group(el)) {
-                    return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/" + el["full-name"] +
-                        "'><i class='ac ac-chevron-right'></i> " + node_title(el) +  "</a><ul style='display:none'>" +
-                        el.children.map(make_menu).join("") + "</ul></li>"
-                }else{
-                    return "<li class='item' x-data-name='" +  el["full-name"] + "'><a href='/" + el["full-name"] +"'>" + node_title(el) + "</a></li>";
-                }
+                return "<li class='item' x-data-name='" +  el["full-name"] + "'><a href='/" + versionPart + el["full-name"] +"'>" + node_title(el) + "</a></li>";
             }
         }
         document.getElementsByClassName("menu")[0].innerHTML = make_menu(menu_data[0]);

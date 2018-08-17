@@ -1,6 +1,22 @@
 (ns reference.web.views.resources
-  (:require [selmer.parser :as selmer-parser]))
+  (:require [selmer.parser :as selmer-parser]
+            [cheshire.core :as json]))
 
+
+(defn minimize-tree [tree]
+  (cond
+    (map? tree) (concat
+                  [(:name tree) (first (:kind tree))]
+                  (when (seq (:children tree))
+                    (map minimize-tree (:children tree))))
+    (sequential? tree) (map minimize-tree tree)))
+
+
+(defn update-tree [data]
+  (update data :tree (fn [tree]
+                       (let [tree (json/parse-string tree true)
+                             tree (minimize-tree tree)]
+                         (json/generate-string tree)))))
 
 (defn init-script [data]
   (selmer-parser/render-file "templates/init-script.selmer" data))
