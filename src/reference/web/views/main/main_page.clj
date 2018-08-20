@@ -83,7 +83,8 @@
      [:div#search-results-new {:style "display:none"}]
 
      [:div#ac-header
-      [:a.navbar-brand {:href "//anychart.com/"}
+      [:a.navbar-brand {:href "//anychart.com/"
+                        :title "AnyChart Home"}
        [:img {:alt    "AnyChart"
               :height "72"
               :width  "300"
@@ -92,7 +93,9 @@
         [:span.chart-col.green]
         [:span.chart-col.orange]
         [:span.chart-col.red]]]
-      [:a.brand.hidden-small-645 {:href "/"} " API Reference"]
+      [:a.brand.hidden-small-645 {:href "/"
+                                  :title "AnyChart API Reference"}
+       "API Reference"]
 
       [:div.pull-right.helpers
        [:select.selectpicker.versionselect {:data-width "130px"}
