@@ -6,40 +6,40 @@
             return "<li class='item' x-data-name='" + elFullName + "'><a href='/" + versionPart + elFullName +"'>" + title + "</a></li>";
         }
         function make_constant(fullName, simpleName){
-            return make_simple(fullName + "#" + simpleName, simpleName)
+            return make_simple(fullName + "#" + simpleName, simpleName);
         }
         function make_enum(fullName, simpleName){
-            return make_simple(fullName + "." + simpleName, "[" +simpleName + "]")
+            return make_simple(fullName + "." + simpleName, "[" +simpleName + "]");
         }
         function make_method(fullName, simpleName){
-            return make_simple(fullName + "#" + simpleName, simpleName + "()")
+            return make_simple(fullName + "#" + simpleName, simpleName + "()");
         }
         function make_typedef(fullName, simpleName){
-            return make_simple(fullName + "." + simpleName, "{" +simpleName + "}")
+            return make_simple(fullName + "." + simpleName, "{" +simpleName + "}");
         }
-        function make_menu(el){
-            if (el.kind == "namespace") {
-                return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/" + versionPart + el["full-name"] +
-                    "'><i class='ac ac-chevron-right'></i> " + el.name +  "</a><ul style='display:none'>" +
-                        el.classes.map(make_menu).join("") +
-                        (el.constants ? el.constants.map(function(c){return make_constant(el["full-name"], c)}).join("") : "") +
-                        (el.enums ? el.enums.map(function(c){return make_enum(el["full-name"], c)}).join("") : "") +
-                        (el.functions ? el.functions.map(function(c){return make_method(el["full-name"], c)}).join("") : "") +
-                        el.namespaces.map(make_menu).join("") +
-                        (el.typedefs ? el.typedefs.map(function(c){return make_typedef(el["full-name"], c)}).join("") : "") +
-                     "</ul></li>"
-            } else
-            if (el.kind == "class") {
-                return "<li class='pull-down group' x-data-name='" + el["full-name"] + "'><a href='/" + versionPart + el["full-name"] +
-                    "'><i class='ac ac-chevron-right'></i> " + el.name +  "</a><ul style='display:none'>" +
-                    (el.enums ? el.enums.map(function(c){return make_enum(el["full-name"], c)}).join("") : "") +
-                    el.methods.map(function(m){return make_method(el["full-name"], m)}).join("") +
-                    (el.typedefs ? el.typedefs.map(function(c){return make_typedef(el["full-name"], c)}).join("") : "") +
-                    "</ul></li>"
-            }
+        function make_class(el){
+            var fullName = el["full-name"];
+            return "<li class='pull-down group' x-data-name='" + fullName + "'><a href='/" + versionPart + fullName +
+                "'><i class='ac ac-chevron-right'></i> " + el.name +  "</a><ul style='display:none'>" +
+                (el.enums ? el.enums.map(function(c){return make_enum(fullName, c)}).join("") : "") +
+                (el.methods ? el.methods.map(function(m){return make_method(fullName, m)}).join("") : "") +
+                (el.typedefs ? el.typedefs.map(function(c){return make_typedef(fullName, c)}).join("") : "") +
+                "</ul></li>"
+        }
+        function make_namespace(el){
+            var fullName = el["full-name"];
+            return "<li class='pull-down group' x-data-name='" + fullName + "'><a href='/" + versionPart + fullName +
+                "'><i class='ac ac-chevron-right'></i> " + el.name +  "</a><ul style='display:none'>" +
+                (el.classes ? el.classes.map(make_class).join("") : "" )+
+                (el.constants ? el.constants.map(function(c){return make_constant(fullName, c)}).join("") : "") +
+                (el.enums ? el.enums.map(function(c){return make_enum(fullName, c)}).join("") : "") +
+                (el.functions ? el.functions.map(function(c){return make_method(fullName, c)}).join("") : "") +
+                (el.namespaces ? el.namespaces.map(make_namespace).join("") : "") +
+                (el.typedefs ? el.typedefs.map(function(c){return make_typedef(fullName, c)}).join("") : "") +
+                "</ul></li>"
         }
         //var start = new Date().getTime();
-        document.getElementsByClassName("menu")[0].innerHTML = make_menu(menu_data[0]);
+        document.getElementsByClassName("menu")[0].innerHTML = make_namespace(menu_data[0]);
         //var end = new Date().getTime();
         //var time = end - start;
         //console.log('Execution time fast: ' + time);
