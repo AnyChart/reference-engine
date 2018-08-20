@@ -175,7 +175,7 @@ p.important {
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 16px;
   padding-left: 30px;
-  padding-right: 25px;
+  padding-right: 7px;
   color: #d5edff;
   height: 60px;
   > img {
@@ -230,14 +230,15 @@ p.important {
 }
 
 a.brand {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Open Sans', 'Source Sans Pro', sans-serif;
   font-size: 18px;
-  color: #d5edff;
+  //color: #d5edff;
+  color: white;
   text-decoration: none;
   padding: 16px 0;
   height: 60px;
   float: left;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .helpers {
