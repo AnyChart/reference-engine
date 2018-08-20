@@ -1,5 +1,5 @@
 (ns reference.web.views.main.entries.function
-  (:require [reference.web.views.common :as common]
+  (:require [reference.web.views.main.helpers :as helpers]
             [clojure.string :as string]))
 
 
@@ -45,7 +45,7 @@
             (for [param (:params f)]
               [:tr
                [:td (:name param)]
-               [:td (common/compound-type data (:types param))]
+               [:td (helpers/compound-type data (:types param))]
                (when (:has-params-defaults f)
                  [:td [:pre.prettyprint (:default param)]])
                [:td (:description param)]])]
@@ -56,8 +56,8 @@
           [:p [:strong "Returns:"]]
           (for [return (:returns f)]
             (list
-              (common/compound-type data (:types return))
+              (helpers/compound-type data (:types return))
               " - "
               (:description return)))])
 
-       (common/listing-and-samples data f)]]]]])
+       (helpers/listing-and-samples data f)]]]]])

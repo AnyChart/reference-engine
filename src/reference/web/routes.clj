@@ -20,6 +20,7 @@
             [reference.web.handlers.sitemap-handlers :as sitemap-handlers]
             [reference.web.views.landing.landing-content :as landing-content-view]
             [reference.web.views.main.main-page :as main-page-view]
+            [reference.web.views.page404.page404 :as page-404]
             [hiccup.core :as hiccup]))
 
 
@@ -195,6 +196,13 @@
       (show-default-ns version is-url-version versions request))))
 
 
+(defn show-404 [request]
+  (let [data {:title       "Not found | AnyChart API Reference"
+              :description "Not found page"
+              :commit      (:commit (config request))}]
+    (page-404/page data)))
+
+
 (defn- list-versions [request]
   (response (vdata/versions (jdbc request))))
 
@@ -262,4 +270,4 @@
                                             (check-page-middleware
                                               get-page-data)))
            (GET "/:version/:page" [] (check-version-middleware show-page))
-           (route/not-found page-404))
+           (route/not-found show-404))

@@ -1,5 +1,5 @@
 (ns reference.web.views.main.entries.enum
-  (:require [reference.web.views.common :as common]
+  (:require [reference.web.views.main.helpers :as helpers]
             [reference.util.utils :as utils]))
 
 
@@ -16,7 +16,7 @@
     [:div.small-group
      (for [s (:playground-samples entry)]
        [:a.code-style {:target "_blank"
-                       :href   (common/playground-link data (:file s))}
+                       :href   (helpers/playground-link data (:file s))}
         (:title s)])]))
 
 
@@ -31,7 +31,7 @@
 
    [:div.content-block
     [:div.small-group (:description main)]
-    (common/samples data main)]
+    (helpers/samples data main)]
 
    (when (:has-fields main)
      [:div.content-block

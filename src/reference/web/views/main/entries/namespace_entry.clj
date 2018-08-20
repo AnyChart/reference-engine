@@ -1,5 +1,5 @@
 (ns reference.web.views.main.entries.namespace-entry
-  (:require [reference.web.views.common :as common]
+  (:require [reference.web.views.main.helpers :as helpers]
             [reference.web.views.main.entries.constant :as constant-view]
             [reference.web.views.main.entries.method :as method-view]
             [reference.web.views.main.entries.function :as function-view]))
@@ -9,7 +9,7 @@
   (list
     [:h1
      [:span.page-type "namespace "] (:full-name main)
-     [:a#github-edit.btn.btn-default.btn-small.github-fork.pull-right {:href (common/edit-link)}
+     [:a#github-edit.btn.btn-default.btn-small.github-fork.pull-right {:href (helpers/edit-link)}
       [:span [:i.ac.ac-andrews-pitchfork]]
       " Improve this Doc"]]
 
@@ -69,7 +69,7 @@
          (for [enum (:enums main)]
            [:tr
             [:td.name
-             [:a.type-link {:href (common/link data (:name enum))} (:name enum)]]
+             [:a.type-link {:href (helpers/link data (:name enum))} (:name enum)]]
             [:td (:short-description enum)]])]]])
 
     (when (:has-typedefs main)
@@ -81,7 +81,7 @@
          (for [typedef (:typedefs main)]
            [:tr
             [:td.name
-             [:a.type-link {:href (common/link data (:name typedef))} (:name typedef)]]
+             [:a.type-link {:href (helpers/link data (:name typedef))} (:name typedef)]]
             [:td (:short-description typedef)]])]]])
 
     (when (:has-classes main)
@@ -93,7 +93,7 @@
          (for [cls (:classes main)]
            [:tr
             [:td.name
-             [:a.type-link {:href (common/link data (:name cls))} (:name cls)]]
+             [:a.type-link {:href (helpers/link data (:name cls))} (:name cls)]]
             [:td (:short-description cls)]])]]])
 
     (when (:has-constants main)

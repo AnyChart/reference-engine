@@ -1,5 +1,5 @@
 (ns reference.web.views.main.entries.constant
-  (:require [reference.web.views.common :as common]))
+  (:require [reference.web.views.main.helpers :as helpers]))
 
 
 (defn constant [data const]
@@ -17,7 +17,7 @@
      [:div.panel-collapse.collapse.in
       [:div.panel-body
        [:div.small-group
-        [:p (common/table-style (:description const))]
+        [:p (helpers/table-style (:description const))]
 
         (when (:has-detailed const)
           [:div.collapse-group
@@ -32,9 +32,9 @@
          [:div.small-group
           [:p
            [:strong "Type: "]
-           (common/link-or-text data (:type const))]])
+           (helpers/link-or-text data (:type const))]])
 
-       (common/listing-and-samples data const)
+       (helpers/listing-and-samples data const)
 
        ]]]]]
 

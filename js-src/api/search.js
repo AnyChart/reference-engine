@@ -625,3 +625,10 @@ api.search.init = function() {
     $.get("/" + api.config.version + "/data/search.json", api.search.onLoad_);
 };
 
+// for input on 404 page
+$(".content404").find('input').keypress(function(e) {
+    if (e.which == 13) {
+        var query = $(this).val();
+        location.href = "/?entry=" + query;
+    }
+});

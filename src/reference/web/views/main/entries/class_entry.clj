@@ -1,5 +1,5 @@
 (ns reference.web.views.main.entries.class-entry
-  (:require [reference.web.views.common :as common]
+  (:require [reference.web.views.main.helpers :as helpers]
             [reference.web.views.main.entries.method :as method-view]))
 
 
@@ -9,7 +9,7 @@
     [:h1
      [:span.page-type "class "]
      (:full-name main)
-     [:a#github-edit.btn.btn-default.btn-small.github-fork.pull-right {:href (common/edit-link)}
+     [:a#github-edit.btn.btn-default.btn-small.github-fork.pull-right {:href (helpers/edit-link)}
       [:span [:i.ac.ac-andrews-pitchfork]]
       " Improve this Doc"]]
 
@@ -19,9 +19,9 @@
         (list
           "Extends: "
           (for [extend (:extends main)]
-            [:a.type-link {:href (common/link data extend)} extend])))]
+            [:a.type-link {:href (helpers/link data extend)} extend])))]
      [:p (:description main)]
-     (common/listing-and-samples data main)]
+     (helpers/listing-and-samples data main)]
 
     (when (:has-methods main)
       [:div.content-block.methods

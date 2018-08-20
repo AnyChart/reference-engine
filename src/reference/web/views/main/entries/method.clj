@@ -1,5 +1,5 @@
 (ns reference.web.views.main.entries.method
-  (:require [reference.web.views.common :as common]
+  (:require [reference.web.views.main.helpers :as helpers]
             [clojure.string :as string]
             [hiccup.core :as hiccup]))
 
@@ -26,7 +26,7 @@
             [:span.pull-right (str "Since version " (:since override))])]]]
 
        [:div.pannel-collapse.collapse {:id    (str "accordion-" (:name method) "-" index)
-                                       :class (common/is-override-expand method is-last index)}
+                                       :class (helpers/is-override-expand method is-last index)}
         [:div.panel-body
          [:div.small-group
           (:description override)
@@ -57,7 +57,7 @@
               (for [param (:params override)]
                 [:tr
                  [:td (:name param)]
-                 [:td (common/compound-type data (:types param))]
+                 [:td (helpers/compound-type data (:types param))]
                  (when (:has-params-defaults override)
                    [:td [:pre.prettyprint (:default param)]])
                  [:td (:description param)]])]]])
@@ -67,11 +67,11 @@
             [:p [:strong "Returns:"]]
             (for [return (:returns override)]
               (list
-                (common/compound-type data (:types return))
+                (helpers/compound-type data (:types return))
                 " - "
                 (:description return)))])
 
-         (common/listing-and-samples data override)
+         (helpers/listing-and-samples data override)
 
          ]]])
     ]])
