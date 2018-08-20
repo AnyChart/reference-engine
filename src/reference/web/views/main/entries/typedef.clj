@@ -20,9 +20,9 @@
     (when (:has-types main)
       [:div.content-block
        [:p "This type can contain one of the following types:"]
-       [:ul.list.list-dotted]
-       (for [t (:type main)]
-         [:ul [:li (common/type-link data t)]])])
+       [:ul.list.list-dotted
+        (for [t (:type main)]
+          [:li (common/type-link data t)])]])
 
     (when (:has-properties main)
       [:div.content-block
