@@ -30,5 +30,10 @@
                  [garden "1.3.5"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
-  :plugins [[lein-ancient "0.6.10"]]
+  :plugins [[lein-ancient "0.6.10"]
+            [deraen/sass4clj "0.3.1"]
+            [deraen/lein-sass4clj "0.3.1"]]
+  :sass {:source-paths ["src-scss"]
+         :target-path  "resources/public/css"
+         :output-style :compressed}
   :main reference.core)
