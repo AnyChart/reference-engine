@@ -111,6 +111,5 @@
     {:lang "en"}
     (common/head data)
     (body data)
-    ;(resources/init-script data)
-    (resources/init-script-fast data)
+    (resources/init-script data)
     (resources/google-tag-manager)))

@@ -1,7 +1,6 @@
 (ns reference.adoc.saver
   (:require [taoensso.timbre :as timbre :refer [info]]
-            [reference.data.pages :as pages]
-            [reference.web.data :refer [render-entry]]))
+            [reference.data.pages :as pages]))
 
 (defn- get-namespace-data [entry]
   (assoc entry

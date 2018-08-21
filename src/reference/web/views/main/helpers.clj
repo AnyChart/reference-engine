@@ -4,6 +4,7 @@
 
 
 (defn edit-link []
+  ;(str "https://github.com/AnyChart/api-reference/edit/" version (-> context-map :main :file))
   "https://github.com/AnyChart/api.anychart.com")
 
 
