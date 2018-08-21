@@ -177,17 +177,15 @@
                                   :type  "button"
                                   :title "Remove version"} "Remove"]
 
-         [:button.btn.btn-link.first-link {:id "indexLink" :type "button"} "index.d.ts"]
-         [:button.btn.btn-link {:id "graphicsLink" :type "button"} "graphics.d.ts"]
-         ;[:button.btn.btn-link {:id "githubLink" :type "button"} "GitHub"]
-         ]
+         [:button.btn.btn-link {:id "indexLink" :type "button"} "index.d.ts"]
+         [:button.btn.btn-link {:id "graphicsLink" :type "button"} "graphics.d.ts"]]
 
         [:p.other-buttons-box
-         ;[:a.btn.btn-link {:role "button"
-         ;                  :href "https://github.com/AnyChart/api.anychart.com"
-         ;                  :rel  "nofollow"}
-         ; "GitHub API Reference"]
-         [:button.btn.btn-link {:id "githubLink" :type "button"} "GitHub API Reference"]
+         [:a.btn.btn-link {:id   "githubLink"
+                           :role "button"
+                           :href "https://github.com/AnyChart/api.anychart.com"
+                           :rel  "nofollow"}
+          "GitHub API Reference"]
          [:a.btn.btn-link {:role "button"
                            :href "https://github.com/AnyChart/reference-engine"
                            :rel  "nofollow"}

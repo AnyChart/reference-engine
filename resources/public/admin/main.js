@@ -81,6 +81,7 @@ window.onload = (e) => {
     });
 
     $('#githubLink').click((e) => {
-         window.location.href = `https://github.com/AnyChart/api.anychart.com/tree/${selectedVersion()}`
+        e.preventDefault();
+        window.location.href = `https://github.com/AnyChart/api.anychart.com/tree/${selectedVersion()}`
     });
 };
