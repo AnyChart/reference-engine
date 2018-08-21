@@ -108,7 +108,7 @@
 
 (defn body [{:keys [commit] :as data} versions]
   [:body
-   [:script {:src "/admin/main.js"}]
+   [:script {:src (str "/admin/main.js?v=" commit)}]
    (common/styles-body commit)
    [:div#ac-header
     (common/brand)
