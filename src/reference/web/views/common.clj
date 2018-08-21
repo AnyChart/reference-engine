@@ -4,13 +4,25 @@
 
 (defn styles [commit]
   (list
-    "<!--[if !IE]> -->"
     [:link {:rel "stylesheet" :type "text/css" :href "https://cdn.anychart.com/fonts/2.0.0/anychart.css",}]
     [:link {:rel "stylesheet" :type "text/css" :href "/lib/bootstrap/css/bootstrap.min.css"}]
     [:link {:rel "stylesheet" :type "text/css" :href "/lib/bootstrap-select.min.css"}]
     [:link {:rel "stylesheet" :type "text/css" :href "/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.css"}]
     [:link {:rel "stylesheet" :type "text/css" :href "/lib/prettiffy/prettify-tomorrow.css"}]
-    [:link {:rel "stylesheet" :type "text/css" :href (str "/css/style.css?v=" commit)}]
+    [:link {:rel "stylesheet" :type "text/css" :href (str "/css/style.css?v=" commit)}]))
+
+
+(defn styles-head [commit]
+  (list
+    "<!--[if IE]>"
+    (styles commit)
+    "<![endif]-->"))
+
+
+(defn styles-body [commit]
+  (list
+    "<!--[if !IE]> -->"
+    (styles commit)
     "<!-- <![endif]-->"))
 
 
@@ -36,7 +48,7 @@
      (when description [:meta {:name "description" :content description}])
 
      [:title title]
-     (styles commit)
+     (styles-head commit)
 
      [:script {:src "/lib/jquery-2.1.3.min.js"}]
      [:script {:src "/lib/jquery-custom-content-scroller/jquery.mousewheel-3.0.6.min.js"}]

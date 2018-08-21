@@ -28,7 +28,7 @@
                     footer] :as data}]
   (hiccup/html
     [:body
-     (common/styles commit)
+     (common/styles-body commit)
 
      [:div#search-results-new {:style "display:none"}]
 

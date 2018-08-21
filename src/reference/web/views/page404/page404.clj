@@ -6,7 +6,7 @@
 
 (defn body [{:keys [title url description commit page-name] :as data}]
   [:body
-   (common/styles commit)
+   (common/styles-body commit)
 
    [:div#ac-header
     (common/brand)
