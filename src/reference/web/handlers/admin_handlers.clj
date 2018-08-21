@@ -7,8 +7,11 @@
 
 
 (defn admin-panel [request]
-  (let [versions (vdata/versions-full-info (jdbc request))]
-    (admin-view/page versions)))
+  (let [versions (vdata/versions-full-info (jdbc request))
+        data {:title       "Admin panel | AnyChart API Reference"
+              :description "Admin panel"
+              :commit      (:commit (config request))}]
+    (admin-view/page data versions)))
 
 
 (defn delete-version [request]

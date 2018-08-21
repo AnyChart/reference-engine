@@ -1,0 +1,43 @@
+.admin-panel {
+  margin: 80px auto 0;
+  max-width: 660px;
+  padding: 20px;
+  border: 2px solid #ddd;
+
+  .update-versions-box {
+    padding: 10px 0;
+    background-color: #f3f3f3;
+    margin: 10px 0 20px;
+    .text {
+      color: #333333;
+    }
+    #updateVersionsButton {
+      color: white;
+      margin: 5px 0;
+    }
+  }
+
+  .other-buttons-box {
+    margin-top: 20px
+  }
+
+  ul li:before {
+    content: none
+  }
+
+  .version-label {
+    width: 200px;
+    display: inline-block;
+    padding: 4px 10px
+  }
+  select.custom-select {
+    width: 200px
+  }
+  #refreshButton {
+    font-size: 16px;
+  }
+
+  select, .btn-secondary, .btn-group {
+    margin-right: 10px
+  }
+}

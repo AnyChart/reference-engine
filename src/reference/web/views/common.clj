@@ -2,6 +2,18 @@
   (:require [hiccup.core :as hiccup]))
 
 
+(defn styles [commit]
+  (list
+    "<!--[if !IE]> -->"
+    [:link {:rel "stylesheet" :type "text/css" :href "https://cdn.anychart.com/fonts/2.0.0/anychart.css",}]
+    [:link {:rel "stylesheet" :type "text/css" :href "/lib/bootstrap/css/bootstrap.min.css"}]
+    [:link {:rel "stylesheet" :type "text/css" :href "/lib/bootstrap-select.min.css"}]
+    [:link {:rel "stylesheet" :type "text/css" :href "/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.css"}]
+    [:link {:rel "stylesheet" :type "text/css" :href "/lib/prettiffy/prettify-tomorrow.css"}]
+    [:link {:rel "stylesheet" :type "text/css" :href (str "/css/style.css?v=" commit)}]
+    "<!-- <![endif]-->"))
+
+
 (defn head [{:keys [title url description commit page-name] :as data}]
   (hiccup/html
     [:head
@@ -24,15 +36,7 @@
      (when description [:meta {:name "description" :content description}])
 
      [:title title]
-
-     "<!--[if IE]>"
-     [:link {:rel "stylesheet" :type "text/css" :href "https://cdn.anychart.com/fonts/2.0.0/anychart.css",}]
-     [:link {:rel "stylesheet" :type "text/css" :href "/lib/bootstrap/css/bootstrap.min.css"}]
-     [:link {:rel "stylesheet" :type "text/css" :href "/lib/bootstrap-select.min.css"}]
-     [:link {:rel "stylesheet" :type "text/css" :href "/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.css"}]
-     [:link {:rel "stylesheet" :type "text/css" :href "/lib/prettiffy/prettify-tomorrow.css"}]
-     [:link {:rel "stylesheet" :type "text/css" :href (str "/css/style.css?v=" commit)}]
-     "<![endif]-->"
+     (styles commit)
 
      [:script {:src "/lib/jquery-2.1.3.min.js"}]
      [:script {:src "/lib/jquery-custom-content-scroller/jquery.mousewheel-3.0.6.min.js"}]
@@ -56,3 +60,30 @@
      ;[:script {:src (str "/js/reference.min.js?v=" commit)}]
 
      ]))
+
+
+(defn brand []
+  (list
+    [:a.navbar-brand {:href  "//anychart.com/"
+                      :title "AnyChart Home"}
+     [:img {:alt    "AnyChart"
+            :height "72"
+            :width  "300"
+            :src    "/i/AnyChart-light-empty.png"}]
+     [:div.chart-row
+      [:span.chart-col.green]
+      [:span.chart-col.orange]
+      [:span.chart-col.red]]]
+    [:a.brand.hidden-small-645 {:href  "/"
+                                :title "AnyChart API Reference"}
+     "API Reference"]))
+
+
+(defn support []
+  [:div.text-muted.questions.hidden-small-410
+   [:a.text-support {:href "//support.anychart.com/"}
+    [:i.ac.ac-support]]
+   [:span.hidden-super-small "Still have questions?"
+    [:br]
+    [:a {:href "http://anychart.com/support/"}
+     " Contact support"]]])

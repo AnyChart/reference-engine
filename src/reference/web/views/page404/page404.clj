@@ -6,39 +6,12 @@
 
 (defn body [{:keys [title url description commit page-name] :as data}]
   [:body
-   "<!--[if !IE]> -->"
-   [:link {:rel "stylesheet" :type "text/css" :href "https://cdn.anychart.com/fonts/2.0.0/anychart.css",}]
-   [:link {:rel "stylesheet" :type "text/css" :href "/lib/bootstrap/css/bootstrap.min.css"}]
-   [:link {:rel "stylesheet" :type "text/css" :href "/lib/bootstrap-select.min.css"}]
-   [:link {:rel "stylesheet" :type "text/css" :href "/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.css"}]
-   [:link {:rel "stylesheet" :type "text/css" :href "/lib/prettiffy/prettify-tomorrow.css"}]
-   [:link {:rel "stylesheet" :type "text/css" :href (str "/css/style.css?v=" commit)}]
-   "<!-- <![endif]-->"
+   (common/styles commit)
 
    [:div#ac-header
-    [:a.navbar-brand {:href  "//anychart.com/"
-                      :title "AnyChart Home"}
-     [:img {:alt    "AnyChart"
-            :height "72"
-            :width  "300"
-            :src    "/i/AnyChart-light-empty.png"}]
-     [:div.chart-row
-      [:span.chart-col.green]
-      [:span.chart-col.orange]
-      [:span.chart-col.red]]]
-    [:a.brand.hidden-small-645 {:href  "/"
-                                :title "AnyChart API Reference"}
-     "API Reference"]
-
+    (common/brand)
     [:div.pull-right.helpers
-
-     [:div.text-muted.questions.hidden-small-410
-      [:a.text-support {:href "//support.anychart.com/"}
-       [:i.ac.ac-support]]
-      [:span.hidden-super-small "Still have questions?"
-       [:br]
-       [:a {:href "http://anychart.com/support/"}
-        " Contact support"]]]]]
+     (common/support)]]
 
    [:div.container-fluid
     [:div.row
@@ -55,10 +28,7 @@ This is usually the result of a bad or outdated link. We apologize for any incon
           [:a {:href "/"} "api.anychart.com"] ":"]]
         [:div.form-group.has-feedback
          [:input.form-control.input-sm {:placeholder "What are you looking for?" :type "text"}]
-         [:span.ac.ac-search.form-control-feedback]
-         ]]]]]]
-   ]
-  )
+         [:span.ac.ac-search.form-control-feedback]]]]]]]])
 
 
 (defn page [data]
