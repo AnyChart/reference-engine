@@ -79,4 +79,8 @@ window.onload = (e) => {
             window.location.href = `/si/${selectedVersion()}/graphics-${selectedVersion()}.d.ts`
         }
     });
+
+    $('#githubLink').click((e) => {
+         window.location.href = `https://github.com/AnyChart/api.anychart.com/tree/${selectedVersion()}`
+    });
 };
