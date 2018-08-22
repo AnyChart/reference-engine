@@ -13,6 +13,15 @@ api.page.prettifyCode = function (){
     $("pre").addClass("prettyprint");
 };
 
+api.page.fixLinks = function() {
+    $("#article-content a.type-link").click(api.links.typeLinkClick);
+};
+
+api.page.fixListings = function() {
+    prettyPrint();
+};
+
+
 /**
  * @param {string} entry
  */
@@ -32,15 +41,6 @@ api.page.scrollToEntry = function(entry) {
     }, 200);
 };
 
-/** */
-api.page.fixLinks = function() {
-    $("#article-content a.type-link").click(api.links.typeLinkClickWithScroll);
-};
-
-/** */
-api.page.fixListings = function() {
-    prettyPrint();
-};
 
 api.page.currentActive_ = null;
 
@@ -220,6 +220,6 @@ api.page.showSearchResults = function($results) {
 
     $("#content-wrapper").html('<div id="article-content"><div class="content-container"></div></div>');
     $("#article-content .content-container").append($results);
-    $("#article-content .content-container a").click(api.links.typeLinkClickWithScroll);
+    $("#article-content .content-container a").click(api.links.typeLinkClick);
     api.pageScrolling.update();
 };

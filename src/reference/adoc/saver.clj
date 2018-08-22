@@ -2,6 +2,7 @@
   (:require [taoensso.timbre :as timbre :refer [info]]
             [reference.data.pages :as pages]))
 
+
 (defn- get-namespace-data [entry]
   (assoc entry
     :has-classes (not (empty? (:classes entry)))
@@ -10,16 +11,20 @@
     :has-constants (not (empty? (:constants entry)))
     :has-functions (not (empty? (:functions entry)))))
 
+
 (defn- get-class-data [entry]
   (assoc entry
     :has-methods (not (empty? (:methods entry)))
     :has-inherited-methods (not (empty? (:inherited-methods entry)))))
 
+
 (defn- get-enum-data [entry]
   (assoc entry :has-fields (not (empty? (:fields entry)))))
 
+
 (defn- get-typedef-data [entry]
   entry)
+
 
 (defn save-entries [jdbc version version-key top-level docs playground]
   (info "save-entries" version-key (count top-level))
