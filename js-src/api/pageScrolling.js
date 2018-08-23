@@ -100,10 +100,10 @@ api.pageScrolling.update = function() {
 /**
  * @param {string} entry
  */
-api.pageScrolling.scrollTo = function(entry) {
-    $("#content-wrapper").mCustomScrollbar("scrollTo", $(entry), {callbacks: false});
-    api.pageScrolling.checkTopVisible(-100);
-};
+// api.pageScrolling.scrollTo = function(entry) {
+//     $("#content-wrapper").mCustomScrollbar("scrollTo", $(entry), {callbacks: false});
+//     api.pageScrolling.checkTopVisible(-100);
+// };
 
 /**
  * @param {string} entry

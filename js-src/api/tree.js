@@ -18,7 +18,7 @@ api.tree.scrollToEntry = function(entry, opt_hash) {
     if ($target.length) {
         window.setTimeout(function() {
             $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.get(0).offsetTop - 20, {scrollInertia: 700});
-        }, 200);
+        }, 100);
     }
 };
 
