@@ -135,7 +135,7 @@ api.pageScrolling.init = function() {
     });
 };
 
-// wihtout this when righ tlick on menu -> open link in new tab ->
+// wihtout this when right tlick on menu -> open link in new tab ->
 // wait until page is loaded -> switch to loaded page -> anchor scroll doesn't work
 $(window).focus(function() {
     var id = window.location.hash;

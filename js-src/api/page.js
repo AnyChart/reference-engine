@@ -103,10 +103,10 @@ api.page.highlightCategory = function(target) {
 };
 
 
-api.page.load = function(target, opt_add, opt_scrollTree) {
+api.page.load = function(target, opt_pushToHistory, opt_scrollTree) {
     api.search.hide();
 
-    if (opt_add == undefined) opt_add = true;
+    if (opt_pushToHistory == undefined) opt_pushToHistory = true;
     if (target.indexOf("#") == 0) target = location.pathname + target;
     var cleanedTarget = api.utils.cleanupPath(target);
 
@@ -132,19 +132,19 @@ api.page.load = function(target, opt_add, opt_scrollTree) {
         return false;
     }
 
-    if (cleanedTarget.split("/").length > 2) {
-        cleanedTarget = cleanedTarget.split("/")[2];
-    }
+    // delete first "/"
+    cleanedTarget = cleanedTarget.split("/").pop();
 
     if (typeof window.history == "undefined") return true;
 
-    if (opt_add)
+    if (opt_pushToHistory)
         window.history.pushState(null, null, target);
 
     api.tree.expand(target, hash);
 
-    if (opt_scrollTree)
+    if (opt_scrollTree){
         api.tree.scrollToEntry(cleanedTarget, hash);
+    }
 
     $(".content-container").html('<div class="loader"><i class="fa fa-spinner fa-spin fa-pulse fa-2x fa-fw"></i> <span> loading ...</span> </div>');
 

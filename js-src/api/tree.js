@@ -124,14 +124,8 @@ api.tree.init = function() {
             return false;
         });
 
-        $(this).find(">a").click(function(e) {
-            if (e.ctrlKey || e.metaKey) return true;
-            return api.page.load($(this).attr("href"));
-        });
+        $(this).find(">a").click(api.links.treeLinkClick);
     });
 
-    $("#tree-menu li.item a").click(function(e) {
-        if (e.ctrlKey || e.metaKey) return true;
-        return api.page.load($(this).attr("href"));
-    });
+    $("#tree-menu li.item a").click(api.links.treeLinkClick);
 };
