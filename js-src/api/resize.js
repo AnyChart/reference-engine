@@ -36,8 +36,9 @@ api.resize.doResize_ = function(e) {
     if (e.pageX > 250 && e.pageX < window.innerWidth - 300) {
         $('#menu-bar').css('width', e.pageX);
         $('#content-wrapper')
-            .css('margin-left', e.pageX)
-            .css('width', window.innerWidth - e.pageX);
+            .css('padding-left', e.pageX)
+            //.css('width', window.innerWidth - e.pageX)
+        ;
         $('.breadcrumb').css('left', $('#menu-bar').width());
     }
     return false;
@@ -64,15 +65,18 @@ api.resize.hideSidebar_ = function(animate) {
     var w = api.resize.hiddenMenuSize_;
     if (animate) {
         $('#menu-bar').animate({width: w}, 300);
-        $('#content-wrapper').animate({marginLeft: w, width: window.innerWidth - w}, 300);
+        //$('#content-wrapper').animate({marginLeft: w, width: window.innerWidth - w}, 300);
+        $('#content-wrapper').animate({paddingLeft: w}, 300);
         $('#search-form').animate({opacity: 0}, 200);
         $('#tree-wrapper').animate({opacity: 0}, 200);
         $('.breadcrumb').animate({left: w}, 300);
         $('#footer').animate({opacity: 0}, 200);
     } else {
         $('#menu-bar').css('width', w);
-        $('#content-wrapper').css('width', window.innerWidth - w)
-            .css('margin-left', w);
+        $('#content-wrapper')
+            //.css('width', window.innerWidth - w)
+            //.css('margin-left', w);
+            .css('padding-left', w);
         $('#search-form').css('opacity', 0);
         $('#tree-wrapper').css('opacity', 0);
         $('#footer').css('opacity', 0);
@@ -94,11 +98,14 @@ api.resize.showSidebar_ = function(animate) {
 
     if (animate) {
         $('#menu-bar').animate({width: w}, w);
-        $('#content-wrapper').animate({marginLeft: w, width: window.innerWidth - w}, w);
+        //$('#content-wrapper').animate({marginLeft: w, width: window.innerWidth - w}, w);
+        $('#content-wrapper').animate({paddingLeft: w}, w);
         $('.breadcrumb').animate({left: w}, w);
     } else {
         $('#menu-bar').css('width', w);
-        $('#content-wrapper').css('width', window.innerWidth - w).css('margin-left', w);
+        $('#content-wrapper')
+            //.css('width', window.innerWidth - w)
+            .css('padding-left', w);
         $('.breadcrumb').css('left', w);
     }
     $('#search-form').css('opacity', 1);
@@ -126,7 +133,9 @@ api.resize.contentSize_ = function() {
         api.resize.hideSidebar_(false);
     } else {
         api.resize.showSidebar_(false);
-        $('#content-wrapper').css('width', window.innerWidth - 300).css('margin-left', 300);
+        $('#content-wrapper')
+            //.css('width', window.innerWidth - 300)
+            .css('padding-left', 300);
         $('.breadcrumb').css('left', $('#menu-bar').width());
     }
     api.search.updateMaxHeight();

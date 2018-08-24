@@ -17,7 +17,9 @@ api.tree.scrollToEntry = function(entry, opt_hash) {
     var $target = $("#tree-menu li[x-data-name='" + sel + "']");
     if ($target.length) {
         window.setTimeout(function() {
-            $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.get(0).offsetTop - 20, {scrollInertia: 700});
+            // $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.get(0).offsetTop - 20, {scrollInertia: 700});
+            //api.tree.pisces.scrollToElement( $target.get(0));
+            api.tree.pisces.scrollToPosition({x: 0, y:  $target.get(0).offsetTop - 20});
         }, 100);
     }
 };
@@ -58,7 +60,8 @@ api.tree.expand = function(path, opt_hash) {
     if (path == "/") {
         $("#tree-menu .active").removeClass("active");
         $("#tree-menu .scroll-active").removeClass("scroll-active");
-        $("#tree-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});
+        //$("#tree-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});
+        api.tree.pisces.scrollToPosition({x: 0, y:  0});
         return;
     }
     var entry;
@@ -97,18 +100,28 @@ api.tree.scrollHighlight = function(hash) {
 
 /** */
 api.tree.disableScrolling = function() {
-    $("#tree-wrapper").mCustomScrollbar("disable", true);
+    //$("#tree-wrapper").mCustomScrollbar("disable", true);
 };
 
 /** */
 api.tree.updateScrolling = function() {
-    $("#tree-wrapper").mCustomScrollbar("update");
+    //$("#tree-wrapper").mCustomScrollbar("update");
 };
 
 /**
  */
 api.tree.init = function() {
-    $("#tree-wrapper").mCustomScrollbar(api.config.scrollSettings);
+    //$("#tree-wrapper").mCustomScrollbar(api.config.scrollSettings);
+    api.tree.scrollBar = new GeminiScrollbar({
+        //element: $("#tree-wrapper")[0]
+        element: $("#tree-scr")[0]
+    }).create();
+    setInterval(function(){
+        api.tree.scrollBar.update()
+    }, 100);
+    api.tree.pisces = new Pisces(api.tree.scrollBar.getViewElement());
+
+
 
     $("#tree-menu li.group").each(function() {
         var $ul = $(this).find(">ul");

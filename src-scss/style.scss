@@ -352,7 +352,8 @@ a.switcher {
   position: absolute;
   top: 50px;
   bottom: 70px;
-  overflow: scroll;
+  //overflow: scroll;
+  overflow: hidden;
   width: 100%;
 }
 
@@ -436,8 +437,10 @@ a.switcher {
   position: absolute;
   top: 97px;
   bottom: 0;
-  overflow: scroll;
+  //overflow: scroll;
+  overflow: hidden;
   background: #fff;
+  width: 100%;
 }
 
 #article-content {
@@ -941,7 +944,9 @@ a {
 
 @media (min-width: 992px) {
   #content-wrapper {
-    margin-left: 300px;
+    //margin-left: 300px;
+    padding-left: 300px;
+    //width: 100%;
     /*width: 70%;*/
   }
   #menu-bar {

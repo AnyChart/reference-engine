@@ -56,13 +56,14 @@
           [:span.ac.ac-search.form-control-feedback]]]]]
 
       [:div#tree-wrapper
-       [:div#tree-menu
-        [:ul.menu
-         ;(tree-view data page)
-         [:li.pull-down.group {:x-data-name "anychart"}
-          [:a {:href "/anychart"} [:i.ac.ac-chevron-right] "anychart"]
-          [:ul {:style "display:none"}]]
-         ]]]
+       [:div#tree-scr
+        [:div#tree-menu
+         [:ul.menu
+          ;(tree-view data page)
+          [:li.pull-down.group {:x-data-name "anychart"}
+           [:a {:href "/anychart"} [:i.ac.ac-chevron-right] "anychart"]
+           [:ul {:style "display:none"}]]
+          ]]]]
 
       [:div#footer
        [:div#footer-inner
@@ -97,12 +98,12 @@
         " version to see the up to date information."])
 
      [:div#content-wrapper
-      [:div#article-content
-       [:div.content-container
-        content]]
-
-      (when footer
-        [:div.content-footer [:hr] [:i.ac.ac-info] footer])]
+      [:div#content-scr
+       [:div#article-content
+        [:div.content-container
+         content]]
+       (when footer
+         [:div.content-footer [:hr] [:i.ac.ac-info] footer])]]
      ]))
 
 

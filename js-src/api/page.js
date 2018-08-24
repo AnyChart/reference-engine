@@ -30,7 +30,8 @@ api.page.scrollToEntry = function(entry) {
     $('#' + entry).addClass('active');
     window.setTimeout(function() {
         $("#article-content").css('min-height', $("#article-content").height());
-        $("#content-wrapper").mCustomScrollbar('scrollTo', $('#' + entry), {scrollInertia: 700});
+        //$("#content-wrapper").mCustomScrollbar('scrollTo', $('#' + entry), {scrollInertia: 700});
+        api.page.pisces.scrollToPosition({x: 0, y:  $('#' + entry)[0].offsetTop - 20});
         $('.panel').on('hide.bs.collapse', function(e) {
             var $methodBlock = $(this).parent().parent();
             if ($methodBlock.hasClass('selected')) {
@@ -161,7 +162,7 @@ api.page.load = function(target, opt_pushToHistory, opt_scrollTree) {
         $("meta[name='description']").attr("content", res.description);
         $("meta[property='og\\:description']").attr("content", res.description);
 
-        $("#content-wrapper").html('<div id="article-content"><div class="content-container">' + res.content + '</div></div>');
+        $("#content-wrapper").html('<div id="content-scr"><div id="article-content"><div class="content-container">' + res.content + '</div></div></div>');
 
         api.config.page = res.page;
 

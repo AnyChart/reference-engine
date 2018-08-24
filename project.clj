@@ -32,8 +32,14 @@
              :uberjar {:jvm-opts []}}
   :plugins [[lein-ancient "0.6.10"]
             [deraen/sass4clj "0.3.1"]
-            [deraen/lein-sass4clj "0.3.1"]]
+            [deraen/lein-sass4clj "0.3.1"]
+            [lein-asset-minifier "0.4.4"]]
   :sass {:source-paths ["src-scss"]
          :target-path  "resources/public/css"
          :output-style :compressed}
+
+  :minify-assets [[:js {:source ["resources/public/lib/gemini/index.js"
+                                 "resources/public/lib/gemini/pisces.js"]
+                        :target "resources/public/lib/gemini/gemini.min.js"}]]
+
   :main reference.core)

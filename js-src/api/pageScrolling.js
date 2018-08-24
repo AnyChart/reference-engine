@@ -18,6 +18,7 @@ api.pageScrolling.currentVisible_ = null;
  * @param {number} top
  */
 api.pageScrolling.checkTopVisible = function(top) {
+    console.log("checkTopVisible: " + top);
     if (top < 0) {
         if (!api.pageScrolling.isTopVisible_) {
             $('#top-page-content').fadeIn();
@@ -62,9 +63,14 @@ api.pageScrolling.getFirstVisible_ = function(top) {
  * @private
  */
 api.pageScrolling.onContentScroll_ = function() {
+    console.log("api.pageScrolling.onContentScroll_ " + api.page.scrollBar.getViewElement().scrollTop);
     $(window).off("focus");
-    api.pageScrolling.checkTopVisible(this.mcs.top);
-    var el = api.pageScrolling.getFirstVisible_(this.mcs.top);
+    //api.pageScrolling.checkTopVisible(this.mcs.top);
+
+    api.pageScrolling.checkTopVisible(api.page.scrollBar.getViewElement().scrollTop);
+    //var el = api.pageScrolling.getFirstVisible_(this.mcs.top);
+    var el = api.pageScrolling.getFirstVisible_(api.page.scrollBar.getViewElement().scrollTop);
+
     if (el) {
         if (el != api.pageScrolling.currentVisible_) {
             api.pageScrolling.currentVisible_ = el;
@@ -88,13 +94,36 @@ api.pageScrolling.update = function() {
     api.pageScrolling.isTopVisible_ = false;
     api.pageScrolling.currentVisible_ = null;
 
-    $("#content-wrapper").mCustomScrollbar(
-        $.extend(api.config.scrollSettings,
-            {
-                callbacks: {
-                    onScroll: api.pageScrolling.onContentScroll_
-                }
-            }));
+    // $("#content-wrapper").mCustomScrollbar(
+    //     $.extend(api.config.scrollSettings,
+    //         {
+    //             callbacks: {
+    //                 onScroll: api.pageScrolling.onContentScroll_
+    //             }
+    //         }));
+
+    api.page.scrollBar = new GeminiScrollbar({
+        element: $("#content-scr")[0]
+    }).create();
+    setInterval(function(){
+        api.page.scrollBar.update()
+    }, 100);
+
+    api.page.pisces = new Pisces(api.page.scrollBar.getViewElement());
+
+    //$("#content-scr .gm-scroll-view")[0].onscroll = api.pageScrolling.onContentScroll_;
+
+    // Emulate on completeScroll event
+    api.page.scrollTimer = null;
+    $("#content-scr .gm-scroll-view")[0].addEventListener('scroll', function() {
+        if(api.page.scrollTimer !== null) {
+            clearTimeout(api.page.scrollTimer);
+        }
+        api.page.scrollTimer = setTimeout(function() {
+            api.pageScrolling.onContentScroll_()
+        }, 70);
+    }, false);
+
 };
 
 /**
@@ -111,11 +140,12 @@ api.pageScrolling.update = function() {
 api.pageScrolling.highlightScroll = function(entry) {
     setTimeout(function() {
         api.page.currentActive_ = entry;
-        $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
-            {
-                scrollInertia: 700,
-                callbacks: false
-            });
+        // $("#content-wrapper").mCustomScrollbar("scrollTo", $("#" + entry),
+        //     {
+        //         scrollInertia: 700,
+        //         callbacks: false
+        //     });
+        api.page.pisces.scrollToPosition({x: 0, y:  $("#" + entry)[0].offsetTop - 20});
         api.pageScrolling.checkTopVisible(-100);
     }, 100);
 };
@@ -123,13 +153,15 @@ api.pageScrolling.highlightScroll = function(entry) {
 /**
  */
 api.pageScrolling.destroy = function() {
-    $("#content-wrapper").mCustomScrollbar('destroy');
+    //$("#content-wrapper").mCustomScrollbar('destroy');
+    api.page.scrollBar.destroy();
 };
 
 
 api.pageScrolling.init = function() {
     $("#top-page-content").click(function() {
-        $("#content-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});
+        //$("#content-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});
+        api.page.pisces.scrollToPosition({x: 0, y: 0});
         api.tree.scrollToEntry(api.config.page);
         return false;
     });
@@ -140,7 +172,8 @@ api.pageScrolling.init = function() {
 $(window).focus(function() {
     var id = window.location.hash;
     if (id) {
-        $("#content-wrapper").mCustomScrollbar("scrollTo", $(id), {callbacks: false});
+        //$("#content-wrapper").mCustomScrollbar("scrollTo", $(id), {callbacks: false});
+        //api.page.pisces.scrollToPosition({x: 0, y:  $(id)[0].offsetTop - 20});
     }
     api.tree.scrollToEntry(api.config.page, location.hash ? location.hash.substr(1) : null);
     api.core.needAnchorScroll_ = false;
