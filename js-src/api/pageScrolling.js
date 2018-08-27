@@ -18,7 +18,6 @@ api.pageScrolling.currentVisible_ = null;
  * @param {number} top
  */
 api.pageScrolling.checkTopVisible = function(top) {
-    //console.log("checkTopVisible: " + top);
     if (top > 0) {
         if (!api.pageScrolling.isTopVisible_) {
             $('#top-page-content').fadeIn();
@@ -40,29 +39,22 @@ api.pageScrolling.checkTopVisible = function(top) {
 api.pageScrolling.getFirstVisible_ = function(top) {
     var minDistance = Number.MAX_VALUE;
     var $minEl = null;
-    console.log($("div.content-block.methods h3,div.content-block.methods .const-block h4"));
 
     // find more closest to abstract line element
     var d = $("div.content-block.methods h3,div.content-block.methods .const-block h4").each(function() {
         var $el = $(this);
         var distance = Math.abs($el.offset().top - 100);
-        console.log($el.attr("id") + "  : " + distance);
         if (distance < minDistance) {
             minDistance = distance;
             $minEl = $el;
         }
     });
-    console.log("FIND: " );
-    console.log($minEl);
 
     if ($minEl) {
         var $first = $("div.content-block.methods h3,div.content-block.methods h4").first();
-        console.log("First: " );
-        console.log($first);
-
-        // if selected highlighted object is first on page
+        // if selected highlighted object is first on page and it's hidden over bottom browser border - return null
+        // 40 const - to show it when only title appears
         if ($first.position().top == $minEl.position().top) {
-            console.log("IF true!");
             if (top + $("#content-wrapper").height() - 40 < $first.position().top)
                 return null;
         }
@@ -74,16 +66,11 @@ api.pageScrolling.getFirstVisible_ = function(top) {
  * @private
  */
 api.pageScrolling.onContentScroll_ = function() {
-    console.log("api.pageScrolling.onContentScroll_ " + api.page.scrollBar.getViewElement().scrollTop);
     $(window).off("focus");
     //api.pageScrolling.checkTopVisible(this.mcs.top);
-
     api.pageScrolling.checkTopVisible(api.page.scrollBar.getViewElement().scrollTop);
     //var el = api.pageScrolling.getFirstVisible_(this.mcs.top);
     var el = api.pageScrolling.getFirstVisible_(api.page.scrollBar.getViewElement().scrollTop);
-    console.log("Element: ");
-    console.log(el);
-
     if (el) {
         if (el != api.pageScrolling.currentVisible_) {
             api.pageScrolling.currentVisible_ = el;
@@ -125,11 +112,9 @@ api.pageScrolling.update = function() {
     api.page.pisces = new Pisces(api.page.scrollBar.getViewElement());
 
     //$("#content-scr .gm-scroll-view")[0].onscroll = api.pageScrolling.onContentScroll_;
-
     // Emulate on completeScroll event
     api.page.scrollTimer = null;
     $("#content-scr .gm-scroll-view")[0].addEventListener('scroll', function() {
-        //console.log("scroll!");
         if(api.page.scrollTimer !== null) {
             clearTimeout(api.page.scrollTimer);
         }
