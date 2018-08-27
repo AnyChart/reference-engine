@@ -168,7 +168,7 @@ api.pageScrolling.init = function() {
 
 // wihtout this when right tlick on menu -> open link in new tab ->
 // wait until page is loaded -> switch to loaded page -> anchor scroll doesn't work
-$(window).focus(function() {
+/*$(window).focus(function() {
     var id = window.location.hash;
     if (id) {
         //$("#content-wrapper").mCustomScrollbar("scrollTo", $(id), {callbacks: false});
@@ -177,5 +177,5 @@ $(window).focus(function() {
     api.tree.scrollToEntry(api.config.page, location.hash ? location.hash.substr(1) : null);
     api.core.needAnchorScroll_ = false;
     $(window).off("focus");
-});
+});*/
 
