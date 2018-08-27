@@ -114,7 +114,9 @@ api.tree.init = function() {
     //$("#tree-wrapper").mCustomScrollbar(api.config.scrollSettings);
     api.tree.scrollBar = new GeminiScrollbar({
         //element: $("#tree-wrapper")[0]
-        element: $("#tree-scr")[0]
+        element: $("#tree-scr")[0],
+        autoshow: true,
+        minThumbSize: 50
     }).create();
     setInterval(function(){
         api.tree.scrollBar.update()

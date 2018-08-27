@@ -103,7 +103,9 @@ api.pageScrolling.update = function() {
     //         }));
 
     api.page.scrollBar = new GeminiScrollbar({
-        element: $("#content-scr")[0]
+        element: $("#content-scr")[0],
+        autoshow: true,
+        minThumbSize: 50
     }).create();
     setInterval(function(){
         api.page.scrollBar.update()
