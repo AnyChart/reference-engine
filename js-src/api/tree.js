@@ -116,6 +116,7 @@ api.tree.init = function() {
         //element: $("#tree-wrapper")[0]
         element: $("#tree-scr")[0],
         autoshow: true,
+        forceGemini: true,
         minThumbSize: 50
     }).create();
     setInterval(function(){
