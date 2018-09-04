@@ -219,7 +219,7 @@ api.page.fixAccordionLinks = function() {
 api.page.showSearchResults = function($results) {
     api.pageScrolling.destroy();
 
-    $("#content-wrapper").html('<div id="article-content"><div class="content-container"></div></div>');
+    $("#content-wrapper").html('<div id="content-scr"><div id="article-content"><div class="content-container"></div></div></div>');
     $("#article-content .content-container").append($results);
     $("#article-content .content-container a").click(api.links.typeLinkClick);
     api.pageScrolling.update();
