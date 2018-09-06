@@ -114,12 +114,26 @@
                                                                    graphics-top-level
                                                                    notifier)
 
+          ; Anton Kagakin:
+          ; а можно при генерации anychart.d.ts не упоминать anychart.graphics.math.rect - выпилить из генерации?
+          ; просто получится
+          ; anychart.math.rect: anychart.math.Rect - алиас на anychart.graphics.math.Rect
+          ; anychart.graphics.math.rect: anychart.graphics.math.Rect
+          anychart-top-level (setval [:namespaces
+                                      ALL
+                                      #(= "anychart.graphics.math" (:full-name %))
+                                      :functions
+                                      ALL
+                                      #(= "rect" (:name %))]
+                                     NONE
+                                     replaced-top-level-ts)
+
           ;; generate index.d.ts
           index-ts-result (ts/generate-ts-declarations data-dir
                                                        git-ssh
                                                        (:name branch)
                                                        latest-version-key
-                                                       replaced-top-level-ts
+                                                       anychart-top-level
                                                        notifier)]
       {:index-ts-result    index-ts-result
        :graphics-ts-result graphics-ts-result})))
