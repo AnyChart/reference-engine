@@ -33,8 +33,8 @@
       {:exit 0 :out "" :err ""})))
 
 
-(defn check-ts-tests [file-name version-key data-dir git-ssh]
-  (timbre/info "TypeScript check: ts-tests")
+(defn check-prepare [data-dir version-key git-ssh]
+  (timbre/info "TypeScript ts-tests check preparation")
   (let [tests-dir (str data-dir "/ts-tests")
         dir (str data-dir "/ts-tests-" version-key)]
     (git/update git-ssh tests-dir)
@@ -42,15 +42,28 @@
     (git/clean git-ssh tests-dir)
     (shell/with-sh-dir tests-dir
                        (shell/sh "/bin/bash" "-c" (str " npm install")))
-    (fs/copy-dir tests-dir dir)
-    (fs/copy file-name (str dir "/index-develop.d.ts"))
-    (let [result (run-tests dir)]
-      (fs/delete-dir dir)
-      result)))
+    (fs/copy-dir tests-dir dir)))
 
 
-(defn check [file-name version-key data-dir git-ssh]
-  (let [res (check-ts-file file-name)]
+(defn check-clean [data-dir version-key]
+  (timbre/info "TypeScript ts-tests check cleaning")
+  (let [dir (str data-dir "/ts-tests-" version-key)]
+    (fs/delete-dir dir)))
+
+
+(defn check-graphics [{:keys [path]} data-dir version-key]
+  (let [dir (str data-dir "/ts-tests-" version-key)
+        res (check-ts-file path)]
     (if (zero? (:exit res))
-      (check-ts-tests file-name version-key data-dir git-ssh)
+      (do (fs/copy path (str dir "/graphics/graphics-develop.d.ts"))
+          (run-tests (str dir "/graphics")))
+      res)))
+
+
+(defn check-index [{:keys [path]} data-dir version-key]
+  (let [dir (str data-dir "/ts-tests-" version-key)
+        res (check-ts-file path)]
+    (if (zero? (:exit res))
+      (do (fs/copy path (str dir "/anychart/index-develop.d.ts"))
+          (run-tests (str dir "/anychart")))
       res)))

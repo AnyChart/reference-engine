@@ -27,7 +27,8 @@
             [taoensso.timbre :as timbre :refer [info error]]
             [reference.util.utils :as utils]
             [clojure.string :as string]
-            [cheshire.core :as json]))
+            [cheshire.core :as json]
+            [reference.adoc.defs.ts.check :as ts-check]))
 
 
 (defn actual-branches [show-branches git-ssh repo-path]
@@ -107,12 +108,15 @@
                                      NONE
                                      graphics-top-level)
 
-          graphics-ts-result (ts/generate-graphics-ts-declarations data-dir
-                                                                   git-ssh
-                                                                   (:name branch)
-                                                                   latest-version-key
-                                                                   graphics-top-level
-                                                                   notifier)
+          _ (ts-check/check-prepare data-dir (:name branch) git-ssh)
+
+          graphics-ts-data (ts/generate-graphics-ts-declarations data-dir
+                                                                 git-ssh
+                                                                 (:name branch)
+                                                                 latest-version-key
+                                                                 graphics-top-level
+                                                                 notifier)
+          graphics-ts-result (ts-check/check-graphics graphics-ts-data data-dir (:name branch))
 
           ; Anton Kagakin:
           ; а можно при генерации anychart.d.ts не упоминать anychart.graphics.math.rect - выпилить из генерации?
@@ -129,12 +133,15 @@
                                      replaced-top-level-ts)
 
           ;; generate index.d.ts
-          index-ts-result (ts/generate-ts-declarations data-dir
-                                                       git-ssh
-                                                       (:name branch)
-                                                       latest-version-key
-                                                       anychart-top-level
-                                                       notifier)]
+          index-ts-data (ts/generate-ts-declarations data-dir
+                                                     git-ssh
+                                                     (:name branch)
+                                                     latest-version-key
+                                                     anychart-top-level
+                                                     notifier)
+          index-ts-result (ts-check/check-index index-ts-data data-dir (:name branch))
+
+          _ (ts-check/check-clean data-dir (:name branch))]
       {:index-ts-result    index-ts-result
        :graphics-ts-result graphics-ts-result})))
 

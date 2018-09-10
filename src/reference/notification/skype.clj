@@ -88,18 +88,25 @@
   (let [msg (str "[API " (c/prefix) "] #" queue-index " " (b version)
                  " \"" commit-message "\" @" author " (" (subs commit 0 7) ") - "
                  (-> "failed" (font "#d00000")) "\n"
+
                  (when e
                    (-> (utils/format-exception e) (font "#777777" 11) i))
+
                  (when (not= 0 (:exit index-ts-result))
                    (str "<a href=\"" (c/domain) (:url index-ts-result) "\">index.d.ts</a> errors"
                         (when (:count index-ts-result)
                           (str " - " (b (:count index-ts-result)) " tests failed"))
                         ":\n"
                         "" (:out index-ts-result) ""))
+
                  (when (and (not= 0 (:exit index-ts-result))
                             (not= 0 (:exit graphics-ts-result))) "\n")
+
                  (when (not= 0 (:exit graphics-ts-result))
-                   (str "<a href=\"" (c/domain) (:url graphics-ts-result) "\">graphics.d.ts</a> errors:\n"
+                   (str "<a href=\"" (c/domain) (:url graphics-ts-result) "\">graphics.d.ts</a> errors"
+                        (when (:count graphics-ts-result)
+                          (str " - " (b (:count graphics-ts-result)) " tests failed"))
+                        ":\n"
                         "" (:out graphics-ts-result) "")))]
     (send-message (config notifier) msg)
     (send-release-message (config notifier) version msg)))

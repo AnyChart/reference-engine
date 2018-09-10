@@ -291,7 +291,8 @@
     (fs/mkdirs dir)
     (spit path-index ts)
     (spit path-full ts)
-    (assoc (ts-check/check path-index version-key data-dir git-ssh) :url url)))
+    {:url  url
+     :path path-index}))
 
 
 (defn add-graphics-js-header [ts version-key]
@@ -320,7 +321,8 @@
     (fs/mkdirs dir)
     (spit path-index ts)
     (spit path-full ts)
-    (assoc (ts-check/check-ts-file path-index) :url url)))
+    {:url  url
+     :path path-index}))
 
 
 ;(defn test2 []

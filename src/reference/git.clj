@@ -42,7 +42,8 @@
 (defn clean
   "Remove all ignored, untracked files and directories"
   [git-ssh repo]
-  (run-git git-ssh repo "clean" "-fxd"))
+  (run-git git-ssh repo "clean" "-fxd")
+  (run-git git-ssh repo "reset" "--hard"))
 
 
 (defn update-samples [git-ssh repo branch]

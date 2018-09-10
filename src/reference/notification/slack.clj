@@ -105,7 +105,10 @@
                                              (:out index-ts-result)
                                              "```"))
                                       (when (not= 0 (:exit graphics-ts-result))
-                                        (str "\n<" (c/domain) (:url graphics-ts-result) "|graphics.d.ts> errors:\n"
+                                        (str "\n<" (c/domain) (:url graphics-ts-result) "|graphics.d.ts> errors"
+                                             (when (:count graphics-ts-result)
+                                               (str " - " (b (:count graphics-ts-result)) " tests failed"))
+                                             ":\n"
                                              "```"
                                              (:out graphics-ts-result)
                                              "```")))
