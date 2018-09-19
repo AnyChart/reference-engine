@@ -755,17 +755,21 @@ div.space {
 .panel-heading {
   padding: 0;
   a {
-    display: block;
+    display: flex;
     padding: 8px 10px;
     color: #323c44;
     font-family: Verdana,Helvetica,Arial,sans-serif;
     font-size: 14px;
-    &:hover {
+    line-height: 16px;
+    justify-content: space-between;
+    &:hover, &:active, &:link, &:visited  {
       text-decoration: none;
     }
     span {
       font-family: 'Source Sans Pro', sans-serif;
       color: #929292;
+      min-width: 125px;
+      text-align: right;
     }
   }
 }
