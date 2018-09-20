@@ -36,14 +36,14 @@
 ;          (str "{[prop: " key-type "]: " value-type "}"))
 ;        (do
 ;          ;(prn t)
-;          (str "{[prop: string]: " (clojure.string/trim (subs t 15 (dec (count t)))) "}")))
+;          (str "{[prop: string]: " (string/trim (subs t 15 (dec (count t)))) "}")))
 ;
-;      (parse-object-type (clojure.string/replace t #"Object\.<" "Object.<string, ")))
+;      (parse-object-type (string/replace t #"Object\.<" "Object.<string, ")))
 ;    t))
 
 
 ;(defn get-type [t]
-;  (let [t (parse-object-type (clojure.string/replace t #"\|undefined" ""))]
+;  (let [t (parse-object-type (string/replace t #"\|undefined" ""))]
 ;    (case t
 ;      "function" "(() => void)"
 ;      "Array" "Array<any>"

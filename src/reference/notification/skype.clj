@@ -3,7 +3,6 @@
             [taoensso.timbre :as timbre]
             [cheshire.core :as json]
             [reference.util.utils :as utils]
-            [clojure.string :as s]
             [clojure.string :as string]
             [reference.config.core :as c]))
 

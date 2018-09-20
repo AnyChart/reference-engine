@@ -77,7 +77,7 @@
                                (map #(generate-class-tree % struct) (:classes namespace))))})
 
 ;(defn- is-top-level-ns [namespace]
-;  (= (count (clojure.string/split (:full-name namespace) #"\."))
+;  (= (count (string/split (:full-name namespace) #"\."))
 ;     0))
 ;
 ;

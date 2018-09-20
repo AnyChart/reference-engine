@@ -1,8 +1,8 @@
 (ns reference.adoc.defs.tern
-  (:require [clojure.string :as s :refer [join]]
-            [taoensso.timbre :as timbre :refer [info error]]
+  (:require [taoensso.timbre :as timbre :refer [info error]]
             [cheshire.core :refer [generate-string]]
-            [me.raynes.fs :as fs]))
+            [me.raynes.fs :as fs]
+            [clojure.string :as string :refer [join]]))
 
 ;; for developing and testing
 (defonce top-level (atom nil))
@@ -25,7 +25,7 @@
   (filter (fn [td] (some #(= % (:full-name td)) names)) (:typedefs top-level)))
 
 (defn remove-tags [html]
-  (if (seq html) (clojure.string/replace html #"<[^>]*>" "") ""))
+  (if (seq html) (string/replace html #"<[^>]*>" "") ""))
 
 (defn description [object]
   (-> (or (:short-description object) (:description object))
@@ -40,7 +40,7 @@
     t))
 
 (defn get-type [t]
-  (let [t (parse-object-type (clojure.string/replace t #"\|undefined" ""))]
+  (let [t (parse-object-type (string/replace t #"\|undefined" ""))]
     (when
       (and (.contains t "Object<") (.contains t "Array<"))
       (throw "Too complicated type"))
@@ -48,15 +48,15 @@
       "function" "fn()"
       "Array" "+Array"
       (-> t
-          (s/replace #"scope" "+Object")
-          (s/replace #"\*" "+Object")
-          (s/replace #"anychart" "+anychart")
-          (s/replace #"boolean" "bool")
-          ;(s/replace #"!?Array<([^>]*)>" "[$1]")
-          (clojure.string/replace #"!?Array.\<\(?" "[")
-          (clojure.string/replace #"\)?>" "]")
-          (s/replace #"!" "")
-          (s/replace #"\|null" "")))))
+          (string/replace #"scope" "+Object")
+          (string/replace #"\*" "+Object")
+          (string/replace #"anychart" "+anychart")
+          (string/replace #"boolean" "bool")
+          ;(string/replace #"!?Array<([^>]*)>" "[$1]")
+          (string/replace #"!?Array.\<\(?" "[")
+          (string/replace #"\)?>" "]")
+          (string/replace #"!" "")
+          (string/replace #"\|null" "")))))
 
 (defn get-types [types]
   (join "|" (map get-type
@@ -104,17 +104,17 @@
   {"!type" (create-function-type function)
    "!url"  (str (:domain settings) (:version-key settings) "/"
                 (let [f (first (:overrides function))]
-                  (clojure.string/replace (:full-name f)
-                                          (re-pattern (str "." (:name f)))
-                                          (str "#" (:name f)))))
+                  (string/replace (:full-name f)
+                                  (re-pattern (str "." (:name f)))
+                                  (str "#" (:name f)))))
    "!doc"  (description function)})
 
 (defn create-constant [constant settings]
   (let [res {"!doc" (or (:short-description constant) (:description constant))
              "!url" (str (:domain settings) (:version-key settings) "/"
-                         (clojure.string/replace (:full-name constant)
-                                                 (re-pattern (str "." (:name constant)))
-                                                 (str "#" (:name constant))))}]
+                         (string/replace (:full-name constant)
+                                         (re-pattern (str "." (:name constant)))
+                                         (str "#" (:name constant))))}]
     (if (:type constant)
       (assoc res "!type" (:type constant))
       res)))
@@ -158,7 +158,7 @@
         result (map (fn [class] (let [childred (filter #(= (:parent %) (:full-name class)) inner-classes)]
                                   (assoc class :classes
                                                (map #(assoc % :name
-                                                              (last (clojure.string/split (:name %) #"\.")))
+                                                              (last (string/split (:name %) #"\.")))
                                                     childred))))
                     outer-classes)]
     result))

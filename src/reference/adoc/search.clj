@@ -1,5 +1,6 @@
 (ns reference.adoc.search
-  (:require [taoensso.timbre :as timbre :refer [info]]))
+  (:require [taoensso.timbre :as timbre :refer [info]]
+            [clojure.string :as string]))
 
 (defn- generate-entry-search-index [entry]
   {:full-name (:full-name entry)
@@ -43,7 +44,7 @@
 
 (defn clean-name [file]
   (let [name (.getName file)]
-    (clojure.string/join "." (butlast (clojure.string/split name #"\.")))))
+    (string/join "." (butlast (string/split name #"\.")))))
 
 (defn get-methods-descriptions [search-folder]
   (let [files (filter #(and

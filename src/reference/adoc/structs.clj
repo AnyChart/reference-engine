@@ -2,7 +2,7 @@
   (:require [taoensso.timbre :as timbre :refer [info]]
             [reference.adoc.media :refer [update-links]]
             [reference.git :refer [file-last-commit-date]]
-            [clojure.string :refer [blank? join]]))
+            [clojure.string :refer [blank? join] :as string]))
 
 
 (def id-counter (atom 0))
@@ -13,10 +13,10 @@
         path (-> doclet :meta :path)
         full-path (str path "/" fname)]
     (if full-path
-      (clojure.string/replace
-        (clojure.string/replace full-path
-                                (clojure.string/re-quote-replacement base-path)
-                                "")
+      (string/replace
+        (string/replace full-path
+                        (string/re-quote-replacement base-path)
+                        "")
         #"adoc\.js" "adoc"))))
 
 (defn- get-last-modified [cache path base-path]
@@ -31,7 +31,7 @@
 
 (defn- cleanup-name [name]
   (if name
-    (clojure.string/replace (str name) #"['\"]" "")
+    (string/replace (str name) #"['\"]" "")
     nil))
 
 (defn- get-doclets-by-kind [doclets kind]
@@ -135,19 +135,19 @@
    :this                  (:this entry)})
 
 (defn- get-example-link [base-path doclet file]
-  (let [folder (clojure.string/replace (get-in doclet [:meta :path])
-                                       (clojure.string/re-quote-replacement base-path)
-                                       "")]
+  (let [folder (string/replace (get-in doclet [:meta :path])
+                               (string/re-quote-replacement base-path)
+                               "")]
     (if folder
       (str folder "/" file)
       file)))
 
 (defn- parse-example [base-path doclet example]
-  (if (re-find #" " (clojure.string/trim example))
-    (let [[file title] (rest (re-matches #"^([^ ]+)( .*)" (clojure.string/trim example)))]
+  (if (re-find #" " (string/trim example))
+    (let [[file title] (rest (re-matches #"^([^ ]+)( .*)" (string/trim example)))]
       {:file  (get-example-link base-path doclet file)
        :title (if-not (empty? title)
-                (clojure.string/trim title)
+                (string/trim title)
                 "Usage sample")})
     {:file  (get-example-link base-path doclet example)
      :title "Usage sample"}))
@@ -216,7 +216,7 @@
   (reduce (fn [res c]
             (let [c (str c)]
               (cond
-                (and (nil? (:state res)) (clojure.string/blank? (str c))) res
+                (and (nil? (:state res)) (string/blank? (str c))) res
 
                 (and (nil? (:state res)) (= c "["))
                 (assoc res
@@ -250,7 +250,7 @@
 
 
 (defn- parse-function-param [param version]
-  (let [result {:name  (if (:name param) (clojure.string/replace (:name param) #"^opt_" ""))
+  (let [result {:name  (if (:name param) (string/replace (:name param) #"^opt_" ""))
                 :types (get-in param [:type :names])}
         result-with-desc
         (if (param-has-default? param)
@@ -346,7 +346,7 @@
 
 
 (defn- convert-code-to-list [code]
-  (let [lines (clojure.string/split-lines code)]
+  (let [lines (string/split-lines code)]
     (if (= (count lines) 1)
       code
       (str "<ul>" (reduce str (map #(str "<li>" % "</li>") lines)) "</ul>")))
@@ -360,7 +360,7 @@
   (boolean (some #(:default %) params)))
 
 (defn- create-function-signature [name params]
-  (str name "(" (clojure.string/join ", " (map :name params)) ")"))
+  (str name "(" (string/join ", " (map :name params)) ")"))
 
 (defn- create-function [func doclets version base-path]
   (let [params (parse-function-params func version)
