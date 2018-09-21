@@ -179,7 +179,7 @@
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
 
-        ;(when (= (:name branch) "typedef-test")
+        ;(when (= (:name branch) "8.3.0")
         ;  (ts/set-top-level! top-level)
         ;  (tern/set-top-level! top-level tree-data)
         ;  (json-gen/set-top-level! top-level)
@@ -202,7 +202,9 @@
 
           (tern/generate-declarations {:data-dir    data-dir
                                        :version-key (:name branch)
-                                       :domain      (-> notifier :config :domain)} tree-data top-level)
+                                       :domain      (-> notifier :config :domain)}
+                                      tree-data
+                                      top-level)
 
           (if (need-generate-ts branch gen-params)
             (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order)]
