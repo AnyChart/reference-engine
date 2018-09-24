@@ -672,6 +672,13 @@ img.img-in-context {
   &.methods .table > tbody > tr > td {
     font-size: 14px;
     padding: 2px 5px;
+    &:last-child {
+      @media (max-width: 600px) {
+        word-break: break-all;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+    }
   }
   .table > tbody > tr > td.th {
     padding-top: 15px;
