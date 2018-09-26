@@ -75,10 +75,10 @@
     (map #(build-class % classes *cache add-parent-methods?) classes)))
 
 
-(defn modify
-  "Add inherited methods from parents, if it needs
-  and replace returned type: e.g.  /anychart.charts.Pie#title - anychart.charts.Pie instead of anychart.core.Chart"
-  [tree add-parent-methods?]
+(defn update-classes-methods
+  "Replace returned type: e.g. /anychart.charts.Pie#title - anychart.charts.Pie instead of anychart.core.Chart
+  and add inherited methods from parents, if it needs (add-parent-methods?)"
+  [tree & {add-parent-methods? :add-parent-methods}]
   (update tree :classes build-methods add-parent-methods?))
 
 

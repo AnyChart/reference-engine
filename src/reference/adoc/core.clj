@@ -84,10 +84,13 @@
   (let [raw-top-level (structurize all-doclets data-dir (:name branch))
         inh-top-level (inh/build-inheritance raw-top-level)
         top-level (categories/categorize inh-top-level categories-order)
+
         top-level-ts (typedef-builder/fix-typedef top-level true)
-        replaced-top-level-ts (tree-ts/modify top-level-ts true)
-        top-level-js (typedef-builder/fix-typedef top-level)]
-    (json-gen/generate data-dir (:name branch) latest-version-key (tree-ts/modify top-level-js true))
+        replaced-top-level-ts (tree-ts/update-classes-methods top-level-ts :add-parent-methods true)
+
+        top-level-js (typedef-builder/fix-typedef top-level)
+        replaced-top-level-js (tree-ts/update-classes-methods top-level-js :add-parent-methods true)]
+    (json-gen/generate data-dir (:name branch) latest-version-key replaced-top-level-js)
 
     ;; generate graphics.d.ts
     (let [graphics-top-level (-> replaced-top-level-ts
@@ -173,18 +176,18 @@
             inh-top-level (inh/build-inheritance raw-top-level)
             top-level (categories/categorize inh-top-level categories-order)
             top-level (typedef-builder/fix-typedef top-level)
-            top-level (tree-ts/modify top-level false)
+            top-level (tree-ts/update-classes-methods top-level :add-parent-methods false)
             tree-data (generate-tree top-level)
             tree-min-data (tree-minimized/generate-tree top-level)
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
 
-        ;(when (= (:name branch) "8.3.0")
-        ;  (ts/set-top-level! top-level)
-        ;  (tern/set-top-level! top-level tree-data)
-        ;  (json-gen/set-top-level! top-level)
-        ;  (typedef-builder/set-top-level! top-level)
-        ;  )
+        (when (= (:name branch) "8.3.0")
+          (ts/set-top-level! top-level)
+          (tern/set-top-level! top-level tree-data)
+          (json-gen/set-top-level! top-level)
+          (typedef-builder/set-top-level! top-level)
+          )
 
         (info "categories order:" categories-order)
         (let [version (vdata/add-version jdbc
