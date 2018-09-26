@@ -85,10 +85,10 @@
         inh-top-level (inh/build-inheritance raw-top-level)
         top-level (categories/categorize inh-top-level categories-order)
 
-        top-level-ts (typedef-builder/fix-typedef top-level true)
+        top-level-ts (typedef-builder/fix-typedef top-level :typescript true)
         replaced-top-level-ts (tree-ts/update-classes-methods top-level-ts :add-parent-methods true)
 
-        top-level-js (typedef-builder/fix-typedef top-level)
+        top-level-js (typedef-builder/fix-typedef top-level :typescript false)
         replaced-top-level-js (tree-ts/update-classes-methods top-level-js :add-parent-methods true)]
     (json-gen/generate data-dir (:name branch) latest-version-key replaced-top-level-js)
 
@@ -175,7 +175,7 @@
             raw-top-level (structurize doclets data-dir (:name branch))
             inh-top-level (inh/build-inheritance raw-top-level)
             top-level (categories/categorize inh-top-level categories-order)
-            top-level (typedef-builder/fix-typedef top-level)
+            top-level (typedef-builder/fix-typedef top-level :typescript false)
             top-level (tree-ts/update-classes-methods top-level :add-parent-methods false)
             tree-data (generate-tree top-level)
             tree-min-data (tree-minimized/generate-tree top-level)

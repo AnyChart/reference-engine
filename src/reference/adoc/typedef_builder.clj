@@ -54,7 +54,7 @@
            "void") ")")))
 
 
-(defn fix-typedef [top-level & [is-ts]]
+(defn fix-typedef [top-level & {is-ts :typescript}]
   (timbre/info "Fix function typedefs"
                (count (:namespaces top-level))
                (count (:classes top-level))
@@ -83,9 +83,9 @@
                                                            (re-pattern (str "(?<![a-zA-Z])"
                                                                             (:full-name typedef)
                                                                             "(?![a-zA-Z])"))
-                                                           ((if-not is-ts
-                                                              function-definition-js
-                                                              function-definition-ts) typedef)))
+                                                           ((if is-ts
+                                                              function-definition-ts
+                                                              function-definition-js) typedef)))
                                          type
                                          typedefs)))]
     ;(prn (count typedefs))
