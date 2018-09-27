@@ -1,5 +1,6 @@
-(ns reference.adoc.defs.tern
-  (:require [taoensso.timbre :as timbre :refer [info error]]
+(ns reference.adoc.defs.tern.core
+  (:require [reference.adoc.defs.tern.type-parser :as type-parser]
+            [taoensso.timbre :as timbre :refer [info error]]
             [cheshire.core :refer [generate-string]]
             [me.raynes.fs :as fs]
             [clojure.string :as string :refer [join]]))
@@ -48,9 +49,7 @@
   (if (.startsWith t "Object.<")
     "+Object"
     t))
-
-
-(defn get-type [t]
+(defn get-type-old [t]
   (let [t (parse-object-type (string/replace t #"\|undefined" ""))]
     (when
       (and (.contains t "Object<") (.contains t "Array<"))
@@ -71,7 +70,22 @@
           (string/replace #"\|null" "")))))
 
 
+(defn get-type [t]
+  (-> t
+      ;(string/replace #"function\(\)" "Function")
+      ;(string/replace #"scope" "any")
+      ;(string/replace #"\*" "any")
+      ;(string/replace #"!" "")
+      (string/replace #"!" "")
+      (string/replace #"boolean" "bool")
+      (string/replace #"\|null" "")
+      (string/replace #"\|undefined" "")
+      (string/replace #"\s+" "")
+      type-parser/jsdoc->tern))
+
+
 (defn get-types [types]
+  ; (println :types types)
   (join "|" (map get-type
                  (filter (partial #(and (not= % "null") (not= % "undefined"))) types))))
 
@@ -205,7 +219,8 @@
                 "!url"      (url class settings)
                 "prototype" (reduce #(assoc %1 (:name %2) (create-function %2 settings))
                                     {}
-                                    (:methods class))}
+                                    (:methods class))
+                }
         result-enums (reduce #(assoc %1 (:name %2) (create-enum %2 settings))
                              result
                              (get-enums top-level (map :name (:enums class))))
@@ -228,6 +243,7 @@
         result-namespaces (reduce #(assoc %1 (:name %2) (build-ns %2 top-level settings)) result-constants tree-namespaces)
 
         result-functions (reduce #(assoc %1 (:name %2) (create-function %2 settings)) result-namespaces (:functions full-ns))
+        ;; result-functions result-namespaces
 
         result-classes (reduce #(assoc %1 (:name %2) (create-class %2 top-level settings))
                                result-functions

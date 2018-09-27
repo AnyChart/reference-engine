@@ -1,5 +1,5 @@
 (ns reference.adoc.defs.ts.typescript
-  (:require [clojure.string :as s :refer [join]]
+  (:require [clojure.string :as string :refer [join]]
             [taoensso.timbre :as timbre :refer [info error]]
             [me.raynes.fs :as fs]
             [reference.adoc.defs.ts.check :as ts-check]
@@ -59,19 +59,19 @@
 
 (defn get-type [t]
   (-> t
-      (s/replace #"function\(\)" "Function")
-      (s/replace #"scope" "any")
-      (s/replace #"\*" "any")
-      (s/replace #"!" "")
-      (s/replace #"\|null" "")
-      (s/replace #"\|undefined" "")
-      (s/replace #"\s+" "")
+      (string/replace #"function\(\)" "Function")
+      (string/replace #"scope" "any")
+      (string/replace #"\*" "any")
+      (string/replace #"!" "")
+      (string/replace #"\|null" "")
+      (string/replace #"\|undefined" "")
+      (string/replace #"\s+" "")
       type-parser/jsdoc->ts))
 
 
 (defn get-types [types]
   (->> types
-       (map #(s/replace % #"anychart\.enums\.[a-zA-Z0-9]+" "string"))
+       (map #(string/replace % #"anychart\.enums\.[a-zA-Z0-9]+" "string"))
        distinct
        (filter (partial #(and (not= % "null")
                               (not= % "undefined"))))
@@ -212,7 +212,7 @@
 
 (defn class-declaration [class top-level]
   (if (> (.indexOf (:name class) ".") 0)
-    (let [[module name] (s/split (:name class) #"\.")]
+    (let [[module name] (string/split (:name class) #"\.")]
       (str p4 "module " module " {\n"
            (class-declaration (assoc class :name name) top-level)
            "\n    }"

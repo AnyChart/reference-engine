@@ -1,4 +1,4 @@
-(ns reference.adoc.defs.json
+(ns reference.adoc.defs.json.core
   (:require [cheshire.core :as ches]
             [me.raynes.fs :as fs]
             [taoensso.timbre :as timbre]
