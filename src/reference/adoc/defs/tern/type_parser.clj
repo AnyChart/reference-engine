@@ -12,7 +12,7 @@
 
 (defmethod write :default [data]
   (case data
-    "Array" "+Array"
+    "Array" "[?]"
     "function" "fn()"
     "*" "?"
     nil "void"
@@ -65,6 +65,13 @@
 
 
 (defmethod write :types [[_ & types]]
+  ;(let [anychart-types (filter #(string/starts-with? % "anychart.") types)]
+  ;  (if (> (count anychart-types) 1)
+  ;    "?"
+  ;    (->> types
+  ;         (map write)
+  ;         (string/join "|"))))
+  ;(prn types)
   (->> types
        (map write)
        (string/join "|")))

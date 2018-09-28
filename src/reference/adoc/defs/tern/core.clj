@@ -81,13 +81,27 @@
       (string/replace #"\|null" "")
       (string/replace #"\|undefined" "")
       (string/replace #"\s+" "")
-      type-parser/jsdoc->tern))
+      type-parser/jsdoc->tern
+      (string/replace #"Object" "+Object")
+      (string/replace #"anychart\." "+anychart.")
+      (string/replace #"(?<![a-zA-Z0-9])Node" "+Node")))
 
 
 (defn get-types [types]
-  ; (println :types types)
-  (join "|" (map get-type
-                 (filter (partial #(and (not= % "null") (not= % "undefined"))) types))))
+  ;(prn :types types)
+  (let [filtered-types (->> types
+                            (map #(string/replace % #"anychart\.enums\.[a-zA-Z0-9]+" "string"))
+                            distinct
+                            (filter #(and (not= % "null")
+                                          (not= % "undefined"))))
+        ;; ternJS has problems with +anychart.SomeType|+anychart.OtherType - it displays only first anychart type
+        ;; so the decision is to cast that types to common '?' type
+        anychart-types (filter #(and (string? %)
+                                     (string/starts-with? % "anychart."))
+                               filtered-types)]
+    (if (> (count anychart-types) 1)
+      "?"
+      (join "|" (map get-type filtered-types)))))
 
 
 (defn set-params [params arr]

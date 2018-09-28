@@ -73,8 +73,8 @@
   (->> types
        (map #(string/replace % #"anychart\.enums\.[a-zA-Z0-9]+" "string"))
        distinct
-       (filter (partial #(and (not= % "null")
-                              (not= % "undefined"))))
+       (filter #(and (not= % "null")
+                     (not= % "undefined")))
        (map get-type)
        (join " | ")))
 
