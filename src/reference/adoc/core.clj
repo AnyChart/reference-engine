@@ -80,7 +80,8 @@
                         latest-version-key
                         notifier
                         all-doclets
-                        categories-order]
+                        categories-order
+                        tree-data]
   (let [raw-top-level (structurize all-doclets data-dir (:name branch))
         inh-top-level (inh/build-inheritance raw-top-level)
         top-level (categories/categorize inh-top-level categories-order)
@@ -91,6 +92,12 @@
         top-level-js (typedef-builder/fix-typedef top-level :typescript false)
         replaced-top-level-js (tree-ts/update-classes-methods top-level-js :add-parent-methods true)]
     (json-gen/generate data-dir (:name branch) latest-version-key replaced-top-level-js)
+
+    (tern/generate-declarations {:data-dir    data-dir
+                                 :version-key (:name branch)
+                                 :domain      (-> notifier :config :domain)}
+                                tree-data
+                                replaced-top-level-js)
 
     ;; generate graphics.d.ts
     (let [graphics-top-level (-> replaced-top-level-ts
@@ -186,8 +193,7 @@
           (ts/set-top-level! top-level)
           (tern/set-top-level! top-level tree-data)
           (json-gen/set-top-level! top-level)
-          (typedef-builder/set-top-level! top-level)
-          )
+          (typedef-builder/set-top-level! top-level))
 
         (info "categories order:" categories-order)
         (let [version (vdata/add-version jdbc
@@ -203,14 +209,8 @@
 
           (remove-previous-versions jdbc version-id (:name branch))
 
-          (tern/generate-declarations {:data-dir    data-dir
-                                       :version-key (:name branch)
-                                       :domain      (-> notifier :config :domain)}
-                                      tree-data
-                                      top-level)
-
           (if (need-generate-ts branch gen-params)
-            (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order)]
+            (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order tree-data)]
               (if (and (zero? (-> ts-result :index-ts-result :exit))
                        (zero? (-> ts-result :graphics-ts-result :exit)))
                 (do (notifications/complete-version-building notifier branch queue-index true) true)

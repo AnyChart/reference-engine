@@ -284,14 +284,17 @@
   (let [settings {:version-key "develop"
                   :domain      "http://api.anychart.stg/"}
         result (build (first @tree) @top-level settings)
-        json (generate-string result {:pretty true})]
-    (spit "/media/ssd/sibental/reference-engine-data/tern/anychart-generated.json" json)))
+        json (generate-string result {:pretty true})
+        json-min (generate-string result)]
+    (spit "/media/ssd/sibental/reference-engine-data/tern/anychart-generated.json" json)
+    (spit "/media/ssd/sibental/reference-engine-data/tern/anychart-generated-min.json" json-min)))
 
 
 (defn generate-declarations [settings tree top-level]
   (info "generate TernJS definitions")
   (let [dir (str (:data-dir settings) "/versions-static/" (:version-key settings))
         file-name (str dir "/anychart-tern.json")
+        file-name-min (str dir "/anychart-tern-min.json")
         file-name-min-js (str (:data-dir settings) "/versions-static/" (:version-key settings) "/def_anychart.min.js")
 
         result (build (first tree) top-level settings)
@@ -301,4 +304,5 @@
         js (str "var def_anychart = " json-min ";")]
     (fs/mkdirs dir)
     (spit file-name json)
+    (spit file-name-min json-min)
     (spit file-name-min-js js)))
