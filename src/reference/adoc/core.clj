@@ -28,7 +28,8 @@
             [reference.util.utils :as utils]
             [clojure.string :as string]
             [cheshire.core :as json]
-            [reference.adoc.defs.ts.check :as ts-check]))
+            [reference.adoc.defs.ts.check :as ts-check]
+            [reference.config.core :as c]))
 
 
 (defn actual-branches [show-branches git-ssh repo-path]
@@ -95,7 +96,9 @@
 
     (tern/generate-declarations {:data-dir    data-dir
                                  :version-key (:name branch)
-                                 :domain      (-> notifier :config :domain)}
+                                 :domain      "https://api.anychart.com/"
+                                 ;:domain     (c/domain)
+                                 }
                                 tree-data
                                 replaced-top-level-js)
 
