@@ -6,28 +6,28 @@
                  [com.stuartsierra/component "0.3.2"]
                  [clj-time "0.14.4"]
                  [me.raynes/fs "1.4.6"]
-                 [cheshire "5.8.0"]
+                 [cheshire "5.8.1"]
                  ;; templates
-                 [selmer "1.11.8"]
+                 [selmer "1.12.1"]
                  ;; web
                  [http-kit "2.3.0"]
                  [compojure "1.6.1"]
                  [ring/ring-json "0.4.0"]
-                 [ring/ring-core "1.6.3"]
+                 [ring/ring-core "1.7.0"]
                  [enlive "1.1.6"]
                  ;; logging
                  [com.taoensso/timbre "4.10.0"]
                  ;; databases
-                 [com.taoensso/carmine "2.18.1"]
-                 [org.clojure/java.jdbc "0.7.7"]
+                 [com.taoensso/carmine "2.19.0"]
+                 [org.clojure/java.jdbc "0.7.8"]
                  [org.postgresql/postgresql "9.4.1208"]
                  [clojure.jdbc/clojure.jdbc-c3p0 "0.3.3"]
-                 [honeysql "0.9.3"]
+                 [honeysql "0.9.4"]
                  [com.rpl/specter "1.1.1"]
                  [instaparse "1.4.9"]
                  [toml "0.1.3"]
                  [hiccup "1.0.5"]
-                 [garden "1.3.5"]]
+                 [garden "1.3.6"]]
   :profiles {:dev {:jvm-opts ["-Ddev=true"]}
              :uberjar {:jvm-opts []}}
   :plugins [[lein-ancient "0.6.10"]

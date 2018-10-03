@@ -18,7 +18,7 @@
      jsfunc = <'function('> jsfuncparams <')'>  (<':'> types)?
      jsfuncparams = jsfuncparam? | jsfuncparam (<','> <whitespace>? jsfuncparam)*
      jsfuncparam = jsfuncparamname <':'> types
-     jsfuncparamname = #'[a-zA-Z0-9.]+'
+     jsfuncparamname = #'[a-zA-Z0-9_.]+'
 
      array = <'Array.<'> types <'>'>
 
