@@ -164,7 +164,7 @@
     (and (= (:name branch) (:version gen-params)) (:fast gen-params)) false
     (and (= (:name branch) (:version gen-params)) (:dts gen-params)) true
     :else (or (utils/released-version? (:name branch))
-              (= (:name branch) "develop")
+              ;(= (:name branch) "develop")
               (= (:name branch) "master")
               (string/includes? (:message branch) "#dts")
               (string/includes? (:message branch) "#ts")
