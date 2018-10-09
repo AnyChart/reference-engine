@@ -17,7 +17,7 @@
 (defn playground-link [{:keys [version is-url-version playground]} val]
   (str "//" playground "/api"
        (when is-url-version (str "/" version))
-       (string/trim val) "-plain"))
+       (string/trim val)))
 
 
 (defn type-link [{:keys [is-url-version version]} type]
