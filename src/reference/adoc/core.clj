@@ -161,6 +161,7 @@
 
 (defn need-generate-ts [branch gen-params]
   (cond
+    (= (c/prefix) "local") false
     (and (= (:name branch) (:version gen-params)) (:fast gen-params)) false
     (and (= (:name branch) (:version gen-params)) (:dts gen-params)) true
     :else (or (utils/released-version? (:name branch))
