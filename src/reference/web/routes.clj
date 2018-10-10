@@ -1,27 +1,31 @@
 (ns reference.web.routes
-  (:require [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
-            [compojure.core :refer [routes defroutes GET POST ANY]]
-            [compojure.route :as route]
-            [ring.util.request :refer [request-url]]
-            [ring.util.response :refer [response redirect header content-type]]
-            [selmer.parser :refer [render-file]]
-            [reference.data.versions :as vdata]
-            [reference.data.pages :as pdata]
-            [reference.data.search :as search-data]
-            [reference.data.sitemap :as sdata]
-            [reference.data.seo :as seo]
-            [reference.components.redis :as redisca]
-            [reference.components.notifier :refer [notify-404]]
-            [reference.web.helpers :refer :all]
-            [taoensso.timbre :as timbre :refer [info]]
-            [cheshire.core :refer [generate-string]]
-            [reference.web.data :as wdata]
-            [reference.web.handlers.admin-handlers :as admin-handlers]
-            [reference.web.handlers.sitemap-handlers :as sitemap-handlers]
-            [reference.web.views.landing.landing-content :as landing-content-view]
-            [reference.web.views.main.main-page :as main-page-view]
-            [reference.web.views.page404.page404 :as page-404]
-            [hiccup.core :as hiccup]))
+  (:require
+    ;; components
+    [reference.components.redis :as redisca]
+    ;; data
+    [reference.data.versions :as vdata]
+    [reference.data.pages :as pdata]
+    [reference.data.seo :as seo]
+    [reference.web.data :as wdata]
+    [reference.web.helpers :refer :all]
+    ;; hanlers
+    [reference.web.handlers.admin-handlers :as admin-handlers]
+    [reference.web.handlers.sitemap-handlers :as sitemap-handlers]
+    [reference.web.handlers.search-handlers :as search-handlers]
+    [reference.web.handlers.versions-handlers :as versions-handlers]
+    [reference.web.handlers.handlers-404 :as handlers-404]
+    ;; views
+    [reference.web.views.landing.landing-content :as landing-content-view]
+    [reference.web.views.main.main-page :as main-page-view]
+    ;; others
+    [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
+    [compojure.core :refer [routes defroutes GET POST ANY]]
+    [compojure.route :as route]
+    [ring.util.response :refer [response redirect header content-type]]
+    [selmer.parser :refer [render-file]]
+    [taoensso.timbre :as timbre :refer [info]]
+    [cheshire.core :refer [generate-string]]
+    [hiccup.core :as hiccup]))
 
 
 (defn- prefix-title [page]
@@ -38,16 +42,6 @@
        (when (seq (:short-description (:content page)))
          (str " | " (:short-description (:content page))))
        " | AnyChart API Reference" (when is-url-version (str " v" (:key version)))))
-
-
-(defn- page-404 [request]
-  (let [referrer (get-in request [:headers "referer"])
-        ua (get-in request [:headers "user-agent"])]
-    (when (not (.contains ua "Slackbot"))
-      (if referrer
-        (notify-404 (notifier request) (str (request-url request) " from " referrer))
-        (notify-404 (notifier request) (request-url request)))))
-  (route/not-found "page not found"))
 
 
 (defn- landing-content [request]
@@ -97,11 +91,6 @@
 (defn- redirect-latest-page [request]
   (let [page (get-in request [:route-params :page])]
     (redirect (str "/" page))))
-
-
-(defn- search-data [version is-url-version versions request]
-  (-> (response (vdata/search-index (jdbc request) (:id version)))
-      (header "Content-Type" "application/json")))
 
 
 (defn- tree-data [version is-url-version versions request]
@@ -196,29 +185,6 @@
       (show-default-ns version is-url-version versions request))))
 
 
-(defn show-404 [request]
-  (let [data {:title       "Not found | AnyChart API Reference"
-              :description "Not found page"
-              :commit      (:commit (config request))}]
-    (page-404/page data)))
-
-
-(defn- list-versions [request]
-  (response (vdata/versions (jdbc request))))
-
-
-(defn- request-update [request]
-  (redisca/enqueue (redis request)
-                   (-> request :component :config :reference-queue)
-                   {:cmd "generate"}))
-
-
-(defn- search [version is-url-version versions request]
-  (let [q (-> request :params :q)
-        data (response (search-data/search (jdbc request) (:id version) q))]
-    (-> data (header "Content-Type" "application/json"))))
-
-
 (defn- check-version-middleware [app]
   (fn [request]
     (let [is-url-version (boolean (-> request :route-params :version))
@@ -240,15 +206,19 @@
 (defroutes app-routes
            (route/resources "/")
            (GET "/" [] show-landing)
-           (GET "/sitemap" [] sitemap-handlers/show-sitemap)
-           (GET "/sitemap.xml" [] sitemap-handlers/show-sitemap)
-           (GET "/_update_reference_" [] request-update)
-           (POST "/_update_reference_" [] request-update)
+
+           ;; admin
+           (GET "/_update_reference_" [] admin-handlers/update-versions)
+           (POST "/_update_reference_" [] admin-handlers/update-versions)
            (GET "/_admin_" [] admin-handlers/admin-panel)
            (POST "/_delete_" [] admin-handlers/delete-version)
            (POST "/_rebuild_" [] admin-handlers/rebuild-version)
 
-           (GET "/versions" [] list-versions)
+           ;; sitemap
+           (GET "/sitemap" [] sitemap-handlers/show-sitemap)
+           (GET "/sitemap.xml" [] sitemap-handlers/show-sitemap)
+
+           (GET "/versions" [] versions-handlers/list-versions)
            (GET "/latest/" [] redirect-latest)
            (GET "/latest" [] redirect-latest)
            (GET "/latest/:page" [] redirect-latest-page)
@@ -263,11 +233,11 @@
            (GET "/:version/" [] (check-version-middleware show-default-ns))
            (GET "/:version" [] (check-version-middleware show-default-ns))
            (GET "/:version/data/tree.json" [] (check-version-middleware tree-data))
-           (GET "/:version/data/search.json" [] (check-version-middleware search-data))
-           (GET "/:version/search.json" [] (check-version-middleware search))
+           (GET "/:version/data/search.json" [] (check-version-middleware search-handlers/search-data))
+           (GET "/:version/search.json" [] (check-version-middleware search-handlers/search))
            (GET "/:version/try/:page" [] (check-version-middleware try-show-page))
            (GET "/:version/:page/data" [] (check-version-middleware
                                             (check-page-middleware
                                               get-page-data)))
            (GET "/:version/:page" [] (check-version-middleware show-page))
-           (route/not-found show-404))
+           (route/not-found handlers-404/error-404))

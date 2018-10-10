@@ -13,6 +13,12 @@
               :commit      (:commit (config request))}]
     (admin-view/page data versions)))
 
+;; API
+(defn update-versions [request]
+  (redisca/enqueue (redis request)
+                   (-> request :component :config :reference-queue)
+                   {:cmd "generate"}))
+
 
 (defn delete-version [request]
   (let [version-key (-> request :params :version)]
