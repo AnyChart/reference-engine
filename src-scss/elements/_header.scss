@@ -1,0 +1,116 @@
+#ac-header {
+  position: fixed;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #2485d0;
+  height: 60px;
+  z-index: 7;
+
+  .navbar-brand {
+    position: relative;
+    float: left;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 16px;
+    padding-left: 30px;
+    padding-right: 7px;
+    color: #d5edff;
+    height: 60px;
+    > img {
+      height: 28px;
+      width: 117px;
+    }
+    .chart-row {
+      position: absolute;
+      bottom: 22px;
+      left: 34px;
+      letter-spacing: -3px;
+      line-height: 0;
+      font-size: 0;
+      white-space: nowrap;
+      .chart-col {
+        display: inline-block;
+        width: 5px;
+        height: 18px;
+        background: #000;
+        margin: 0 1px;
+        vertical-align: bottom;
+        -webkit-transition: height 0.2s cubic-bezier(0.65, 0.4, 0.29, 1.01);
+        -moz-transition: height 0.2s cubic-bezier(0.65, 0.4, 0.29, 1.01);
+        -ms-transition: height 0.2s cubic-bezier(0.65, 0.4, 0.29, 1.01);
+        -o-transition: height 0.2s cubic-bezier(0.65, 0.4, 0.29, 1.01);
+        transition: height 0.2s cubic-bezier(0.65, 0.4, 0.29, 1.01);
+        &.green {
+          background: #26a957;
+          height: 8px;
+        }
+        &.red {
+          background: #f0402e;
+          height: 18px;
+        }
+        &.orange {
+          background: #ff8207;
+          height: 13px;
+        }
+      }
+    }
+    &:hover .chart-row .chart-col {
+      &.green {
+        height: 16px;
+      }
+      &.orange {
+        height: 5px;
+      }
+      &.red {
+        height: 10px;
+      }
+    }
+  }
+
+  a.brand {
+    font-family: 'Open Sans', 'Source Sans Pro', sans-serif;
+    font-size: 18px;
+    //color: #d5edff;
+    color: white;
+    text-decoration: none;
+    padding: 16px 0;
+    height: 60px;
+    float: left;
+    font-weight: 600;
+  }
+
+  .helpers {
+    padding: 13px 20px 13px;
+    .questions {
+      float: right;
+      margin-left: 10px;
+      color: #d5edff;
+      line-height: 16px;
+      font-size: 13px;
+      font-weight: lighter;
+      a {
+        color: #fff;
+      }
+      a.text-support {
+        color: #fff;
+        text-decoration: none;
+        display: block;
+        float: left;
+        width: 50px;
+        height: 43px;
+        line-height: 43px;
+        text-align: center;
+        border-radius: 50%;
+        //color: #929292;
+        margin-top: -5px;
+        font-size: 35px;
+        i {
+          font-size: 35px;
+        }
+      }
+
+    }
+
+  }
+
+}

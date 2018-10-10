@@ -1,0 +1,31 @@
+.dropdown-menu > .active > a {
+  background: #2485d0;
+  box-shadow: none;
+  color: #d5edff;
+  outline: none;
+  &:hover, &:focus {
+    background: #2485d0;
+    box-shadow: none;
+    color: #d5edff;
+    outline: none;
+  }
+}
+
+.typeahead.dropdown-menu {
+  min-width: 80%;
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+.dropdown-menu > li.selected a {
+  background: #2485d0;
+  box-shadow: none;
+  color: #d5edff;
+  outline: none;
+  &:focus {
+    background: #2485d0;
+    box-shadow: none;
+    color: #d5edff;
+    outline: none;
+  }
+}

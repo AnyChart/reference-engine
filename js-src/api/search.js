@@ -280,7 +280,7 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
         $searchPage.append(api.search.data_.methods[item.name]);
     }
 
-    var $total = $("<div style='display:flex; flex-wrap:wrap;'></div>");
+    var $total = $("<div class='search-box-container'></div>");
 
     var groupedItemsArr = [];
     for (var namespace in groupedItems) {
@@ -294,7 +294,7 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
 
     for (var j = 0; j < groupedItemsArr.length; j++) {
         var group = groupedItemsArr[j];
-        var $res = $("<div style='margin-right: 20px; width: 300px;'></div>");
+        var $res = $("<div class='search-box-item'></div>");
         $res.append("<h4>" + group[0].namespace + "</h4>");
 
         var description = api.search.getNamespaceDescription(group[0].namespace);
