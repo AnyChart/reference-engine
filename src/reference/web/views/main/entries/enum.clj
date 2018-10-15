@@ -4,7 +4,9 @@
 
 
 (defn get-categories [enum-fields]
-  (let [groups (group-by :category enum-fields)
+  (let [groups (->> enum-fields
+                    (group-by :category)
+                    (into (sorted-map)))
         ; names (filter some? (sort (keys groups)))
         misc-group (get groups nil)
         groups (dissoc groups nil)]
@@ -60,17 +62,21 @@
               (for [f fields]
                 [:tr
                  [:td.code-style (:value f)]
-                 [:td (:description f)]
+                 [:td (:description f)
+                  (helpers/listings data f)]
                  [:td (enum-field-sample data f)]])))
+
           (when (and (seq categories) (seq misc-group))
             [:tr
              [:td.th.empty {:colspan 3}
               [:a.category.type-link {:id   "category-misc"
                                       :href "#category-misc"}
                "Miscellaneous"]]])
+
           (when (seq misc-group)
             (for [f misc-group]
               [:tr
                [:td.code-style (:value f)]
                [:td (:description f)]
-               [:td (enum-field-sample data f)]]))])]])])
+               [:td (enum-field-sample data f)]]))
+          ])]])])
