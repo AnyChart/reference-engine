@@ -23,6 +23,7 @@ api.search.notBaseContain = function(name, fullName) {
     if (name.charAt(0) == name.toLowerCase().charAt(0)) {
         names.pop();
     }
+    if (name == "BaselinesElement") return true;
     return names.join(".").indexOf("Base") == -1;
 };
 
@@ -307,7 +308,7 @@ api.search.showGrouped_ = function(item, prefix, postfix) {
         for (var i = 0; i < group.length; i++) {
             var entry = group[i];
             $list.append("<li><a class='item-link' href='/" +
-                (api.config.is_url_version ? api.config.version + "/" : "" ) +
+                (api.config.is_url_version ? api.config.version + "/" : "") +
                 entry.link + "'>" + prefix + entry["cls"] + postfix + "</a></li>");
         }
         $res.append($list);
@@ -350,7 +351,7 @@ api.search.addToResults_ = function($res, items, prefix, postfix, title) {
         var item = items[i];
         if (!item.multiple) {
             var $link = $("<li><a class='item-link' href='/" +
-                (api.config.is_url_version ? api.config.version + "/" : "" ) +
+                (api.config.is_url_version ? api.config.version + "/" : "") +
                 item.link + "'>" + prefix + item["full-name"] + postfix +
                 (item.key ? ("<span> " + item.key + "</span>") : "") + "</a></li>");
             $link.find("a").mouseenter(function(e) {
@@ -513,7 +514,7 @@ api.search.setSearchIndex = function(index, notScroll) {
         if (!notScroll) {
             $('#search-results-new').animate({
                 scrollTop: $("#search-results-new").scrollTop() + $(elems[api.search.searchIndex_]).parent().position().top -
-                api.search.scrollOfftop_
+                    api.search.scrollOfftop_
             }, 20);
         } else {
             api.search.scrollOfftop_ = $(elems[api.search.searchIndex_]).parent().position().top;

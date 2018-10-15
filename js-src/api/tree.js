@@ -19,7 +19,7 @@ api.tree.scrollToEntry = function(entry, opt_hash) {
         window.setTimeout(function() {
             // $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.get(0).offsetTop - 20, {scrollInertia: 700});
             //api.tree.pisces.scrollToElement( $target.get(0));
-            api.tree.pisces.scrollToPosition({x: 0, y:  $target.get(0).offsetTop - 20});
+            api.tree.pisces.scrollToPosition({x: 0, y: $target.get(0).offsetTop - 20});
         }, 100);
     }
 };
@@ -61,7 +61,7 @@ api.tree.expand = function(path, opt_hash) {
         $("#tree-menu .active").removeClass("active");
         $("#tree-menu .scroll-active").removeClass("scroll-active");
         //$("#tree-wrapper").mCustomScrollbar("scrollTo", 0, {scrollInertia: 700});
-        api.tree.pisces.scrollToPosition({x: 0, y:  0});
+        api.tree.pisces.scrollToPosition({x: 0, y: 0});
         return;
     }
     var entry;
@@ -119,11 +119,10 @@ api.tree.init = function() {
         forceGemini: true,
         minThumbSize: 50
     }).create();
-    setInterval(function(){
+    setInterval(function() {
         api.tree.scrollBar.update()
     }, 100);
     api.tree.pisces = new Pisces(api.tree.scrollBar.getViewElement());
-
 
 
     $("#tree-menu li.group").each(function() {

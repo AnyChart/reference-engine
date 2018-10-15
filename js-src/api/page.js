@@ -9,7 +9,7 @@ goog.require('api.pageScrolling');
 goog.require('api.breadcrumb');
 
 
-api.page.prettifyCode = function (){
+api.page.prettifyCode = function() {
     $("pre").addClass("prettyprint");
 };
 
@@ -31,7 +31,7 @@ api.page.scrollToEntry = function(entry) {
     window.setTimeout(function() {
         $("#article-content").css('min-height', $("#article-content").height());
         //$("#content-wrapper").mCustomScrollbar('scrollTo', $('#' + entry), {scrollInertia: 700});
-        api.page.pisces.scrollToPosition({x: 0, y:  $('#' + entry)[0].offsetTop - 20});
+        api.page.pisces.scrollToPosition({x: 0, y: $('#' + entry)[0].offsetTop - 20});
         $('.panel').on('hide.bs.collapse', function(e) {
             var $methodBlock = $(this).parent().parent();
             if ($methodBlock.hasClass('selected')) {
@@ -143,7 +143,7 @@ api.page.load = function(target, opt_pushToHistory, opt_scrollTree) {
 
     api.tree.expand(target, hash);
 
-    if (opt_scrollTree){
+    if (opt_scrollTree) {
         api.tree.scrollToEntry(cleanedTarget, hash);
     }
 

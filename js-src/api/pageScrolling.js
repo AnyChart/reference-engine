@@ -108,7 +108,7 @@ api.pageScrolling.update = function() {
         forceGemini: true,
         minThumbSize: 50
     }).create();
-    setInterval(function(){
+    setInterval(function() {
         api.page.scrollBar.update()
     }, 100);
 
@@ -118,7 +118,7 @@ api.pageScrolling.update = function() {
     // Emulate on completeScroll event
     api.page.scrollTimer = null;
     $("#content-scr .gm-scroll-view")[0].addEventListener('scroll', function() {
-        if(api.page.scrollTimer !== null) {
+        if (api.page.scrollTimer !== null) {
             clearTimeout(api.page.scrollTimer);
         }
         api.page.scrollTimer = setTimeout(function() {
@@ -147,7 +147,7 @@ api.pageScrolling.highlightScroll = function(entry) {
         //         scrollInertia: 700,
         //         callbacks: false
         //     });
-        api.page.pisces.scrollToPosition({x: 0, y:  $("#" + entry)[0].offsetTop - 20});
+        api.page.pisces.scrollToPosition({x: 0, y: $("#" + entry)[0].offsetTop - 20});
         api.pageScrolling.checkTopVisible(-100);
     }, 100);
 };
