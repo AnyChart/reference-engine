@@ -147,7 +147,11 @@ api.pageScrolling.highlightScroll = function(entry) {
         //         scrollInertia: 700,
         //         callbacks: false
         //     });
-        api.page.pisces.scrollToPosition({x: 0, y: $("#" + entry)[0].offsetTop - 20});
+        //api.page.pisces.scrollToPosition({x: 0, y: $("#" + entry)[0].offsetTop - 20});
+        // $("#" + entry)[0].offsetTop - 20 doesn't work for table cell on Enum page
+        // e.g. here /DVF-3962_other_event_types_rework/anychart.enums.EventType#category-event-marker-types
+        var y = $("#" + entry).offset().top - $("#article-content").offset().top - 20;
+        api.page.pisces.scrollToPosition({x: 0, y: y});
         api.pageScrolling.checkTopVisible(-100);
     }, 100);
 };

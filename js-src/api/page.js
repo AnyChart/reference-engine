@@ -94,8 +94,9 @@ api.page.highlightOnLoad = function(target) {
     api.pageScrolling.highlightScroll(target);
     if ($("#" + target).parent().hasClass("panel-heading"))
         $("#" + target).parent().parent().parent().parent().addClass("active");
-    else
-        $("#" + target).parent().addClass("active");
+    // disable higilight in enums
+    //else
+    //    $("#" + target).parent().addClass("active");
 };
 
 api.page.highlightCategory = function(target) {
