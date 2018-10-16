@@ -10,16 +10,20 @@ api.tree.currentActive_ = null;
  * @param {string=} opt_hash
  */
 api.tree.scrollToEntry = function(entry, opt_hash) {
-    var sel = entry;
+    var elementWithHash = entry;
     if (opt_hash)
-        sel += opt_hash.indexOf("#") == -1 ? ("#" + opt_hash) : opt_hash;
+        elementWithHash += opt_hash.indexOf("#") == -1 ? ("#" + opt_hash) : opt_hash;
 
-    var $target = $("#tree-menu li[x-data-name='" + sel + "']");
-    if ($target.length) {
+    // There is /anychart.enums.EventType#category-editor-event-types
+    // that have anchors on page, but doesn't have sub-items in menu
+    var $target = $("#tree-menu li[x-data-name='" + elementWithHash + "']")[0] ||
+        $("#tree-menu li[x-data-name='" + entry + "']")[0];
+
+    if ($target) {
         window.setTimeout(function() {
             // $("#tree-wrapper").mCustomScrollbar("scrollTo", $target.get(0).offsetTop - 20, {scrollInertia: 700});
             //api.tree.pisces.scrollToElement( $target.get(0));
-            api.tree.pisces.scrollToPosition({x: 0, y: $target.get(0).offsetTop - 20});
+            api.tree.pisces.scrollToPosition({x: 0, y: $target.offsetTop - 20});
         }, 100);
     }
 };
