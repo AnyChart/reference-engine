@@ -41,7 +41,7 @@ api.pageScrolling.getFirstVisible_ = function(top) {
     var $minEl = null;
 
     // find more closest to abstract line element
-    var d = $("div.content-block.methods h3,div.content-block.methods .const-block h4").each(function() {
+    $("div.content-block.methods h3,div.content-block.methods .const-block h4, a.category.type-link").each(function() {
         var $el = $(this);
         var distance = Math.abs($el.offset().top - 100);
         if (distance < minDistance) {
@@ -51,7 +51,7 @@ api.pageScrolling.getFirstVisible_ = function(top) {
     });
 
     if ($minEl) {
-        var $first = $("div.content-block.methods h3,div.content-block.methods h4").first();
+        var $first = $("div.content-block.methods h3,div.content-block.methods h4, a.category.type-link").first();
         // if selected highlighted object is first on page and it's hidden over bottom browser border - return null
         // 40 const - to show it when only title appears
         if ($first.position().top == $minEl.position().top) {

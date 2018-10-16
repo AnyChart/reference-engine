@@ -32,6 +32,7 @@ api.core.init = function(version, page, is_url_version) {
         api.page.highlightOnLoad(location.hash.substr(1));
 
     api.page.fixAccordionLinks();
+    api.page.fixEnumLinks();
     api.pageScrolling.init();
 
     if (page == "" || page.indexOf("?entry=") > -1) {

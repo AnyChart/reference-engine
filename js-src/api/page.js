@@ -94,9 +94,8 @@ api.page.highlightOnLoad = function(target) {
     api.pageScrolling.highlightScroll(target);
     if ($("#" + target).parent().hasClass("panel-heading"))
         $("#" + target).parent().parent().parent().parent().addClass("active");
-    // disable higilight in enums
-    //else
-    //    $("#" + target).parent().addClass("active");
+    else
+        $("#" + target).parent().addClass("active");
 };
 
 api.page.highlightCategory = function(target) {
@@ -176,12 +175,20 @@ api.page.load = function(target, opt_pushToHistory, opt_scrollTree) {
         api.page.fixLinks();
         api.page.fixListings();
         api.page.fixAccordionLinks();
+        api.page.fixEnumLinks();
 
         if (hash)
             api.page.highlight(hash);
     });
 
     return false;
+};
+
+api.page.fixEnumLinks = function() {
+    $("td.th a.category").click(function(e) {
+        var id = $(this).attr("id");
+        api.page.highlight(id, false, false, false);
+    });
 };
 
 api.page.fixAccordionLinks = function() {
