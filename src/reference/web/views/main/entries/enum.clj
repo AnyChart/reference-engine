@@ -77,6 +77,7 @@
              (for [f misc-group]
                [:tr
                 [:td.code-style (:value f)]
-                [:td (:description f)]
+                [:td (:description f)
+                 (helpers/listings data f)]
                 [:td (enum-field-sample data f)]]))
            ])]])))
