@@ -45,29 +45,29 @@
   (str (:domain settings) (:version-key settings) "/" (:full-name object)))
 
 
-(defn parse-object-type [t]
-  (if (.startsWith t "Object.<")
-    "+Object"
-    t))
-(defn get-type-old [t]
-  (let [t (parse-object-type (string/replace t #"\|undefined" ""))]
-    (when
-      (and (.contains t "Object<") (.contains t "Array<"))
-      (throw "Too complicated type"))
-    (case t
-      "function" "fn()"
-      "Array" "+Array"
-      (-> t
-          (string/replace #"function" "fn")
-          (string/replace #"scope" "+Object")
-          (string/replace #"\*" "+Object")
-          (string/replace #"anychart" "+anychart")
-          (string/replace #"boolean" "bool")
-          ;(string/replace #"!?Array<([^>]*)>" "[$1]")
-          (string/replace #"!?Array.\<\(?" "[")
-          (string/replace #"\)?>" "]")
-          (string/replace #"!" "")
-          (string/replace #"\|null" "")))))
+;(defn parse-object-type [t]
+;  (if (.startsWith t "Object.<")
+;    "+Object"
+;    t))
+;(defn get-type-old [t]
+;  (let [t (parse-object-type (string/replace t #"\|undefined" ""))]
+;    (when
+;      (and (.contains t "Object<") (.contains t "Array<"))
+;      (throw "Too complicated type"))
+;    (case t
+;      "function" "fn()"
+;      "Array" "+Array"
+;      (-> t
+;          (string/replace #"function" "fn")
+;          (string/replace #"scope" "+Object")
+;          (string/replace #"\*" "+Object")
+;          (string/replace #"anychart" "+anychart")
+;          (string/replace #"boolean" "bool")
+;          ;(string/replace #"!?Array<([^>]*)>" "[$1]")
+;          (string/replace #"!?Array.\<\(?" "[")
+;          (string/replace #"\)?>" "]")
+;          (string/replace #"!" "")
+;          (string/replace #"\|null" "")))))
 
 
 (defn get-type [t]
@@ -82,7 +82,7 @@
       (string/replace #"\|undefined" "")
       (string/replace #"\s+" "")
       type-parser/jsdoc->tern
-      (string/replace #"Object" "+Object")
+      (string/replace #"(?<![a-zA-Z0-9])Object" "+Object")
       (string/replace #"anychart\." "+anychart.")
       (string/replace #"(?<![a-zA-Z0-9])Node" "+Node")))
 
