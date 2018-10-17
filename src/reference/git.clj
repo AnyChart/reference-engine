@@ -72,8 +72,9 @@
         tag-lines (string/split (run-git git-ssh path "for-each-ref" "--format='%(refname:short)|-|%(objectname)|-|%(authorname)|-|%(contents:subject)'" "refs/tags") #"\n")
         lines (map (fn [line]
                      (-> line
-                         (string/replace #"^(')(.*)(')$" "$2") ;; delete start and end quotes ' ;; delete ?origin/"
-                         (string/replace #"^([^/]*)/(.*)$" "$2")))
+                         (string/replace #"^(')(.*)(')$" "$2") ;; delete start and end quotes '
+                         ;; delete ?origin/"
+                         (string/replace #"^origin/" "")))
                    (sort (distinct (concat branch-lines tag-lines))))
         filtered-lines (filter (fn [s] (and (some? s)
                                             (seq s)
