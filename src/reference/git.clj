@@ -74,7 +74,7 @@
                      (-> line
                          (string/replace #"^(')(.*)(')$" "$2") ;; delete start and end quotes '
                          ;; delete ?origin/"
-                         (string/replace #"^origin/" "")))
+                         (string/replace #"^(origin|tags)/" "")))
                    (sort (distinct (concat branch-lines tag-lines))))
         filtered-lines (filter (fn [s] (and (some? s)
                                             (seq s)
