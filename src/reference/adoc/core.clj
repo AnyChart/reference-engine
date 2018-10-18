@@ -155,8 +155,8 @@
           index-ts-result (ts-check/check-index index-ts-data data-dir (:name branch))
 
           _ (ts-check/check-clean data-dir (:name branch))]
-      {:index-ts-result    index-ts-result
-       :graphics-ts-result graphics-ts-result})))
+      {:index-ts-result    (merge index-ts-data index-ts-result)
+       :graphics-ts-result (merge graphics-ts-data graphics-ts-result)})))
 
 
 (defn need-generate-ts [branch gen-params]
