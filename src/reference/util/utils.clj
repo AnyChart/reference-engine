@@ -15,7 +15,8 @@
 
 
 (defn released-version? [version-key]
-  (re-matches #"^\d+\.\d+\.\d+$" version-key))
+  (or (re-matches #"^\d+\.\d+\.\d+$" version-key)
+      (re-matches #"^v\d+$" version-key)))
 
 
 (defn name->url [name]
