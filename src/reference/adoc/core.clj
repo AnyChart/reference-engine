@@ -193,7 +193,7 @@
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
             config (get-version-config data-dir (:name branch))]
 
-        (when (= (:name branch) "8.3.0")
+        (when (= (:name branch) "v8")
           (ts/set-top-level! top-level)
           (tern/set-top-level! top-level tree-data)
           (json-gen/set-top-level! top-level)

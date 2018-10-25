@@ -41,8 +41,13 @@
       remove-tags))
 
 
+(defn url-domain [settings]
+  ;(str (:domain settings) (:version-key settings) "/")
+  (str (:domain settings)))
+
+
 (defn url [object settings]
-  (str (:domain settings) (:version-key settings) "/" (:full-name object)))
+  (str (url-domain settings) (:full-name object)))
 
 
 ;(defn parse-object-type [t]
@@ -149,7 +154,7 @@
 
 (defn create-function [function settings]
   {"!type" (create-function-type function)
-   "!url"  (str (:domain settings) (:version-key settings) "/"
+   "!url"  (str (url-domain settings)
                 (let [f (first (:overrides function))]
                   (string/replace (:full-name f)
                                   (re-pattern (str "." (:name f)))
@@ -159,7 +164,7 @@
 
 (defn create-constant [constant settings]
   (let [res {"!doc" (or (:short-description constant) (:description constant))
-             "!url" (str (:domain settings) (:version-key settings) "/"
+             "!url" (str (url-domain settings)
                          (string/replace (:full-name constant)
                                          (re-pattern (str "." (:name constant)))
                                          (str "#" (:name constant))))}]
