@@ -16,10 +16,12 @@
 (defn enum-field-sample [{:keys [main version is-url-version show-samples playground] :as data} entry]
   (when (and show-samples (:has-playground-samples entry))
     [:div.small-group
-     (for [s (:playground-samples entry)]
-       [:a.code-style {:target "_blank"
-                       :href   (helpers/playground-link data (:file s))}
-        (:title s)])]))
+     [:ul.list-dotted
+      (for [s (:playground-samples entry)]
+        [:li
+         [:a.code-style {:target "_blank"
+                         :href   (helpers/playground-link data (:file s))}
+          (:title s)]])]]))
 
 
 (defn enum [{:keys [main version is-url-version show-samples playground] :as data}]
