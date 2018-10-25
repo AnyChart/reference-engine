@@ -4,7 +4,8 @@
             [me.raynes.fs :as fs]
             [reference.adoc.defs.ts.check :as ts-check]
             [reference.adoc.defs.ts.type-parser :as type-parser]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [reference.config.core :as c]))
 
 
 (defonce ^:const p4 "    ")
@@ -287,7 +288,7 @@
         ts (generate-ts top-level)
         ts (add-header ts version-key)
 
-        url (str (-> notifier :config :slack :domain) "si/" version-key "/" file-name-index)]
+        url (str (c/domain) "si/" version-key "/" file-name-index)]
     (fs/mkdirs dir)
     (spit path-index ts)
     (spit path-full ts)
@@ -317,7 +318,7 @@
         ts (string/replace ts "anychart.graphics" "acgraph")
         ts (add-graphics-js-header ts version-key)
 
-        url (str (-> notifier :config :slack :domain) "si/" version-key "/" file-name-index)]
+        url (str (c/domain) "si/" version-key "/" file-name-index)]
     (fs/mkdirs dir)
     (spit path-index ts)
     (spit path-full ts)
