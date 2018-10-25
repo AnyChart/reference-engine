@@ -97,7 +97,7 @@
                       :text      (str "#" queue-index " api `" (c/prefix) "` - *" version "* failed"
                                       (when e (str "\n```" (utils/format-exception e) "```"))
                                       (when (not= 0 (:exit index-ts-result))
-                                        (str "\n<" (c/domain) (:url index-ts-result) "|index.d.ts> errors"
+                                        (str "\n<" (:url index-ts-result) "|index.d.ts> errors"
                                              (when (:count index-ts-result)
                                                (str " - " (b (:count index-ts-result)) " tests failed"))
                                              ":\n"
@@ -105,7 +105,7 @@
                                              (:out index-ts-result)
                                              "```"))
                                       (when (not= 0 (:exit graphics-ts-result))
-                                        (str "\n<" (c/domain) (:url graphics-ts-result) "|graphics.d.ts> errors"
+                                        (str "\n<" (:url graphics-ts-result) "|graphics.d.ts> errors"
                                              (when (:count graphics-ts-result)
                                                (str " - " (b (:count graphics-ts-result)) " tests failed"))
                                              ":\n"

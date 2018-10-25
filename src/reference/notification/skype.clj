@@ -92,7 +92,7 @@
                    (-> (utils/format-exception e) (font "#777777" 11) i))
 
                  (when (not= 0 (:exit index-ts-result))
-                   (str "<a href=\"" (c/domain) (:url index-ts-result) "\">index.d.ts</a> errors"
+                   (str "<a href=\"" (:url index-ts-result) "\">g.ts</a> errors"
                         (when (:count index-ts-result)
                           (str " - " (b (:count index-ts-result)) " tests failed"))
                         ":\n"
@@ -102,7 +102,7 @@
                             (not= 0 (:exit graphics-ts-result))) "\n")
 
                  (when (not= 0 (:exit graphics-ts-result))
-                   (str "<a href=\"" (c/domain) (:url graphics-ts-result) "\">graphics.d.ts</a> errors"
+                   (str "<a href=\"" (:url graphics-ts-result) "\">graphics.d.ts</a> errors"
                         (when (:count graphics-ts-result)
                           (str " - " (b (:count graphics-ts-result)) " tests failed"))
                         ":\n"
