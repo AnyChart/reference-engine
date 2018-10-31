@@ -1,7 +1,7 @@
 (ns reference.adoc.defs.ts.type-parser-test
   (:require [clojure.test :refer :all]
             [clojure.string :as string]
-            [reference.adoc.defs.ts.type-parser :as type-parser]))
+            [reference.adoc.defs.jsdoc-type-parser :as type-parser]))
 
 
 (deftest object-test
@@ -40,21 +40,21 @@
 
 ;; http://api.anychart.stg/develop/anychart.charts.Sunburst.StatsFieldsName
 (def statsFieldsNameRaw
-                "Object.<{sum: number,
-                 nodesCount: number,
-                 leavesCount: number,
-                 branchesCount: number,
-                 display: boolean,
-                 attendingRoots: (Array.<number>),
-                 statsByRoot: (Object.<string, ({sum: number,
-                                                 nodesCount: number,
-                                                 leavesSum: number,
-                                                 leavesCount: number,
-                                                 branchesCount: number,
-                                                 childSum: number,
-                                                 nodes: Array.<anychart.core.TreeChartPoint>})>
-                                                 )
-                 }>")
+  "Object.<{sum: number,
+   nodesCount: number,
+   leavesCount: number,
+   branchesCount: number,
+   display: boolean,
+   attendingRoots: (Array.<number>),
+   statsByRoot: (Object.<string, ({sum: number,
+                                   nodesCount: number,
+                                   leavesSum: number,
+                                   leavesCount: number,
+                                   branchesCount: number,
+                                   childSum: number,
+                                   nodes: Array.<anychart.core.TreeChartPoint>})>
+                                   )
+   }>")
 
 (def statsFieldsName (string/replace statsFieldsNameRaw #"\s+" ""))
 
@@ -88,7 +88,7 @@
 
 
 
- ;; ttp://localhost:8080/develop/anychart.core.resource.TimeLine.Level
+;; ttp://localhost:8080/develop/anychart.core.resource.TimeLine.Level
 (def timeline-level-raw "Object.<{fill: (anychart.graphics.vector.Fill|undefined), padding: (Object|Array.<number>|number|string|null|undefined), minFontSize: (number|undefined), maxFontSize: (number|undefined), adjustFontSize: (boolean|Array.<boolean>|{width:boolean, height:boolean}|undefined), fontSize: (number|undefined), fontFamily: (string|undefined), fontColor: (string|undefined), fontOpacity: (number|undefined), fontDecoration: (string|undefined), fontStyle: (anychart.enums.FontStyle|string|undefined), fontVariant: (anychart.enums.FontVariant|string|undefined), fontWeight: (string|number|undefined), letterSpacing: (number|string|undefined), textDirection: (string|undefined), lineHeight: (number|string|undefined), textIndent: (number|undefined), vAlign: (anychart.enums.VAlign|string|undefined), hAlign: (anychart.enums.HAlign|string|undefined), wordWrap: (string|undefined), wordBreak: (string|undefined), textOverflow: (anychart.graphics.vector.Text.TextOverflow|string|undefined), selectable: (boolean|undefined), disablePointerEvents: (boolean|undefined), useHtml: (boolean|undefined), format: (function()|undefined), f:string}>")
 (def timeline-level (string/replace timeline-level-raw #"\s+" ""))
 
@@ -130,7 +130,7 @@
             [:kv "selectable" [:types "boolean" "undefined"]]
             [:kv "disablePointerEvents" [:types "boolean" "undefined"]]
             [:kv "useHtml" [:types "boolean" "undefined"]]
-            [:kv "format" [:types "function()" "undefined"]]
+            [:kv "format" [:types [:jsfunc [:jsfuncparams]] "undefined"]]
             [:kv "f" [:types "string"]]]]]))))
 
 
