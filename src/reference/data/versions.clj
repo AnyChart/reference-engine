@@ -1,10 +1,10 @@
 (ns reference.data.versions
   (:require [reference.components.jdbc :refer [query one insert! exec]]
-            [version-clj.core :refer [version-compare]]
             [honeysql.helpers :refer :all]
             [cheshire.core :refer [generate-string parse-string]]
             [reference.data.sitemap :as sitemap]
-            [reference.data.pages :as pdata]))
+            [reference.data.pages :as pdata]
+            [reference.util.utils :as utils]))
 
 
 (defn add-version [jdbc key commit tree search show-samples]
@@ -59,8 +59,8 @@
 
 
 (defn versions
-  ([jdbc] (sort (comp - version-compare) (version-keys jdbc)))
-  ([jdbc keys] (sort (comp - version-compare) (concat keys (version-keys jdbc)))))
+  ([jdbc] (utils/sort-versions (version-keys jdbc)))
+  ([jdbc keys] (utils/sort-versions (concat keys (version-keys jdbc)))))
 
 
 (defn default
@@ -69,10 +69,10 @@
 
 
 (defn versions-full-info [jdbc]
-  (sort (comp - #(version-compare (:key %1) (:key %2)))
-        (query jdbc (-> (select :id :key)
-                        (from :versions)
-                        (where [:= :hidden false])))))
+  (->> (query jdbc (-> (select :id :key)
+                       (from :versions)
+                       (where [:= :hidden false])))
+       (utils/sort-versions :key)))
 
 
 (defn outdated-versions-ids [jdbc actual-ids]
