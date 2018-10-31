@@ -19,7 +19,7 @@
   ([key versions]
    (let [replace-fn (fn [version]
                       ;; v8 -> 8.999.999
-                      (string/replace version #"v(\d+)" "$1.999.999"))
+                      (string/replace version #"^v(\d+)" "$1.999.999"))
          compare-fn (fn [v1 v2]
                       (version-compare (replace-fn v2) (replace-fn v1)))]
      (sort-by key compare-fn versions)))
