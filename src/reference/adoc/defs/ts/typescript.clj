@@ -267,7 +267,9 @@
 
 
 (defn add-header [ts version-key]
-  (str "// Type definitions for AnyChart JavaScript Charting Library" (str ", v" version-key)
+  (str "// Type definitions for AnyChart JavaScript Charting Library" (str ", " (if (string/starts-with? version-key "v")
+                                                                                  version-key
+                                                                                  (str "v" version-key)))
        "\n// Project: https://www.anychart.com/\n"
        "// Definitions by: AnyChart <https://www.anychart.com>\n"
        ts))
@@ -297,7 +299,9 @@
 
 
 (defn add-graphics-js-header [ts version-key]
-  (str "// Type definitions for GraphicsJS JavaScript Graphics Library" (str ", v" version-key)
+  (str "// Type definitions for GraphicsJS JavaScript Graphics Library" (str ", " (if (string/starts-with? version-key "v")
+                                                                                    version-key
+                                                                                    (str "v" version-key)))
        "\n// Project: http://www.graphicsjs.org/\n"
        "// Definitions by: AnyChart <https://www.anychart.com>\n"
        ts))
