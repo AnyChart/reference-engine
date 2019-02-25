@@ -23,9 +23,9 @@ after_success:
 - chmod 400 ~/.ssh/id_rsa.pub
 - ssh-add ~/.ssh/id_rsa
 - scp target/reference-3.0.0-standalone.jar root@104.236.66.244:/apps/$APP/reference-3.0.0-standalone.jar
-- scp target/reference-3.0.0-standalone.jar root@104.131.17.78:/apps/$APP/reference-3.0.0-standalone.jar
+- scp target/reference-3.0.0-standalone.jar root@68.183.148.118:/apps/$APP/reference-3.0.0-standalone.jar
 - ssh root@104.236.66.244 "supervisorctl restart $APP"
-- ssh root@104.131.17.78 "supervisorctl restart $APP"
+- ssh root@68.183.148.118 "supervisorctl restart $APP"
 notifications:
   slack:
     secure: eewE3FcToXLQj/qkqvqD4pKYKNcH9w0Q81+K66ieGSzIh31yJlbnjIMRLrA3vvXWzzVjmVcz3rKFU1HztZTYT6s632fbHUOI7OxRwCIXplAhjMqMIuMsu7JPbQfpeQ5YBG6sz5oyDVPOVbRy4irauOx5HDEAr2YikR/878qW7Lo=
