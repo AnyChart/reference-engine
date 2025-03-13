@@ -1,8 +1,9 @@
 (ns reference.components.notifier
   (:require [com.stuartsierra.component :as component]
             [cheshire.core :refer [generate-string]]
-            [reference.notification.skype :as skype]
-            [reference.notification.slack :as slack]))
+            ;; ToDo: add notifications
+  )
+)
 
 
 (defrecord Notifier [config]
@@ -16,33 +17,35 @@
 
 
 (defn start-building [notifier branches removed-branches queue-index]
-  (slack/start-building notifier branches removed-branches queue-index))
+  ;; ToDo: add notifications
+)
 
 
 (defn complete-building [notifier branches removed-branches queue-index]
-  (slack/complete-building notifier branches removed-branches queue-index))
+  ;; ToDo: add notifications
+)
 
 
 (defn complete-building-with-errors [notifier branches queue-index & [e]]
-  (slack/complete-building-with-errors notifier branches queue-index e)
-  ;(skype/complete-building-with-errors notifier branches queue-index e)
+  ;; ToDo: add notifications
   )
 
 
 (defn start-version-building [notifier branch queue-index]
-  (slack/start-version-building notifier (:name branch) queue-index)
-  (skype/start-version-building notifier branch queue-index))
+  ;; ToDo: add notifications
+)
 
 
 (defn complete-version-building [notifier branch queue-index dts-enabled]
-  (slack/complete-version-building notifier (:name branch) queue-index)
-  (skype/complete-version-building notifier branch queue-index dts-enabled))
+  ;; ToDo: add notifications
+)
 
 
 (defn complete-version-building-error [notifier branch queue-index e ts-error]
-  (slack/complete-version-building-error notifier (:name branch) queue-index e ts-error)
-  (skype/complete-version-building-error notifier branch queue-index e ts-error))
+  ;; ToDo: add notifications
+)
 
 
 (defn notify-404 [notifier path]
-  (slack/notify-404 notifier path))
+  ;; ToDo: add notifications
+)

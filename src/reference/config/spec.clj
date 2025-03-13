@@ -10,26 +10,8 @@
                                            :config.redis.spec/db]))
 (s/def :config/redis (s/keys :req-un [:config.redis/spec]))
 
-
-(s/def :config.notifications.slack/channel string?)
-(s/def :config.notifications.slack/token string?)
-(s/def :config.notifications.slack/username string?)
-(s/def :config.notifications/slack (s/keys :req-un [:config.notifications.slack/channel
-                                                    :config.notifications.slack/token
-                                                    :config.notifications.slack/username]))
-
-
-(s/def :config.notifications.skype/id string?)
-(s/def :config.notifications.skype/chat-id string?)
-(s/def :config.notifications.skype/release-chat-id string?)
-(s/def :config.notifications.skype/key string?)
-(s/def :config.notifications/skype (s/keys :req-un [:config.notifications.skype/id
-                                                    :config.notifications.skype/chat-id
-                                                    :config.notifications.skype/key
-                                                    :config.notifications.skype/release-chat-id]))
-
-(s/def :config/notifications (s/keys :req-un [:config.notifications/skype
-                                              :config.notifications/slack]))
+;; ToDo: add notifications
+(s/def :config/notifications (s/keys :req-un []))
 
 
 (s/def :config.jdbc/subprotocol string?)
