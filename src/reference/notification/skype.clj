@@ -4,7 +4,8 @@
             [cheshire.core :as json]
             [reference.util.utils :as utils]
             [clojure.string :as string]
-            [reference.config.core :as c]))
+            [reference.config.core :as c])
+  (:import (org.apache.commons.lang3 StringEscapeUtils)))
 
 
 ;; =====================================================================================================================
@@ -65,7 +66,7 @@
 ;; =====================================================================================================================
 (defn start-version-building [notifier {author :author commit-message :message version :name commit :commit} queue-index]
   (let [msg (str "[API " (c/prefix) "] #" queue-index " " (b version)
-                 " \"" commit-message "\" @" author " (" (subs commit 0 7) ") - "
+                 " \"" (StringEscapeUtils/escapeHtml4 commit-message) "\" @" author " (" (subs commit 0 7) ") - "
                  (-> "start" (font "#4183C4")) "\n")]
     (send-message (config notifier) msg)
     (send-release-message (config notifier) version msg)))
@@ -74,7 +75,7 @@
 (defn complete-version-building [notifier {author :author commit-message :message version :name commit :commit}
                                  queue-index dts-enabled]
   (let [msg (str "[API " (c/prefix) "] #" queue-index " " (b version)
-                 " \"" commit-message "\" @" author " (" (subs commit 0 7) ") - "
+                 " \"" (StringEscapeUtils/escapeHtml4 commit-message) "\" @" author " (" (subs commit 0 7) ") - "
                  (-> "complete" (font "#36a64f"))
                  (when-not dts-enabled " (d.ts generation OFF)")
                  "\n")]
@@ -85,7 +86,7 @@
 (defn complete-version-building-error [notifier {author :author commit-message :message version :name commit :commit}
                                        queue-index e {:keys [index-ts-result graphics-ts-result]}]
   (let [msg (str "[API " (c/prefix) "] #" queue-index " " (b version)
-                 " \"" commit-message "\" @" author " (" (subs commit 0 7) ") - "
+                 " \"" (StringEscapeUtils/escapeHtml4 commit-message) "\" @" author " (" (subs commit 0 7) ") - "
                  (-> "failed" (font "#d00000")) "\n"
 
                  (when e

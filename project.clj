@@ -15,6 +15,7 @@
                  [ring/ring-json "0.4.0"]
                  [ring/ring-core "1.7.1"]
                  [enlive "1.1.6"]
+                 [org.apache.commons/commons-lang3 "3.8.1"]
                  ;; logging
                  [com.taoensso/timbre "4.10.0"]
                  ;; databases
