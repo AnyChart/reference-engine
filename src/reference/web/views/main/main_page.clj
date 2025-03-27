@@ -76,6 +76,9 @@
         [:a.soc-network {:target "_blank"
                          :href   "https://www.linkedin.com/company/386660"}
          [:span.soc-network-icon.in [:i.sn-mini-icon.ac.ac-linkedin]]]
+        [:a.soc-network {:target "_blank"
+                         :href   "https://anychart.medium.com/"}
+         [:span.soc-network-icon.mm [:i.sn-mini-icon.ac.ac-medium]]]
 
         [:p (str " © " (t/year (t/now)) " AnyChart.Com All rights reserved.")]]]
 
