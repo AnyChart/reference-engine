@@ -20,6 +20,7 @@
         display: inline-block;
         .soc-network-icon {
           display: grid;
+          place-content: center;
           width: 30px;
           height: 30px;
           border-radius: 50%;
@@ -31,25 +32,25 @@
             position: relative;
           }
 
-          .fb {
+          &.fb {
             .sn-mini-icon {
               top: -1px;
             }
           }
 
-          .tw {
+          &.tw {
             .sn-mini-icon {
               top: -1px;
             }
           }
 
-          .in {
+          &.in {
             .sn-mini-icon {
               top: -1px;
             }
           }
 
-          .md {
+          &.md {
             .sn-mini-icon {
               font-size: 10px;
             }
