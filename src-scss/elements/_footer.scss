@@ -70,6 +70,11 @@
           border-color: #1182c9;
           color: #fff;
         }
+        &:focus .soc-network-icon.md, &:hover .soc-network-icon.md {
+          background: #191919;
+          border-color: #191919;
+          color: #fff;
+        }
       }
     }
 
