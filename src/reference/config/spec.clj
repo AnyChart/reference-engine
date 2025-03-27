@@ -13,7 +13,6 @@
 ;; ToDo: add notifications
 (s/def :config/notifications (s/keys :req-un []))
 
-
 (s/def :config.jdbc/subprotocol string?)
 (s/def :config.jdbc/password string?)
 (s/def :config.jdbc/classname string?)
