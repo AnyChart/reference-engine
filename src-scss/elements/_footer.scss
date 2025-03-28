@@ -1,87 +1,92 @@
 #footer {
-  height: 70px;
-  background: #f6f6f6;
-  bottom: 0;
-  width: 100%;
-  position: absolute;
-  overflow: hidden;
-  #footer-inner {
-    border-top: 1px solid #dddddd;
-    margin: 0 25px;
-    font-size: 12px;
-    padding: 10px 0;
+    height: 70px;
+    background: #f6f6f6;
+    bottom: 0;
+    width: 100%;
+    position: absolute;
+    overflow: hidden;
+    #footer-inner {
+        border-top: 1px solid #dddddd;
+        margin: 0 25px;
+        font-size: 12px;
+        padding: 10px 0;
+        text-align: center;
 
-    .social-icons {
-      display: grid;
-      place-content: center;
-      grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+        .social-icons {
+            display: grid;
+            place-content: center;
+            grid-template-columns: repeat(auto-fit, 30px);
+            justify-content: space-evenly;
 
-      a.soc-network {
-        display: inline-block;
-        .soc-network-icon {
-          display: grid;
-          place-content: center;
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          color: #929292;
-          border: 2px solid #929292;
+            a.soc-network {
+                display: inline-block;
+                .soc-network-icon {
+                    display: grid;
+                    place-content: center;
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    color: #929292;
+                    border: 2px solid #929292;
 
-          .sn-mini-icon {
-            font-size: 14px;
-            position: relative;
-          }
+                    .sn-mini-icon {
+                        font-size: 14px;
+                        position: relative;
+                    }
 
-          &.fb {
-            .sn-mini-icon {
-              top: -1px;
+                    &.fb {
+                        .sn-mini-icon {
+                            top: -1px;
+                        }
+                    }
+
+                    &.in {
+                        .sn-mini-icon {
+                            top: -1px;
+                        }
+                    }
+
+                    &.md {
+                        .sn-mini-icon {
+                            font-size: 10px;
+                        }
+                    }
+                }
+
+                &:hover {
+                    text-decoration: none;
+                    color: #fff;
+                }
+                &:focus .soc-network-icon.fb,
+                &:hover .soc-network-icon.fb {
+                    background: #3a5bad;
+                    border-color: #3a5bad;
+                    color: #fff;
+                }
+                &:focus .soc-network-icon.tw,
+                &:hover .soc-network-icon.tw {
+                    background: #1dcbea;
+                    border-color: #1dcbea;
+                    color: #fff;
+                }
+                &:focus .soc-network-icon.in,
+                &:hover .soc-network-icon.in {
+                    background: #1182c9;
+                    border-color: #1182c9;
+                    color: #fff;
+                }
+                &:focus .soc-network-icon.md,
+                &:hover .soc-network-icon.md {
+                    background: #191919;
+                    border-color: #191919;
+                    color: #fff;
+                }
             }
-          }
-
-          &.in {
-            .sn-mini-icon {
-              top: -1px;
-            }
-          }
-
-          &.md {
-            .sn-mini-icon {
-              font-size: 10px;
-            }
-          }
         }
 
-        &:hover {
-          text-decoration: none;
-          color: #fff;
+        p {
+            padding: 5px 0 15px 0;
+            color: #929292;
         }
-        &:focus .soc-network-icon.fb, &:hover .soc-network-icon.fb {
-          background: #3a5bad;
-          border-color: #3a5bad;
-          color: #fff;
-        }
-        &:focus .soc-network-icon.tw, &:hover .soc-network-icon.tw {
-          background: #1dcbea;
-          border-color: #1dcbea;
-          color: #fff;
-        }
-        &:focus .soc-network-icon.in, &:hover .soc-network-icon.in {
-          background: #1182c9;
-          border-color: #1182c9;
-          color: #fff;
-        }
-        &:focus .soc-network-icon.md, &:hover .soc-network-icon.md {
-          background: #191919;
-          border-color: #191919;
-          color: #fff;
-        }
-      }
     }
-
-
-    p {
-      padding: 5px 0 15px 0;
-      color: #929292;
-    }
-  }
 }
