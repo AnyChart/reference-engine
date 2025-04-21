@@ -99,29 +99,41 @@
 
 
 (defn- generate-page-content [version is-url-version page request]
+  (info "DEBUG: generate-page-content called with version:" (:key version) "page-type:" (:type page))
+  (info "DEBUG: page content exists:" (boolean (:content page)))
   (if-let [cached-data nil]                                 ;;(redisca/cached-data (redis request) (:id version) (:url page))]
-    cached-data
-    (let [data (wdata/render-entry (get-in request [:component :config :docs])
-                                   (get-in request [:component :config :playground])
+    (do
+      (info "DEBUG: Using cached data")
+      cached-data)
+    (let [docs-domain (get-in request [:component :config :docs])
+          playground-domain (get-in request [:component :config :playground])
+          _ (info "DEBUG: Configs - docs:" docs-domain "playground:" playground-domain)
+          data (wdata/render-entry docs-domain
+                                   playground-domain
                                    (:key version)
                                    (:show_samples version)
                                    (:type page)
                                    (:content page)
                                    is-url-version)]
+      (info "DEBUG: Rendered data length:" (count data))
       ;(redisca/cache (redis request) (:id version) (:url page) data)
       data)))
 
 
 (defn- get-page-data [version is-url-version page request]
   (let [info (pdata/info page)]
-    (response {:content     (generate-page-content version is-url-version page request)
-               :info        info
-               :version     (:key version)
-               :page        (:url page)
-               :keywords    (str (:url page) " " (:kind info) ", anychart api reference, js charts, javascript charts, html5 charts, ajax charts, plots, line charts, bar charts, pie charts, js maps, javascript gantt charts, js dashboard")
-               :description (str "AnyChart HTML5 charts for for web and mobile - API reference for " (:url page) " " (:kind info))
-               :title       (get-page-title (prefix-title page) version)
-               :url         (str "https://api.anychart.com/" (:key version) "/" (:url page))})))
+    (info "DEBUG: get-page-data called with version:" (:key version) "page:" (:url page))
+    (info "DEBUG: page content exists:" (boolean (:content page)))
+    (let [response-data {:content     (generate-page-content version is-url-version page request)
+                        :info        info
+                        :version     (:key version)
+                        :page        (:url page)
+                        :keywords    (str (:url page) " " (:kind info) ", anychart api reference, js charts, javascript charts, html5 charts, ajax charts, plots, line charts, bar charts, pie charts, js maps, javascript gantt charts, js dashboard")
+                        :description (str "AnyChart HTML5 charts for for web and mobile - API reference for " (:url page) " " (:kind info))
+                        :title       (get-page-title (prefix-title page) version)
+                        :url         (str "https://api.anychart.com/" (:key version) "/" (:url page))}]
+      (info "DEBUG: Returning page data response with content length:" (count (:content response-data)))
+      (response response-data))))
 
 
 (defn- show-page [version is-url-version versions request]

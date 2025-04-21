@@ -4,29 +4,49 @@
             [cheshire.core :refer [generate-string parse-string]]
             [reference.data.sitemap :as sitemap]
             [reference.data.pages :as pdata]
-            [reference.util.utils :as utils]))
+            [reference.util.utils :as utils]
+            [taoensso.timbre :as timbre :refer [info error debug]]))
 
 
 (defn add-version [jdbc key commit tree search show-samples]
-  (first (insert! jdbc :versions {:key          key
-                                  :commit       commit
-                                  :show_samples show-samples
-                                  :tree         (generate-string tree)
-                                  :search       (generate-string search)})))
+  (debug "DEBUG: Adding version key:" key "commit:" commit "show_samples:" show-samples)
+  (debug "DEBUG: Tree data type:" (type tree) "Tree empty?" (empty? tree) "Tree count:" (count tree))
+  (try
+    (let [tree-json (generate-string tree)
+          _ (debug "DEBUG: Tree JSON length:" (count tree-json) "First 100 chars:" (subs tree-json 0 (min 100 (count tree-json))))
+          result (first (insert! jdbc :versions {:key          key
+                                    :commit       commit
+                                    :show_samples show-samples
+                                    :tree         tree-json
+                                    :search       (generate-string search)}))]
+      (debug "DEBUG: Version added successfully:" result)
+      result)
+    (catch Exception e
+      (error e "Failed to add version")
+      (debug "DEBUG: Exception details: " (.getMessage e))
+      nil)))
 
 
 (defn version-by-key [jdbc key]
-  (one jdbc (-> (select :key :id :show-samples)
-                (from :versions)
-                (where [:= :hidden false]
-                       [:= :key key]))))
+  (info "DEBUG_DATA: version-by-key called with key:" key)
+  (let [result (one jdbc (-> (select :key :id :show-samples)
+                         (from :versions)
+                         (where [:= :hidden false]
+                                [:= :key key])))]
+    (info "DEBUG_DATA: version-by-key result:" result)
+    result))
 
 
 (defn version-tree-by-key [jdbc key]
-  (one jdbc (-> (select :key :id :show-samples :tree)
-                (from :versions)
-                (where [:= :hidden false]
-                       [:= :key key]))))
+  (info "DEBUG_DATA: version-tree-by-key called with key:" key)
+  (let [result (one jdbc (-> (select :key :id :show-samples :tree)
+                         (from :versions)
+                         (where [:= :hidden false]
+                                [:= :key key])))]
+    (info "DEBUG_DATA: version-tree-by-key result exists:" (boolean result))
+    (when result
+      (info "DEBUG_DATA: tree data exists:" (boolean (:tree result))))
+    result))
 
 
 (defn version-by-id [jdbc version-id]
@@ -103,10 +123,13 @@
 
 
 (defn tree-data [jdbc version-id]
-  (:tree (one jdbc (-> (select :tree)
+  (debug "DEBUG: Fetching tree data for version ID:" version-id)
+  (let [result (:tree (one jdbc (-> (select :tree)
                        (from :versions)
                        (where [:= :id version-id]
-                              [:= :hidden false])))))
+                              [:= :hidden false]))))]
+    (debug "DEBUG: Tree data exists?" (boolean result) "Tree data length:" (when result (count result)))
+    result))
 
 
 (defn remove-branch-by-id [jdbc version-id]

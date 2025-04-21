@@ -154,7 +154,9 @@ api.page.load = function(target, opt_pushToHistory, opt_scrollTree) {
     if (cleanedTarget == "/")
         cleanedTarget = "/" + api.config.version + "/landing";
 
+    console.log("Making AJAX request to:", cleanedTarget + "/data");
     $.get(cleanedTarget + "/data", function(res) {
+        console.log("AJAX response received:", res);
         document.title = res.title;
         $("meta[property='og\\:title']").attr("content", res.title);
         $("meta[property='og\\:url']").attr("content", res.url);
@@ -162,6 +164,7 @@ api.page.load = function(target, opt_pushToHistory, opt_scrollTree) {
         $("meta[name='description']").attr("content", res.description);
         $("meta[property='og\\:description']").attr("content", res.description);
 
+        console.log("Content from response:", res.content);
         $("#content-wrapper").html('<div id="content-scr"><div id="article-content"><div class="content-container">' + res.content + '</div></div></div>');
 
         api.config.page = res.page;

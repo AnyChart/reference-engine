@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  api-app:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - .docker/keys:/apps/reference-local/keys
+      - ./data:/apps/reference-local/data
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DATABASE_URL=postgres://api_local_user:fucklocal@postgres:5432/reference_db
+      - SSL_CONNECTIONS_ENABLED=false
+
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=api_local_user
+      - POSTGRES_PASSWORD=fucklocal
+      - POSTGRES_DB=reference_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scheme.sql:/docker-entrypoint-initdb.d/init.sql  # Direct mounting of existing schema file
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--replica-read-only", "no"]
+
+volumes:
+  postgres_data:

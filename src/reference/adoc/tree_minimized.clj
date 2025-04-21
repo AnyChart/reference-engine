@@ -141,6 +141,15 @@
 (defn generate-tree [struct]
   (timbre/info "generate-tree min")
   (let [nses (map #(generate-ns-tree % struct) (:namespaces struct))
-        tree (structurize-namespaces nses)]
-    tree))
+        _ (timbre/debug "DEBUG: namespaces count in tree-minimized:" (count nses))
+        tree (structurize-namespaces nses)
+        _ (timbre/debug "DEBUG: final tree structure in tree-minimized:" (count tree))
+        _ (timbre/debug "DEBUG: is tree empty?" (empty? tree))]
+    (if (empty? tree)
+      (do
+        (timbre/error "ERROR: Generated tree is empty! This will cause database tree data to be empty.")
+        (timbre/debug "DEBUG: First 5 namespace structs:" (take 5 (:namespaces struct)))
+        ;; Return a minimal valid tree to avoid empty data
+        [{:name "anychart", :full-name "anychart"}])
+      tree)))
 

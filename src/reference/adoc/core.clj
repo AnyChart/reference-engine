@@ -24,12 +24,13 @@
             [me.raynes.fs :as fs]
             [cheshire.core :refer [generate-string]]
             [org.httpkit.client :as http]
-            [taoensso.timbre :as timbre :refer [info error]]
+            [taoensso.timbre :as timbre :refer [info error debug]]
             [reference.util.utils :as utils]
             [clojure.string :as string]
             [cheshire.core :as json]
             [reference.adoc.defs.ts.check :as ts-check]
-            [reference.config.core :as c]))
+            [reference.config.core :as c]
+            [clojure.stacktrace]))
 
 
 (defn actual-branches [show-branches git-ssh repo-path]
@@ -178,20 +179,58 @@
   (try
     (do
       (info "building" branch)
+      (debug "DEBUG: build-branch with params:" 
+             "\nbranch:" branch 
+             "\ngit-ssh:" git-ssh
+             "\ndata-dir:" data-dir
+             "\nmax-processes:" max-processes
+             "\njsdoc-bin:" jsdoc-bin)
+      (debug "DEBUG: Checking if directories exist:"
+             "\ndata-dir exists?" (.exists (file data-dir))
+             "\ndata-dir/repo exists?" (.exists (file (str data-dir "/repo/")))
+             "\ndata-dir/versions exists?" (.exists (file (str data-dir "/versions/"))))
+      
       (notifications/start-version-building notifier branch queue-index)
 
       (let [categories-order (categories/parse-categories-order data-dir (:name branch))
+            _ (debug "DEBUG: categories-order:" categories-order)
+            
+            _ (debug "DEBUG: About to call adoc/get-all-doclets")
             all-doclets (adoc/get-all-doclets data-dir max-processes jsdoc-bin (:name branch))
+            _ (debug "DEBUG: all-doclets count:" (count all-doclets))
+            
             doclets (adoc/get-not-ignored-doclets all-doclets)
+            _ (debug "DEBUG: filtered doclets count:" (count doclets))
+            
+            _ (debug "DEBUG: About to structurize doclets")
             raw-top-level (structurize doclets data-dir (:name branch))
+            _ (debug "DEBUG: raw-top-level:" (str (keys raw-top-level)))
+            
+            _ (debug "DEBUG: About to build inheritance")
             inh-top-level (inh/build-inheritance raw-top-level)
+            _ (debug "DEBUG: inh-top-level:" (str (keys inh-top-level)))
+            
             top-level (categories/categorize inh-top-level categories-order)
             top-level (typedef-builder/fix-typedef top-level :typescript false)
             top-level (tree-ts/update-classes-methods top-level :add-parent-methods false)
+            
+            _ (debug "DEBUG: About to generate tree")
             tree-data (generate-tree top-level)
+            _ (debug "DEBUG: tree-data generated, count:" (count tree-data) "empty?" (empty? tree-data))
+            _ (when (empty? tree-data) (debug "WARNING: tree-data is empty! This may cause UI navigation problems."))
+            
             tree-min-data (tree-minimized/generate-tree top-level)
+            _ (debug "DEBUG: tree-min-data generated, count:" (count tree-min-data) "empty?" (empty? tree-min-data))
+            _ (when (empty? tree-min-data) 
+                (error "ERROR: tree-min-data is empty! This will result in empty tree in database.")
+                (debug "DEBUG: Top-level structure:" (str (keys top-level)))
+                (debug "DEBUG: Namespace count:" (count (:namespaces top-level))))
+            
             search-index (generate-search-index top-level (str data-dir "/versions/" (:name branch) "/_search"))
-            config (get-version-config data-dir (:name branch))]
+            _ (debug "DEBUG: search-index generated")
+            
+            config (get-version-config data-dir (:name branch))
+            _ (debug "DEBUG: config:" config)]
 
         (when (= (:name branch) "v8")
           (ts/set-top-level! top-level)
@@ -200,6 +239,7 @@
           (typedef-builder/set-top-level! top-level))
 
         (info "categories order:" categories-order)
+        (debug "DEBUG: About to add version to database")
         (let [version (vdata/add-version jdbc
                                          (:name branch)
                                          (:commit branch)
@@ -207,11 +247,23 @@
                                          search-index
                                          (:samples config))
               version-id (:id version)]
+          (debug "DEBUG: Version added to database:" version)
+          
+          (debug "DEBUG: About to save entries")
           (save-entries jdbc version (:name branch) top-level docs playground)
+          (debug "DEBUG: Entries saved")
+          
+          (debug "DEBUG: About to build media")
           (build-media jdbc version-id (:name branch) data-dir)
+          (debug "DEBUG: Media built")
+          
+          (debug "DEBUG: About to update sitemap")
           (sitemap/update-sitemap jdbc version-id top-level)
+          (debug "DEBUG: Sitemap updated")
 
+          (debug "DEBUG: About to remove previous versions")
           (remove-previous-versions jdbc version-id (:name branch))
+          (debug "DEBUG: Previous versions removed")
 
           (if (need-generate-ts branch gen-params)
             (let [ts-result (build-typescript data-dir git-ssh branch latest-version-key notifier all-doclets categories-order tree-data)]
@@ -223,6 +275,7 @@
     (catch Exception e
       (do (error e)
           (error (.getMessage e))
+          (debug "DEBUG: Exception stacktrace:" (with-out-str (clojure.stacktrace/print-stack-trace e)))
           (notifications/complete-version-building-error notifier (:name branch) queue-index e nil)
           nil))))
 
@@ -241,18 +294,51 @@
    queue-index
    gen-params]
   (try
+    (debug "DEBUG: Starting build-all with parameters:"
+           "\nshow-branches:" show-branches
+           "\ngit-ssh:" git-ssh
+           "\ndata-dir:" data-dir
+           "\nmax-processes:" max-processes
+           "\njsdoc-bin:" jsdoc-bin
+           "\ndocs:" docs
+           "\nplayground:" playground
+           "\nqueue-index:" queue-index
+           "\ngen-params:" gen-params)
+    
     (let [repo-path (str data-dir "/repo/")
           versions-path (str data-dir "/versions/")
           versions-tmp (str data-dir "/versions-tmp/")]
+      (debug "DEBUG: Setting paths:"
+             "\nrepo-path:" repo-path
+             "\nversions-path:" versions-path
+             "\nversions-tmp:" versions-tmp)
+      
+      (debug "DEBUG: Checking if directories exist:"
+             "\ndata-dir exists?" (.exists (file data-dir))
+             "\nrepo-path exists?" (.exists (file repo-path)))
+      
       (fs/mkdirs versions-path)
       (fs/mkdirs versions-tmp)
+      (debug "DEBUG: Created versions directories")
+      
+      (debug "DEBUG: About to update git repository")
       (git/update git-ssh repo-path)
       (let [actual-branches (actual-branches show-branches git-ssh repo-path)
+            _ (debug "DEBUG: Got actual branches:" (map :name actual-branches))
+            
             removed-branches (remove-branches jdbc (map :name actual-branches) data-dir)
+            _ (debug "DEBUG: Removed branches:" removed-branches)
+            
             branches (filter-for-rebuild jdbc actual-branches)
+            _ (debug "DEBUG: Branches to rebuild:" (map :name branches))
+            
             branch-names (map :name branches)
-            latest-version-key (vdata/default jdbc branch-names)]
+            latest-version-key (vdata/default jdbc branch-names)
+            _ (debug "DEBUG: Latest version key:" latest-version-key)]
+        
         (doall (pmap #(git/checkout git-ssh repo-path % (str versions-path %)) branch-names))
+        (debug "DEBUG: Checked out all branches")
+        
         (notifications/start-building notifier branch-names removed-branches queue-index)
         (let [result (doall (map #(build-branch %
                                                 jdbc
@@ -267,16 +353,21 @@
                                                 latest-version-key
                                                 gen-params)
                                  branches))]
-          ;(when (or (not-empty removed-branches)
-          ;          (not-empty branches))
-          ;  (notifications/start-database-refresh notifier)
-          ;  (search-data/refresh jdbc))
+          (debug "DEBUG: Build results:" (map #(if % "success" "failure") result))
+          
           (fs/delete-dir versions-path)
           (fs/delete-dir versions-tmp)
+          (debug "DEBUG: Cleaned up temporary directories")
+          
           (if (some nil? result)
-            (notifications/complete-building-with-errors notifier branch-names queue-index)
-            (notifications/complete-building notifier branch-names removed-branches queue-index)))))
+            (do
+              (debug "DEBUG: Some builds failed")
+              (notifications/complete-building-with-errors notifier branch-names queue-index))
+            (do
+              (debug "DEBUG: All builds successful")
+              (notifications/complete-building notifier branch-names removed-branches queue-index))))))
     (catch Exception e
       (do (timbre/error e)
           (timbre/error (.getMessage e))
+          (debug "DEBUG: Exception stacktrace:" (with-out-str (clojure.stacktrace/print-stack-trace e)))
           (notifications/complete-building-with-errors notifier [] queue-index e)))))

@@ -94,9 +94,43 @@
 (defn -main
   ([] (println "all|backend|frontend config-path"))
   ([mode config-path]
+   (println "Starting with mode:" mode "config path:" config-path)
+   (timbre/info "Starting with mode:" mode "config path:" config-path)
+   (timbre/debug "DEBUG: Starting application with mode:" mode "config path:" config-path)
    (set-config config-path)
    (cond
-     (= mode "all") (alter-var-root #'system (constantly (component/start (all-system config))))
-     (= mode "frontend") (component/start (frontend-system config))
-     (= mode "backend") (component/start (generator-system config))
-     :else (timbre/info "Unknown mode"))))
+     (= mode "all") 
+     (do
+       (timbre/debug "DEBUG: Starting in 'all' mode with full system")
+       (alter-var-root #'system (constantly (component/start (all-system config)))))
+     
+     (= mode "frontend") 
+     (do
+       (timbre/debug "DEBUG: Starting in 'frontend' mode")
+       (component/start (frontend-system config)))
+     
+     (= mode "backend") 
+     (do
+       (timbre/debug "DEBUG: Starting in 'backend' mode")
+       (timbre/debug "DEBUG: This mode processes data from repo and populates the database")
+       (let [result (component/start (generator-system config))]
+         (timbre/debug "DEBUG: Backend system started:" (if result "success" "failure"))
+         (timbre/debug "DEBUG: If you're having database population issues, check:")
+         (timbre/debug "DEBUG: 1. Redis connection status")
+         (timbre/debug "DEBUG: 2. Git repository path and access")
+         (timbre/debug "DEBUG: 3. PostgreSQL connection and schema")
+         result))
+     
+     :else (timbre/info "Unknown mode")))
+  
+  ;; Special version for direct database triggering
+  ([mode config-path version]
+   (println "Starting direct DB population with mode:" mode "config path:" config-path "version:" version)
+   (timbre/debug "DEBUG: Starting direct DB population with version:" version)
+   (set-config config-path)
+   (let [sys (generator-system config)
+         running-sys (component/start sys)]
+     (timbre/debug "DEBUG: Directly triggering database population for version:" version)
+     (generator/generate-reference (:generator running-sys) {:cmd "generate" :version version})
+     (timbre/debug "DEBUG: Database population completed")
+     (component/stop running-sys))))

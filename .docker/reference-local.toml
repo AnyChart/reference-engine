@@ -1,0 +1,49 @@
+# ATTENTION!!!
+# Don't edit this file on server!
+# Edit it in repository https://github.com/AnyChart/servers-conf and it will be autodeployed with Travis-CI!
+# ATTENTION!!!
+
+[common]
+prefix = "local"
+domain = "https://ac-api.rkkmkkfx.dev/"
+
+[web]
+debug = false
+static = 12
+max-line = 8192
+reference-queue = "reference-queue"
+docs = "docs.anychart.local"
+port = 8080
+playground = "playground.anychart.local"
+
+[generator]
+max-processes = 8
+jsdoc-bin = "/usr/local/bin/jsdoc"
+show-branches = true
+git-ssh = "/apps/reference-local/keys/git"
+data-dir = "/apps/reference-local/data"
+queue = "reference-queue"
+
+[jdbc]
+stringtype = "unspecified"
+subprotocol = "postgresql"
+password = "fucklocal"
+classname = "org.postgresql.Driver"
+subname = "//postgres:5432/reference_db"
+user = "api_local_user"
+
+# [notifications.skype]
+# id = "5bab828d-d6b2-4c0f-a955-82b088e30bcb"
+# chat-id = "19:58cbaa008fc640bab8c3cf71e0e2d51a@thread.skype"
+# release-chat-id = "19:ce48f0e67946449ca4e0ac9adb44ef13@thread.skype"
+# key = "L2q5SBiXYqPDHVmq36vjgwe"
+
+[notifications.slack]
+channel = "#notifications-staging"
+token = "P8Z59E0kpaOqTcOxner4P5jb"
+username = "reference-engine"
+
+[redis.spec]
+port = 6379
+host = "redis"
+db = 1

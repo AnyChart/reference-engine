@@ -1,12 +1,18 @@
 (ns reference.git
   (:require [clojure.java.shell :refer [sh with-sh-env with-sh-dir]]
-            [taoensso.timbre :as timbre :refer [info error]]
+            [taoensso.timbre :as timbre :refer [info error debug]]
             [clojure.string :as string]
             [reference.util.utils :as utils]))
 
 
 (defn run-sh [& command]
-  (apply sh command))
+  (debug "DEBUG: run-sh command:" command)
+  (let [result (apply sh command)]
+    (when-not (zero? (:exit result))
+      (debug "DEBUG: run-sh error, exit code:" (:exit result) 
+             "\nstdout:" (:out result) 
+             "\nstderr:" (:err result)))
+    result))
 
 
 (defn file-last-commit-date [base-path path]
@@ -20,33 +26,46 @@
 
 
 (defn- run-git [git-ssh path & command]
+  (debug "DEBUG: run-git command:" command)
+  (debug "DEBUG: git-ssh path exists?" (if (.exists (clojure.java.io/file git-ssh)) "yes" "no"))
+  (debug "DEBUG: repo path exists?" (if (.exists (clojure.java.io/file path)) "yes" "no"))
+  
   (with-sh-env {:GIT_SSH git-ssh}
                (with-sh-dir path
                             (let [res (apply sh "/usr/bin/git" command)]
                               (println command res)
+                              (when-not (zero? (:exit res))
+                                (debug "DEBUG: run-git error, exit code:" (:exit res) 
+                                       "\nstdout:" (:out res) 
+                                       "\nstderr:" (:err res)))
                               (:out res)))))
 
 
 (defn current-commit [git-ssh path]
+  (debug "DEBUG: Getting current commit for path:" path)
   (subs (run-git git-ssh path "rev-parse" "HEAD") 0 7))
 
 
 (defn update [git-ssh repo]
+  (debug "DEBUG: Updating repo:" repo)
   (run-git git-ssh repo "fetch" "-p" "-P"))
 
 
 (defn pull [git-ssh repo]
+  (debug "DEBUG: Pulling repo:" repo)
   (run-git git-ssh repo "pull"))
 
 
 (defn clean
   "Remove all ignored, untracked files and directories"
   [git-ssh repo]
+  (debug "DEBUG: Cleaning repo:" repo)
   (run-git git-ssh repo "clean" "-fxd")
   (run-git git-ssh repo "reset" "--hard"))
 
 
 (defn update-samples [git-ssh repo branch]
+  (debug "DEBUG: Updating samples, repo:" repo "branch:" branch)
   (run-git git-ssh repo "checkout" "--" "*")
   (run-git git-ssh repo "fetch" "-p")
   (run-git git-ssh repo "checkout" branch)
@@ -54,6 +73,7 @@
 
 
 (defn commit-samples [git-ssh repo branch]
+  (debug "DEBUG: Committing samples, repo:" repo "branch:" branch)
   (run-git git-ssh repo "pull" "origin" branch)
   (run-git git-ssh repo "add" "-A" "./")
   (run-git git-ssh repo "commit" "-m" "samples update")
@@ -61,6 +81,9 @@
 
 
 (defn checkout [git-ssh repo version target-path]
+  (debug "DEBUG: Checking out version:" version 
+        "\nFrom repo:" repo 
+        "\nTo target-path:" target-path)
   (run-sh "rm" "-rf" target-path)
   (run-sh "cp" "-r" repo target-path)
   (run-git git-ssh target-path "checkout" version)
@@ -68,8 +91,11 @@
 
 
 (defn remote-branches [git-ssh path]
+  (debug "DEBUG: Getting remote branches for path:" path)
   (let [branch-lines (string/split (run-git git-ssh path "branch" "-r" "--format='%(refname:short)|-|%(objectname)|-|%(authorname)|-|%(contents:subject)'") #"\n")
+        _ (debug "DEBUG: Got" (count branch-lines) "branch lines")
         tag-lines (string/split (run-git git-ssh path "for-each-ref" "--format='%(refname:short)|-|%(objectname)|-|%(authorname)|-|%(contents:subject)'" "refs/tags") #"\n")
+        _ (debug "DEBUG: Got" (count tag-lines) "tag lines")
         lines (map (fn [line]
                      (-> line
                          (string/replace #"^(')(.*)(')$" "$2") ;; delete start and end quotes '
@@ -85,13 +111,16 @@
                            :commit  commit
                            :author  author
                            :message message})) filtered-lines)]
+    (debug "DEBUG: Processed" (count branches) "branches")
     branches))
 
 
 (defn actual-branches-with-hashes [git-ssh path]
+  (debug "DEBUG: Getting actual branches with hashes for path:" path)
   (remote-branches git-ssh path))
 
 
 (defn version-branches-with-hashes [git-ssh path]
+  (debug "DEBUG: Getting version branches with hashes for path:" path)
   (let [all-branches (actual-branches-with-hashes git-ssh path)]
     (filter #(utils/released-version? (:name %)) all-branches)))
