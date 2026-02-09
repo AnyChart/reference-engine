@@ -1,0 +1,607 @@
+{
+  "anychart": [
+    "SignalEvent"
+  ],
+  "anychart.charts": [
+    "Sunburst",
+    "Surface",
+    "TreeMap",
+    "Timeline",
+    "Cartesian",
+    "Bullet",
+    "CirclePacking",
+    "Calendar",
+    "Polar",
+    "Pert",
+    "Scatter",
+    "Pareto",
+    "Venn",
+    "Waterfall",
+    "TagCloud",
+    "Cartesian3d",
+    "Stock",
+    "Resource",
+    "Wordtree",
+    "Sparkline",
+    "Radar",
+    "LinearGauge",
+    "HeatMap",
+    "Gantt",
+    "Graph",
+    "Sankey",
+    "CircularGauge",
+    "Mekko",
+    "Pie",
+    "Funnel",
+    "Map",
+    "Pyramid"
+  ],
+  "anychart.core": [
+    "VisualBase",
+    "Point",
+    "StateSettings",
+    "Base",
+    "SeparateChart",
+    "Chart",
+    "SeriesPoint",
+    "NoDataSettings",
+    "SeriesBase",
+    "Text",
+    "TreeChartPoint",
+    "VisualBaseWithBounds",
+    "ChoroplethPoint",
+    "PiePoint",
+    "BubblePoint",
+    "MapPoint"
+  ],
+  "anychart.core.annotations": [
+    "Ray",
+    "InfiniteLine",
+    "VerticalRange",
+    "Label",
+    "FibonacciFan",
+    "Rectangle",
+    "AndrewsPitchfork",
+    "Base",
+    "PlotController",
+    "FibonacciBase",
+    "Triangle",
+    "FibonacciRetracement",
+    "HorizontalRange",
+    "TrendChannel",
+    "VerticalLine",
+    "HorizontalLine",
+    "ChartController",
+    "FibonacciArc",
+    "Line",
+    "FibonacciTimezones",
+    "FiniteTrendChannel",
+    "Ellipse",
+    "Marker"
+  ],
+  "anychart.core.axes": [
+    "Surface",
+    "CircularTicks",
+    "Timeline",
+    "Polar",
+    "Linear",
+    "MapSettings",
+    "Radial",
+    "Ticks",
+    "SurfaceTicks",
+    "Circular",
+    "StockDateTime",
+    "Radar",
+    "TimelineTicks",
+    "LinearGauge",
+    "MapTicks",
+    "Map"
+  ],
+  "anychart.core.axisMarkers": [
+    "GanttLine",
+    "GanttText",
+    "GanttRange",
+    "CircularRange",
+    "Text",
+    "CurrentPriceIndicator",
+    "Line",
+    "Range"
+  ],
+  "anychart.core.calendar.settings": [
+    "Months",
+    "Weeks",
+    "Years",
+    "Days"
+  ],
+  "anychart.core.cartesian.series": [
+    "ContinuousBase",
+    "Box",
+    "Line3d",
+    "SplineArea",
+    "Spline",
+    "DiscreteBase",
+    "RangeStepArea",
+    "StepArea",
+    "Base",
+    "RangeBar",
+    "Column3d",
+    "ContinuousRangeBase",
+    "Area",
+    "Stick",
+    "Bubble",
+    "Bar",
+    "Area3d",
+    "OHLC",
+    "Candlestick",
+    "Column",
+    "WidthBased",
+    "RangeArea",
+    "BaseWithMarkers",
+    "JumpLine",
+    "StepLine",
+    "Line",
+    "RangeColumn",
+    "RangeSplineArea",
+    "Hilo",
+    "Marker",
+    "Bar3d"
+  ],
+  "anychart.core.gantt": [
+    "Calendar",
+    "TimeLineHeader",
+    "LevelWrapper",
+    "Overlay",
+    "TimeLineHeaderLevelHolidaysSettings",
+    "DataGridButton"
+  ],
+  "anychart.core.gantt.edit": [
+    "Thumb",
+    "ElementEdit",
+    "StructureEdit",
+    "SideControl"
+  ],
+  "anychart.core.gantt.elements": [
+    "GroupingTasksElement",
+    "ConnectorElement",
+    "BaselineMilestonesElement",
+    "PeriodsElement",
+    "MilestonesPreviewElement",
+    "ProgressElement",
+    "BaselineProgressElement",
+    "BaselinesElement",
+    "TimelineElement",
+    "MilestonesElement",
+    "TasksElement",
+    "BaselineMilestonesPreviewElement",
+    "Marker"
+  ],
+  "anychart.core.gantt.rendering": [
+    "Settings"
+  ],
+  "anychart.core.gauge": [
+    "Cap"
+  ],
+  "anychart.core.gauge.pointers": [
+    "Needle",
+    "Base",
+    "Bar",
+    "Knob",
+    "Marker"
+  ],
+  "anychart.core.graph.elements": [
+    "Layout",
+    "Interactivity",
+    "Group",
+    "Node",
+    "Edge"
+  ],
+  "anychart.core.graph.elements.edges.arrows": [
+    "Controller"
+  ],
+  "anychart.core.grids": [
+    "Surface",
+    "Polar",
+    "Linear",
+    "MapSettings",
+    "Stock",
+    "Radar",
+    "Map"
+  ],
+  "anychart.core.linearGauge": [
+    "ScaleBar"
+  ],
+  "anychart.core.linearGauge.pointers": [
+    "Tank",
+    "Base",
+    "RangeBar",
+    "Bar",
+    "Led",
+    "Marker",
+    "Thermometer"
+  ],
+  "anychart.core.map.series": [
+    "Base",
+    "Choropleth",
+    "Bubble",
+    "BaseWithMarkers",
+    "Connector",
+    "Marker"
+  ],
+  "anychart.core.mekko.series": [
+    "Mekko"
+  ],
+  "anychart.core.pert": [
+    "Tasks",
+    "Milestones",
+    "CriticalPath"
+  ],
+  "anychart.core.polar.series": [
+    "Polyline",
+    "ContinuousBase",
+    "Base",
+    "Area",
+    "Column",
+    "Line",
+    "RangeColumn",
+    "Marker",
+    "Polygon"
+  ],
+  "anychart.core.radar.series": [
+    "ContinuousBase",
+    "Base",
+    "Area",
+    "Line",
+    "Marker"
+  ],
+  "anychart.core.resource": [
+    "Conflicts",
+    "Activities",
+    "Grid",
+    "Logo",
+    "ResourceList"
+  ],
+  "anychart.core.resource.resourceList": [
+    "TagsSettings",
+    "ImageSettings",
+    "TextSettings",
+    "SettingsWithMargin"
+  ],
+  "anychart.core.sankey.elements": [
+    "Dropoff",
+    "Flow",
+    "Node"
+  ],
+  "anychart.core.scatter.series": [
+    "Base",
+    "Bubble",
+    "BaseWithMarkers",
+    "Line",
+    "Marker"
+  ],
+  "anychart.core.series": [
+    "Cartesian",
+    "Base",
+    "Stock",
+    "RenderingSettings",
+    "Context",
+    "PointContext"
+  ],
+  "anychart.core.stock": [
+    "Scroller",
+    "Plot",
+    "Grouping"
+  ],
+  "anychart.core.stock.eventMarkers": [
+    "Controller",
+    "Group"
+  ],
+  "anychart.core.stock.indicators": [
+    "AO",
+    "PriceChannels",
+    "Stochastic",
+    "PSY",
+    "AMA",
+    "RoC",
+    "PPO",
+    "HA",
+    "BBandsWidth",
+    "ENV",
+    "MACD",
+    "PSAR",
+    "KDJ",
+    "BBandsB",
+    "Momentum",
+    "ATR",
+    "Base",
+    "KeltnerChannels",
+    "SMA",
+    "WilliamsR",
+    "CHO",
+    "OBV",
+    "Aroon",
+    "TRIX",
+    "RAT",
+    "IKH",
+    "AroonOscillator",
+    "CoppockCurve",
+    "VolumeMA",
+    "RCI",
+    "RSI",
+    "WMA",
+    "CCI",
+    "MMA",
+    "EMA",
+    "ADL",
+    "MFI",
+    "CMF",
+    "VWAP",
+    "DMI",
+    "BBands"
+  ],
+  "anychart.core.stock.scrollerSeries": [
+    "SplineArea",
+    "Spline",
+    "DiscreteBase",
+    "RangeStepArea",
+    "StepArea",
+    "Base",
+    "Area",
+    "Stick",
+    "OHLC",
+    "Candlestick",
+    "Column",
+    "RangeArea",
+    "JumpLine",
+    "StepLine",
+    "Line",
+    "RangeColumn",
+    "RangeSplineArea",
+    "Hilo",
+    "Marker"
+  ],
+  "anychart.core.stock.series": [
+    "SplineArea",
+    "Spline",
+    "DiscreteBase",
+    "RangeStepArea",
+    "StepArea",
+    "Base",
+    "Area",
+    "Stick",
+    "OHLC",
+    "Candlestick",
+    "Column",
+    "RangeArea",
+    "JumpLine",
+    "StepLine",
+    "Line",
+    "RangeColumn",
+    "RangeSplineArea",
+    "Hilo",
+    "Marker"
+  ],
+  "anychart.core.stock.splitters": [
+    "Settings",
+    "Normal",
+    "Preview",
+    "Hovered"
+  ],
+  "anychart.core.sunburst": [
+    "Level"
+  ],
+  "anychart.core.surface.markers": [
+    "Controller"
+  ],
+  "anychart.core.surface.markers.droplines": [
+    "Controller"
+  ],
+  "anychart.core.timeline.series": [
+    "Moment",
+    "Base",
+    "Range"
+  ],
+  "anychart.core.ui": [
+    "Timeline",
+    "DataGrid",
+    "Column",
+    "MarkersFactory",
+    "Marker",
+    "Scroller",
+    "Thumbs",
+    "ColorRange",
+    "Label",
+    "Outline",
+    "CrosshairLabel",
+    "StageCredits",
+    "Center",
+    "Tooltip",
+    "DataArea",
+    "Background",
+    "Legend",
+    "Separator",
+    "Title",
+    "Paginator",
+    "ChartScroller",
+    "ScrollBar",
+    "CircularLabelsFactory",
+    "Label",
+    "Crosshair",
+    "Table",
+    "LegendItem",
+    "Callout",
+    "LabelsFactory",
+    "Label",
+    "ChartCredits"
+  ],
+  "anychart.core.ui.table": [
+    "Border",
+    "Cell",
+    "Base",
+    "Row",
+    "Column",
+    "Padding"
+  ],
+  "anychart.core.utils": [
+    "LegendItemSettings",
+    "UnboundRegionsSettings",
+    "StockInteractivity",
+    "Exports",
+    "Margin",
+    "MapInteractivity",
+    "Error",
+    "QuarterSettings",
+    "DrawingPlanIterator",
+    "Interactivity",
+    "A11y",
+    "ChartA11y",
+    "SeriesA11y",
+    "Quarter",
+    "Crossing",
+    "OrdinalZoom",
+    "Animation",
+    "Connector",
+    "Padding",
+    "Bounds"
+  ],
+  "anychart.core.venn": [
+    "Intersections"
+  ],
+  "anychart.core.waterfall": [
+    "Total",
+    "ArrowConnector",
+    "Connectors",
+    "Arrow"
+  ],
+  "anychart.core.waterfall.series": [
+    "Waterfall"
+  ],
+  "anychart.core.wordtree": [
+    "Connectors"
+  ],
+  "anychart.data": [
+    "Tree",
+    "DataItem",
+    "Traverser",
+    "TableIterator",
+    "Mapping",
+    "TreeView",
+    "DataItem",
+    "View",
+    "Set",
+    "TableSelectable",
+    "RowProxy",
+    "TableComputer",
+    "RowProxy",
+    "TableMapping",
+    "Table",
+    "Iterator"
+  ],
+  "anychart.editor": [
+    "Editor",
+    "Step"
+  ],
+  "anychart.format": [
+    "Context"
+  ],
+  "anychart.graphics.events": [
+    "BrowserEvent"
+  ],
+  "anychart.graphics.math": [
+    "Coordinate",
+    "Rect"
+  ],
+  "anychart.graphics.vector": [
+    "LinearGradient",
+    "Shape",
+    "Stage",
+    "PatternFill",
+    "RadialGradient",
+    "Circle",
+    "UnmanagedLayer",
+    "Rect",
+    "Layer",
+    "Path",
+    "Element",
+    "Image",
+    "HatchFill",
+    "Text",
+    "Ellipse",
+    "Clip"
+  ],
+  "anychart.graphics.vector.vml": [
+    "Text"
+  ],
+  "anychart.math": [
+    "CycledQueue",
+    "Rect"
+  ],
+  "anychart.palettes": [
+    "Markers",
+    "RangeColors",
+    "DistinctColors",
+    "HatchFills"
+  ],
+  "anychart.scales": [
+    "DateTimeTicks",
+    "Calendar",
+    "Linear",
+    "Geo",
+    "ScatterTicks",
+    "Base",
+    "Ordinal",
+    "OrdinalColor",
+    "StockScatterDateTime",
+    "DateTime",
+    "ScatterBase",
+    "OrdinalTicks",
+    "StockOrdinalDateTime",
+    "LinearColor",
+    "Logarithmic",
+    "GanttDateTime",
+    "DateTimeWithCalendar",
+    "GeoTicks"
+  ],
+  "anychart.standalones": [
+    "ProjectTimeline",
+    "ResourceTimeline",
+    "DataGrid",
+    "MarkersFactory",
+    "Marker",
+    "Scroller",
+    "ColorRange",
+    "Label",
+    "Background",
+    "Legend",
+    "Title",
+    "Table",
+    "LabelsFactory",
+    "ResourceList"
+  ],
+  "anychart.standalones.axes": [
+    "Polar",
+    "Linear",
+    "Radial",
+    "Radar"
+  ],
+  "anychart.standalones.axisMarkers": [
+    "Text",
+    "Line",
+    "Range"
+  ],
+  "anychart.standalones.grids": [
+    "Polar",
+    "Linear",
+    "Radar"
+  ],
+  "anychart.ui": [
+    "RangePicker",
+    "Zoom",
+    "RangeSelector",
+    "GanttToolbar",
+    "Preloader",
+    "ContextMenu"
+  ],
+  "anychart.ui.toolbar": [
+    "Toolbar"
+  ]
+}

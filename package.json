@@ -1,0 +1,23 @@
+{
+  "name": "dtsgenerator",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "execa": "^9.6.1",
+    "fast-glob": "^3.3.3",
+    "fs-extra": "^11.3.3",
+    "jsdoc": "^4.0.5",
+    "minimist": "^1.2.8",
+    "p-map": "^7.0.4",
+    "peggy": "^5.0.6",
+    "typescript": "^5.9.3"
+  }
+}

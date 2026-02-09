@@ -1,0 +1,147 @@
+[
+  {
+    "comment": "/**\n * Getter for the fullscreen mode.\n * @shortDescription Fullscreen mode.\n * @listing See listing\n * var fullScreen = chart.fullScreen();\n * @return {boolean} Full screen state (enabled/disabled).\n */",
+    "meta": {
+      "range": [
+        92277,
+        92322
+      ],
+      "filename": "Sunburst.adoc.js",
+      "lineno": 2219,
+      "columnno": 0,
+      "path": "c:\\Users\\Alex\\VScode\\Anychart\\dtsGenerator\\data\\versions-tmp-111340\\8.14.1\\charts",
+      "code": {
+        "id": "astnode100020704",
+        "name": "anychart.charts.Sunburst.prototype.fullScreen",
+        "type": "MemberExpression"
+      }
+    },
+    "description": "Getter for the fullscreen mode.",
+    "tags": [
+      {
+        "originalTitle": "shortDescription",
+        "title": "shortdescription",
+        "text": "Fullscreen mode.",
+        "value": "Fullscreen mode."
+      },
+      {
+        "originalTitle": "listing",
+        "title": "listing",
+        "text": "See listing\nvar fullScreen = chart.fullScreen();",
+        "value": "See listing\nvar fullScreen = chart.fullScreen();"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        },
+        "description": "Full screen state (enabled/disabled)."
+      }
+    ],
+    "name": "fullScreen",
+    "longname": "anychart.charts.Sunburst#fullScreen",
+    "kind": "member",
+    "memberof": "anychart.charts.Sunburst",
+    "scope": "instance"
+  },
+  {
+    "comment": "/**\n * Setter for the fullscreen mode.\n * @example anychart.charts.Sunburst.fullScreen\n * @param {boolean=} opt_enabled [false] Enable/Disable fullscreen mode.\n * @return {anychart.charts.Sunburst} Self instance for method chaining.\n */",
+    "meta": {
+      "range": [
+        92562,
+        92607
+      ],
+      "filename": "Sunburst.adoc.js",
+      "lineno": 2227,
+      "columnno": 0,
+      "path": "c:\\Users\\Alex\\VScode\\Anychart\\dtsGenerator\\data\\versions-tmp-111340\\8.14.1\\charts",
+      "code": {
+        "id": "astnode100020714",
+        "name": "anychart.charts.Sunburst.prototype.fullScreen",
+        "type": "MemberExpression"
+      }
+    },
+    "description": "Setter for the fullscreen mode.",
+    "examples": [
+      "anychart.charts.Sunburst.fullScreen"
+    ],
+    "params": [
+      {
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        },
+        "optional": true,
+        "description": "[false] Enable/Disable fullscreen mode.",
+        "name": "opt_enabled"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "anychart.charts.Sunburst"
+          ]
+        },
+        "description": "Self instance for method chaining."
+      }
+    ],
+    "name": "fullScreen",
+    "longname": "anychart.charts.Sunburst#fullScreen",
+    "kind": "member",
+    "memberof": "anychart.charts.Sunburst",
+    "scope": "instance"
+  },
+  {
+    "comment": "/**\n * Getter for the fullscreen mode.\n * @shortDescription Fullscreen mode.\n * @listing See listing\n * var fullScreen = chart.fullScreen();\n * @return {boolean} Full screen state (enabled/disabled).\n */",
+    "meta": {
+      "range": [
+        98618,
+        98663
+      ],
+      "filename": "Sunburst.adoc.js",
+      "lineno": 2408,
+      "columnno": 0,
+      "path": "c:\\Users\\Alex\\VScode\\Anychart\\dtsGenerator\\data\\versions-tmp-111340\\8.14.1\\charts",
+      "code": {
+        "id": "astnode100020884",
+        "name": "anychart.charts.Sunburst.prototype.fullScreen",
+        "type": "MemberExpression"
+      }
+    },
+    "description": "Getter for the fullscreen mode.",
+    "tags": [
+      {
+        "originalTitle": "shortDescription",
+        "title": "shortdescription",
+        "text": "Fullscreen mode.",
+        "value": "Fullscreen mode."
+      },
+      {
+        "originalTitle": "listing",
+        "title": "listing",
+        "text": "See listing\nvar fullScreen = chart.fullScreen();",
+        "value": "See listing\nvar fullScreen = chart.fullScreen();"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        },
+        "description": "Full screen state (enabled/disabled)."
+      }
+    ],
+    "name": "fullScreen",
+    "longname": "anychart.charts.Sunburst#fullScreen",
+    "kind": "member",
+    "memberof": "anychart.charts.Sunburst",
+    "scope": "instance"
+  }
+]

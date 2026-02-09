@@ -1,0 +1,24 @@
+.idea/
+.DS_Store
+.vscode
+.tmp/
+
+# AI stuff
+.agent/
+.gemini/
+.cursor/
+.aider*
+.ai-instructions
+.history/
+*.log
+
+# Build and dependencies
+node_modules/
+dist/
+dist-test/
+out/
+.tmp*/
+data/versions-tmp*/
+dist-verify/
+diff*.txt
+data/

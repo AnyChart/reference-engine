@@ -1,0 +1,36 @@
+name: Generate .d.ts
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.0'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run generator
+        run: |
+          node ./src/cli.js \
+            --data-dir ./data \
+            --version latest \
+            --jsdoc-bin ./node_modules/.bin/jsdoc \
+            --max-groups 8 \
+            --output-dir ./.tmp
+            
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dts-${{ github.sha }}
+          path: ./.tmp/**
