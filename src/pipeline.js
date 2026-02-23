@@ -6,6 +6,14 @@ import { buildTypedefs } from './typedef-builder.js';
 import { resolveInheritance } from './inheritance.js';
 import { generateTSDeclarations, generateGraphicsTSDeclarations } from './ts-generator.js';
 
+function removeIndexRectSpecialCase(topLevel) {
+  const ns = (topLevel.namespaces || []).find(n => n.fullName === 'anychart.graphics.math');
+  if (ns && Array.isArray(ns.functions)) {
+    ns.functions = ns.functions.filter(fn => fn.name !== 'rect');
+  }
+  return topLevel;
+}
+
 async function runPipeline(options) {
   const {
     dataDir,
@@ -32,6 +40,7 @@ async function runPipeline(options) {
 
   console.log('Building inheritance and typedefs...');
   topLevel = buildTypedefs(topLevel);
+  topLevel = removeIndexRectSpecialCase(topLevel);
 
   // 4. Generate TS
   console.log('Generating TypeScript declarations...');
@@ -55,3 +64,4 @@ async function runPipeline(options) {
 }
 
 export { runPipeline };
+export { removeIndexRectSpecialCase };

@@ -4,19 +4,22 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "generate": "node src/cli.js --data-dir ./data --version 8.14.1 --jsdoc-bin ./node_modules/.bin/jsdoc --max-groups 8 --output-dir ./.tmp",
+    "test": "node --test tests/*.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Generates TypeScript declaration files (.d.ts) from AnyChart JSDoc-annotated .adoc sources",
   "dependencies": {
     "execa": "^9.6.1",
     "fast-glob": "^3.3.3",
     "fs-extra": "^11.3.3",
     "jsdoc": "^4.0.5",
     "minimist": "^1.2.8",
-    "p-map": "^7.0.4",
+    "p-map": "^7.0.4"
+  },
+  "devDependencies": {
     "peggy": "^5.0.6",
     "typescript": "^5.9.3"
   }

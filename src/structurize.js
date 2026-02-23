@@ -1,7 +1,3 @@
-import fs from 'fs-extra';
-import path from 'path';
-import { execa } from 'execa';
-
 function paramHasDefault(param) {
   return param.description && /^\s*\[[^\]]*\]\s*/.test(param.description);
 }
@@ -58,6 +54,10 @@ function parseFunctionParams(params) {
   return params.map(parseFunctionParam);
 }
 
+function isStaticDoclet(doclet) {
+  return doclet && doclet.scope === 'static';
+}
+
 function structurize(doclets) {
   const topLevel = {
     namespaces: [],
@@ -69,6 +69,7 @@ function structurize(doclets) {
 
   const docletsByMemberOf = {};
   doclets.forEach(d => {
+
     if (d.memberof) {
       if (!docletsByMemberOf[d.memberof]) docletsByMemberOf[d.memberof] = [];
       docletsByMemberOf[d.memberof].push(d);
@@ -101,6 +102,8 @@ function structurize(doclets) {
     const functionsBySig = new Map();
     members.forEach((m, i) => {
       const isFunction = m.kind === 'function' || (m.kind === 'member' && (!!m.params || !!m.returns || m.inheritdoc !== undefined));
+      const hasOtherDocumented = members.some(other => other !== m && other.name === m.name && !other.undocumented);
+      const isIgnored = !!(m.ignore || (m.undocumented && hasOtherDocumented) || m.tags?.some(t => t.title === 'ignore'));
       
       // Skip if it's actually a nested class or namespace (handled by their own doclets)
       if (!isFunction && (allNsNames.has(m.longname) || allClassNames.has(m.longname))) return;
@@ -119,7 +122,7 @@ function structurize(doclets) {
           description: m.description,
           isDirect: true,
           ancestorDistance: 0,
-          isIgnored: !!(m.ignore || (m.undocumented && hasOtherDocumented) || m.tags?.some(t => t.title === 'ignore')),
+          isIgnored: isIgnored,
           isInheritDoc: m.inheritdoc !== undefined,
           originalIndex: i
         };
@@ -135,8 +138,22 @@ function structurize(doclets) {
             existing.description = method.description;
           }
         }
+      } else if (m.isEnum) {
+        // JSDoc marks enums as kind:'member' with isEnum:true
+        // Enum fields are separate doclets with memberof set to the enum's longname
+        const enumFields = (docletsByMemberOf[m.longname] || []).filter(f => f.kind === 'member');
+        const e = {
+          name: m.name,
+          fullName: m.longname,
+          fields: enumFields.map(p => ({
+            name: p.name,
+            value: p.defaultvalue
+          })),
+          description: m.description
+        };
+        topLevel.enums.push(e);
+        nsObj.enums.push(e.fullName);
       } else if (m.kind === 'member' || m.kind === 'constant' || m.tags?.some(t => t.title === 'define')) {
-        const hasOtherDocumented = members.some(other => other !== m && other.name === m.name && !other.undocumented);
         if (m.undocumented && hasOtherDocumented) return;
 
         // Handle members with properties (like MouseEvent) as typedefs
@@ -198,10 +215,24 @@ function structurize(doclets) {
 
   const classes = doclets.filter(d => d.kind === 'class');
   classes.forEach(cl => {
+
+    const members = docletsByMemberOf[cl.longname] || [];
     const clObj = {
       name: cl.name,
       fullName: cl.longname,
       extends: cl.augments || [],
+      allMemberNames: new Set(
+        members
+          .filter(m => !isStaticDoclet(m) && (m.kind === 'member' || m.kind === 'function'))
+          .map(m => m.name)
+          .filter(Boolean)
+      ),
+      hasInheritDocMethods: members.some(
+        m =>
+          !isStaticDoclet(m) &&
+          (m.kind === 'member' || m.kind === 'function') &&
+          m.inheritdoc !== undefined
+      ),
       methods: [],
       typedefs: [],
       enums: [],
@@ -209,20 +240,35 @@ function structurize(doclets) {
       namespaces: []
     };
 
-    const members = docletsByMemberOf[cl.longname] || [];
-    const methodsBySig = new Map();
+    const methodsByName = new Map();
     members.forEach((m, i) => {
+      // Skip inherited members to let inheritance logic handle them matches index.d.ts structure
+      if (m.inherited) return;
+
+      // Handle isEnum members (JSDoc marks enums as kind:'member' with isEnum:true)
+      if (m.isEnum) {
+        const enumFields = (docletsByMemberOf[m.longname] || []).filter(f => f.kind === 'member');
+        const e = {
+          name: m.name,
+          fullName: m.longname,
+          fields: enumFields.map(p => ({
+            name: p.name,
+            value: p.defaultvalue
+          })),
+          description: m.description
+        };
+        topLevel.enums.push(e);
+        clObj.enums.push(e.fullName);
+        return;
+      }
+
       const isFunction = m.kind === 'function' || (m.kind === 'member' && (!!m.params || !!m.returns || m.inheritdoc !== undefined));
       const hasOtherDocumented = members.some(other => other !== m && other.name === m.name && !other.undocumented);
-      const isIgnored = m.ignore || (m.undocumented && hasOtherDocumented) || m.tags?.some(t => t.title === 'ignore');
+      const isIgnored = !!(m.ignore || (m.undocumented && hasOtherDocumented) || m.tags?.some(t => t.title === 'ignore'));
 
       if (isFunction) {
         const params = parseFunctionParams(m.params);
         const returns = m.returns ? m.returns.map(r => ({ types: (r.type && r.type.names) || [] })) : [];
-        const sig = m.name + "|" + 
-                    params.map(p => (p.types || []).join(',')).join(';') + "|" + 
-                    returns.map(r => r.types.join(',')).join(';');
-
         const method = {
           name: m.name,
           params: params,
@@ -230,24 +276,15 @@ function structurize(doclets) {
           description: m.description,
           isDirect: true,
           ancestorDistance: 0,
-          isIgnored: isIgnored, // Keep track for merging
+          isIgnored: isIgnored,
           isInheritDoc: m.inheritdoc !== undefined,
-          originalIndex: i
+          originalIndex: i,
+          sourceFile: m.meta && m.meta.filename
         };
-
-        if (!methodsBySig.has(sig)) {
-          methodsBySig.set(sig, method);
-        } else {
-          const existing = methodsBySig.get(sig);
-          // If existing is ignored but this one isn't, prefer this one
-          if (existing.isIgnored && !method.isIgnored) {
-            existing.isIgnored = false;
-            // Also take the description if the ignored one didn't have it
-            if (method.description) existing.description = method.description;
-          } else if (!existing.description && method.description) {
-            existing.description = method.description;
-          }
+        if (!methodsByName.has(m.name)) {
+          methodsByName.set(m.name, []);
         }
+        methodsByName.get(m.name).push(method);
       } else if (m.kind === 'typedef') {
         const td = {
           name: m.name,
@@ -282,7 +319,43 @@ function structurize(doclets) {
         clObj.enums.push(e.fullName);
       }
     });
-    clObj.methods = Array.from(methodsBySig.values());
+    const classFile = cl.meta && cl.meta.filename;
+    clObj.methods = Array.from(methodsByName.keys()).sort((a, b) => {
+      return a < b ? -1 : a > b ? 1 : 0;
+    }).map(name => {
+      const overloads = methodsByName.get(name);
+      // Sort cross-file overloads: those returning the same class go first,
+      // those returning a foreign class go last (preserving relative order within each group)
+      if (classFile) {
+        const foreignSameReturn = [];
+        const own = [];
+        const foreignDiffReturn = [];
+        for (const m of overloads) {
+          if (!m.sourceFile || m.sourceFile === classFile) {
+            own.push(m);
+          } else {
+            // Check if return type matches this class
+            const retTypes = (m.returns || []).flatMap(r => r.types || []);
+            const returnsSameClass = retTypes.some(t => t === cl.longname);
+            if (returnsSameClass) {
+              foreignSameReturn.push(m);
+            } else {
+              foreignDiffReturn.push(m);
+            }
+          }
+        }
+        if (foreignSameReturn.length > 0 || foreignDiffReturn.length > 0) {
+          overloads.length = 0;
+          overloads.push(...foreignSameReturn, ...own, ...foreignDiffReturn);
+        }
+      }
+      const all = overloads;
+      const main = all.find(m => !m.isIgnored) || all[0];
+      return {
+        ...main,
+        overrides: all
+      };
+    });
 
     topLevel.classes.push(clObj);
     
@@ -298,7 +371,7 @@ function structurize(doclets) {
   // Capture global typedefs
   const globalTypedefs = doclets.filter(d => d.kind === 'typedef' && !d.memberof);
   globalTypedefs.forEach(m => {
-    const isIgnored = m.ignore || m.undocumented || m.tags?.some(t => t.title === 'ignore');
+    const isIgnored = !!(m.ignore || m.undocumented || m.tags?.some(t => t.title === 'ignore'));
     if (isIgnored) return;
 
     const td = {

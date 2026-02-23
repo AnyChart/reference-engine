@@ -22,3 +22,16 @@ data/versions-tmp*/
 dist-verify/
 diff*.txt
 data/
+
+# Local debug/parity artifacts
+debug_*.js
+debug_*.log
+dump_*.log
+sunburst_*.txt
+sunburst_*.json
+editor_doclet.json
+*.cjs
+*.diff
+SESSION_LOG.md
+PROMPT_LOG.md
+.claude/
