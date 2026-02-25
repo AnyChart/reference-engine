@@ -1,27 +1,23 @@
-// src/cli.js
-import minimist from 'minimist';
-import path from 'path';
+import path from 'node:path';
+import { parseArgs } from 'node:util';
 import { runPipeline } from './pipeline.js';
 
 async function main() {
-  const argv = minimist(process.argv.slice(2), {
-    string: ['data-dir', 'version', 'jsdoc-bin', 'output-dir'],
-    number: ['max-groups'],
-    default: {
-      'data-dir': './data',
-      'version': 'latest',
-      'jsdoc-bin': './node_modules/.bin/jsdoc',
-      'max-groups': 8,
-      'output-dir': './.tmp'
-    }
+  const { values } = parseArgs({
+    options: {
+      'data-dir':   { type: 'string', default: './data' },
+      'version':    { type: 'string', default: 'latest' },
+      'output-dir': { type: 'string', default: './.tmp' },
+      'flat':       { type: 'boolean', default: false }
+    },
+    strict: false
   });
 
   const options = {
-    dataDir: path.resolve(argv['data-dir']),
-    version: argv.version,
-    jsdocBin: path.resolve(argv['jsdoc-bin']),
-    maxGroups: argv['max-groups'],
-    outputDir: path.resolve(argv['output-dir'])
+    dataDir: path.resolve(values['data-dir']),
+    version: values.version,
+    outputDir: path.resolve(values['output-dir']),
+    noVersionDir: values.flat
   };
 
   try {

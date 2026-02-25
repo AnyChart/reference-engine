@@ -1,28 +1,30 @@
-import fs from 'fs-extra';
-import path from 'path';
-import os from 'os';
-import crypto from 'crypto';
-import { execa } from 'execa';
-import glob from 'fast-glob';
-import pMap from 'p-map';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import crypto from 'node:crypto';
+import { parseAdocFile } from './adoc-parser.js';
 
-async function convertToJsdoc(srcPath, tmpJsdocPath) {
-  try {
-    await fs.ensureDir(tmpJsdocPath);
-  } catch (e) {}
-  await fs.copy(srcPath, tmpJsdocPath, { overwrite: true });
-  const adocFiles = await glob('**/*.adoc', {cwd: tmpJsdocPath, absolute: true});
-  await Promise.all(adocFiles.map(async f => {
-    const content = await fs.readFile(f, 'utf8');
-    const replaced = content.replace(/@define/g, '@const');
-    await fs.writeFile(`${f}.js`, replaced);
-  }));
-  return;
+async function pathExists(p) {
+  try { await fs.access(p); return true; } catch { return false; }
+}
+
+async function findAdocFiles(srcPath) {
+  const results = [];
+  async function walk(dir) {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) await walk(full);
+      else if (entry.name.endsWith('.adoc')) results.push(full);
+    }
+  }
+  await walk(srcPath);
+  results.sort();
+  return results;
 }
 
 async function computeSourceHash(srcPath) {
-  const adocFiles = await glob('**/*.adoc', { cwd: srcPath, absolute: true });
-  adocFiles.sort();
+  const adocFiles = await findAdocFiles(srcPath);
   const hash = crypto.createHash('sha256');
   for (const f of adocFiles) {
     hash.update(f);
@@ -32,92 +34,6 @@ async function computeSourceHash(srcPath) {
 }
 
 const CACHE_DIR = path.join(os.tmpdir(), 'dts-generator-cache');
-
-function chunkArray(arr, n) {
-  const len = arr.length;
-  if (n <= 1) return [arr];
-  const per = Math.ceil(len / n);
-  const out = [];
-  for (let i=0;i<len;i+=per) {
-    out.push(arr.slice(i, i+per));
-  }
-  return out;
-}
-
-async function runJsdocOnGroup(jsdocBin, groupFiles) {
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dts-jsdoc-'));
-  const configPath = path.join(tempDir, 'jsdoc.config.json');
-  await fs.writeFile(configPath, JSON.stringify(createJsdocConfig(groupFiles)), 'utf8');
-
-  try {
-    // Use config file to avoid Windows command-line length limits with large file groups.
-    const {stdout} = await execa(jsdocBin, ['-X', '-c', configPath], {maxBuffer: 100 * 1024 * 1024});
-    return JSON.parse(stdout);
-  } finally {
-    try {
-      await fs.remove(tempDir);
-    } catch (e) {}
-  }
-}
-
-function createJsdocConfig(groupFiles) {
-  return {
-    source: {
-      include: groupFiles
-    }
-  };
-}
-
-async function getAllDoclets(dataDir, maxGroups, jsdocBin, version) {
-  const srcPath = path.join(dataDir, 'versions', version);
-
-  // Ensure srcPath exists
-  if (!await fs.pathExists(srcPath)) {
-    throw new Error(`Source path does not exist: ${srcPath}`);
-  }
-
-  // Check cache: hash source files, skip JSDoc if unchanged
-  const sourceHash = await computeSourceHash(srcPath);
-  const cacheFile = path.join(CACHE_DIR, `doclets-${version}-${sourceHash}.json`);
-
-  if (await fs.pathExists(cacheFile)) {
-    const cached = JSON.parse(await fs.readFile(cacheFile, 'utf8'));
-    return normalizeAndFilterDoclets(cached, version);
-  }
-
-  const randomSuffix = Math.floor(Math.random() * 1000000);
-  const jsdocPath = path.join(dataDir, `versions-tmp-${randomSuffix}`, version);
-
-  await convertToJsdoc(srcPath, jsdocPath);
-  const adocJsFiles = await glob('**/*.adoc.js', {cwd: jsdocPath, absolute: true});
-  const groups = chunkArray(adocJsFiles, Math.min(maxGroups, adocJsFiles.length));
-
-  // run jsdoc in parallel but limit concurrency
-  const results = await pMap(groups, async (group) => {
-    return runJsdocOnGroup(jsdocBin, group);
-  }, { concurrency: Math.min(groups.length, 6) });
-
-  // flatten
-  const doclets = results.flat();
-
-  // Save raw doclets to cache (before normalization, since version is baked in during normalize)
-  try {
-    await fs.ensureDir(CACHE_DIR);
-    await fs.writeFile(cacheFile, JSON.stringify(doclets));
-  } catch (e) {
-    // Cache write failure is non-fatal
-  }
-
-  // do replacements and filtering to mirror Clojure
-  const filtered = normalizeAndFilterDoclets(doclets, version);
-
-  // Cleanup
-  try {
-    await fs.remove(path.dirname(jsdocPath));
-  } catch (e) {}
-
-  return filtered;
-}
 
 function replaceStringsInPlace(obj, version) {
   if (obj == null || typeof obj !== 'object') return obj;
@@ -154,4 +70,42 @@ function normalizeAndFilterDoclets(doclets, version) {
   return result;
 }
 
-export { getAllDoclets, runJsdocOnGroup, createJsdocConfig, normalizeAndFilterDoclets };
+async function getAllDoclets(dataDir, version) {
+  const srcPath = path.join(dataDir, 'versions', version);
+
+  if (!await pathExists(srcPath)) {
+    throw new Error(`Source path does not exist: ${srcPath}`);
+  }
+
+  // Check cache
+  const sourceHash = await computeSourceHash(srcPath);
+  const cacheFile = path.join(CACHE_DIR, `doclets-v2-${version}-${sourceHash}.json`);
+
+  if (await pathExists(cacheFile)) {
+    const cached = JSON.parse(await fs.readFile(cacheFile, 'utf8'));
+    return normalizeAndFilterDoclets(cached, version);
+  }
+
+  // Parse all .adoc files directly
+  const adocFiles = await findAdocFiles(srcPath);
+
+  const allDoclets = [];
+  for (const filePath of adocFiles) {
+    const content = await fs.readFile(filePath, 'utf8');
+    const replaced = content.replace(/@define/g, '@const');
+    const doclets = parseAdocFile(replaced, filePath);
+    allDoclets.push(...doclets);
+  }
+
+  // Save to cache
+  try {
+    await fs.mkdir(CACHE_DIR, { recursive: true });
+    await fs.writeFile(cacheFile, JSON.stringify(allDoclets));
+  } catch (e) {
+    // Cache write failure is non-fatal
+  }
+
+  return normalizeAndFilterDoclets(allDoclets, version);
+}
+
+export { getAllDoclets, normalizeAndFilterDoclets };

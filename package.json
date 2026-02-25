@@ -4,22 +4,21 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "generate": "node src/cli.js --data-dir ./data --version 8.14.1 --jsdoc-bin ./node_modules/.bin/jsdoc --max-groups 8 --output-dir ./.tmp",
-    "test": "node --test tests/*.test.js"
+    "generate": "node src/cli.js --data-dir ./data --version 8.14.1 --output-dir . --flat",
+    "validate": "npx tsc --noEmit --strict index.d.ts && npx tsc --noEmit --strict graphics.d.ts",
+    "build": "npm run generate && npm run validate",
+    "test": "node --test tests/*.test.js",
+    "compile-grammar": "peggy --format es -o src/types/jsdoc-type-parser-compiled.js src/types/jsdoc-type-parser.pegjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "Generates TypeScript declaration files (.d.ts) from AnyChart JSDoc-annotated .adoc sources",
   "dependencies": {
-    "execa": "^9.6.1",
-    "fast-glob": "^3.3.3",
-    "fs-extra": "^11.3.3",
-    "jsdoc": "^4.0.5",
-    "minimist": "^1.2.8",
-    "p-map": "^7.0.4"
+    "comment-parser": "^1.4.5"
   },
   "devDependencies": {
+    "fast-check": "^4.5.3",
     "peggy": "^5.0.6",
     "typescript": "^5.9.3"
   }

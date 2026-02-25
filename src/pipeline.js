@@ -1,5 +1,6 @@
-import path from 'path';
-import fs from 'fs-extra';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { execSync } from 'node:child_process';
 import { getAllDoclets } from './jsdoc-runner.js';
 import { structurize } from './structurize.js';
 import { buildTypedefs } from './typedef-builder.js';
@@ -18,16 +19,15 @@ async function runPipeline(options) {
   const {
     dataDir,
     version,
-    jsdocBin,
-    maxGroups,
-    outputDir
+    outputDir,
+    noVersionDir
   } = options;
 
   console.log(`Starting pipeline for version ${version}...`);
 
   // 1. Get doclets
   console.log('Extracting doclets...');
-  const doclets = await getAllDoclets(dataDir, maxGroups, jsdocBin, version);
+  const doclets = await getAllDoclets(dataDir, version);
   console.log(`Found ${doclets.length} doclets.`);
 
   // 2. Structurize
@@ -47,19 +47,32 @@ async function runPipeline(options) {
   const indexTs = generateTSDeclarations(version, topLevel);
   const graphicsTs = generateGraphicsTSDeclarations(version, topLevel);
 
-  // 4. Output
-  const versionOutputDir = path.join(outputDir, version);
-  await fs.ensureDir(versionOutputDir);
-  
-  await fs.writeFile(path.join(versionOutputDir, 'index.d.ts'), indexTs);
-  await fs.writeFile(path.join(versionOutputDir, 'graphics.d.ts'), graphicsTs);
-  await fs.writeFile(path.join(versionOutputDir, `index-${version}.d.ts`), indexTs);
+  // 5. Output
+  const outDir = noVersionDir ? outputDir : path.join(outputDir, version);
+  await fs.mkdir(outDir, { recursive: true });
 
-  console.log(`Successfully generated declarations in ${versionOutputDir}`);
-  
+  await fs.writeFile(path.join(outDir, 'index.d.ts'), indexTs);
+  await fs.writeFile(path.join(outDir, 'graphics.d.ts'), graphicsTs);
+
+  console.log(`Successfully generated declarations in ${outDir}`);
+
+  // 6. Validate with TypeScript compiler
+  const indexPath = path.join(outDir, 'index.d.ts');
+  const graphicsPath = path.join(outDir, 'graphics.d.ts');
+  console.log('Validating TypeScript declarations...');
+  try {
+    execSync(`npx tsc --noEmit --strict "${indexPath}"`, { stdio: 'pipe' });
+    execSync(`npx tsc --noEmit --strict "${graphicsPath}"`, { stdio: 'pipe' });
+    console.log('TypeScript validation passed.');
+  } catch (e) {
+    const stderr = e.stderr ? e.stderr.toString() : e.message;
+    console.error('TypeScript validation FAILED:\n' + stderr);
+    throw new Error('Generated declarations have TypeScript errors');
+  }
+
   return {
-    indexTsPath: path.join(versionOutputDir, 'index.d.ts'),
-    graphicsTsPath: path.join(versionOutputDir, 'graphics.d.ts')
+    indexTsPath: indexPath,
+    graphicsTsPath: graphicsPath
   };
 }
 

@@ -1,41 +1,7 @@
 import { jsdocToTs, setReplacements } from './types/type-writer.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Load class order from control file (extracted from index.d.ts)
-let classOrder = {};
-try {
-  const orderPath = path.join(__dirname, 'class-order.json');
-  classOrder = JSON.parse(fs.readFileSync(orderPath, 'utf8'));
-} catch (e) {
-  // If order file doesn't exist, fall back to no ordering
-}
-
-// Load member order (typedef/enum ordering) from control file
-let memberOrder = { typedefs: {}, enums: {} };
-try {
-  const memberOrderPath = path.join(__dirname, 'member-order.json');
-  memberOrder = JSON.parse(fs.readFileSync(memberOrderPath, 'utf8'));
-} catch (e) {
-  // If order file doesn't exist, fall back to alphabetical ordering
-}
-
-function sortByControlOrder(items, nameKey, orderList) {
-  if (!orderList || orderList.length === 0) {
-    return items.slice().sort((a, b) => a[nameKey] < b[nameKey] ? -1 : a[nameKey] > b[nameKey] ? 1 : 0);
-  }
-  return items.slice().sort((a, b) => {
-    const aIdx = orderList.indexOf(a[nameKey]);
-    const bIdx = orderList.indexOf(b[nameKey]);
-    if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
-    if (aIdx !== -1) return -1;
-    if (bIdx !== -1) return 1;
-    return a[nameKey] < b[nameKey] ? -1 : a[nameKey] > b[nameKey] ? 1 : 0;
-  });
+function sortAlpha(items, nameKey) {
+  return items.slice().sort((a, b) => a[nameKey] < b[nameKey] ? -1 : a[nameKey] > b[nameKey] ? 1 : 0);
 }
 
 const p4 = '    ';
@@ -207,8 +173,7 @@ function prepareReplacements(topLevel) {
 function typedefDeclarations(tds, nsKey) {
   // Exclude function typedefs as they are inlined
   const filtered = (tds || []).filter(td => !isFunctionTypedef(td));
-  const orderList = (memberOrder.typedefs || {})[nsKey] || [];
-  const sorted = sortByControlOrder(filtered, 'name', orderList);
+  const sorted = sortAlpha(filtered, 'name');
   return sorted.map(typedefDeclaration).join('\n');
 }
 
@@ -259,19 +224,7 @@ function classDeclaration(cl, topLevel) {
 }
 
 function classDeclarations(topLevel, classes, nsFullName) {
-  // Sort classes according to control file order if available
-  const order = classOrder[nsFullName] || [];
-  const sorted = (classes || []).slice().sort((a, b) => {
-    const aIndex = order.indexOf(a.name);
-    const bIndex = order.indexOf(b.name);
-    // If both are in the order list, use that order
-    if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
-    // If only one is in the order list, it comes first
-    if (aIndex !== -1) return -1;
-    if (bIndex !== -1) return 1;
-    // Neither in order list - use alphabetical as fallback
-    return a.name.localeCompare(b.name);
-  });
+  const sorted = sortAlpha(classes || [], 'name');
   return sorted.map(cl => classDeclaration(cl, topLevel)).join('\n');
 }
 
@@ -280,15 +233,13 @@ function getEnumsAndTypedefsClass(cl, topLevel) {
   const hasTypedefs = cl.typedefs && cl.typedefs.length > 0;
   const hasClasses = cl.classes && cl.classes.length > 0;
   if (hasEnums || hasTypedefs || hasClasses) {
-    const enumOrderList = (memberOrder.enums || {})[cl.fullName] || [];
-    const enums = sortByControlOrder(
+    const enums = sortAlpha(
       (cl.enums || []).map(name => lookupEnum(topLevel, name)).filter(Boolean),
-      'name', enumOrderList
+      'name'
     );
-    const tdOrderList = (memberOrder.typedefs || {})[cl.fullName] || [];
-    const typedefs = sortByControlOrder(
+    const typedefs = sortAlpha(
       (cl.typedefs || []).map(name => lookupTypedef(topLevel, name)).filter(Boolean),
-      'name', tdOrderList
+      'name'
     );
     const classes = (cl.classes || []).map(name => lookupClass(topLevel, name)).filter(Boolean);
 
@@ -306,15 +257,7 @@ function getEnumsAndTypedefsClass(cl, topLevel) {
     }
 
     // Each class gets its own module block
-    const order = classOrder[cl.fullName] || [];
-    const sortedClasses = classes.slice().sort((a, b) => {
-      const aIndex = order.indexOf(a.name);
-      const bIndex = order.indexOf(b.name);
-      if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
-      if (aIndex !== -1) return -1;
-      if (bIndex !== -1) return 1;
-      return a.name.localeCompare(b.name);
-    });
+    const sortedClasses = sortAlpha(classes, 'name');
     for (const cls of sortedClasses) {
       const decl = classDeclaration(cls, topLevel);
       blocks.push(`${p4}module ${cl.name} {\n${decl}\n    }`);
@@ -335,8 +278,7 @@ function namespaceDefinition(topLevel, namespace) {
   const typedefs = typedefDeclarations(nsTds, namespace.fullName);
   const nsEnumNames = namespace.enums || [];
   const enumsData = nsEnumNames.map(name => lookupEnum(topLevel, name)).filter(Boolean);
-  const enumOrderList = (memberOrder.enums || {})[namespace.fullName] || [];
-  const enums = sortByControlOrder(enumsData, 'name', enumOrderList).map(enumDeclaration).join('\n');
+  const enums = sortAlpha(enumsData, 'name').map(enumDeclaration).join('\n');
   const classes = classDeclarations(topLevel, (namespace.classes || []).map(name => lookupClass(topLevel, name)).filter(Boolean), namespace.fullName);
   
   let result = `declare namespace ${namespace.fullName} {\n`;
