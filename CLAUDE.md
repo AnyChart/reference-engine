@@ -107,6 +107,6 @@ After editing `jsdoc-type-parser.pegjs`, run `npm run compile-grammar` to regene
 
 ## Git Workflow
 
-- **Main branch:** `main` (PRs target here)
-- **Development:** `master` (current work)
-- **CI:** GitHub Actions runs tests + build on push to `main`
+- **Branch:** `main`
+- **Remote:** `https://github.com/AnyChart/reference-engine.git` (branch: `dts-node-generator`)
+- **CI:** GitHub Actions workflow (manual dispatch only)

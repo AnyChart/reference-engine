@@ -1,37 +1,31 @@
+# IDE
 .idea/
+.vscode/
 .DS_Store
-.vscode
-.tmp/
 
-# AI stuff
+# Dependencies
+node_modules/
+
+# Build output
+.tmp/
+.tmp*/
+
+# Data (large, not committed)
+data/
+
+# AI tools
 .agent/
 .gemini/
 .cursor/
 .aider*
 .ai-instructions
 .history/
-*.log
-
-# Build and dependencies
-node_modules/
-dist/
-dist-test/
-out/
-.tmp*/
-data/versions-tmp*/
-dist-verify/
-diff*.txt
-data/
-
-# Local debug/parity artifacts
-debug_*.js
-debug_*.log
-dump_*.log
-sunburst_*.txt
-sunburst_*.json
-editor_doclet.json
-*.cjs
-*.diff
+.claude/
 SESSION_LOG.md
 PROMPT_LOG.md
-.claude/
+
+# Debug artifacts
+*.log
+*.diff
+debug_*
+dump_*
