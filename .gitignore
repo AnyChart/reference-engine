@@ -13,17 +13,6 @@ node_modules/
 # Data (large, not committed)
 data/
 
-# AI tools
-.agent/
-.gemini/
-.cursor/
-.aider*
-.ai-instructions
-.history/
-.claude/
-SESSION_LOG.md
-PROMPT_LOG.md
-
 # Debug artifacts
 *.log
 *.diff
