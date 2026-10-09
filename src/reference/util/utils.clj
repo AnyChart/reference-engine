@@ -27,10 +27,11 @@
    (sort-versions identity versions)))
 
 
-(defn released-version? [version-key]
-  (or
-    ;; (re-matches #"^\d+\.\d+\.\d+$" version-key)
-    (re-matches #"^v\d+$" version-key)))
+(defn released-version?
+  "Legacy v7/v8 branches, plus release tags 9.x.x and up (never v9+).
+  Older 8.x.x tags exist in the content repos and must stay hidden."
+  [version-key]
+  (boolean (re-matches #"^(?:v[78]|(?:9|[1-9]\d+)\.\d+\.\d+)$" version-key)))
 
 
 (defn name->url [name]

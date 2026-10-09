@@ -4,7 +4,7 @@
 
 (defn styles [commit]
   (list
-    [:link {:rel "stylesheet" :type "text/css" :href "https://cdn.anychart.com/fonts/2.0.0/anychart.css",}]
+    [:link {:rel "stylesheet" :type "text/css" :href "https://cdn.anychart.com/releases/latest/fonts/css/anychart-font.min.css",}]
     [:link {:rel "stylesheet" :type "text/css" :href "/lib/bootstrap/css/bootstrap.min.css"}]
     [:link {:rel "stylesheet" :type "text/css" :href "/lib/bootstrap-select.min.css"}]
     [:link {:rel "stylesheet" :type "text/css" :href "/lib/jquery-custom-content-scroller/jquery.mCustomScrollbar.min.css"}]
