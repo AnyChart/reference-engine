@@ -1,0 +1,73 @@
+name: Deploy
+
+# Replaces Travis CI. Builds the uberjar, copies it to both engine hosts
+# (api-bible-docs web + worker generator) and restarts the supervisor program.
+# Requires repo secret DEPLOY_SSH_KEY: private key whose public half is in
+# servers-conf SSH_KEYS/authorized_keys_api_bible_docs_root and the worker's.
+
+on:
+  push:
+    branches: [master, staging]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  HOSTS: "104.236.66.244 68.183.148.118"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve target app
+        run: |
+          case "${GITHUB_REF_NAME}" in
+            master)  echo "APP=reference-prod" >> "$GITHUB_ENV" ;;
+            staging) echo "APP=reference-stg" >> "$GITHUB_ENV" ;;
+            *) echo "No deploy target for ${GITHUB_REF_NAME}"; exit 1 ;;
+          esac
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "8"
+
+      - uses: DeLaGuardo/setup-clojure@13.2
+        with:
+          lein: 2.9.8
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: m2-${{ hashFiles('project.clj') }}
+          restore-keys: m2-
+
+      - name: Build uberjar
+        run: |
+          lein sass4clj once
+          lein uberjar
+
+      - name: Install SSH key
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          test -n "$DEPLOY_SSH_KEY" || { echo "DEPLOY_SSH_KEY secret is not set"; exit 1; }
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          cp .github/known_hosts ~/.ssh/known_hosts
+
+      - name: Copy jar and restart
+        run: |
+          SSH_OPTS="-i $HOME/.ssh/id_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes"
+          for host in $HOSTS; do
+            scp $SSH_OPTS "target/reference-3.0.0-standalone.jar" "root@${host}:/apps/${APP}/reference-3.0.0-standalone.jar.new"
+            ssh $SSH_OPTS "root@${host}" "mv /apps/${APP}/reference-3.0.0-standalone.jar.new /apps/${APP}/reference-3.0.0-standalone.jar && supervisorctl restart ${APP} && supervisorctl status ${APP}"
+          done
