@@ -2,8 +2,8 @@ name: Deploy
 
 # Replaces Travis CI. Builds the uberjar, copies it to both engine hosts
 # (api-bible-docs web + worker generator) and restarts the supervisor program.
-# Requires repo secret DEPLOY_SSH_KEY: private key whose public half is in
-# servers-conf SSH_KEYS/authorized_keys_api_bible_docs_root and the worker's.
+# Requires org secret ANYCHART_BOT_KEY: the anychart-bot private key, authorized
+# as root on both hosts (servers-conf SSH_KEYS).
 
 on:
   push:
@@ -56,11 +56,11 @@ jobs:
 
       - name: Install SSH key
         env:
-          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          ANYCHART_BOT_KEY: ${{ secrets.ANYCHART_BOT_KEY }}
         run: |
-          test -n "$DEPLOY_SSH_KEY" || { echo "DEPLOY_SSH_KEY secret is not set"; exit 1; }
+          test -n "$ANYCHART_BOT_KEY" || { echo "ANYCHART_BOT_KEY secret is not set"; exit 1; }
           install -d -m 700 ~/.ssh
-          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_deploy
+          printf '%s\n' "$ANYCHART_BOT_KEY" > ~/.ssh/id_deploy
           chmod 600 ~/.ssh/id_deploy
           cp .github/known_hosts ~/.ssh/known_hosts
 
