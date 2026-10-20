@@ -8,6 +8,19 @@ name: Deploy
 on:
   push:
     branches: [master, staging]
+    # Docs / agent-file-only changes do not deploy. If the app ever reads a .md
+    # file at runtime, drop '**.md' from this list.
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.agent/**'
+      - '.agents/**'
+      - '.claude/**'
+      - '.cursor/**'
+      - '.codex/**'
+      - '.gemini/**'
+      - '.kaizen/**'
+      - '.serena/**'
   workflow_dispatch:
 
 concurrency:
