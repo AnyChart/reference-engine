@@ -1,9 +1,10 @@
 name: Deploy
 
-# Replaces Travis CI. Builds the uberjar, copies it to both engine hosts
-# (api-bible-docs web + worker generator) and restarts the supervisor program.
+# Replaces Travis CI. Builds the uberjar, copies it to the engine host (api-bible-docs)
+# and restarts the supervisor program. The generator host (worker, 68.183.148.118) is
+# retired (INFRA-612): the engine serves what it holds and no longer rebuilds versions.
 # Requires org secret ANYCHART_BOT_KEY: the anychart-bot private key, authorized
-# as root on both hosts (servers-conf SSH_KEYS).
+# as root on the host (servers-conf SSH_KEYS).
 
 on:
   push:
@@ -31,7 +32,7 @@ permissions:
   contents: read
 
 env:
-  HOSTS: "104.236.66.244 68.183.148.118"
+  HOSTS: "104.236.66.244"
 
 jobs:
   deploy:
